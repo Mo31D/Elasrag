@@ -1,0 +1,230 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  overflow-x: hidden;
+}
+
+#elasrag-login {
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(circle at 20% 20%, #101114 0%, #07080a 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+  color: #f1f1f1;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* الخلفية المتوهجة */
+#elasrag-login::before {
+  content: '';
+  position: absolute;
+  width: 120%;
+  height: 120%;
+  background: conic-gradient(
+    from 90deg,
+    rgba(255,255,255,0.05),
+    rgba(255,230,150,0.2),
+    rgba(0,230,255,0.1),
+    rgba(255,255,255,0.05)
+  );
+  animation: rotateAI 12s linear infinite;
+  filter: blur(100px);
+  top: -10%;
+  left: -10%;
+  z-index: 0;
+}
+
+@keyframes rotateAI {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* الكارت */
+.card {
+  position: relative;
+  z-index: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 420px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 50px rgba(255,230,150,0.2);
+  animation: fadeIn 1.5s ease forwards;
+}
+
+/* العنوان */
+.title {
+  font-size: 2.2em;
+  font-weight: 800;
+  background: linear-gradient(90deg, #f5d67b, #fff5da, #00f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hueShift 5s infinite linear;
+  margin-bottom: 10px;
+  text-shadow: 0 0 25px rgba(255,230,150,0.5);
+}
+
+@keyframes hueShift {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+
+.subtitle {
+  font-size: 1.05em;
+  color: #bfc0c2;
+  margin-bottom: 20px;
+  letter-spacing: 0.4px;
+}
+
+label {
+  display: block;
+  margin: 20px 0 10px;
+  text-align: left;
+  color: #ccc;
+  font-weight: 600;
+}
+
+input[type=password] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.3);
+  color: #fff;
+  font-size: 1rem;
+}
+
+button, .btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #ffefb0, #f8de88, #00f0ff);
+  color: #141414;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .3s, box-shadow .3s;
+}
+
+button:hover, .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(255,230,150,0.6);
+}
+
+.btn {
+  display: block;
+  text-decoration: none;
+  text-align: center;
+}
+
+.msg {
+  margin-top: 14px;
+  font-size: .9em;
+  color: #ffbcbc;
+  min-height: 20px;
+}
+
+#typewriter::after {
+  content: "|";
+  animation: blink 0.8s infinite;
+  color: #00f0ff;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* موبايل */
+@media (max-width: 600px) {
+  .card {
+    max-width: 90%;
+    padding: 24px;
+  }
+  .title { font-size: 1.8em; }
+  .subtitle { font-size: 0.95em; }
+}
+
+/* === NAV MENU === */
+.elasrag-menu {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 25px rgba(255, 230, 150, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 40px;
+  z-index: 10;
+  animation: fadeIn 1s ease forwards;
+}
+
+.elasrag-menu .logo {
+  font-weight: 800;
+  font-size: 1.3em;
+  background: linear-gradient(90deg, #f5d67b, #fff5da, #00f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #e6e6e6;
+  font-weight: 600;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #ffefb0, #00f0ff);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .elasrag-menu {
+    padding: 12px 20px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+} 
