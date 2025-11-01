@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mo Elasrag CV</title>
+</head>
+<body>
+		<nav class="elasrag-menu">
+  <div class="logo">ELASRAG</div>
+  <ul class="nav-links">
+    <li><a href="../../index.html">Home</a></li>
+    <li><a href="index.html">CV</a></li>
+    <li><a href="#">Projects</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+<!-- Mo Elasrag – Futuristic AI Glow CV Card -->
+<div id="mo-cv">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+    #mo-cv {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at 20% 20%, #101114 0%, #07080a 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 80px;
+      color: #f1f1f1;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+body {
+  margin: 0;
+  padding: 0;
+  background: #000; /* solid black to remove white border */
+  overflow-x: hidden; /* prevent horizontal scroll glow */
+}
+    /* AI Glow background animation */
+    #mo-cv::before {
+      content: '';
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      background: conic-gradient(
+        from 90deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 230, 150, 0.2),
+        rgba(0, 230, 255, 0.1),
+        rgba(255, 255, 255, 0.05)
+      );
+      animation: rotateAI 12s linear infinite;
+      filter: blur(100px);
+      top: -10%;
+      left: -10%;
+      z-index: 0;
+    }
+
+    @keyframes rotateAI {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 460px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 50px rgba(255, 230, 150, 0.2);
+      animation: fadeIn 1.5s ease forwards;
+      z-index: 1;
+    }
+
+    .title {
+      font-size: 2.4em;
+      font-weight: 800;
+      background: linear-gradient(90deg, #f5d67b, #fff5da, #00f0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: hueShift 5s infinite linear;
+      margin-bottom: 10px;
+      text-shadow: 0 0 25px rgba(255, 230, 150, 0.5);
+    }
+
+    @keyframes hueShift {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    .subtitle {
+      font-size: 1.05em;
+      color: #bfc0c2;
+      margin-bottom: 28px;
+      letter-spacing: 0.4px;
+    }
+
+    .desc {
+      font-size: 0.95em;
+      line-height: 1.7em;
+      color: #e5e5e5;
+      margin-bottom: 28px;
+    }
+
+    .btn {
+      display: block;
+      background: linear-gradient(90deg, #ffefb0, #f8de88, #00f0ff);
+      color: #141414;
+      font-weight: 600;
+      padding: 13px 26px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      margin: 12px auto;
+      max-width: 260px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.4), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .btn:hover::after {
+      opacity: 1;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 20px rgba(255, 230, 150, 0.6);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: none; }
+    }
+	#typewriter::after {
+  content: "|";
+  animation: blink 0.8s infinite;
+  color: #00f0ff;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+/* Mobile adjustments */
+@media (max-width: 600px) {
+  #mo-cv {
+    padding-top: 40px; /* less space on top */
+    align-items: center;
+  }
+
+  .card {
+    max-width: 90%;
+    padding: 24px;
+  }
+
+  .title {
+    font-size: 1.8em;
+  }
+
+  .subtitle {
+    font-size: 0.95em;
+  }
+
+  .desc {
+    font-size: 0.9em;
+    line-height: 1.6em;
+  }
+
+  .btn {
+    max-width: 90%;
+    padding: 12px 18px;
+    font-size: 0.95em;
+  }
+}
+/* === NAV MENU === */
+.elasrag-menu {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 25px rgba(255, 230, 150, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 40px;
+  z-index: 10;
+  animation: fadeIn 1s ease forwards;
+}
+
+.elasrag-menu .logo {
+  font-weight: 800;
+  font-size: 1.3em;
+  background: linear-gradient(90deg, #f5d67b, #fff5da, #00f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #e6e6e6;
+  font-weight: 600;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #ffefb0, #00f0ff);
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #fff;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .elasrag-menu {
+    padding: 12px 20px;
+  }
+
+  .nav-links {
+    display: none;
+  }
+}
+  </style>
+
+  <div class="card">
+    <div class="title">Mo Elasrag</div>
+    <div class="subtitle">Digital Content & Web Maker</div>
+<div class="desc" id="typewriter"></div>
+
+    <a class="btn" target="_blank" href="https://drive.google.com/file/d/1_PtcF8PjBz0g2kjcz_KAo6Qw3lfU1Zfm/view?usp=drivesdk">
+      📄 View CV (PDF)
+    </a>
+
+    <a class="btn" target="_blank" href="https://drive.google.com/file/d/1QzbyP7uEESbjI0CX-cmsXVU-rVyF8ZVe/view?usp=drivesdk">
+      📨 View Application
+    </a>
+
+    <a class="btn" target="_blank" href="https://drive.google.com/file/d/1NHzLD5gA6yS_JQnuPQCEeKOkHw63zGrm/view?usp=drivesdk">
+      ✍️ View Writing Sample
+    </a>
+  </div>
+</div>
+<script>
+  // Text you want to display
+  const text = `Welcome
+this brief card shares my latest professional documents.
+Each document opens securely on Google Drive for instant review.
+I build clear, useful digital content and small web products.`;
+
+  const speed = 40; // typing speed in milliseconds
+  let i = 0;
+  const element = document.getElementById("typewriter");
+
+  function typeEffect() {
+    if (i < text.length) {
+      const char = text.charAt(i);
+      element.innerHTML += (char === '\n') ? '<br>' : char;
+      i++;
+      setTimeout(typeEffect, speed);
+    }
+  }
+
+  // Start typing after small delay
+  window.addEventListener('load', () => {
+    setTimeout(typeEffect, 600);
+  });
+</script>
+<script>
+  // صوت نقرة ناعم يشبه واجهات الموبايل
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine'; // موجة ناعمة
+      osc.frequency.setValueAtTime(400, ctx.currentTime); // تردد متوسط
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15); // تلاشي سريع
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15); // مدة النقرة = 150 مللي ثانية
+    });
+  });
+</script>
+
+</body>
+</html>
