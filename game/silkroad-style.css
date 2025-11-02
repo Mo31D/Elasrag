@@ -165,16 +165,6 @@ body {
 
 
 
-@keyframes dotFlash {
-  0% {
-    box-shadow: 0 0 6px 2px currentColor, 0 0 10px rgba(255,255,255,0.6);
-    transform: scale(1);
-  }
-  100% {
-    box-shadow: 0 0 16px 8px currentColor, 0 0 14px rgba(255,255,255,0.8);
-    transform: scale(1.3);
-  }
-}
 
 /* ✨ Transparent glass sidebar panel background */
 .sidebar {
@@ -553,11 +543,7 @@ th { background: #fbfbfb; font-weight: 600; }
 .after-start-floating button.primary:hover {
   transform: scale(1.05);
 }
-.hidden-panel {
-  opacity: 0;
-  transform: scale(0.85);
-  pointer-events: none;
-}
+
 
 /* 💎 Floating Glass Sign-In Box (Centered on Map) */
 .login-floating {
@@ -761,7 +747,7 @@ th { background: #fbfbfb; font-weight: 600; }
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   padding: 14px;
-  z-index: 1800;
+  z-index: 4000;
 }
 
 /* 3D dice used by dice3d.js */
@@ -1058,5 +1044,116 @@ body.night .player-card:hover {
   .sidebar {
     width: 100%;
     margin-top: 10px;
+  }
+}
+
+
+/* 📱 تحسين اللوحة الجانبية والمحتوى الداخلي للشاشات الصغيرة */
+@media (max-width: 768px) {
+  /* تقليل حجم اللوحة الجانبية نفسها */
+  .sidebar,
+  .panel,
+  .floating-sidebar {
+    width: 90% !important;
+    padding: 8px !important;
+    font-size: 12px !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+  }
+
+  /* تقليل حجم العناوين والنصوص */
+  .sidebar strong,
+  .panel strong,
+  #turnBanner,
+  #currentTownText {
+    font-size: 13px !important;
+    line-height: 1.4;
+  }
+
+  /* تصغير كروت اللاعبين */
+  .player-card {
+    padding: 8px 10px;
+    border-width: 2px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .player-header {
+    font-size: 12px;
+  }
+
+  .player-info-grid {
+    font-size: 11px;
+  }
+
+  .inline-buttons button,
+  .inline-buttons input {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  .inline-buy,
+  .inline-sell,
+  .inline-wait {
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+
+  /* الأزرار العامة */
+  button {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+    border-radius: 6px !important;
+  }
+
+  /* واجهة تسجيل الدخول الزجاجية */
+  .login-floating {
+    width: 200px !important;
+    padding: 12px !important;
+  }
+
+  .login-floating h2 {
+    font-size: 13px !important;
+  }
+
+  .login-floating input {
+    font-size: 11px !important;
+    padding: 6px !important;
+  }
+
+  .login-floating button {
+    font-size: 11px !important;
+    padding: 5px 7px !important;
+  }
+
+  /* صندوق السجلات (log) */
+  #log {
+    max-height: 120px;
+    font-size: 11px;
+    padding: 6px;
+  }
+
+  /* خفض حجم عناصر الموسيقى والثيم */
+  #musicCtl, #themeCtl {
+    font-size: 11px !important;
+    gap: 6px !important;
+    padding: 6px !important;
+  }
+
+  #musicVol {
+    width: 70px !important;
+  }
+
+  #musicBtn {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 14px !important;
+  }
+
+  select,
+  input,
+  label {
+    font-size: 11px !important;
   }
 }
