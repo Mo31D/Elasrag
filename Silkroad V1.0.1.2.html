@@ -1,0 +1,1040 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>The Grand Silk Road — by mO</title>
+<link rel="stylesheet" href="silkroad-style.css?v=1.0.0.6">
+</head>
+
+<body>
+
+<div class="container">
+<div class="map" id="map">
+<div id="diceContainer"></div>
+<div id="greenDie" class="die"></div>
+<div id="redDie" class="die"></div>
+</div>
+
+  <div class="sidebar"> 
+ </div>
+    <div class="panel">
+
+<!-- ✨ Floating Sign-In Panel -->
+<div class="login-floating" id="loginPanel">
+  <h2>🏕️ Caravan Entry</h2>
+  <input id="newPlayerName" type="text" placeholder="Player name..." />
+  <div class="btns">
+    <button id="addPlayerBtn">Add a player</button>
+    <button id="addAIPlayerBtn" class="ai">Robot 🤖</button>
+    <button id="startBtn" class="primary"> Start </button>
+  </div>
+  <button id="resetBtn" class="reset">⟳</button>
+</div>
+
+<!-- 🪄 After Start (Mini Floating Glass Panel) -->
+<div class="after-start-floating hidden-panel" id="afterStartPanel">
+  <button id="resetBtn2" class="primary">🌟 Start a new game</button>
+</div>
+<script src="dice3d.js"></script>
+<script>
+  Dice3D.init(document.getElementById("map"));
+</script>
+<script>
+/* 🔁 Hide floating sign-in after Start */
+document.getElementById("startBtn").addEventListener("click", () => {
+  const loginPanel = document.getElementById("loginPanel");
+  const afterStartPanel = document.getElementById("afterStartPanel");
+  setTimeout(() => {
+    loginPanel.classList.add("hidden-panel");
+    afterStartPanel.classList.remove("hidden-panel");
+  }, 600);
+});
+document.getElementById("resetBtn2").onclick = () => location.reload();
+</script>
+
+    <div class="panel">
+
+<br/> <br/> <br/>
+
+      <strong></strong>
+<br/> <br/>
+
+      <strong></strong>
+
+      <div id="currentTownText"> 🏙️ price: </div><br/>
+
+      <div id="turnBanner">Waiting for players...</div><br/>
+
+    <div class="panel">
+
+
+      <strong>Players <br/> <br/> </strong>
+
+<div id="playersTableContainer" class="players-container"></div>
+
+    </div>
+	<br><br><br>
+    <div class="panel">
+      <strong>Log</strong>
+
+<div id="log"></div>
+
+<div id="ytWrapper" style="display:none; text-align:center; margin-top:10px;">
+  <iframe id="ytFrame" width="360" height="215"
+    src=""
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+  </iframe>
+</div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+
+/* =========================================
+   MODULE 1: Game State
+   ========================================= */
+const GameState = {
+  towns: ["Tianlu","Ozon","Daruk","Samurai","Turkhan","Marzban","Seraphis","Tsafir","Nimar","Valon","Zemara","Artava","Azharan","Qashim","Liavera","Oravan","Novar","Shariza","Gate of Dusk"],
+  prices: [1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90,100],
+  players: [],
+  activeIndex: 0,
+  currentTown: 9,
+  started: false,
+  palette: ["#ff4d4d","#34c759","#007aff","#ff9500","#af52de","#5ac8fa"],
+  locked: false // ← عندما true تمنع واجهة اللعب من إظهار أزرار التفاعل
+};
+
+/* =========================================
+   MODULE 2: UI
+   ========================================= */
+const UI = {
+  map: document.getElementById("map"),
+  logBox: document.getElementById("log"),
+  townText: document.getElementById("currentTownText"),
+  greenDie: document.getElementById("greenDie"),
+  redDie: document.getElementById("redDie"),
+  turnBanner: document.getElementById("turnBanner"),
+
+  log(msg) {
+    const div = document.createElement("div");
+    div.textContent = msg;
+    this.logBox.prepend(div);
+
+    // 🔔 Floating notification
+    if (typeof Notifications !== "undefined") {
+      Notifications.show(msg);
+    }
+  },
+
+  updateTown() {
+    const i = GameState.currentTown;
+    const townName = GameState.towns[i];
+    const price = GameState.prices[i];
+
+    this.townText.innerHTML = `
+      🏙️ You are in 
+      <span class="town-name">${townName}</span> City &nbsp;&nbsp;
+      <br>🐪 Camel price 
+      <span class="price-flash">$${price}</span>
+    `;
+
+    document.querySelectorAll(".node").forEach(n => n.classList.remove("town-current"));
+    const node = document.querySelector(`.node[data-index="${i}"]`);
+    if (node) node.classList.add("town-current");
+  },
+
+townCoords: [
+  [54, 95],
+  [47, 90],
+  [44, 85],
+  [52, 80],
+  [60, 75],
+  [58, 70],
+  [52, 65],
+  [48, 60],
+  [53, 55],
+  [40, 48],
+  [50, 45],
+  [47, 40],
+  [44, 35],
+  [47, 30],
+  [50, 25],
+  [47, 20],
+  [44, 15],
+  [47, 10],
+  [50, 5],
+],
+
+  createNode(index, name, price) {
+    const div = document.createElement("div");
+    div.className = "node";
+    div.dataset.index = index;
+    div.innerHTML = `
+      <div class="price-main">$${price}</div>
+      <div class="town-small">${name}</div>
+    `;
+
+    // إحداثيات
+    if (this.townCoords && this.townCoords[index]) {
+      let [x, y] = this.townCoords[index];
+      x = Math.max(0, Math.min(100, x));
+      y = Math.max(0, Math.min(100, y));
+      div.style.left = x + "%";
+      div.style.top = y + "%";
+    }
+
+    div.style.position = "absolute";
+    div.style.zIndex = 10;
+    this.map.appendChild(div);
+  },
+
+refreshTable() {
+  const container = document.querySelector("#playersTableContainer");
+  if (!container) return;
+  container.innerHTML = "";
+
+  GameState.players.forEach((p, i) => {
+    const avg = p.camels ? (p.totalSpent / p.camels).toFixed(1) : "-";
+    const wealth = (p.gold + p.camels * GameState.prices[GameState.currentTown]).toFixed(1);
+
+    const card = document.createElement("div");
+    card.className = "player-card";
+    if (i === GameState.activeIndex) card.classList.add("active");
+
+    card.style.borderColor = p.color;
+    card.style.background = `${p.color}15`;
+    card.style.color = p.color;
+
+    card.innerHTML = `
+      <div class="player-header">
+        <div>
+          <span class="player-dot-inline" style="background:${p.color}"></span>
+          ${p.name} ${p.isAI ? "🤖" : "🧍"}
+        </div>
+        <div class="turn-status">${i === GameState.activeIndex ? "🎯 Your Turn" : ""}</div>
+      </div>
+
+      <hr class="player-divider" />
+
+      <div class="player-info-grid">
+        <div><span class="icon">🐪</span> <strong>${p.camels}</strong> Camels</div>
+        <div><span class="icon">💲</span> <strong>${p.gold}</strong> Gold</div>
+      </div>
+    `;
+
+    // ✅ If it's this player's turn and not AI, show trade buttons — BUT ONLY if game not locked
+    if (i === GameState.activeIndex && !p.isAI && GameState.started && !GameState.locked) {
+      const btnArea = document.createElement("div");
+      btnArea.className = "inline-buttons";
+
+      btnArea.innerHTML = `
+        <div class="number-input">
+          <button class="num-btn minus">–</button>
+          <input type="number" id="inlineCamelCount" value="1" min="1" />
+          <button class="num-btn plus">+</button>
+        </div>
+        <button class="inline-buy">Buy</button>
+        <button class="inline-sell">Sell</button>
+        <button class="inline-wait">Wait</button>
+      `;
+
+      const input = btnArea.querySelector("#inlineCamelCount");
+      btnArea.querySelector(".plus").onclick = () => input.stepUp();
+      btnArea.querySelector(".minus").onclick = () => input.stepDown();
+
+      card.appendChild(btnArea);
+
+      // connect functionality
+      const buy = btnArea.querySelector(".inline-buy");
+      const sell = btnArea.querySelector(".inline-sell");
+      const wait = btnArea.querySelector(".inline-wait");
+      const countInput = btnArea.querySelector("#inlineCamelCount");
+
+      const price = GameState.prices[GameState.currentTown];
+      buy.disabled = (p.gold < price);
+      sell.disabled = (p.camels <= 0);
+
+      buy.onclick = () => {
+        const n = +countInput.value;
+        PlayerActions.buy(p, n);
+        UI.refreshTable();
+        GameFlow.playerActed();
+      };
+      sell.onclick = () => {
+        const n = +countInput.value;
+        PlayerActions.sell(p, n);
+        UI.refreshTable();
+        GameFlow.playerActed();
+      };
+      wait.onclick = () => {
+        UI.log(`${p.name} waits.`);
+        SoundFX.wait(); // 🔊 مؤثر صوتي عند الانتظار
+        GameFlow.playerActed();
+      };
+    } else if (i === GameState.activeIndex && !p.isAI && GameState.locked) {
+      // Show a subtle "busy" hint instead of interactive buttons
+      const hint = document.createElement("div");
+      hint.className = "inline-buttons";
+      hint.style.opacity = 0.8;
+      hint.innerHTML = `<div style="padding:6px 10px; font-size:13px;">⏳ Waiting for caravan...</div>`;
+      card.appendChild(hint);
+    }
+
+    container.appendChild(card);
+  });
+},
+
+highlightActivePlayer() {
+  const active = GameState.players[GameState.activeIndex];
+  this.turnBanner.textContent = `🎯 ${active.name}'s Turn ${active.isAI ? "(AI)" : ""}`;
+
+  GameState.players.forEach((p, i) =>
+    p.dotEl.classList.toggle("active", i === GameState.activeIndex)
+  );
+
+  const cards = document.querySelectorAll(".player-card");
+  cards.forEach((card, i) => {
+    card.classList.toggle("active", i === GameState.activeIndex);
+  });
+}
+}; // ✅ إغلاق كائن UI بالكامل بشكل سليم
+/* =========================================
+   MODULE 3: Player Actions
+   ========================================= */
+const PlayerActions = {
+  buy(p, n) {
+    const price = GameState.prices[GameState.currentTown];
+    if (p.gold < price * n) return UI.log(`${p.name} can't afford that.`);
+    p.gold -= price * n;
+    p.camels += n;
+    p.totalSpent += price * n;
+    UI.log(`${p.name} bought ${n} camels at $${price}`);
+    SoundFX.buy(); // 🔊 مؤثر صوتي عند الشراء
+  },
+
+  sell(p, n) {
+    const price = GameState.prices[GameState.currentTown];
+    if (p.camels < n) return UI.log(`${p.name} has not enough camels.`);
+    const avg = p.camels ? (p.totalSpent / p.camels) : 0;
+    p.camels -= n;
+    p.gold += price * n;
+    p.totalSpent -= avg * n;
+    UI.log(`${p.name} sold ${n} camels at $${price}`);
+    SoundFX.sell(); // 🔊 مؤثر صوتي عند البيع
+  }
+};
+
+/* =========================================
+   MODULE 4: Game Flow — Round-based & synchronized dice
+   - Ensures dice work from the very first roll
+   - Ignores double numbers (1–1, 2–2, etc.)
+   ========================================= */
+const GameFlow = (function () {
+  let actionsTaken = 0;
+  let roundNumber = 1;
+
+  async function rollValidDice() {
+    try {
+      GameState.locked = true;
+      UI.refreshTable();
+
+      const { green, red } = await rollDiceWithPromise();
+      await processDiceResults(green, red);
+    } catch (err) {
+      console.error("rollValidDice error:", err);
+      UI.log("⚠️ Dice error — fallback random rolls used.");
+      await processDiceResults(random1to6(), random1to6());
+    } finally {
+      GameState.locked = false;
+      UI.refreshTable();
+    }
+  }
+
+/* ====================================================
+   FIXED: Roll both dice (3D only) with safe single resolve
+   ==================================================== */
+function rollDiceWithPromise() {
+  return new Promise((resolve) => {
+    let resolved = false;
+
+    // ✅ يمنع تكرار استدعاء النتيجة مرتين
+    const safeResolve = (res) => {
+      if (resolved) return;
+      resolved = true;
+      resolve(res);
+    };
+
+    // عندما تنتهي حركة الزهر الثلاثي الأبعاد
+    Dice3D.onRollDone(({ green, red }) => safeResolve({ green, red }));
+
+    // ابدأ لف الزهر ثلاثي الأبعاد
+    const result = Dice3D.rollBoth({
+  currentTownIndex: GameState.currentTown,
+  townsCount: GameState.towns.length
+});
+
+    // 🔊 شغّل الصوت مرة واحدة فقط عند بداية اللف
+    try { if (typeof SoundFX !== "undefined") SoundFX.diceRoll(); } catch (e) {}
+
+    // ⏱️ في حالة لم يرسل Dice3D النتيجة لأي سبب، استخدم fallback بعد 1.6 ثانية
+    setTimeout(() => safeResolve(result), 1600);
+  });
+}
+
+  function random1to6() {
+    return Math.floor(Math.random() * 6) + 1;
+  }
+
+  async function processDiceResults(g, r) {
+    UI.greenDie.textContent = g;
+    UI.redDie.textContent = r;
+    UI.greenDie.classList.add("roll");
+    UI.redDie.classList.add("roll");
+    setTimeout(() => {
+      UI.greenDie.classList.remove("roll");
+      UI.redDie.classList.remove("roll");
+    }, 600);
+
+    const currentPrice = GameState.prices[GameState.currentTown];
+    let usedGreen = true, usedRed = true;
+
+    if (currentPrice === 1) {
+      usedRed = false;
+      UI.log("ℹ️ Bottom city: ignoring RED die.");
+    } else if (currentPrice === 100) {
+      usedGreen = false;
+      UI.log("ℹ️ Top city: ignoring GREEN die.");
+    }
+
+    let diff = 0;
+    let direction = "none";
+
+    if (usedGreen && !usedRed) {
+      diff = g;
+      direction = "green-only";
+    } else if (!usedGreen && usedRed) {
+      diff = r;
+      direction = "red-only";
+    } else if (usedGreen && usedRed) {
+      if (g > r) { diff = g - r; direction = "up"; }
+      else if (r > g) { diff = r - g; direction = "down"; }
+    }
+
+    const msg = `🎲 Dice: Green ${g} | Red ${r} → ${direction.toUpperCase()} ${diff}`;
+    UI.log(msg);
+    if (typeof Notifications !== "undefined")
+      Notifications.show(msg, { level: "important", duration: 2000, sound: false });
+
+    if (diff <= 0) {
+      UI.log("🐪 Caravan stays in place this round.");
+      UI.updateTown();
+      UI.refreshTable();
+      positionPlayers();
+      UI.highlightActivePlayer();
+      await new Promise(res => setTimeout(res, 300));
+      return;
+    }
+
+    GameState.locked = true;
+    UI.refreshTable();
+
+    const prevIndex = GameState.currentTown;
+    let newIndex = prevIndex;
+
+    if (direction === "green-only" || direction === "up")
+      newIndex = Math.min(GameState.towns.length - 1, prevIndex + diff);
+    else if (direction === "red-only" || direction === "down")
+      newIndex = Math.max(0, prevIndex - diff);
+
+    GameState.currentTown = newIndex;
+    const newTown = GameState.towns[newIndex];
+    const newPrice = GameState.prices[newIndex];
+
+    UI.log(`🐪 Caravan moved to ${newTown} — Price $${newPrice}`);
+    try { if (typeof SoundFX !== "undefined") SoundFX.caravanMove(); } catch(e){}
+
+    UI.updateTown();
+    UI.refreshTable();
+    positionPlayers();
+
+    await new Promise(res => setTimeout(res, 1100));
+
+    UI.highlightActivePlayer();
+    GameState.locked = false;
+    UI.refreshTable();
+  }
+
+  window.processDiceResults = processDiceResults;
+
+  return {
+playerActed() {
+  GameState.locked = true;
+  UI.refreshTable();
+
+  actionsTaken++;
+  UI.log(`✅ Action registered (${actionsTaken}/${GameState.players.length})`);
+
+  if (actionsTaken >= GameState.players.length) {
+    actionsTaken = 0;
+    roundNumber++;
+    UI.log(`🔔 All players acted — rolling dice for round ${roundNumber}`);
+
+    setTimeout(() => {
+      GameState.activeIndex = 0;
+      UI.highlightActivePlayer();
+      UI.refreshTable();
+      GameState.locked = false;
+      rollValidDice();
+    }, 900);
+    return;
+  }
+
+  const soundDelay = 1100;
+  setTimeout(() => {
+    this.advanceActivePlayer();
+    GameState.locked = false;
+    UI.refreshTable();
+  }, soundDelay);
+},
+
+    advanceActivePlayer() {
+      GameState.activeIndex = (GameState.activeIndex + 1) % GameState.players.length;
+      UI.refreshTable();
+      UI.highlightActivePlayer();
+
+      const current = GameState.players[GameState.activeIndex];
+      SoundFX.nextTurn();
+      if (current && current.isAI) aiTakeTurn(current);
+    },
+
+    getRoundNumber() { return roundNumber; },
+    resetRound() { actionsTaken = 0; UI.log("🔁 Round counters reset."); }
+  };
+})();
+
+/* =========================================
+   MODULE 5: Setup and Event Handlers
+   ========================================= */
+function init(){
+	window.addEventListener("click", () => {
+  if (typeof SoundFX !== "undefined" && SoundFX && SoundFX.ctx && SoundFX.ctx.state === "suspended") {
+    SoundFX.ctx.resume().catch(()=>{});
+  }
+}, { once: true });
+  GameState.towns.forEach((t,i)=>UI.createNode(i,t,GameState.prices[i]));
+  UI.updateTown();
+  UI.log("✅ Ready");
+}
+
+function addPlayer(name, isAI = false) {
+  if (!name) return;
+  const color = GameState.palette[GameState.players.length % GameState.palette.length];
+  const p = {
+    name,
+    gold: 10,
+    camels: 0,
+    totalSpent: 0,
+    isAI,
+    color, // ✅ store color for table use
+    dotEl: document.createElement("div")
+  };
+
+  p.dotEl.className = "player-dot";
+  p.dotEl.style.background = color;
+  p.dotEl.style.color = color; // 🆕 added line for glowing in player color
+
+  GameState.players.push(p);
+  UI.map.appendChild(p.dotEl);
+
+  positionPlayers();
+  UI.refreshTable();
+  UI.log(`${name} joined ${isAI ? "(AI)" : ""}`);
+}
+
+function positionPlayers() {
+  const node = document.querySelector(`.node[data-index="${GameState.currentTown}"]`);
+  if (!node) return;
+
+  // Get town center in map coordinates
+  const nodeRect = node.getBoundingClientRect();
+  const mapRect = UI.map.getBoundingClientRect();
+  const centerX = nodeRect.left - mapRect.left + nodeRect.width / 2;
+  const centerY = nodeRect.top - mapRect.top + nodeRect.height / 2;
+
+  // Inner circle radius (smaller than town circle)
+  const total = GameState.players.length;
+  const radius = 10; // small circle within the town
+
+  GameState.players.forEach((p, i) => {
+    let x = centerX;
+    let y = centerY;
+
+    if (total > 1) {
+      const angle = (i / total) * 2 * Math.PI;
+      // Distribute them slightly around the center so they don't overlap
+      x += radius * Math.cos(angle);
+      y += radius * Math.sin(angle);
+    }
+
+    p.dotEl.style.left = `${x}px`;
+    p.dotEl.style.top = `${y}px`;
+  });
+}
+
+document.getElementById("addPlayerBtn").onclick=()=>{
+  addPlayer(document.getElementById("newPlayerName").value,false);
+  document.getElementById("newPlayerName").value="";
+};
+document.getElementById("addAIPlayerBtn").onclick=()=>{
+  addPlayer("Robot"+(GameState.players.length+1),true);
+};
+
+document.getElementById("startBtn").onclick = () => {
+  if (GameState.players.length === 0) return UI.log("Add players first!");
+  GameState.started = true;
+  UI.log("🎮 Game started!");
+  UI.highlightActivePlayer();
+  UI.refreshTable();
+
+  // 🚀 If first player is AI, start its turn automatically
+  const first = GameState.players[GameState.activeIndex];
+  if (first.isAI) aiTakeTurn(first);
+};
+
+document.getElementById("resetBtn").onclick=()=>location.reload();
+
+/* =========================================
+   MODULE 6: AI Trader Pro 🤖💰 (SMART VERSION)
+   - Waits 2s before decision
+   - Groups all robot logs into one elegant notification
+   - Caravan moves only after all players finish
+   ========================================= */
+function aiTakeTurn(p) {
+  // 🧠 Start thinking phase
+  UI.log(`🤖 ${p.name} is analyzing market trends... (thinking...)`);
+  Notifications.aiLog(`🤖 ${p.name} is analyzing market trends...`);
+
+  setTimeout(() => {
+    const price = GameState.prices[GameState.currentTown];
+    const townName = GameState.towns[GameState.currentTown];
+
+    // 🗺️ Log AI’s situational awareness
+    if (typeof lastMovedTown === "undefined") {
+      UI.log(`🤖 ${p.name} starts analysis at ${townName}.`);
+      Notifications.aiLog(`📍 Starting analysis in ${townName}.`);
+    } else if (lastMovedTown === GameState.currentTown) {
+      UI.log(`🤖 ${p.name} notices caravan still in ${townName}.`);
+      Notifications.aiLog(`📍 Caravan still in ${townName}.`);
+    }
+
+    lastMovedTown = GameState.currentTown;
+
+    const gold = p.gold;
+    const camels = p.camels;
+
+    // 🐪 Buying strategy
+    if (price < 10 && gold >= price) {
+      const budgetFactor = (10 - price) / 10;
+      let spendAmount = gold * budgetFactor;
+      if (price === 1) spendAmount = gold * 0.95;
+      const n = Math.max(1, Math.floor(spendAmount / price));
+
+      PlayerActions.buy(p, n);
+      UI.log(`🤖 ${p.name} found a cheap market ($${price}) and bought ${n} camels.`);
+      Notifications.aiLog(`🟢 Cheap market ($${price}) — bought ${n} camels.`);
+    }
+
+    // 💰 Selling strategy
+    else if (price >= 70 && camels > 0) {
+      const avg = camels ? (p.totalSpent / camels) : 0;
+      const profitRatio = price / (avg || 1);
+      let n = 0;
+
+      if (price >= 90) {
+        n = camels;
+        PlayerActions.sell(p, n);
+        UI.log(`🤖 ${p.name} sees premium prices! Selling ALL camels at $${price}.`);
+        Notifications.aiLog(`💎 Premium market ($${price}) — sold ALL ${n} camels.`);
+      } else if (profitRatio >= 1.2) {
+        n = Math.ceil(camels * 0.6);
+        PlayerActions.sell(p, n);
+        UI.log(`🤖 ${p.name} takes profits and sells ${n} camels at $${price}.`);
+        Notifications.aiLog(`💰 Profitable market — sold ${n} camels.`);
+      } else {
+        n = Math.ceil(camels * 0.3);
+        PlayerActions.sell(p, n);
+        UI.log(`🤖 ${p.name} sells ${n} camels cautiously at $${price}.`);
+        Notifications.aiLog(`⚖️ Mild profit — sold ${n} camels cautiously.`);
+      }
+    }
+
+    // 🤔 Waiting strategy
+    else {
+      UI.log(`🤖 ${p.name} decides to WAIT for a better opportunity.`);
+      Notifications.aiLog(`⏳ Waits for better prices.`);
+    }
+
+    // ✅ Finalize AI summary
+    Notifications.aiLog("", true);
+
+    // 🧾 Refresh player info and proceed to next turn
+
+UI.refreshTable();
+GameFlow.playerActed();   // ✅ يسجّل الفعل بدل ما يبدّل الدور فورًا
+  }, 4000);
+}
+
+/* =========================================
+   MODULE 7: Smart Single-Line Notifications (Map)
+   ========================================= */
+const Notifications = (function () {
+  let el = null;
+  let aiBuffer = "";
+  let showing = false;
+  let hideTimer = null;
+
+  // 🧱 Ensure notification element exists
+  function ensure() {
+    if (el) return;
+    el = document.createElement("div");
+    el.id = "smart-notif";
+    el.setAttribute("role", "status");
+    el.setAttribute("aria-live", "polite");
+    el.style.pointerEvents = "none";
+
+    // Attach inside the map (or fallback to body)
+    const map = document.querySelector(".map");
+    if (map) map.appendChild(el);
+    else document.body.appendChild(el);
+
+    // 💅 Shimmer style
+    const s = document.createElement("style");
+    s.textContent = `
+#smart-notif {
+  position: absolute;
+  bottom: 5px;
+  left: 10px;
+  z-index: 1000;
+  pointer-events: none;
+  font-family: system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  text-align: left;
+  opacity: 0;
+  -webkit-font-smoothing: antialiased;
+
+  background: linear-gradient(90deg, #ffffff, #ffd166, #7be57b, #ffffff);
+  background-size: 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hueShift 6s linear infinite;
+
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+}
+
+#smart-notif.visible {
+  opacity: 1;
+  transform: translateY(-6px);
+}
+
+#smart-notif:not(.visible) {
+  transform: translateY(10px);
+}
+
+@keyframes hueShift {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}`;
+    document.head.appendChild(s);
+  }
+
+function playChime() {
+  try {
+    if (typeof SoundFX !== "undefined") {
+      // ❌ لا نستخدم صوت النرد هنا لتجنب التكرار
+      // ✅ استخدم صوت إشعار عام منفصل
+      if (typeof SoundFX.notify === "function") SoundFX.notify();
+      else if (typeof SoundFX.wait === "function") SoundFX.wait();
+    }
+  } catch (e) { /* silent fail */ }
+}
+
+  // 🧠 Smart Replace Notification System
+  function show(msg, opts = {}) {
+    ensure();
+    if (!msg) return;
+
+    const level = opts.level || "info";
+    const duration = opts.duration || (level === "important" ? 4200 : 2500);
+    const sound = opts.sound ?? (level === "important");
+
+    // If already showing → fade out first, then show new
+    if (showing) {
+      el.classList.remove("visible");
+      clearTimeout(hideTimer);
+      setTimeout(() => displayNow(msg, duration, sound), 200);
+    } else {
+      displayNow(msg, duration, sound);
+    }
+  }
+
+  function displayNow(msg, duration, sound) {
+    showing = true;
+    el.textContent = msg;
+    el.classList.add("visible");
+    if (sound) playChime();
+
+    hideTimer = setTimeout(() => {
+      el.classList.remove("visible");
+      setTimeout(() => {
+        el.textContent = "";
+        showing = false;
+      }, 300);
+    }, duration);
+  }
+
+  // 🤖 AI message grouping (summarized)
+  function aiLog(line, done = false) {
+    if (line && line.trim()) {
+      if (aiBuffer) aiBuffer += " · ";
+      aiBuffer += line.trim().replace(/\s+/g, " ");
+      if (aiBuffer.length > 160) aiBuffer = aiBuffer.slice(0, 157) + "…";
+    }
+    if (done && aiBuffer) {
+      show(aiBuffer, { level: "good", duration: 5200 });
+      aiBuffer = "";
+    }
+  }
+
+  return { show, aiLog };
+})();
+
+/* =========================================
+   MODULE 8: Dynamic Map + Sidebar Resizer & Audio Lifecycle
+   - Replaces the previous resizer module entirely
+   - Responsibilities:
+     * Responsive scaling for dice (use map width as base)
+     * Responsive adjustments for #musicCtl and .sidebar
+     * Positioning fix for player dots (percentage → px recalculation)
+     * Pause/stop audio on page hide/unload
+   ========================================= */
+(function () {
+  const container = document.querySelector(".container");
+  const mapEl = document.querySelector(".map");
+  const musicCtl = document.getElementById("musicCtl");
+  const bgMusic = document.getElementById("bgMusic");
+  let resizeTimer = null;
+
+  if (!mapEl) return;
+
+  // --- PARAMETERS (tweakable)
+  const DICE_MAP_RATIO = 0.08; // dice max width = mapWidth * DICE_MAP_RATIO (8%)
+  const DICE_MIN_PX = 28;
+  const DICE_MAX_PX = 120;
+  const SIDEBAR_MOBILE_BREAK = 720; // px -> below this, collapse sidebar
+
+  // Ensure player dots and nodes use map-relative coordinates on resize/initial
+  function recalcPlayerPositions() {
+    const node = document.querySelector(`.node[data-index="${GameState.currentTown}"]`);
+    if (!node) return;
+    const nodeRect = node.getBoundingClientRect();
+    const mapRect = mapEl.getBoundingClientRect();
+    const centerX = nodeRect.left - mapRect.left + nodeRect.width / 2;
+    const centerY = nodeRect.top - mapRect.top + nodeRect.height / 2;
+
+    const total = GameState.players.length;
+    const townRadius = Math.max(nodeRect.width, nodeRect.height) / 2;
+    const radius = Math.max(8, Math.round(townRadius * 0.8)); // scale radius with town size
+
+    GameState.players.forEach((p, i) => {
+      // distribute around circle but keep within map
+      let x = centerX;
+      let y = centerY;
+      if (total > 1) {
+        const angle = (i / total) * 2 * Math.PI;
+        x += radius * Math.cos(angle);
+        y += radius * Math.sin(angle);
+      }
+      // set in px but keep translate(-50%,-50%) in CSS so left/top point to center
+      p.dotEl.style.left = `${x}px`;
+      p.dotEl.style.top = `${y}px`;
+    });
+  }
+
+  // Scale 3D dice wrappers that Dice3D created
+  function scaleDiceToMap() {
+    const containerDice = document.getElementById("dice3d-container");
+    if (!containerDice) return;
+
+    const mapRect = mapEl.getBoundingClientRect();
+    const mapWidth = Math.max(180, mapRect.width); // safe fallback
+
+    // compute desired dice size in px bounded by min/max
+    const desired = Math.round(mapWidth * DICE_MAP_RATIO);
+    const size = Math.max(DICE_MIN_PX, Math.min(DICE_MAX_PX, desired));
+
+    // apply to each wrapper (created by dice3d.createDie)
+    const wrappers = containerDice.querySelectorAll(".dice3d-wrapper");
+    wrappers.forEach(w => {
+      w.style.width = `${size}px`;
+      w.style.height = `${size}px`;
+      // update perspective for nicer 3d on small dice
+      w.style.perspective = `${Math.max(400, size * 8)}px`;
+      // update child faces' borderRadius if present
+      const faces = w.querySelectorAll(".dice3d-face");
+      faces.forEach(f => {
+        f.style.borderRadius = Math.max(6, Math.round(size * 0.12)) + "px";
+      });
+      // if wrapper keeps a cached _diceSize, update it
+      if (w._diceSize) w._diceSize = size;
+    });
+
+    // also scale the simple .die (numeric readouts) to not overlap
+    const numericDice = document.querySelectorAll(".die");
+    numericDice.forEach((d, idx) => {
+      d.style.width = `${Math.round(size * 0.9)}px`;
+      d.style.height = `${Math.round(size * 0.9)}px`;
+      d.style.lineHeight = `${Math.round(size * 0.9)}px`;
+      d.style.fontSize = `${Math.max(14, Math.round(size * 0.45))}px`;
+      // ensure bottom placement stays reasonable on small screens
+      const bottomOffset = Math.min(16, Math.round(size * 0.12));
+      d.style.bottom = `${bottomOffset}px`;
+    });
+  }
+
+function adjustMusicCtl() {
+  if (!musicCtl) return;
+  // الآن العنصر داخل الـ sidebar، لا يحتاج إلى قياسات mapRect
+  const sidebar = document.querySelector(".sidebar");
+  if (!sidebar) return;
+
+  const sidebarWidth = sidebar.getBoundingClientRect().width;
+  if (sidebarWidth < 300) {
+    musicCtl.classList.add("compact-music");
+  } else {
+    musicCtl.classList.remove("compact-music");
+  }
+}
+
+  // Responsive sidebar: collapse/hide on small screens (so map remains primary)
+  function adjustSidebar() {
+    const sidebar = document.querySelector(".sidebar");
+    if (!sidebar) return;
+    const mapRect = mapEl.getBoundingClientRect();
+    if (mapRect.width < SIDEBAR_MOBILE_BREAK) {
+      // collapse: reduce width and add small-floating
+      sidebar.style.width = "220px";
+      sidebar.style.opacity = "0.95";
+      sidebar.style.position = "absolute";
+      sidebar.style.right = "10px";
+      sidebar.style.top = "10px";
+      sidebar.style.maxHeight = "48%";
+      sidebar.style.overflow = "auto";
+      sidebar.classList.add("sidebar-collapsed");
+    } else {
+      // restore defaults – keep CSS-driven if possible
+      sidebar.style.width = "";
+      sidebar.style.position = "";
+      sidebar.style.right = "";
+      sidebar.style.top = "";
+      sidebar.style.maxHeight = "";
+      sidebar.classList.remove("sidebar-collapsed");
+    }
+  }
+
+  // Pause/suspend background audio & sound context on visibility change or unload
+  function ensureAudioLifecycle() {
+    // when page hidden -> pause audio & suspend AudioContext
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        if (bgMusic && !bgMusic.paused) {
+          try { bgMusic.pause(); } catch (e) {}
+        }
+        if (SoundFX && SoundFX.ctx && SoundFX.ctx.state === "running") {
+          try { SoundFX.ctx.suspend().catch(()=>{}); } catch(e) {}
+        }
+      } else {
+        // when user returns, keep audio paused (to avoid autoplay); optionally show a small hint
+        // do not auto-play without explicit gesture
+      }
+    });
+
+    // on unload: stop background audio immediately
+    window.addEventListener("pagehide", () => { // pagehide works well on mobile
+      try {
+        if (bgMusic) {
+          bgMusic.pause();
+          bgMusic.currentTime = 0;
+        }
+        if (SoundFX && SoundFX.ctx) {
+          // close or suspend if available
+          if (SoundFX.ctx.close) SoundFX.ctx.close().catch(()=>{});
+          else if (SoundFX.ctx.suspend) SoundFX.ctx.suspend().catch(()=>{});
+        }
+      } catch (e) { /* silent */ }
+    });
+
+    // also handle beforeunload for older browsers
+    window.addEventListener("beforeunload", () => {
+      try {
+        if (bgMusic) {
+          bgMusic.pause();
+          bgMusic.currentTime = 0;
+        }
+      } catch (e) {}
+    });
+  }
+
+  // Single adjustment entrypoint (debounced)
+  function adjustAll() {
+    // guard: map must have layout
+    if (!mapEl) return;
+    scaleDiceToMap();
+    recalcPlayerPositions();
+    adjustMusicCtl();
+    adjustSidebar();
+  }
+
+  // Debounced resize to avoid thrashing
+  function onResize() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      adjustAll();
+    }, 120);
+  }
+
+  // Initial run and binding
+  window.addEventListener("resize", onResize);
+  // Also react to orientationchange on mobile
+  window.addEventListener("orientationchange", onResize);
+
+  // Run initial adjustments after small delay to allow DOM layout
+  setTimeout(() => {
+    adjustAll();
+    ensureAudioLifecycle();
+  }, 120);
+
+  // Expose a manual hook for debugging/tests
+  window.UI_adjustModule8 = adjustAll;
+  window.UI_recalcPlayers = recalcPlayerPositions;
+})();
+
+
+
+init();
+</script>
+<script src="musicControl.js"></script>
+<script src="soundFX.js"></script>
+</body>
+</html>
