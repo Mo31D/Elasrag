@@ -183,8 +183,8 @@ body {
   backdrop-filter: blur(18px) saturate(180%);
   border-radius: 12px;
   padding: 12px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* 🪶 Transparent game log area */
@@ -958,10 +958,12 @@ body.night .sidebar,
 body.night .after-start-floating,
 body.night #musicCtl,
 body.night .floating-sidebar {
-  background: linear-gradient(180deg, rgba(20,18,16,0.28), rgba(10,8,6,0.32));
-  border: 1px solid rgba(255,206,75,0.08);
+  border: none !important;
+  box-shadow: none !important;
+  background: linear-gradient(180deg, rgba(20,18,16,0.28), rgba(10,8,6,0.32)) !important;
+  
   backdrop-filter: blur(14px) saturate(140%);
-  box-shadow: 0 6px 26px rgba(0,0,0,0.6), 0 1px 0 rgba(255,220,150,0.02) inset;
+  
   color: #e6d9b7;
 }
 
@@ -1018,3 +1020,43 @@ body.night .player-card:hover {
   box-shadow: 0 10px 36px rgba(0,0,0,0.65), 0 0 30px 8px rgba(255,204,0,0.06);
 }
 
+/* 📱 تحسين الخريطة والمدن للشاشات الصغيرة */
+@media (max-width: 768px) {
+  :root {
+    --map-width: 100%;
+    --map-height: auto;
+  }
+
+  .map {
+    max-width: 100%;
+    border-width: 6px;
+  }
+
+  .node {
+    width: 3.5vw;
+    height: 3.5vw;
+    min-width: 14px;
+    min-height: 14px;
+    max-width: 22px;
+    max-height: 22px;
+  }
+
+  .node .price-main {
+    font-size: 10px;
+  }
+
+  .node .town-small {
+    font-size: 8px;
+    bottom: -14px;
+  }
+
+  .player-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .sidebar {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
