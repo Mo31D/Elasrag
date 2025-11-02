@@ -1,0 +1,815 @@
+<!-- Part 1: head, global CSS, background glow layers, and nav -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ali Sabry Khallaf | Strategic Developer</title>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+html {
+  scroll-behavior: smooth;
+}
+</style>
+<style>
+.profile-image-container {
+  transform: translateY(-8px);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  height: 240px;              /* ← تم التصغير من 360 إلى 240 */
+  width: 85%;
+  margin: 0 auto;
+  background: var(--card-bg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* نبض مزدوج مثل القلب الحقيقي */
+@keyframes doublePulse {
+  0%, 65%, 100% {
+    transform: scale(1);
+    filter: brightness(1.03) contrast(1.05);
+  }
+  10% {
+    transform: scale(1.15);
+    filter: brightness(1.15) contrast(1.15);
+  }
+  25% {
+    transform: scale(1.05);
+    filter: brightness(1.1) contrast(1.1);
+  }
+  45% {
+    transform: scale(1.12);
+    filter: brightness(1.15) contrast(1.15);
+  }
+  55% {
+    transform: scale(1);
+    filter: brightness(1.03) contrast(1.05);
+  }
+}
+
+/* تطبيق النبض على الصورة */
+.profile-image {
+  width: auto;
+  height: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+  filter: brightness(1.03) contrast(1.05);
+  transform-origin: center;
+  animation: doublePulse 1.25s ease-in-out infinite; /* ← نفس زمن القلب */
+}
+
+.profile-image:hover {
+  transform: scale(1.05);
+}
+/* ===== Navigation Menu ===== */
+.elasrag-menu {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 36px;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  animation: fadeInNav 1s ease forwards;
+}
+
+@keyframes fadeInNav {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.elasrag-menu .logo {
+  font-weight: 800;
+  font-size: 1.2rem;
+  background: linear-gradient(90deg, #ffd97b, #00f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.5px;
+}
+
+.elasrag-menu .nav-links {
+  list-style: none;
+  display: flex;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.elasrag-menu .nav-links a {
+  text-decoration: none;
+  color: #eaeaea;
+  font-weight: 600;
+  font-size: 0.95rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.elasrag-menu .nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #ffd97b, #00f0ff);
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.elasrag-menu .nav-links a:hover {
+  color: #00f0ff;
+}
+
+.elasrag-menu .nav-links a:hover::after {
+  width: 100%;
+}
+
+/* ===== Responsive Menu for Mobile ===== */
+@media (max-width: 768px) {
+  .elasrag-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 12px 18px;
+  }
+  .elasrag-menu .nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px 18px;
+    margin-top: 8px;
+  }
+}
+/* ===== Global & reset ===== */
+:root{
+  --bg:#07080a;
+  --muted:#cfcfcf;
+  --card-bg: rgba(255,255,255,0.04);
+  --card-border: rgba(255,255,255,0.08);
+  --accent1: #ffd97b;
+  --accent2: #00f0ff;
+  --glow-gold: rgba(255,230,150,0.12);
+  --glow-cyan: rgba(0,255,255,0.10);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;padding:0;background:var(--bg);font-family:'Inter',sans-serif;color:#fff;overflow-x:hidden}
+a{color:inherit}
+
+/* ===== Background glow layers (copied/adapted from cv-hub) ===== */
+.bg {
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+}
+
+/* large glow layers */
+.glow-layer {
+  position:absolute;
+  inset:-25%;
+  width:150%;
+  height:150%;
+  filter:blur(160px);
+  mix-blend-mode:screen;
+  opacity:0.85;
+}
+
+/* Base golden + cyan blend (rotate) */
+.glow1 {
+  background:conic-gradient(
+    from 120deg,
+    rgba(255,235,150,0.12),
+    rgba(0,255,255,0.10),
+    rgba(255,235,150,0.12)
+  );
+  animation:rotateSlow 40s linear infinite;
+}
+
+/* Breathing light layer (subtle pulse) */
+.glow2 {
+  background:radial-gradient(circle at 40% 50%, rgba(255,230,180,0.15), rgba(0,0,0,0));
+  animation:breathing 8s ease-in-out infinite;
+}
+
+/* Heartbeat pulse layer (red tint) */
+.glow3 {
+  background: radial-gradient(
+    circle at 30% 70%,
+    rgba(255, 60, 60, 0.25) 0%,
+    rgba(255, 0, 0, 0.1) 20%,
+    transparent 30%
+  );
+  animation: heartbeat 1.2s ease-in-out infinite;
+  mix-blend-mode: screen;
+  opacity: 1;
+  filter: blur(20px);
+}
+
+@keyframes heartbeat {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  10%  { transform: scale(1.2); opacity: 1; }
+  20%  { transform: scale(1.05); opacity: 0.8; }
+  30%  { transform: scale(1.25); opacity: 1; }
+  50%  { transform: scale(1.1); opacity: 0.7; }
+  70%  { transform: scale(1.2); opacity: 0.9; }
+  100% { transform: scale(1);   opacity: 0.6; }
+}
+
+@keyframes rotateSlow {
+  0% { transform:rotate(0deg) scale(1); }
+  100% { transform:rotate(360deg) scale(1); }
+}
+@keyframes breathing {
+  0%,100% { opacity:0.45; transform:scale(1); }
+  50% { opacity:0.9; transform:scale(1.08); }
+}
+
+
+/* ===== NAV ===== */
+nav {
+  position:fixed;
+  top:0;left:0;right:0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 36px;
+  z-index:12;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.logo{
+  font-weight:800;
+  font-size:1.05rem;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.nav-links{display:flex;gap:18px;align-items:center;margin:0;padding:0;list-style:none}
+.nav-links a{color:#eaeaea;text-decoration:none;font-weight:600;transition:color .2s}
+.nav-links a:hover{color:var(--accent2)}
+
+/* ===== Reusable card / interactive style (all cards will use .interactive-card) ===== */
+.interactive-card {
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 0 25px rgba(255,230,150,0.08);
+  backdrop-filter:blur(8px);
+  transition:transform .28s ease, box-shadow .28s ease;
+  will-change:transform;
+}
+.interactive-card.active,
+.interactive-card:hover {
+  transform:translateY(-8px);
+  box-shadow:0 0 45px rgba(0,255,255,0.28);
+}
+
+/* small utility */
+.container{max-width:1100px;margin:0 auto;padding:20px}
+.h-section{position:relative;z-index:6;padding:80px 18px}
+.h-title{font-size:2rem;font-weight:800;margin-bottom:18px;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+/* Responsive helper */
+@media (max-width:900px){ .container{padding:12px} .nav-links{display:none} }
+</style>
+</head>
+<body>
+  <!-- background layers -->
+  <div class="bg" aria-hidden="true">
+    <div class="glow-layer glow1"></div>
+    <div class="glow-layer glow2"></div>
+    <div class="glow-layer glow3"></div>
+  </div>
+<!-- ==== MAIN MENU ==== -->
+<nav class="elasrag-menu">
+  <div class="logo">Ali Sabry Khallaf</div>
+  <ul class="nav-links">
+    <li><a href="#hero">About</a></li>
+    <li><a href="#about">Approach</a></li>
+    <li><a href="#expertise">Expertise</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#certifications">Certifications</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+  </ul>
+</nav>
+  <!-- nav -->
+  <nav>
+    <div class="logo">Ali Sabry Khallaf</div>
+    <ul class="nav-links">
+      <li><a href="#hero">About</a></li>
+      <li><a href="#expertise">Expertise</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#education">Education</a></li>
+      <li><a href="#certifications">Certifications</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+    </ul>
+  </nav>
+
+<!-- END Part 1 -->
+
+<!-- Part 2: HERO with raised photo and 1 card to right + 2 cards below + 3 info-cards -->
+<section id="hero" class="h-section" style="padding-top:120px;">
+  <div class="container" style="display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start;">
+    <!-- Left column: main personal heading + info-cards -->
+    <div>
+      <h1 style="font-size:2.6rem;margin:4px 0 12px;font-weight:800;line-height:1.02;background:linear-gradient(90deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Ali Sabry Khallaf</h1>
+      <h3 style="color:#bfc0c2;margin:0 0 18px;font-weight:600;">Strategic Developer with more than 17 years of experience in Human Resources</h3>
+
+      <!-- Info cards (three) - keep full original text as provided -->
+      <div class="info-cards" style="display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px;">
+        <div class="interactive-card info-card">
+          <p style="margin:0;color:#e6e6e6;line-height:1.7;">
+Strategic Developer with more than 17 years of experience in Human Resources, I specialize in Strategic Planning, Organizational Development ( OD ) HR Analytics, HR Strategic Business partner, and HR Business Excellence.
+          </p>
+        </div>
+
+        <div class="interactive-card info-card">
+          <p style="margin:0;color:#e6e6e6;line-height:1.7;">
+I hold MBA with a focus on Leadership and am in the final stages of earning a Ph.D. in Business Administration. This blend of academic rigor and extensive professional experience equips me with the strategic vision and practical expertise needed to guide teams and organizations toward sustained success.
+          </p>
+        </div>
+
+        <div class="interactive-card info-card">
+          <p style="margin:0;color:#e6e6e6;line-height:1.7;">
+My expertise spans the balanced scorecard, EFQM, Training of Trainers (TOT), organizational culture, PMP, leadership development, and KPI's design, Process Optimization enabling me to implement comprehensive solutions tailored to organizational needs. Known for my collaborative, data-driven, and results-oriented approach, I excel at fostering a culture of excellence, integrity, and client satisfaction.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right column: photo raised + right-top card + two cards under photo -->
+    <div style="display:flex;flex-direction:column;gap:18px;align-items:stretch;">
+      <!-- Photo container (raised) -->
+      <div style="position:relative;">
+        <div class="profile-image-container">
+  <img
+    src="Ali.png"
+    alt="Ali Sabry Khallaf — Portrait"
+    class="profile-image"
+    loading="lazy"
+  />
+</div>
+      </div>
+ 
+      <!-- layout for card to the right of photo (visually aligned top-right) -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <!-- Card aligned to right-top (first column empty to mimic right-of-photo) -->
+        <div style="grid-column:1 / span 2;">
+          <!-- This is the single card that appears to the right when on larger screens.
+               To keep layout consistent across sizes, we place it here. -->
+          <div class="interactive-card" style="display:flex;flex-direction:column;gap:8px;">
+            <strong style="font-size:1.05rem">Primary Summary</strong>
+            <div style="color:#ddd;line-height:1.6;">
+              Strategic Developer with more than 17 years of experience in Human Resources, I specialize in Strategic Planning, Organizational Development ( OD ) HR Analytics, HR Strategic Business partner, and HR Business Excellence.
+            </div>
+          </div>
+        </div>
+
+        <!-- Two cards under the photo (will show side-by-side on wide screens or stacked on mobile) -->
+        <div class="interactive-card" style="min-height:80px;display:flex;flex-direction:column;justify-content:center;">
+          <strong>Quick Facts</strong>
+          <div style="color:#ddd;font-size:0.95rem;margin-top:6px;line-height:1.4;">
+            MBA (Leadership) • Ph.D. (in progress) • 17+ years in HR Strategy & OD
+          </div>
+        </div>
+
+        <div class="interactive-card" style="min-height:80px;display:flex;flex-direction:column;justify-content:center;">
+          <strong>Core Focus Areas</strong>
+          <div style="color:#ddd;font-size:0.95rem;margin-top:6px;line-height:1.4;">
+            Balanced Scorecard • EFQM • HR Analytics • KPI Design • Leadership Development
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* specific hero-area tweaks */
+.info-cards .info-card { padding:18px 20px }
+@media (max-width:900px){
+  .container{display:block}
+  #hero .container{padding:6px}
+  /* stack columns on mobile */
+  #hero .container{display:block}
+  #hero .container > div{width:100%}
+  /* arrange cards under photo vertically on mobile */
+  #hero img{height:260px}
+}
+</style>
+
+ <!-- Part 3: Approach, Expertise, Values -->
+<section id="about" class="h-section" style="padding-top:40px;">
+  <div class="container">
+    <h2 class="h-title">Approach</h2>
+    <div class="interactive-card" style="padding:20px;margin-bottom:18px;">
+      <p style="margin:0;color:#e6e6e6;line-height:1.75;">
+Believe in the HR Strategic Development will maximize the value of the organization, managers, and employees, by generating an strategic concepts, operational practices, and transformation of human resources into a strategic partner, integrates HR practices with business strategies to create sustainable growth, optimize talent potential.
+      </p>
+    </div>
+
+    <h2 class="h-title" id="expertise" style="margin-top:28px;">Expertise</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:stretch;">
+      <!-- Use interactive-card + extra class for width -->
+      <div class="interactive-card exp-card" style="flex:1 1 280px;">
+        <strong>Business Excellence</strong>
+      </div>
+      <div class="interactive-card exp-card" style="flex:1 1 280px;">
+        <strong>Strategic Planning</strong>
+      </div>
+      <div class="interactive-card exp-card" style="flex:1 1 280px;">
+        <strong>Organizational Development</strong>
+      </div>
+      <div class="interactive-card exp-card" style="flex:1 1 280px;">
+        <strong>HR Analytics</strong>
+      </div>
+      <div class="interactive-card exp-card" style="flex:1 1 280px;">
+        <strong>Balanced Scorecard</strong>
+      </div>
+      <div class="interactive-card exp-card" style="flex:1 1 280px;">
+        <strong>EFQM</strong>
+      </div>
+      <div class="interactive-card exp-card" style="flex:1 1 280px;">
+        <strong>Organizational Culture</strong>
+      </div>
+      <div class="interactive-card exp-card" style="flex:1 1 280px;">
+        <strong>Leadership Development</strong>
+      </div>
+      <div class="interactive-card exp-card" style="flex:1 1 280px;">
+        <strong>HR KPIS</strong>
+      </div>
+    </div>
+
+    <h2 class="h-title" style="margin-top:28px;">Values</h2>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;">
+      <div class="interactive-card val-item" style="padding:10px 20px;border-radius:36px;">Integrity</div>
+      <div class="interactive-card val-item" style="padding:10px 20px;border-radius:36px;">Excellence</div>
+      <div class="interactive-card val-item" style="padding:10px 20px;border-radius:36px;">Data-Driven</div>
+      <div class="interactive-card val-item" style="padding:10px 20px;border-radius:36px;">Results-Oriented</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Part 4: Experience timeline -->
+<section id="experience" class="h-section" style="padding-top:20px;">
+  <div class="container">
+    <h2 class="h-title">Professional Experience</h2>
+
+    <div style="margin-top:30px;">
+      <div class="timeline" style="position:relative;padding-left:24px;border-left:2px solid rgba(255,255,255,0.08);">
+        <!-- Item 1 -->
+        <div class="timeline-item" style="margin-bottom:34px;position:relative;">
+          <div class="timeline-date" style="font-weight:700;color:var(--accent2);margin-bottom:8px;">October 2024 : Now</div>
+          <div class="interactive-card" style="padding:18px;">
+            <h3 style="margin:0 0 8px;">HR Business Excellence Head</h3>
+            <p style="margin:0;color:#ddd;line-height:1.65;">
+Involve aligning HR practices with business objectives, driving process improvement, and ensuring high-quality HR services. Key responsibilities include strategic HR planning, change management, data-driven decision-making, and optimizing HR processes for efficiency. Additionally, this role focuses on enhancing the employee experience, managing stakeholder relationships, implementing training programs, and staying up-to-date with HR innovations and best practices. Ensuring compliance with legal requirements and mitigating risks are also critical aspects of the role. The goal is to improve HR operations and contribute to overall
+            </p>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="timeline-item" style="margin-bottom:34px;position:relative;">
+          <div class="timeline-date" style="font-weight:700;color:var(--accent2);margin-bottom:8px;">January 2021 : October 2024</div>
+          <div class="interactive-card" style="padding:18px;">
+            <h3 style="margin:0 0 8px;">HR Analytics Manager</h3>
+            <p style="margin:0;color:#ddd;line-height:1.65;">
+leveraging data analysis and reporting to support HR strategies and decision-making. Key responsibilities include collecting and analyzing HR data related to performance, recruitment, retention, and compensation, and developing dashboards and reports to provide insights into HR metrics. The role involves identifying trends, developing HR metrics and KPIs, and refining analytics models. Collaboration with HR leadership and other stakeholders is essential to deliver tailored analytics solutions and communicate insights effectively. Additionally, the role includes using predictive analytics for workforce planning, managing HR analytics tools, ensuring data compliance, and training HR staff on analytics use. Project management is also crucial to ensure the successful implementation of HR analytics projects.
+            </p>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="timeline-item" style="margin-bottom:34px;position:relative;">
+          <div class="timeline-date" style="font-weight:700;color:var(--accent2);margin-bottom:8px;">January 2019 : December 2020</div>
+          <div class="interactive-card" style="padding:18px;">
+            <h3 style="margin:0 0 8px;">HR Strategic Business Partner</h3>
+            <p style="margin:0;color:#ddd;line-height:1.65;">
+supporting business objectives by managing talent, enhancing organizational effectiveness, and ensuring compliance. Key responsibilities include partnering with leadership on workforce and succession planning, developing recruitment and retention strategies, addressing employee relations, and driving organizational change. The role also focuses on performance management, HR analytics, compliance, learning and development, and ensuring competitive compensation programs. Ultimately, the goal is to align HR practices with business needs to foster a productive, compliant, and positive workplace.
+            </p>
+          </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="timeline-item" style="margin-bottom:34px;position:relative;">
+          <div class="timeline-date" style="font-weight:700;color:var(--accent2);margin-bottom:8px;">January 2011 : December 2018</div>
+          <div class="interactive-card" style="padding:18px;">
+            <h3 style="margin:0 0 8px;">Organizational Development Manager</h3>
+            <p style="margin:0;color:#ddd;line-height:1.65;">
+Optimizing organizational effectiveness through assessment, design, and development. Key responsibilities include conducting assessments to identify areas for improvement, leading change management initiatives, and designing organizational structures that align with strategic goals. The role also involves fostering a positive organizational culture, developing leadership capabilities, and collaborating on talent development initiatives. Additionally, it includes managing OD projects from inception to completion, ensuring they meet objectives, timelines, and budgets. The overall goal is to enhance organizational performance, support business goals, and foster a positive and efficient work environment.
+            </p>
+          </div>
+        </div>
+
+        <!-- Item 5 -->
+        <div class="timeline-item" style="margin-bottom:34px;position:relative;">
+          <div class="timeline-date" style="font-weight:700;color:var(--accent2);margin-bottom:8px;">January 2008 : December 2010</div>
+          <div class="interactive-card" style="padding:18px;">
+            <h3 style="margin:0 0 8px;">HR Generalist</h3>
+            <p style="margin:0;color:#ddd;line-height:1.65;">
+managing critical HR functions to ensure smooth organizational operations. Key responsibilities include overseeing recruitment and onboarding processes, addressing employee relations issues, and supporting performance management. The role also involves administering compensation and benefits, ensuring compliance with labor laws, and implementing HR policies. Additionally, it focuses on identifying training needs, coordinating employee development programs, and handling HR administration tasks such as contracts and disciplinary records. Employee engagement is a priority, with initiatives aimed at improving morale and satisfaction. Finally, the role includes managing exit processes, conducting exit interviews, and analyzing data to enhance employee retention. The overall goal is to foster a positive work environment, ensure legal compliance, and support organizational success.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+/* timeline bullet */
+.timeline-item::before{
+  content:"";
+  position:absolute;
+  left:-34px;
+  top:16px;
+  width:14px;height:14px;border-radius:50%;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  box-shadow:0 0 12px rgba(255,230,150,0.5);
+}
+@media (max-width:700px){
+  .timeline-item::before{left:-18px}
+}
+</style>
+
+
+<!-- Part 5: Education & Licenses -->
+<section id="education" class="h-section" style="padding-top:20px;">
+  <div class="container">
+    <h2 class="h-title">Education</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px;">
+      <div class="interactive-card edu-card">
+        <h3>Doctor of Philosophy - PhD, Human Resources Management/Personnel Administration</h3>
+        <p style="margin:8px 0 0;color:#ddd;line-height:1.6;">
+Focused on the application of artificial intelligence in human resources, exploring innovative solutions for talent acquisition, employee engagement, and performance management.
+        </p>
+      </div>
+
+      <div class="interactive-card edu-card">
+        <h3>Master of Business Administration - MBA, Human Resources Management and Services</h3>
+        <p style="margin:8px 0 0;color:#ddd;line-height:1.6;">
+Developed advanced skills in leadership, strategic HR planning, organizational development, and change management, enhancing my ability to guide and influence teams toward achieving organizational goals.
+        </p>
+      </div>
+
+      <div class="interactive-card edu-card">
+        <h3>Diploma, Human Resources</h3>
+        <p style="margin:8px 0 0;color:#ddd;line-height:1.6;">
+Gained comprehensive knowledge in human resources development, including talent acquisition, training and development, compensation and benefits, and employee relations.
+        </p>
+      </div>
+
+      <div class="interactive-card edu-card">
+        <h3>Master of Business Administration - MBA, Human Resources Management and Services</h3>
+        <p style="margin:8px 0 0;color:#ddd;line-height:1.6;">
+Developed advanced skills in leadership, strategic HR planning, organizational development, and change management, enhancing my ability to guide and influence teams toward achieving organizational goals.
+        </p>
+      </div>
+
+      <div class="interactive-card edu-card">
+        <h3>Licentiate Degree</h3>
+        <p style="margin:8px 0 0;color:#ddd;line-height:1.6;">
+Specialized in legal frameworks relevant to employment law, strengthening compliance expertise.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="certifications" class="h-section" style="padding-top:18px;background:rgba(255,255,255,0.02);">
+  <div class="container">
+    <h2 class="h-title">Licenses & Certifications</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;">
+      <ul class="interactive-card cert-list" style="list-style:none;padding:18px;line-height:1.8;">
+        <li>Corporate Culture Change — Governor's</li>
+        <li>Employee Relations and Risk Management — ELARABY Group</li>
+        <li>How to Become a Freelancer — Creativa Hub</li>
+        <li>Generative AI in HR — LinkedIn</li>
+        <li>People Analytics — LinkedIn</li>
+        <li>Performance Management — KNOWLEDGE Consulting and Talent Development</li>
+        <li>Data Analysis Using Excel & Power BI — Institute of Management Professionals</li>
+        <li>Setting Organization Performance Metrics and KPIs — LOGIC Training & HR Development</li>
+        <li>Problem Solving & Decision Making — Mindset Institute</li>
+        <li>HR Analytics — Highly Professional Advisors</li>
+      </ul>
+
+      <ul class="interactive-card cert-list" style="list-style:none;padding:18px;line-height:1.8;">
+        <li>Leadership to Managers — Dale Carnegie Egypt</li>
+        <li>Certified Business Analysis Professional (CBAP) — Mindsets Strategy & Decision Advisors</li>
+        <li>Organizational Development Professional — JUST HR - Middle East</li>
+        <li>Competency-Based Interviewing Skills — AEGYPTUS Institute of Management</li>
+        <li>Building Foundations of Organizational Culture — Arabian Management House</li>
+        <li>Competency Modeling — JOBMASTER Human Capital Solutions</li>
+        <li>Train of Trainers — Totality</li>
+        <li>Human Resources European Excellence Model — EFQM</li>
+        <li>Organizing, Preparing, and Designing Organization Structure — Leadership and Management Development Institute</li>
+        <li>Human Resources Management — Research And Commercial Study Center</li>
+        <li>Human Performance Improvement — MHB Group</li>
+        <li>Salary Structure — ELARABY Group</li>
+        <li>Strategic Thinking — ELARABY Group</li>
+        <li>Self-Development — ELARABY Group</li>
+        <li>Risk Management — ELARABY Group</li>
+        <li>Trust Building — ELARABY Group</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Part 6: Membership & Projects, Gallery, Footer and scripts -->
+<section id="projects" class="h-section" style="padding-top:20px;">
+  <div class="container">
+    <h2 class="h-title">Membership & Projects</h2>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;margin-top:18px;">
+      <div class="interactive-card proj-card">
+        <h3 style="margin:0 0 8px;">MENA SAP HR Leadership club</h3>
+        <p style="margin:0;color:#ddd;line-height:1.55;">
+MENA SAP HR Leadership club
+        </p>
+      </div>
+
+      <div class="interactive-card proj-card">
+        <h3 style="margin:0 0 8px;">SPA the society for people analytics</h3>
+        <p style="margin:0;color:#ddd;line-height:1.55;">
+SPA the society for people analytics 
+Build a vendor-agnostic community that truly serves the needs of people analytics professionals
+        </p>
+      </div>
+
+      <div class="interactive-card proj-card">
+        <h3 style="margin:0 0 8px;">Fresh Services App Implementation</h3>
+        <p style="margin:0;color:#ddd;line-height:1.55;">
+Fresh Services App Implementation 
+Give your HR, operations, and business teams the ability to deliver exceptional services—without the complexity. Maximize operational efficiency.
+        </p>
+      </div>
+
+      <div class="interactive-card proj-card">
+        <h3 style="margin:0 0 8px;">Competency Modeling</h3>
+        <p style="margin:0;color:#ddd;line-height:1.55;">
+Competency Modeling 
+Design Competency framework by Job Master Methodology
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section id="gallery" class="h-section" style="padding-top:20px;background:rgba(255,255,255,0.02);">
+  <div class="container">
+    <h2 class="h-title">Gallery</h2>
+    <p style="color:#bbb;margin-top:6px;">Visual highlights & achievements — image placeholders</p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px;">
+      <div class="interactive-card photo-box" style="height:180px;display:flex;align-items:center;justify-content:center;color:#888;font-style:italic;">[ Image 1 ]</div>
+      <div class="interactive-card photo-box" style="height:180px;display:flex;align-items:center;justify-content:center;color:#888;font-style:italic;">[ Image 2 ]</div>
+      <div class="interactive-card photo-box" style="height:180px;display:flex;align-items:center;justify-content:center;color:#888;font-style:italic;">[ Image 3 ]</div>
+      <div class="interactive-card photo-box" style="height:180px;display:flex;align-items:center;justify-content:center;color:#888;font-style:italic;">[ Image 4 ]</div>
+      <div class="interactive-card photo-box" style="height:180px;display:flex;align-items:center;justify-content:center;color:#888;font-style:italic;">[ Image 5 ]</div>
+      <div class="interactive-card photo-box" style="height:180px;display:flex;align-items:center;justify-content:center;color:#888;font-style:italic;">[ Image 6 ]</div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="background:rgba(0,0,0,0.7);border-top:1px solid rgba(255,255,255,0.05);text-align:center;padding:36px 18px;color:#bbb;font-size:0.95rem;margin-top:24px;">
+  <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:10px;align-items:center;">
+    <div>© <span id="yearNow">2025</span> <strong>Ali Sabry Khallaf</strong> — All Rights Reserved</div>
+    <div>
+      <a href="mailto:example@email.com" style="color:var(--accent2);text-decoration:none;margin:0 8px;">Email</a> |
+      <a href="https://www.linkedin.com" target="_blank" style="color:var(--accent2);text-decoration:none;margin:0 8px;">LinkedIn</a> |
+      <a href="#hero" style="color:var(--accent2);text-decoration:none;margin:0 8px;">Back to Top</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Audio elements for heartbeat & breath (place your files in same folder or adjust paths) -->
+<audio id="heartbeatSound" src="heartbeat.mp3" preload="auto"></audio>
+<audio id="breathSound" src="breath.mp3" preload="auto"></audio>
+
+<!-- Scripts: touch handlers, card interactions, audio control, resume/pause on visibility -->
+<script>
+/* ===== Make all interactive cards support touch like hover ===== */
+(function(){
+  const cards = document.querySelectorAll('.interactive-card');
+
+  // Add mouse hover class behavior (for older browsers)
+  cards.forEach(card => {
+    card.addEventListener('mouseenter', () => card.classList.add('active'));
+    card.addEventListener('mouseleave', () => card.classList.remove('active'));
+
+    // touch support
+    card.addEventListener('touchstart', (e) => {
+      card.classList.add('active');
+      // prevent multiple activating on scroll - we won't preventDefault so scrolling still works
+    }, {passive:true});
+
+    card.addEventListener('touchend', () => {
+      // short delay to allow visual feedback
+      setTimeout(()=>card.classList.remove('active'), 160);
+    });
+  });
+})();
+
+/* ===== Heartbeat & Breath audio control (similar to cv-hub behavior) ===== */
+(function(){
+  const heart = document.getElementById('heartbeatSound');
+  const breath = document.getElementById('breathSound');
+
+  // set reasonable default volumes
+  if (heart) heart.volume = 0.25;
+  if (breath) breath.volume = 0.12;
+
+  // timers
+  let hbTimer = null;
+  let brTimer = null;
+
+  // bpm for heartbeat (adjustable)
+  const bpm = 48; // بدل 75
+const hbInterval = (60 / bpm) * 1000; // ≈ 1250ms
+
+  function playHeart(){
+    if(!heart) return;
+    heart.currentTime = 0;
+    heart.play().catch(()=>{});
+  }
+  function startHeartbeat(){
+    if(!heart) return;
+    playHeart();
+    hbTimer = setInterval(playHeart, hbInterval);
+  }
+
+  function startBreathing(){
+    if(!breath) return;
+    breath.currentTime = 0;
+    breath.play().catch(()=>{});
+    brTimer = setInterval(()=>{
+      breath.currentTime = 0;
+      breath.play().catch(()=>{});
+    }, 8000); // every ~8s
+  }
+
+  function stopAll(){
+    if(hbTimer) { clearInterval(hbTimer); hbTimer = null; }
+    if(brTimer) { clearInterval(brTimer); brTimer = null; }
+    if(heart) heart.pause();
+    if(breath) breath.pause();
+  }
+
+  function resumeAll(){
+    // guard to avoid multiple intervals
+    stopAll();
+    startHeartbeat();
+    startBreathing();
+  }
+
+  // start on first user interaction (required by many mobile browsers)
+  const startOnInteraction = () => {
+    resumeAll();
+    document.removeEventListener('click', startOnInteraction);
+    document.removeEventListener('touchstart', startOnInteraction);
+  };
+  document.addEventListener('click', startOnInteraction, {passive:true});
+  document.addEventListener('touchstart', startOnInteraction, {passive:true});
+
+  // pause when tab hidden or before unload
+  document.addEventListener('visibilitychange', () => {
+    if(document.hidden) stopAll();
+    else resumeAll();
+  });
+  window.addEventListener('beforeunload', stopAll);
+
+  // Expose functions for debugging if needed
+  window._AliCV_audioControl = {start: resumeAll, stop: stopAll};
+})();
+
+/* ===== small helpers ===== */
+(function(){
+  // set current year in footer if you want dynamic
+  document.getElementById('yearNow').textContent = new Date().getFullYear();
+})();
+</script>
+
+</body>
+</html>
+
