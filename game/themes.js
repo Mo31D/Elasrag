@@ -13,10 +13,11 @@ const ThemeManager = (() => {
       cardGlow: "#ff6600",
       accent: "#ff3300"
     },
-    winter: {
-      map: "winter_map.jpg",
-      cardGlow: "#66ccff",
-      accent: "#99ddff"
+    // في themes.js — استبدل الكتلة night
+    night: {
+      map: "Egyptian.jpeg",     // صورة الخريطة الليلية داخل مجلد المشروع
+      cardGlow: "#ffcc00",    // توهج ذهبي ساطع (gold)
+      accent: "#b8860b"       // لمسات ذهبية/نحاسية دافئة
     }
   };
 

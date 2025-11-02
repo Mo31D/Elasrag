@@ -4,17 +4,16 @@
   const panel = logSection?.parentElement || document.querySelector(".panel") || document.body;
 
   panel.insertAdjacentHTML("beforeend", `
-    <audio id="bgMusic" src="desert_theme.mp3" loop></audio>
+    <audio id="bgMusic" src="market_breeze.mp3" loop></audio>
 
     <div id="musicCtl">
       <button id="musicBtn" title="Mute / Unmute">🎵</button>
       <div id="musicUI">
         <input id="musicVol" type="range" min="0" max="0.5" step="0.01" value="0.25">
         <select id="musicSel">
-          <option value="market_breeze.mp3">🏜️ Market</option>
-          <option value="halloween_theme.mp3">🎃 Halloween</option>
-          <option value="desert_theme.mp3" selected>🌅 Desert</option>
-          <option value="night_caravan.mp3">🌙 Night</option>
+        <option value="market_breeze.mp3" selected>🌅 Desert</option>
+		<option value="halloween_theme.mp3">🎃 Halloween</option>         
+	    <option value="desert_theme.mp3">🌙 Egyptian Nights</option>                
           <option value="youtube">📺 YouTube Player</option>
         </select>
       </div>
@@ -26,7 +25,7 @@
       <select id="themeSel">
         <option value="default" selected>🏜️ Default</option>
         <option value="halloween">🎃 Halloween</option>
-        <option value="night">🌙 Night Caravan</option>
+        <option value="night">🌙 Egyptian Nights</option>
       </select>
     </div>
   `);
@@ -173,22 +172,36 @@
     const val = e.target.value;
     playMusic(val);
   };
+// 🌓 تغيير الثيم + الصوت تلقائيًا — مُعدّل ليدعم ThemeManager
+themeSel.onchange = e => {
+  const val = e.target.value;
 
-  // 🌓 تغيير الثيم + الصوت تلقائيًا
-  themeSel.onchange = e => {
-    const val = e.target.value;
-    document.body.className = "";
-    if (val !== "default") document.body.classList.add(val);
-    localStorage.setItem("silkroadTheme", val);
+  // 1) خزّن الاختيار وحدّث كلاس الـ body (لـ CSS fallback)
+  document.body.className = "";
+  if (val !== "default") document.body.classList.add(val);
+  localStorage.setItem("silkroadTheme", val);
 
-    // 🔊 اختر الصوت بناءً على الثيم
-    let themeMusic = "desert_theme.mp3";
-    if (val === "halloween") themeMusic = "halloween_theme.mp3";
-    else if (val === "night") themeMusic = "night_caravan.mp3";
+  // 2) اطلب من ThemeManager تطبيق كل تغييرات الثيم (الخريطة، CSS vars، ألوان الكروت...)
+  if (typeof ThemeManager !== "undefined" && typeof ThemeManager.applyTheme === "function") {
+    try {
+      ThemeManager.applyTheme(val);
+    } catch (err) {
+      console.warn("ThemeManager.applyTheme failed:", err);
+    }
+  } else {
+    // إذا ThemeManager غير متوفر، فنفس fallback: ضع background عبر الكلاس فقط
+    console.warn("ThemeManager not found; relying on CSS class only for theme visuals.");
+  }
 
-    sel.value = themeMusic;
-    playMusic(themeMusic);
-  };
+  // 3) اختر الموسيقى المناسبة للثيم
+  let themeMusic = "desert_theme.mp3";
+  if (val === "halloween") themeMusic = "halloween_theme.mp3";
+  else if (val === "night") themeMusic = "egyptian_theme.mp3"; // ← عدّل اسم الملف إذا لزم
+
+  // 4) حدّث اختيار الموسيقى وشغّلها
+  sel.value = themeMusic;
+  playMusic(themeMusic);
+};
 
   // 🎵 دالة تشغيل الموسيقى العامة
   function playMusic(src) {
@@ -210,15 +223,28 @@
     }
   }
 
-  // 🔁 استرجاع الثيم والموسيقى المحفوظين
+  
   const savedTheme = localStorage.getItem("silkroadTheme") || "default";
-  themeSel.value = savedTheme;
-  if (savedTheme !== "default") document.body.classList.add(savedTheme);
+themeSel.value = savedTheme;
 
-  // تشغيل موسيقى الثيم تلقائيًا عند التحميل
-  let initialMusic = "desert_theme.mp3";
-  if (savedTheme === "halloween") initialMusic = "halloween_theme.mp3";
-  else if (savedTheme === "night") initialMusic = "night_caravan.mp3";
-  sel.value = initialMusic;
-  m.src = initialMusic;
+// استخدم ThemeManager لتطبيق الثيم بالكامل عند التحميل (أفضل من مجرد تغيير كلاس)
+if (typeof ThemeManager !== "undefined" && typeof ThemeManager.applyTheme === "function") {
+  try {
+    ThemeManager.applyTheme(savedTheme);
+  } catch (err) {
+    console.warn("ThemeManager.applyTheme on load failed:", err);
+    if (savedTheme !== "default") document.body.classList.add(savedTheme);
+  }
+} else {
+  if (savedTheme !== "default") document.body.classList.add(savedTheme);
+}
+
+// تشغيل موسيقى الثيم تلقائيًا عند التحميل
+let initialMusic = "market_breeze.mp3";
+if (savedTheme === "halloween") initialMusic = "halloween_theme.mp3";
+else if (savedTheme === "night") initialMusic = "desert_theme.mp3"; // ← عدّل إذا لزم
+sel.value = initialMusic;
+m.src = initialMusic;
+  
+  
 })();

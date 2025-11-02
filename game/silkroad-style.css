@@ -934,8 +934,87 @@ body.halloween .map {
   filter: brightness(0.9) contrast(1.1);
 }
 
-body.night .map {
-  background: url("Silkroad_Night.jpeg") no-repeat center center;
-  background-size: contain;
-  filter: brightness(0.7) contrast(1.2);
+/* ===== Egyptian Nights (Night) theme ===== */
+body.night {
+  background-color: #000;                 /* خلفية سوداء مطلقة */
+  color: #e6d9b7;                         /* نص ذهبي فاتح للنوافذ */
+  transition: background 0.45s ease, color 0.45s ease;
 }
+
+/* خريطة الليل */
+body.night .map {
+  background: url("Egyptian.jpeg") no-repeat center center;
+  background-size: contain;
+  filter: brightness(0.55) contrast(1.15) saturate(1.05);
+  border-color: rgba(184,134,11,0.6);     /* إطار ذهبي باهت */
+  position: relative;
+}
+
+
+
+/* اللوحات الزجاجية — نستخدم زجاج داكن (glass) */
+body.night .login-floating,
+body.night .sidebar,
+body.night .after-start-floating,
+body.night #musicCtl,
+body.night .floating-sidebar {
+  background: linear-gradient(180deg, rgba(20,18,16,0.28), rgba(10,8,6,0.32));
+  border: 1px solid rgba(255,206,75,0.08);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 6px 26px rgba(0,0,0,0.6), 0 1px 0 rgba(255,220,150,0.02) inset;
+  color: #e6d9b7;
+}
+
+/* بطاقات اللاعبين — glass look افتراضي */
+body.night .player-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,206,75,0.08);
+  color: #e6d9b7;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  transition: transform 0.18s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* عندما يحين دور اللاعب — توهج ذهبي مركزي */
+body.night .player-card.active {
+  background: linear-gradient(180deg, rgba(255,247,205,0.04), rgba(255,236,153,0.02));
+  border-color: rgba(255,204,0,0.95);
+  box-shadow:
+    0 6px 30px rgba(0,0,0,0.6),
+    0 0 28px 6px rgba(255,204,0,0.18), /* outer soft gold halo */
+    0 0 8px 2px rgba(255,245,180,0.65) inset; /* inner warm highlight */
+  animation: egyptianGoldPulse 1.3s infinite alternate;
+  transform: translateY(-2px);
+}
+
+/* ضوء نابض ذهبي */
+@keyframes egyptianGoldPulse {
+  0% {
+    box-shadow:
+      0 6px 18px rgba(0,0,0,0.6),
+      0 0 18px 2px rgba(255,204,0,0.08),
+      0 0 6px 1px rgba(255,245,180,0.5) inset;
+    transform: translateY(0);
+  }
+  100% {
+    box-shadow:
+      0 10px 30px rgba(0,0,0,0.65),
+      0 0 36px 10px rgba(255,204,0,0.22),
+      0 0 12px 3px rgba(255,245,180,0.75) inset;
+    transform: translateY(-2px);
+  }
+}
+
+/* كروت اللاعبين — تفاصيل داخلية */
+body.night .player-header, body.night .player-info, body.night .turn-status {
+  color: #f7e9c8;
+}
+
+/* نقاط اللاعب الصغيرة (player-dot-inline) تتوهج بلون ذهبي باهت */
+body.night .player-dot-inline.active {
+  box-shadow: 0 0 10px 4px rgba(255,204,0,0.18);
+}
+body.night .player-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 36px rgba(0,0,0,0.65), 0 0 30px 8px rgba(255,204,0,0.06);
+}
+
