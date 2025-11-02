@@ -1,0 +1,1173 @@
+
+
+/* =========================================
+   🎨 STYLE SYSTEM
+   ========================================= */
+:root {
+--map-width: 900px;   /* wider map */
+--map-height: 1000px; /* shorter map */
+  --gold: #ffcc00;
+  --brown: #8a5930;
+  --sand: #f7eed8;
+}
+body {
+  font-family: system-ui, sans-serif;
+  margin: 14px;
+  background: var(--sand);
+  color: #2b2b2b;
+}
+.container {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.map {
+  position: relative;
+  width: 100%;
+  max-width: 1024px;                /* العرض الأصلي للصورة */
+  aspect-ratio: 1024 / 1536;        /* الحفاظ على التناسب الصحيح */
+  background: url("Silkroad_page-0001.jpeg") no-repeat center center;
+  background-size: contain;         /* يجعل الصورة تظهر كاملة بدون تمدد */
+  border: 10px solid var(--brown);
+  border-radius: 12px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* ✨ Modern Caravan Entry Styling */
+.login-panel {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+  text-align: center;
+  color: #5b3a00;
+  transition: all 0.6s ease;
+}
+.login-panel h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #b8860b;
+  text-shadow: 0 1px 2px #fff;
+  margin-bottom: 12px;
+}
+.login-panel input {
+  width: 90%;
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #e0c080;
+  background: #fffdf7;
+  margin-bottom: 10px;
+  outline: none;
+  text-align: center;
+}
+.login-panel button {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+.login-panel button:hover { transform: scale(1.05); }
+.login-panel .primary {
+  background: linear-gradient(90deg, #ffcc00, #ffaa00);
+  color: #3a2500;
+}
+.login-panel .ai {
+  background: linear-gradient(90deg, #89f7fe, #66a6ff);
+  color: #003366;
+}
+.login-panel .reset {
+  background: linear-gradient(90deg, #ff4d4d, #b30000);
+  color: #fff;
+}
+.hidden-panel { opacity: 0; transform: scale(0.9); pointer-events: none; }
+
+
+/* =============================
+   🗺️ Town Nodes (Swapped Layout)
+   ============================= */
+
+/* دائرة المدينة (السعر في المنتصف) */
+.node {
+  position: absolute;
+  width: 5vw;
+  height: 5vw;
+  min-width: 20px;
+  min-height: 20px;
+  max-width: 30px;
+  max-height: 30px;
+  border-radius: 50%;
+  border: 3px solid rgba(0, 0, 0, 0.5);
+  background: linear-gradient(#fff7e8, #f1d9b1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  overflow: visible;
+  z-index: 2000;
+}
+
+/* السعر داخل الدائرة */
+.node .price-main {
+  font-size: 13px;
+  font-weight: 800;
+  color: #b8860b;
+  position: relative;
+  z-index: 2;
+}
+
+/* اسم المدينة تحت الدائرة مباشرة */
+.node .town-small {
+  position: absolute;
+  bottom: -18px;       /* المسافة بين الاسم والدائرة */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9.5px;
+  color: #fff;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Highlighted current town */
+.town-current {
+  animation: flashInner 1.5s ease-in-out infinite alternate;
+  border-color: var(--gold);
+}
+
+@keyframes flashInner {
+  0% {
+    background: linear-gradient(#fff7e8, #f1d9b1);
+  }
+  100% {
+    background: var(--gold);
+  }
+}
+
+/* 🧍 Player markers on map */
+.player-dot {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  transform: translate(-50%, -50%);
+  z-index: 1800;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4); /* subtle floating shadow */
+  transition: left 1s linear, top 1s linear;
+}
+
+
+
+@keyframes dotFlash {
+  0% {
+    box-shadow: 0 0 6px 2px currentColor, 0 0 10px rgba(255,255,255,0.6);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: 0 0 16px 8px currentColor, 0 0 14px rgba(255,255,255,0.8);
+    transform: scale(1.3);
+  }
+}
+
+/* ✨ Transparent glass sidebar panel background */
+.sidebar {
+  width: 460px;
+  background: rgba(255, 255, 255, 0.1); /* subtle white transparency */
+  backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 12px;
+  padding: 12px;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* 🪶 Transparent game log area */
+#log {
+  max-height: 180px;
+  overflow: auto;
+  font-size: 13px;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08); /* light transparent tint */
+  backdrop-filter: blur(10px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #2b2b2b;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #fff;
+  cursor: pointer;
+}
+button.primary { background: #2e77ff; color: #fff; border: none; }
+input { padding: 6px; border-radius: 6px; border: 1px solid #ccc; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 6px 8px; border-bottom: 1px solid #f2f2f2; font-size: 13px; text-align:center;}
+th { background: #fbfbfb; font-weight: 600; }
+#turnBanner {
+  text-align:center; padding:8px; background:#ffe599;
+  border-radius:6px; font-weight:700; color:#5b3a00;
+  animation: blink 2s infinite;
+}
+@keyframes blink {0%,100%{opacity:1;}50%{opacity:0.6;}}
+
+/* Small colored dot beside player name */
+.player-dot-inline {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+  box-shadow: 0 0 2px rgba(0,0,0,0.4);
+  margin-right: 6px;
+  vertical-align: middle;
+  transition: all 0.3s ease;
+}
+
+/* Flashing/glowing effect for active player */
+.player-dot-inline.active {
+  box-shadow: 0 0 12px 4px var(--gold);
+  animation: flash 1.2s infinite alternate;
+}
+
+@keyframes flash {
+  0% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0.6; transform: scale(1.3); }
+}
+
+.die {
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 26px;
+  font-weight: bold;
+  color: #fff;
+  position: absolute;
+  bottom: 10px;
+  user-select: none;
+  transition: transform 0.3s;
+}
+#greenDie { left: 30px; top: 360px; background: transparent; }
+#redDie { left: 30px; top: 405px; background: transparent; }
+.die.roll { transform: scale(1.2) rotate(10deg); }
+
+#currentTownText {
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b2e05;
+  line-height: 1.7;
+  text-align: center;
+}
+
+/* ✨ Flashing effects */
+.town-name {
+  color: #b22222;
+  font-weight: 800;
+  animation: flashTown 1.5s infinite alternate;
+}
+
+.price-flash {
+  color: #d4a017;
+  font-weight: 800;
+  animation: flashPrice 1.2s infinite alternate;
+}
+
+@keyframes flashTown {
+  0% { color: #b22222; text-shadow: 0 0 2px #ff9999; opacity: 0.8; }
+  100% { color: #ff2d2d; text-shadow: 0 0 10px #ff6666; opacity: 1; }
+}
+@keyframes flashPrice {
+  0% { color: #d4a017; text-shadow: 0 0 2px #ffd966; opacity: 0.8; }
+  100% { color: #ffcc00; text-shadow: 0 0 10px #ffe066; opacity: 1; }
+}
+
+/* 🎨 Player Cards */
+.players-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+
+.player-card:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
+
+.player-card {
+  border: 3px solid #ccc;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 10px 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.player-card.active {
+  border-color: var(--gold);
+  background: rgba(255, 248, 220, 0.95);
+  filter: none;
+  animation: playerGlow 1.6s ease-in-out infinite alternate;
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.player-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 6px;
+  column-gap: 10px;
+  font-size: 13px;
+}
+
+.player-info div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.player-info span.icon {
+  font-size: 16px;
+}
+
+/* Glow pulse using player's color */
+@keyframes playerGlow {
+  0% { box-shadow: 0 0 0px rgba(255, 255, 255, 0.3); }
+  100% { box-shadow: 0 0 20px 8px currentColor; }
+}
+
+.player-dot.active {
+  box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+}
+
+@keyframes dotFlash {
+  0% {
+    box-shadow: 0 0 6px 2px currentColor, 0 0 10px rgba(255,255,255,0.6);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: 0 0 16px 8px currentColor, 0 0 14px rgba(255,255,255,0.8);
+    transform: scale(1.3);
+  }
+}
+
+
+/* 🌟 Main buttons */
+.trade-controls button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.trade-controls button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* Button colors */
+#buyBtn {
+  background: linear-gradient(90deg, #4caf50, #2e7d32);
+}
+#sellBtn {
+  background: linear-gradient(90deg, #e53935, #b71c1c);
+}
+#waitBtn {
+  background: linear-gradient(90deg, #ffb300, #f57c00);
+}
+
+.inline-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.inline-buttons input {
+  width: 55px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #d2a05a;
+  text-align: center;
+  font-size: 13px;
+}
+
+.inline-buttons button {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inline-buy { background: linear-gradient(90deg, #4caf50, #2e7d32); }
+.inline-sell { background: linear-gradient(90deg, #e53935, #b71c1c); }
+.inline-wait { background: linear-gradient(90deg, #ffb300, #f57c00); }
+
+.inline-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =======================
+   🧍 Enhanced Player Card Layout
+   ======================= */
+
+.player-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 14px;
+  color: inherit;
+}
+
+.turn-status {
+  font-size: 12px;
+  color: var(--gold);
+  animation: blink 1.2s infinite;
+}
+@keyframes blink {
+  0%,100%{opacity:1;}50%{opacity:0.4;}
+}
+
+.player-divider {
+  border: none;
+  border-bottom: 1px dashed rgba(0,0,0,0.2);
+  margin: 4px 0 6px;
+}
+
+.player-info-grid {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+/* 🎮 Inline trade area */
+.inline-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.number-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #d2a05a;
+  border-radius: 6px;
+  overflow: hidden;
+  width: 60px;
+  height: 26px;
+  background: #fffbe9;
+}
+
+.number-input input {
+  border: none;
+  width: 32px;
+  text-align: center;
+  font-size: 12px;
+  outline: none;
+  background: transparent;
+}
+
+.num-btn {
+  background: #ffefc1;
+  border: none;
+  font-size: 14px;
+  width: 20px;
+  height: 26px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.num-btn:hover {
+  background: #ffe08a;
+}
+
+/* keep the buttons aligned nicely */
+.inline-buy, .inline-sell, .inline-wait {
+  padding: 5px 8px;
+  font-size: 12px;
+  flex: 1;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+/* ✨ Mini floating "Start a new game" badge */
+.after-start-floating {
+  position: absolute;
+  top: 40px;
+  right: 35px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 8px 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  transition: all 0.5s ease;
+  z-index: 999;
+}
+.after-start-floating button.primary {
+  background: linear-gradient(90deg, #ffcc00, #ffaa00);
+  color: #3a2500;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+.after-start-floating button.primary:hover {
+  transform: scale(1.05);
+}
+.hidden-panel {
+  opacity: 0;
+  transform: scale(0.85);
+  pointer-events: none;
+}
+
+/* 💎 Floating Glass Sign-In Box (Centered on Map) */
+.login-floating {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* ✅ center perfectly */
+  width: 260px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.25);
+  text-align: center;
+  color: #4b2e05;
+  z-index: 999;
+  transition: all 0.6s ease;
+}
+
+.login-floating h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #b8860b;
+  margin-bottom: 10px;
+  text-shadow: 0 1px 2px #fff;
+}
+
+.login-floating input {
+  width: 90%;
+  padding: 8px;
+  font-size: 13px;
+  border-radius: 6px;
+  border: 1px solid #e0c080;
+  background: #fffdf7;
+  margin-bottom: 8px;
+  text-align: center;
+  outline: none;
+}
+
+.login-floating .btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.login-floating button {
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.3s ease;
+}
+
+.login-floating button:hover {
+  transform: scale(1.05);
+}
+
+.login-floating .primary {
+  background: linear-gradient(90deg, #ffcc00, #ffaa00);
+  color: #3a2500;
+}
+
+.login-floating .ai {
+  background: linear-gradient(90deg, #89f7fe, #66a6ff);
+  color: #003366;
+}
+
+.login-floating .reset {
+  background: linear-gradient(90deg, #ff4d4d, #b30000);
+  color: #fff;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.hidden-panel {
+  opacity: 0;
+  transform: scale(0.85);
+  pointer-events: none;
+}
+/* =========================================
+   🎲 Floating 3D Dice (middle-left on map)
+   ========================================= */
+.floating-dice {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 1500;
+  background: none;
+  backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.floating-dice .dice {
+  width: 58px;
+  height: 58px;
+  border-radius: 12px;
+  font-size: 26px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  color: #fff;
+  box-shadow:
+    inset 0 2px 6px rgba(255,255,255,0.5),
+    inset 0 -2px 6px rgba(0,0,0,0.4),
+    0 5px 15px rgba(0,0,0,0.4);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  transform-style: preserve-3d;
+  perspective: 600px;
+}
+
+.floating-dice .dice.green {
+  background: radial-gradient(circle at 30% 30%, #a8ff9f, #009b00);
+  border: 2px solid #007f00;
+}
+
+.floating-dice .dice.red {
+  background: radial-gradient(circle at 30% 30%, #ff9f9f, #b00000);
+  border: 2px solid #7a0000;
+}
+
+.floating-dice .dice.roll {
+  animation: roll3D 0.6s ease-in-out;
+}
+
+@keyframes roll3D {
+  0%   { transform: rotateX(0deg) rotateY(0deg) scale(1); }
+  25%  { transform: rotateX(90deg) rotateY(45deg) scale(1.05); }
+  50%  { transform: rotateX(180deg) rotateY(90deg) scale(1.1); }
+  75%  { transform: rotateX(270deg) rotateY(135deg) scale(1.05); }
+  100% { transform: rotateX(360deg) rotateY(180deg) scale(1); }
+}
+
+.floating-sidebar {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px) saturate(160%);
+}
+
+.floating-sidebar {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 1500;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 12px;
+  padding: 10px;
+  width: 280px;
+}
+
+/* 🏕️ Ensure Caravan Entry panel stays above towns and map dots */
+.login-floating,
+.after-start-floating {
+  position: absolute !important;
+  z-index: 12000 !important;
+}
+
+/* Layer hierarchy */
+.map { z-index: 1000; }
+.node { z-index: 2000; position: absolute; }
+.node .price-main { position: relative; z-index: 2100; }
+.player-dot { z-index: 1800; }
+.floating-dice { z-index: 3000; }
+.floating-sidebar, #musicCtl { z-index: 4000; }
+.login-floating, .after-start-floating { z-index: 12000; } /* topmost */
+
+/* 🌟 Rebalanced floating sidebar inside the map */
+.floating-sidebar {
+  position: absolute;
+  top: 50%;
+  right: 25px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 360px;
+  max-height: 88%;
+  overflow-y: auto;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(14px) saturate(180%);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  padding: 14px;
+  z-index: 1800;
+}
+
+/* 3D dice used by dice3d.js */
+#dice3d-container { pointer-events: none; }
+.dice3d-cube { width: 100%; height: 100%; position: absolute; transform-style: preserve-3d; }
+.dice3d-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  overflow: visible;
+  display: block;
+}
+/* dots */
+.dice3d-dot {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+/* ensure the 3D container sits visually above other UI elements */
+#dice3d-container { z-index: 6000; transform-origin: center; }
+
+
+/* =========================================
+   PLAYER DOT ENHANCEMENT
+   ========================================= */
+.player-dot {
+  border-radius: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border: 2px solid #fff;
+  box-shadow: 0 0 8px currentColor;
+  animation: playerPulse 2s infinite ease-in-out;
+}
+
+@keyframes playerPulse {
+  0%, 100% { box-shadow: 0 0 6px currentColor; opacity: 1; }
+  50% { box-shadow: 0 0 12px currentColor; opacity: 0.7; }
+}
+
+/* collapsed sidebar styling (mobile) */
+.sidebar.sidebar-collapsed {
+  width: 220px !important;
+  padding: 8px !important;
+  font-size: 13px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+}
+
+/* ensure numeric .die behaves well when resized */
+.die {
+  border-radius: 8px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+
+/* reduce music hint size on small screens */
+#musicHint { font-size: 10px !important; right: 44px !important; bottom: 18px !important; }
+
+.dice3d-dot {
+  transition: transform 0.2s ease;
+}
+.dice3d-wrapper:hover .dice3d-dot {
+  transform: scale(1.15);
+}
+
+
+.dice3d-cube { transform-style: preserve-3d; -webkit-transform-style: preserve-3d; }
+.dice3d-face {
+  box-sizing: border-box;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* dots minor transitions */
+.dice3d-dot { transition: transform .12s ease; }
+.dice3d-wrapper:active .dice3d-dot,
+.dice3d-wrapper:hover .dice3d-dot { transform: scale(1.08); }
+
+.dice3d-wrapper {
+  display: block;
+  position: relative;
+  width: auto;
+  height: auto;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  perspective: 800px;
+  border: none !important;
+  box-shadow: none !important;
+  max-width: none !important;
+  max-height: none !important;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+
+/* Extra in silkroad-style.css */
+/* =========================================
+   🎃 Halloween Theme (dark & spooky)
+   ========================================= */
+body.halloween {
+  background-color: #000; /* الخلفية الأساسية سوداء */
+  color: #ff6600;
+  transition: background 0.6s ease, color 0.6s ease;
+}
+
+/* الخريطة تصبح أكثر ظلاماً */
+.map.halloween,
+body.halloween .map {
+  filter: brightness(0.65) contrast(1.1);
+  border-color: #ff6600;
+}
+
+/* اللوحات الزجاجية (الـ panels والـ sidebar) */
+body.halloween .login-floating,
+body.halloween .sidebar,
+body.halloween .after-start-floating {
+  background: rgba(20, 0, 0, 0.6);
+  backdrop-filter: blur(12px) saturate(160%);
+  border-color: rgba(255, 102, 0, 0.4);
+  box-shadow: 0 4px 18px rgba(255, 100, 0, 0.3);
+}
+
+/* بطاقات اللاعبين */
+body.halloween .player-card {
+  background: rgba(15, 0, 0, 0.8);
+  border-color: #ff6600;
+  color: #ffa64d;
+}
+
+/* النصوص المتوهجة */
+body.halloween .player-card.active {
+  box-shadow: 0 0 20px 6px #ff6600;
+  animation: halloweenGlow 1.6s infinite alternate;
+}
+
+@keyframes halloweenGlow {
+  0% { box-shadow: 0 0 10px #ff3300; }
+  100% { box-shadow: 0 0 25px #ff6600; }
+}
+
+/* إشعاع خافت فوق الخريطة */
+body.halloween .map::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(255, 120, 0, 0.15), transparent 80%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  animation: flicker 2s infinite;
+}
+
+@keyframes flicker {
+  0%,100% { opacity: 0.7; }
+  50% { opacity: 0.3; }
+}
+
+/* 🌙 Dynamic Map Backgrounds Based on Theme */
+body.default .map {
+  background: url("Silkroad_page-0001.jpeg") no-repeat center center;
+  background-size: contain;
+}
+
+body.halloween .map {
+  background: url("halloween_map.png") no-repeat center center;
+  background-size: contain;
+  filter: brightness(0.9) contrast(1.1);
+}
+
+/* ===== Egyptian Nights (Night) theme ===== */
+body.night {
+  background-color: #000;                 /* خلفية سوداء مطلقة */
+  color: #e6d9b7;                         /* نص ذهبي فاتح للنوافذ */
+  transition: background 0.45s ease, color 0.45s ease;
+}
+
+/* خريطة الليل */
+body.night .map {
+  background: url("Egyptian.jpeg") no-repeat center center;
+  background-size: contain;
+  filter: brightness(0.55) contrast(1.15) saturate(1.05);
+  border-color: rgba(184,134,11,0.6);     /* إطار ذهبي باهت */
+  position: relative;
+}
+
+
+
+/* اللوحات الزجاجية — نستخدم زجاج داكن (glass) */
+body.night .login-floating,
+body.night .sidebar,
+body.night .after-start-floating,
+body.night #musicCtl,
+body.night .floating-sidebar {
+  border: none !important;
+  box-shadow: none !important;
+  background: linear-gradient(180deg, rgba(20,18,16,0.28), rgba(10,8,6,0.32)) !important;
+  
+  backdrop-filter: blur(14px) saturate(140%);
+  
+  color: #e6d9b7;
+}
+
+/* بطاقات اللاعبين — glass look افتراضي */
+body.night .player-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,206,75,0.08);
+  color: #e6d9b7;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  transition: transform 0.18s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+/* عندما يحين دور اللاعب — توهج ذهبي مركزي */
+body.night .player-card.active {
+  background: linear-gradient(180deg, rgba(255,247,205,0.04), rgba(255,236,153,0.02));
+  border-color: rgba(255,204,0,0.95);
+  box-shadow:
+    0 6px 30px rgba(0,0,0,0.6),
+    0 0 28px 6px rgba(255,204,0,0.18), /* outer soft gold halo */
+    0 0 8px 2px rgba(255,245,180,0.65) inset; /* inner warm highlight */
+  animation: egyptianGoldPulse 1.3s infinite alternate;
+  transform: translateY(-2px);
+}
+
+/* ضوء نابض ذهبي */
+@keyframes egyptianGoldPulse {
+  0% {
+    box-shadow:
+      0 6px 18px rgba(0,0,0,0.6),
+      0 0 18px 2px rgba(255,204,0,0.08),
+      0 0 6px 1px rgba(255,245,180,0.5) inset;
+    transform: translateY(0);
+  }
+  100% {
+    box-shadow:
+      0 10px 30px rgba(0,0,0,0.65),
+      0 0 36px 10px rgba(255,204,0,0.22),
+      0 0 12px 3px rgba(255,245,180,0.75) inset;
+    transform: translateY(-2px);
+  }
+}
+
+/* كروت اللاعبين — تفاصيل داخلية */
+body.night .player-header, body.night .player-info, body.night .turn-status {
+  color: #f7e9c8;
+}
+
+/* نقاط اللاعب الصغيرة (player-dot-inline) تتوهج بلون ذهبي باهت */
+body.night .player-dot-inline.active {
+  box-shadow: 0 0 10px 4px rgba(255,204,0,0.18);
+}
+body.night .player-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 36px rgba(0,0,0,0.65), 0 0 30px 8px rgba(255,204,0,0.06);
+}
+
+/* 📱 تحسين الخريطة والمدن للشاشات الصغيرة */
+@media (max-width: 768px) {
+  :root {
+    --map-width: 100%;
+    --map-height: auto;
+  }
+
+  .map {
+    max-width: 100%;
+    border-width: 6px;
+  }
+
+  .node {
+    width: 3.5vw;
+    height: 3.5vw;
+    min-width: 14px;
+    min-height: 14px;
+    max-width: 22px;
+    max-height: 22px;
+  }
+
+  .node .price-main {
+    font-size: 10px;
+  }
+
+  .node .town-small {
+    font-size: 8px;
+    bottom: -14px;
+  }
+
+  .player-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .sidebar {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+
+/* 📱 تحسين اللوحة الجانبية والمحتوى الداخلي للشاشات الصغيرة */
+@media (max-width: 768px) {
+  /* تقليل حجم اللوحة الجانبية نفسها */
+  .sidebar,
+  .panel,
+  .floating-sidebar {
+    width: 90% !important;
+    padding: 8px !important;
+    font-size: 12px !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+  }
+
+  /* تقليل حجم العناوين والنصوص */
+  .sidebar strong,
+  .panel strong,
+  #turnBanner,
+  #currentTownText {
+    font-size: 13px !important;
+    line-height: 1.4;
+  }
+
+  /* تصغير كروت اللاعبين */
+  .player-card {
+    padding: 8px 10px;
+    border-width: 2px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .player-header {
+    font-size: 12px;
+  }
+
+  .player-info-grid {
+    font-size: 11px;
+  }
+
+  .inline-buttons button,
+  .inline-buttons input {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  .inline-buy,
+  .inline-sell,
+  .inline-wait {
+    font-size: 11px;
+    padding: 4px 6px;
+  }
+
+  /* الأزرار العامة */
+  button {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+    border-radius: 6px !important;
+  }
+
+  /* واجهة تسجيل الدخول الزجاجية */
+  .login-floating {
+    width: 200px !important;
+    padding: 12px !important;
+  }
+
+  .login-floating h2 {
+    font-size: 13px !important;
+  }
+
+  .login-floating input {
+    font-size: 11px !important;
+    padding: 6px !important;
+  }
+
+  .login-floating button {
+    font-size: 11px !important;
+    padding: 5px 7px !important;
+  }
+
+  /* صندوق السجلات (log) */
+  #log {
+    max-height: 120px;
+    font-size: 11px;
+    padding: 6px;
+  }
+
+  /* خفض حجم عناصر الموسيقى والثيم */
+  #musicCtl, #themeCtl {
+    font-size: 11px !important;
+    gap: 6px !important;
+    padding: 6px !important;
+  }
+
+  #musicVol {
+    width: 70px !important;
+  }
+
+  #musicBtn {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 14px !important;
+  }
+
+  select,
+  input,
+  label {
+    font-size: 11px !important;
+  }
+}
