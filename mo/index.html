@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Elasrag CV Hub</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  height:100%;
+  font-family:'Inter',sans-serif;
+  background:#000;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* ==== BACKGROUND LAYERS ==== */
+.bg {
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+}
+
+.glow-layer {
+  position:absolute;
+  inset:-25%;
+  width:150%;
+  height:150%;
+  filter:blur(160px);
+  mix-blend-mode:screen;
+  opacity:0.8;
+}
+
+/* Base golden + cyan blend */
+.glow1 {
+  background:conic-gradient(
+    from 120deg,
+    rgba(255,235,150,0.12),
+    rgba(0,255,255,0.10),
+    rgba(255,235,150,0.12)
+  );
+  animation:rotateSlow 40s linear infinite;
+}
+
+/* Breathing light layer */
+.glow2 {
+  background:radial-gradient(circle at 40% 50%, rgba(255,230,180,0.15), rgba(0,0,0,0));
+  animation:breathing 8s ease-in-out infinite;
+}
+
+/* ===== Heartbeat pulse layer (from cv-full.html) ===== */
+.glow3 {
+  background: radial-gradient(
+    circle at 30% 70%,
+    rgba(255, 60, 60, 0.25) 0%,
+    rgba(255, 0, 0, 0.1) 15%,
+    transparent 30%
+  );
+  animation: heartbeat 1.2s ease-in-out infinite;
+  mix-blend-mode: screen;
+  opacity: 1;
+  filter: blur(15px);
+}
+
+@keyframes heartbeat {
+  0%   { transform: scale(1);   opacity: 0.6; }
+  10%  { transform: scale(1.2); opacity: 1; }
+  20%  { transform: scale(1.05); opacity: 0.8; }
+  30%  { transform: scale(1.25); opacity: 1; }
+  50%  { transform: scale(1.1); opacity: 0.7; }
+  70%  { transform: scale(1.2); opacity: 0.9; }
+  100% { transform: scale(1);   opacity: 0.6; }
+}
+
+@keyframes rotateSlow {
+  0% { transform:rotate(0deg) scale(1); }
+  100% { transform:rotate(360deg) scale(1); }
+}
+
+@keyframes breathing {
+  0%,100% { opacity:0.45; transform:scale(1); }
+  50% { opacity:0.9; transform:scale(1.08); }
+}
+
+/* ==== MENU ==== */
+nav {
+  position:fixed;
+  top:0;left:0;right:0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 36px;
+  z-index:10;
+  background:rgba(0,0,0,0.45);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.logo {
+  font-weight:800;
+  font-size:1.1rem;
+  background:linear-gradient(90deg,#f5d67b,#00f0ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.nav-links {
+  display:flex;
+  gap:20px;
+  list-style:none;
+  margin:0;
+}
+.nav-links a {
+  color:#eaeaea;
+  text-decoration:none;
+  font-weight:600;
+  transition:color 0.3s;
+}
+.nav-links a:hover { color:#00f0ff; }
+
+/* ==== MAIN CONTENT ==== */
+#cv-hub {
+  position:relative;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding-top:90px;
+  text-align:center;
+  z-index:5;
+}
+
+.header-card {
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.06);
+  padding:40px;
+  border-radius:16px;
+  backdrop-filter:blur(10px);
+  max-width:720px;
+  box-shadow:0 0 60px rgba(255,230,150,0.15);
+  animation:breathing 8s ease-in-out infinite;
+  z-index:10;
+  position:relative;
+}
+.header-title {
+  font-size:2.4rem;
+  font-weight:800;
+  background:linear-gradient(90deg,#f5d67b,#fff3b3,#00f0ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 25px rgba(255,230,150,0.5);
+  margin-bottom:8px;
+}
+.header-sub {
+  color:#cfcfcf;
+  font-size:1rem;
+  margin-bottom:20px;
+}
+.footer-note {
+  color:#bfbfbf;
+  font-size:.9rem;
+}
+
+.grid {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:40px;
+  margin-top:60px;
+  position:relative;
+  z-index:12; /* 🔝 cards always above glow */
+}
+
+/* ==== CARD EFFECTS (hover, pulse, glow) ==== */
+.card {
+  width:260px;
+  border-radius:16px;
+  padding:28px 20px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  backdrop-filter:blur(12px);
+  box-shadow:0 0 40px rgba(255,230,150,0.08);
+  transition:transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
+  will-change:transform, box-shadow, filter;
+  z-index:12;
+  position:relative;
+  animation:cardPulse 6s ease-in-out infinite;
+}
+@keyframes cardPulse {
+  0%,100% { transform:scale(1); box-shadow:0 0 25px rgba(255,230,150,0.08); }
+  50% { transform:scale(1.03); box-shadow:0 0 50px rgba(0,255,255,0.3); }
+}
+.card:hover {
+  transform:translateY(-8px) scale(1.05);
+  box-shadow:0 0 65px rgba(0,255,255,0.45);
+  filter:brightness(1.1);
+}
+
+.card-title {
+  font-weight:800;
+  font-size:1.2rem;
+  margin-bottom:10px;
+  background:linear-gradient(90deg,#f5d67b,#00f0ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.card-desc {
+  color:#ccc;
+  font-size:0.95rem;
+  line-height:1.5;
+}
+
+/* mobile */
+@media (max-width:700px){
+  .grid { flex-direction:column; gap:30px; }
+  .card { width:90%; }
+  .header-card { width:90%; padding:24px; }
+  .header-title { font-size:1.9rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="glow-layer glow1"></div>
+  <div class="glow-layer glow2"></div>
+  <div class="glow-layer glow3"></div>
+</div>
+
+<nav>
+  <div class="logo">Elasrag</div>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<div id="cv-hub">
+  <div class="header-card">
+    <div class="header-title">Elasrag CV Hub</div>
+    <div class="header-sub">Choose the CV type below</div>
+    <div class="footer-note">Cards breathe slowly. Glow pulses like a heartbeat.</div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">Hospitality</div>
+      <div class="card-desc">Suitable for hotel and night-shift service roles.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Retail</div>
+      <div class="card-desc">Retail-focused resume for general work positions.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Digital CV</div>
+      <div class="card-desc">Professional digital resume for tech-based roles.</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Portfolio CV</div>
+      <div class="card-desc">Showcase creative projects and content samples.</div>
+    </div>
+  </div>
+</div>
+
+<audio id="heartbeatSound" src="heartbeat.mp3" preload="auto"></audio>
+<audio id="breathSound" src="breath.mp3" preload="auto"></audio>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const heart = document.getElementById("heartbeatSound");
+  const breath = document.getElementById("breathSound");
+  heart.volume = 0.18;
+  breath.volume = 0.12;
+
+  // السماح بالتشغيل بعد أول تفاعل من المستخدم
+  const startSounds = () => {
+    startHeartbeat();
+    startBreathing();
+    document.removeEventListener("click", startSounds);
+  };
+  document.addEventListener("click", startSounds);
+
+  // الإيقاف عند مغادرة الصفحة أو الانتقال
+  window.addEventListener("beforeunload", stopAll);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopAll();
+    else resumeAll();
+  });
+
+  let hbTimer, brTimer;
+  const bpm = 48; // synced with 1.25s visual pulse
+  const hbInterval = (60 / bpm) * 1000;
+
+  function playHeart() {
+    heart.currentTime = 0;
+    heart.play().catch(()=>{});
+  }
+
+  function startHeartbeat() {
+    playHeart();
+    hbTimer = setInterval(playHeart, hbInterval);
+  }
+
+  function startBreathing() {
+    breath.currentTime = 0;
+    breath.play().catch(()=>{});
+    brTimer = setInterval(() => {
+      breath.currentTime = 0;
+      breath.play().catch(()=>{});
+    }, 8000);
+  }
+
+  function stopAll() {
+    clearInterval(hbTimer);
+    clearInterval(brTimer);
+    heart.pause();
+    breath.pause();
+  }
+
+  function resumeAll() {
+    if (!hbTimer) startHeartbeat();
+    if (!brTimer) startBreathing();
+  }
+});
+</script>
+
+</body>
+</html>
