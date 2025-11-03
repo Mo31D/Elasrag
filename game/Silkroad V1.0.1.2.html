@@ -15,12 +15,6 @@
 <div id="diceContainer"></div>
 <div id="greenDie" class="die"></div>
 <div id="redDie" class="die"></div>
-</div>
-
-  <div class="sidebar"> 
- </div>
-    <div class="panel">
-
 <!-- ✨ Floating Sign-In Panel -->
 <div class="login-floating" id="loginPanel">
   <h2>🏕️ Caravan Entry</h2>
@@ -32,6 +26,13 @@
   </div>
   <button id="resetBtn" class="reset">⟳</button>
 </div>
+</div>
+
+  <div class="sidebar"> 
+ </div>
+    <div class="panel">
+
+
 
 <!-- 🪄 After Start (Mini Floating Glass Panel) -->
 <div class="after-start-floating hidden-panel" id="afterStartPanel">
@@ -933,8 +934,7 @@ function adjustMusicCtl() {
     if (!sidebar) return;
     const mapRect = mapEl.getBoundingClientRect();
     if (mapRect.width < SIDEBAR_MOBILE_BREAK) {
-      // collapse: reduce width and add small-floating
-      sidebar.style.width = "220px";
+  sidebar.style.width = "90vw";
       sidebar.style.opacity = "0.95";
       sidebar.style.position = "absolute";
       sidebar.style.right = "10px";
