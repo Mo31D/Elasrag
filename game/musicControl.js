@@ -3,30 +3,28 @@
   const panel = logSection?.parentElement || document.querySelector(".panel") || document.body;
 
   panel.insertAdjacentHTML("beforeend", `
-    <audio id="bgMusic" src="market_breeze.mp3" loop></audio>
+  <audio id="bgMusic" src="market_breeze.mp3" loop></audio>
 
-    <div id="musicCtl">
-      <button id="musicBtn" title="Mute / Unmute">🎵</button>
-      <div id="musicUI">
-        <input id="musicVol" type="range" min="0" max="0.5" step="0.01" value="0.25">
-        <select id="musicSel">
-          <option value="market_breeze.mp3" selected>🌅 Desert</option>
-          <option value="halloween_theme.mp3">🎃 Halloween</option>         
-          <option value="egynights.mp3">🌙 Egyptian Nights</option>                
-          <option value="youtube">📺 YouTube Player</option>
-        </select>
-      </div>
-    </div>
+  <div id="controlBar">
+    <button id="musicBtn" title="Mute / Unmute">🎵</button>
 
-    <div id="themeCtl">
-      <label for="themeSel">🎨 Theme:</label>
-      <select id="themeSel">
-        <option value="default" selected>🏜️ Default</option>
-        <option value="halloween">🎃 Halloween</option>
-        <option value="night">🌙 Egyptian Nights</option>
-      </select>
-    </div>
-  `);
+    <input id="musicVol" type="range" min="0" max="0.5" step="0.01" value="0.25">
+
+    <select id="musicSel">
+      <option value="market_breeze.mp3" selected>🌅 Desert</option>
+      <option value="halloween_theme.mp3">🎃 Halloween</option>
+      <option value="egynights.mp3">🌙 Egyptian Nights</option>
+      <option value="youtube">📺 YouTube Player</option>
+    </select>
+
+    <label for="themeSel" style="margin-left:10px;">🎨 Theme:</label>
+    <select id="themeSel">
+      <option value="default">🏜️ Default</option>
+      <option value="halloween">🎃 Halloween</option>
+      <option value="night" selected>🌙 Egyptian Nights</option>
+    </select>
+  </div>
+`);
 
   // عناصر الموسيقى
   const m = document.getElementById("bgMusic");
@@ -107,6 +105,11 @@
   let initialMusic = "market_breeze.mp3";
   if (savedTheme === "halloween") initialMusic = "halloween_theme.mp3";
   else if (savedTheme === "night") initialMusic = "egynights.mp3";
-  sel.value = initialMusic;
-  m.src = initialMusic;
+sel.value = initialMusic;
+m.src = initialMusic;
+
+// ✅ تأكيد تطبيق الثيم فعليًا في أول تحميل
+if (typeof ThemeManager !== "undefined" && typeof ThemeManager.applyTheme === "function") {
+  ThemeManager.applyTheme(savedTheme);
+}
 })();

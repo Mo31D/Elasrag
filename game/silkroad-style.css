@@ -1551,3 +1551,62 @@ body.night .player-card:hover {
   font-weight: 800;
   font-size: clamp(9px, 2.2vw, 13px);
 }
+
+/* 🎛️ Unified Bottom Control Bar */
+#controlBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  margin-top: 14px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  width: 95%;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 14px;
+  flex-wrap: wrap;
+  z-index: 8000;
+}
+
+#controlBar button,
+#controlBar select,
+#controlBar input[type="range"] {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.85);
+  padding: 4px 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+#controlBar input[type="range"] {
+  width: 100px;
+  accent-color: var(--gold);
+}
+
+#controlBar button:hover,
+#controlBar select:hover {
+  background: rgba(255,255,255,1);
+  transform: scale(1.05);
+}
+
+/* 📱 Mobile Layout */
+@media (max-width: 600px) {
+  #controlBar {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    padding: 8px;
+  }
+  #controlBar input[type="range"] {
+    width: 120px;
+  }
+}
