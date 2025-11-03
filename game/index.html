@@ -166,25 +166,25 @@ const UI = {
   },
 
 townCoords: [
-  [54, 95],
-  [47, 90],
-  [44, 85],
-  [52, 80],
-  [60, 75],
-  [58, 70],
-  [52, 65],
-  [48, 60],
-  [53, 55],
-  [40, 48],
-  [50, 45],
-  [47, 40],
-  [44, 35],
-  [47, 30],
-  [50, 25],
-  [47, 20],
-  [44, 15],
-  [47, 10],
-  [50, 5],
+  [52, 93],//1
+  [47, 90],//2
+  [46, 85],//3
+  [53, 80],//4
+  [60, 76],//5
+  [57, 70],//6
+  [53, 65],//7
+  [50, 60],//8
+  [49, 53],//9
+  [40, 48],//10
+  [50, 45],//20
+  [47, 40],//30
+  [44, 35],//40
+  [45, 29],//50
+  [53, 25],//60
+  [47, 21],//70
+  [48, 16],//80
+  [47, 12], //90
+  [48, 9], //100
 ],
 
   createNode(index, name, price) {
@@ -1050,5 +1050,28 @@ init();
 </script>
 <script src="musicControl.js"></script>
 <script src="soundFX.js"></script>
+<!-- 📏 Zoom Control -->
+<div id="zoomControl">
+  <input type="range" id="zoomSlider" min="50" max="120" value="100" />
+</div>
+
+<script>
+  const zoomSlider = document.getElementById("zoomSlider");
+  const zoomControl = document.getElementById("zoomControl");
+  let fadeTimeout;
+
+  zoomSlider.addEventListener("input", (e) => {
+    const scale = e.target.value / 100;
+    document.querySelector(".container").style.transform = `scale(${scale})`;
+    document.querySelector(".container").style.transformOrigin = "center top";
+
+    zoomControl.style.opacity = "1";
+    clearTimeout(fadeTimeout);
+
+    fadeTimeout = setTimeout(() => {
+      zoomControl.style.opacity = "0.4";
+    }, 3000);
+  });
+</script>
 </body>
 </html>

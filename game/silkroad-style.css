@@ -18,18 +18,24 @@ body {
 }
 .container {
   display: flex;
-  gap: 16px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 .map {
   position: relative;
-  width: 100%;
-  max-width: 1024px;                /* العرض الأصلي للصورة */
-  aspect-ratio: 1024 / 1536;        /* الحفاظ على التناسب الصحيح */
+  width: 100vw;           /* تملأ الشاشة أفقياً */
+  max-width: 100%;        /* لا يوجد حد أقصى */
+  height: auto;
+  aspect-ratio: 2 / 3;
   background: url("Silkroad_page-0001.jpeg") no-repeat center center;
-  background-size: contain;         /* يجعل الصورة تظهر كاملة بدون تمدد */
-  border: 10px solid var(--brown);
-  border-radius: 12px;
+  background-size: cover; /* يملأ العرض بالكامل */
+  border: 2px solid var(--brown);
+  border-radius: 2px;
   margin: 0 auto;
   overflow: hidden;
 }
@@ -326,9 +332,12 @@ th { background: #fbfbfb; font-weight: 600; }
 
 /* 🎨 Player Cards */
 .players-container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  width: 90%;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 
@@ -1343,4 +1352,40 @@ body.night .player-card:hover {
   font-size: 12px;
   color: #555;
   opacity: 0.8;
+}
+
+/* ✨ Zoom Control — Golden Theme */
+#zoomControl {
+  position: fixed;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  z-index: 7000;
+  background: rgba(218, 165, 32, 0.15);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 215, 0, 0.4);
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
+  opacity: 0.4;                      /* يبدأ باهت قليلاً */
+  transition: opacity 0.8s ease;     /* يجعل التلاشي ناعم */
+}
+
+#zoomControl:hover {
+  opacity: 1;
+  background: rgba(255, 215, 0, 0.25);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.45);
+}
+
+#zoomSlider {
+  writing-mode: bt-lr;
+  -webkit-appearance: slider-vertical;
+  width: 22px;
+  height: 180px;
+  cursor: pointer;
+  accent-color: gold;               /* اللون الذهبي للمؤشر */
+  border-radius: 10px;
+  background: linear-gradient(to top, #b8860b, #ffd700, #fff8dc);
+  box-shadow: inset 0 0 6px rgba(255, 215, 0, 0.4);
+  opacity: 0.95;
 }
