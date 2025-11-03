@@ -298,7 +298,7 @@ highlightActivePlayer() {
   this.turnBanner.textContent = `🎯 ${active.name}'s Turn ${active.isAI ? "(AI)" : ""}`;
 
   GameState.players.forEach((p, i) =>
-    p.dotEl.classList.toggle("active", i === GameState.activeIndex)
+p.dotEl.classList.toggle("active", i === GameState.activeIndex)
   );
 
   const cards = document.querySelectorAll(".player-card");
