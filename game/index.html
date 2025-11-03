@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,97 +10,111 @@
 <body>
 
 <div class="container">
-<div class="map" id="map">
-<div id="diceContainer"></div>
-<div id="greenDie" class="die"></div>
-<div id="redDie" class="die"></div>
-<!-- ✨ Floating Sign-In Panel -->
-<div class="login-floating" id="loginPanel">
-  <h2>🏕️ Caravan Entry</h2>
-  <input id="newPlayerName" type="text" placeholder="Player name..." />
-  <div class="btns">
-    <button id="addPlayerBtn">Add a player</button>
-    <button id="addAIPlayerBtn" class="ai">Robot 🤖</button>
-    <button id="startBtn" class="primary"> Start </button>
+  <div class="map" id="map">
+    <div id="diceContainer"></div>
+    <div id="greenDie" class="die"></div>
+    <div id="redDie" class="die"></div>
+
+    <!-- 🏙️ Floating top-right corner info -->
+    <div class="floating-top-corner">
+      <div id="currentTownText">🏙️ price:</div>
+      <div id="turnBanner">Waiting for players...</div>
+    </div>
+
+    <!-- ✨ Floating Sign-In Panel -->
+    <div class="login-floating" id="loginPanel">
+      <h2>🏕️ Caravan Entry</h2>
+      <input id="newPlayerName" type="text" placeholder="Player name..." />
+      <div class="btns">
+        <button id="addPlayerBtn">Add a player</button>
+        <button id="addAIPlayerBtn" class="ai">Robot 🤖</button>
+        <button id="startBtn" class="primary"> Start </button>
+      </div>
+      <button id="resetBtn" class="reset">⟳</button>
+    </div>
   </div>
-  <button id="resetBtn" class="reset">⟳</button>
+
+  <!-- 🎮 Interface Below Map -->
+  <div class="below-map">
+    <!-- 🧍 Players -->
+    <div class="players-container" id="playersTableContainer"></div>
+
+    <!-- 🧾 Game Log -->
+    <div class="log-panel" id="logPanel">
+      <strong>Log</strong>
+      <div id="log"></div>
+
+      <div id="ytWrapper" style="display:none; text-align:center; margin-top:10px;">
+        <iframe id="ytFrame" width="360" height="215"
+          src=""
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+
+    <!-- 🎵 Music Control -->
+    <div id="musicCtl">
+      <audio id="bgMusic" loop>
+        <source src="bg.mp3" type="audio/mpeg">
+      </audio>
+      <button id="musicBtn">🎵 Toggle Music</button>
+      <div id="musicHint">Click to toggle background music</div>
+    </div>
+  </div>
+
+  <!-- 🪄 After Start (Mini Floating Glass Panel) -->
+  <div class="after-start-floating hidden-panel" id="afterStartPanel">
+    <button id="resetBtn2" class="primary">🌟 Start a new game</button>
+  </div>
 </div>
-</div>
 
-  <div class="sidebar"> 
- </div>
-    <div class="panel">
-
-
-
-<!-- 🪄 After Start (Mini Floating Glass Panel) -->
-<div class="after-start-floating hidden-panel" id="afterStartPanel">
-  <button id="resetBtn2" class="primary">🌟 Start a new game</button>
-</div>
+<!-- 🎲 Dice script -->
 <script src="dice3d.js"></script>
 <script>
   Dice3D.init(document.getElementById("map"));
 </script>
+
+<!-- 🔁 Hide floating sign-in after Start -->
 <script>
-/* 🔁 Hide floating sign-in after Start */
-document.getElementById("startBtn").addEventListener("click", () => {
-  const loginPanel = document.getElementById("loginPanel");
-  const afterStartPanel = document.getElementById("afterStartPanel");
-  setTimeout(() => {
-    loginPanel.classList.add("hidden-panel");
-    afterStartPanel.classList.remove("hidden-panel");
-  }, 600);
-});
-document.getElementById("resetBtn2").onclick = () => location.reload();
+  document.getElementById("startBtn").addEventListener("click", () => {
+    const loginPanel = document.getElementById("loginPanel");
+    const afterStartPanel = document.getElementById("afterStartPanel");
+    setTimeout(() => {
+      loginPanel.classList.add("hidden-panel");
+      afterStartPanel.classList.remove("hidden-panel");
+    }, 600);
+  });
+  document.getElementById("resetBtn2").onclick = () => location.reload();
 </script>
 
-    <div class="panel">
-
-<br/> <br/> <br/>
-
-      <strong></strong>
-<br/> <br/>
-
-      <strong></strong>
-
-      <div id="currentTownText"> 🏙️ price: </div><br/>
-
-      <div id="turnBanner">Waiting for players...</div><br/>
-
-    <div class="panel">
-
-
-      <strong>Players <br/> <br/> </strong>
-
-<div id="playersTableContainer" class="players-container"></div>
-
-    </div>
-	<br><br><br>
-    <div class="panel">
-      <strong>Log</strong>
-
-<div id="log"></div>
-
-<div id="ytWrapper" style="display:none; text-align:center; margin-top:10px;">
-  <iframe id="ytFrame" width="360" height="215"
-    src=""
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen>
-  </iframe>
-</div>
-
-    </div>
-  </div>
-</div>
-
+<!-- 🎵 Music Control Script -->
 <script>
+  const musicBtn = document.getElementById("musicBtn");
+  const bgMusic = document.getElementById("bgMusic");
+  let musicPlaying = false;
+
+  musicBtn.onclick = () => {
+    if (!musicPlaying) {
+      bgMusic.play();
+      musicBtn.textContent = "🔇 Mute Music";
+    } else {
+      bgMusic.pause();
+      musicBtn.textContent = "🎵 Play Music";
+    }
+    musicPlaying = !musicPlaying;
+  };
+</script>
 
 
-
+<!-- باقي سكريبت اللعبة يبدأ هنا -->
+<script>
 /* =========================================
    MODULE 1: Game State
    ========================================= */
+
 const GameState = {
   towns: ["Tianlu","Ozon","Daruk","Samurai","Turkhan","Marzban","Seraphis","Tsafir","Nimar","Valon","Zemara","Artava","Azharan","Qashim","Liavera","Oravan","Novar","Shariza","Gate of Dusk"],
   prices: [1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,70,80,90,100],
@@ -141,7 +154,7 @@ const UI = {
     const price = GameState.prices[i];
 
     this.townText.innerHTML = `
-      🏙️ You are in 
+      You are in 
       <span class="town-name">${townName}</span> City &nbsp;&nbsp;
       <br>🐪 Camel price 
       <span class="price-flash">$${price}</span>
@@ -242,11 +255,12 @@ refreshTable() {
           <input type="number" id="inlineCamelCount" value="1" min="1" />
           <button class="num-btn plus">+</button>
         </div>
-        <button class="inline-buy">Buy</button>
-        <button class="inline-sell">Sell</button>
-        <button class="inline-wait">Wait</button>
+        <button class="inline-buy">Buy 🐪</button>
+        <button class="inline-sell">Sell 💰</button>
+        <button class="inline-wait">Wait ⏳</button>
       `;
 
+	  	  	  	  
       const input = btnArea.querySelector("#inlineCamelCount");
       btnArea.querySelector(".plus").onclick = () => input.stepUp();
       btnArea.querySelector(".minus").onclick = () => input.stepDown();

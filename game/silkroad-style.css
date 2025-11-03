@@ -114,7 +114,7 @@ body {
 
 /* السعر داخل الدائرة */
 .node .price-main {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 800;
   color: #b8860b;
   position: relative;
@@ -169,8 +169,8 @@ body {
 /* ✨ Transparent glass sidebar panel background */
 .sidebar {
   width: 460px;
-  background: transparent !important;  /* ← إزالة الخلفية تمامًا */
-  backdrop-filter: none !important;     /* ← إلغاء تأثير الزجاج */
+  background: rgba(255, 255, 255, 0.1); /* subtle white transparency */
+  backdrop-filter: blur(18px) saturate(180%);
   border-radius: 12px;
   padding: 12px;
   border: none !important;
@@ -251,24 +251,59 @@ th { background: #fbfbfb; font-weight: 600; }
 #greenDie { left: 30px; top: 360px; background: transparent; }
 #redDie { left: 30px; top: 405px; background: transparent; }
 .die.roll { transform: scale(1.2) rotate(10deg); }
+/* 🏙️ Small floating info box in top-right corner of the map */
+.floating-top-corner {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.001);
+  backdrop-filter: blur(1px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.001);
+  border-radius: 10px;
+  padding: 6px 10px;
+  width: 30%;
+  top: 1.5%;
+  right: 5%;
+  text-align: right;
+  color: #4b2e05;
+  font-size: 13px;
+  line-height: 1.4;
+  z-index: 8000;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
 
+/* النصوص الداخلية */
+.floating-top-corner #currentTownText {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.floating-top-corner #turnBanner {
+  background: rgba(255, 230, 150, 0.8);
+  margin-top: 4px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  text-align: center;
+  color: #5b3a00;
+  animation: blink 2s infinite;
+}
 #currentTownText {
   font-size: 16px;
   font-weight: 600;
-  color: #4b2e05;
+  color: #ffffff;
   line-height: 1.7;
   text-align: center;
 }
 
 /* ✨ Flashing effects */
 .town-name {
-  color: #b22222;
+  color: #ffffff;
   font-weight: 800;
   animation: flashTown 1.5s infinite alternate;
 }
 
 .price-flash {
-  color: #ffcc00;
+  color: #ffffff;
   font-weight: 900;
   font-size: 24px;
   text-shadow:
@@ -276,7 +311,7 @@ th { background: #fbfbfb; font-weight: 600; }
      1px -1px 0 #000,
     -1px  1px 0 #000,
      1px  1px 0 #000,
-     0 0 10px #ffcc00;
+     0 0 10px #ffffff;
   animation: flashPrice 1.2s infinite alternate;
 }
 
@@ -1199,4 +1234,113 @@ body.night .player-card:hover {
     width: 100%;
     height: 180px;
   }
+}
+
+/* =========================================
+   🎮 Player & Log Area Below Map
+   ========================================= */
+.below-map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 18px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+/* كروت اللاعبين */
+.players-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 14px 20px;
+  max-width: 800px;
+  width: 90%;
+  justify-items: center;
+}
+
+/* السجل */
+.log-panel {
+  width: 90%;
+  max-width: 800px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: #fff;
+  font-size: 13px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+.log-panel strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #ffd966;
+  font-size: 14px;
+}
+
+#log {
+  max-height: 180px;
+  overflow-y: auto;
+  font-size: 13px;
+}
+
+
+.trade-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.trade-controls button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+#buyBtn {
+  background: linear-gradient(90deg, #4caf50, #2e7d32);
+}
+#sellBtn {
+  background: linear-gradient(90deg, #e53935, #b71c1c);
+}
+#waitBtn {
+  background: linear-gradient(90deg, #ffb300, #f57c00);
+}
+.trade-controls button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+/* 🎵 Music Control */
+#musicCtl {
+  margin-top: 18px;
+  text-align: center;
+}
+#musicBtn {
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #66a6ff, #89f7fe);
+  color: #003366;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.2s ease;
+}
+#musicBtn:hover {
+  transform: scale(1.05);
+}
+#musicHint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #555;
+  opacity: 0.8;
 }
