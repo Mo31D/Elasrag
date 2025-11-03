@@ -28,8 +28,8 @@ body {
 }
 .map {
   position: relative;
-  width: 95%;
-  max-width: 95%;        /* لا يوجد حد أقصى */
+  width: 94%;
+  max-width: 94%;        /* لا يوجد حد أقصى */
   height: auto;
   aspect-ratio: 2 / 3;
   background: url("Silkroad_page-0001.jpeg") no-repeat center center;
@@ -104,37 +104,56 @@ body {
 /* دائرة المدينة (السعر في المنتصف) */
 .node {
   position: absolute;
-  width: 5vw;
-  height: 5vw;
+  width: 4.8vw;
+  height: 4.8vw;
   min-width: 20px;
   min-height: 20px;
-  max-width: 30px;
-  max-height: 30px;
+  max-width: 32px;
+  max-height: 32px;
   border-radius: 50%;
-  border: 3px solid rgba(0, 0, 0, 0.5);
-  background: linear-gradient(#fff7e8, #f1d9b1);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 220, 120, 0.75) 0%,   /* 💛 توهج داخلي أهدأ */
+    rgba(255, 200, 40, 0.4) 45%,
+    rgba(255, 170, 0, 0.15) 90%,
+    transparent 100%
+  );
+  border: 1.5px solid rgba(255, 210, 100, 0.3); /* 🟡 حافة ذهبية شفافة أكثر */
+  box-shadow:
+  0 0 4px 1px rgba(255, 200, 60, 0.4),
+  0 0 8px 3px rgba(255, 180, 30, 0.25);
+    inset 0 0 4px rgba(255, 255, 255, 0.25);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
   overflow: visible;
   z-index: 2000;
+  transition: transform 0.3s ease, box-shadow 0.4s ease;
+  transform: scale(1);
+}
+
+
+.node:hover {
+  transform: scale(1.15);
+  box-shadow:
+    0 0 10px 4px rgba(255, 210, 100, 0.6),
+    0 0 20px 8px rgba(255, 190, 60, 0.4),
+    inset 0 0 6px rgba(255, 255, 255, 0.3);
 }
 
 /* السعر داخل الدائرة */
 .node .price-main {
-  font-size: 12px;
   font-weight: 800;
   color: #b8860b;
   position: relative;
-  z-index: 2;
+  z-index: 2100;
+  font-size: clamp(8px, 2vw, 11px);
 }
-
 /* اسم المدينة تحت الدائرة مباشرة */
 .node .town-small {
   position: absolute;
-  bottom: -18px;       /* المسافة بين الاسم والدائرة */
-  left: 50%;
+  top: 50%;       /* المسافة بين الاسم والدائرة */
+  left: -80%;
   transform: translateX(-50%);
   font-size: 9.5px;
   color: #fff;
@@ -146,8 +165,26 @@ body {
 
 /* Highlighted current town */
 .town-current {
-  animation: flashInner 1.5s ease-in-out infinite alternate;
-  border-color: var(--gold);
+  border-color: #ffd84d;
+  box-shadow:
+    0 0 16px 6px rgba(255, 210, 80, 0.95),
+    0 0 32px 14px rgba(255, 200, 60, 0.7);
+  animation: pulseNode 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes pulseNode {
+  0% {
+    transform: scale(1);
+    box-shadow:
+      0 0 10px 3px rgba(255, 210, 80, 0.8),
+      0 0 20px 8px rgba(255, 190, 60, 0.5);
+  }
+  100% {
+    transform: scale(1.15);
+    box-shadow:
+      0 0 20px 8px rgba(255, 230, 100, 1),
+      0 0 40px 20px rgba(255, 200, 60, 0.8);
+  }
 }
 
 @keyframes flashInner {
@@ -159,21 +196,28 @@ body {
   }
 }
 
-/* 🧍 Player markers on map */
+/* 🧍 Player markers on map — Responsive and glowing */
 .player-dot {
   position: absolute;
-  width: 16px;
-  height: 16px;
   border-radius: 50%;
-  border: 2px solid #fff;
   transform: translate(-50%, -50%);
-  z-index: 1800;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4); /* subtle floating shadow */
+  pointer-events: none;
+  border: 2px solid #fff;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4), 0 0 8px currentColor;
+  animation: playerPulse 2s infinite ease-in-out;
   transition: left 1s linear, top 1s linear;
+  z-index: 1800;
+
+  /* 🔹 حجم متفاعل حسب عرض الشاشة */
+  width: clamp(10px, 1.6vw, 18px);
+  height: clamp(10px, 1.6vw, 18px);
 }
 
-
-
+@keyframes playerPulse {
+  0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.9; }
+  50%  { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1);   opacity: 0.9; }
+}
 
 /* ✨ Transparent glass sidebar panel background */
 .sidebar {
@@ -625,8 +669,10 @@ th { background: #fbfbfb; font-weight: 600; }
 }
 /* ✨ Mini floating "Start a new game" badge */
 .after-start-floating {
-  position: relative;
-  margin: 20px auto;
+  position: absolute;
+  top: 0%; /* 🔹 قرب أعلى الخريطة */
+  right: 0%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   background: rgba(255, 255, 255, 0.15);
@@ -637,7 +683,7 @@ th { background: #fbfbfb; font-weight: 600; }
   box-shadow: 0 4px 14px rgba(0,0,0,0.25);
   transition: all 0.5s ease;
   width: fit-content;
-  z-index: 999;
+  z-index: 9999;
 }
 .after-start-floating button.primary {
   background: linear-gradient(90deg, #ffcc00, #ffaa00);
@@ -833,8 +879,6 @@ th { background: #fbfbfb; font-weight: 600; }
 /* Layer hierarchy */
 .map { z-index: 1000; }
 .node { z-index: 2000; position: absolute; }
-.node .price-main { position: relative; z-index: 2100; }
-.player-dot { z-index: 1800; }
 .floating-dice { z-index: 3000; }
 .floating-sidebar, #musicCtl { z-index: 4000; }
 .login-floating, .after-start-floating { z-index: 12000; } /* topmost */
@@ -883,15 +927,6 @@ th { background: #fbfbfb; font-weight: 600; }
 /* =========================================
    PLAYER DOT ENHANCEMENT
    ========================================= */
-.player-dot {
-  border-radius: 50%;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  border: 2px solid #fff;
-  box-shadow: 0 0 8px currentColor;
-  animation: playerPulse 2s infinite ease-in-out;
-}
 
 @keyframes playerPulse {
   0%, 100% { box-shadow: 0 0 6px currentColor; opacity: 1; }
@@ -1137,19 +1172,14 @@ body.night .player-card:hover {
     max-height: 22px;
   }
 
-  .node .price-main {
-    font-size: 10px;
-  }
+
 
   .node .town-small {
     font-size: 8px;
     bottom: -14px;
   }
 
-  .player-dot {
-    width: 10px;
-    height: 10px;
-  }
+
 
   .sidebar {
     width: 100%;
@@ -1177,7 +1207,7 @@ body.night .player-card:hover {
   .panel strong,
   #turnBanner,
   #currentTownText {
-    font-size: 13px !important;
+    font-size: 10px !important;
     line-height: 1.4;
   }
 
@@ -1515,3 +1545,9 @@ body.night .player-card:hover {
   text-shadow: none !important;    /* يمنع أي توهج حول الرقم */
 }
 
+.node .price-main {
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.7);
+  font-weight: 800;
+  font-size: clamp(9px, 2.2vw, 13px);
+}

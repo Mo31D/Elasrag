@@ -10,6 +10,11 @@
 <body>
 
 <div class="container">
+	  <!-- 🪄 After Start (Mini Floating Glass Panel) -->
+  <div class="after-start-floating hidden-panel" id="afterStartPanel">
+    <button id="resetBtn2" class="primary">🌟 Start a new game</button>
+  </div>
+  
   <div class="map" id="map">
     <div id="diceContainer"></div>
     <div id="greenDie" class="die"></div>
@@ -17,7 +22,7 @@
 
     <!-- 🏙️ Floating top-right corner info -->
     <div class="floating-top-corner">
-      <div id="currentTownText">🏙️ price:</div>
+      <div id="currentTownText">price:</div>
       <div id="turnBanner">Waiting for players...</div>
     </div>
 
@@ -35,12 +40,10 @@
   </div>
 
   <!-- 🎮 Interface Below Map -->
-  <div class="below-map">
   <!-- 🪄 After Start (Mini Floating Glass Panel) -->
   <div class="after-start-floating hidden-panel" id="afterStartPanel">
     <button id="resetBtn2" class="primary">🌟 Start a new game</button>
   </div>
-</div>
     <!-- 🧾 Game Log -->
     <div class="log-panel" id="logPanel">
       <strong>Log</strong>
@@ -619,29 +622,27 @@ function positionPlayers() {
   const node = document.querySelector(`.node[data-index="${GameState.currentTown}"]`);
   if (!node) return;
 
-  // Get town center in map coordinates
+  // ⚙️ الحصول على مركز المدينة
   const nodeRect = node.getBoundingClientRect();
   const mapRect = UI.map.getBoundingClientRect();
   const centerX = nodeRect.left - mapRect.left + nodeRect.width / 2;
   const centerY = nodeRect.top - mapRect.top + nodeRect.height / 2;
 
-  // Inner circle radius (smaller than town circle)
   const total = GameState.players.length;
-  const radius = 10; // small circle within the town
+  if (total === 0) return;
 
+  // 🟡 نصف القطر — خارج دائرة المدينة قليلاً
+  // زيد الرقم 1.4 لجعل النقاط أبعد قليلاً (يمكن تعديلها حسب الذوق)
+  const radius = nodeRect.width * 0.7;
+
+  // 🎯 توزيع النقاط بشكل دائري حول المدينة
   GameState.players.forEach((p, i) => {
-    let x = centerX;
-    let y = centerY;
+    const angle = (i / total) * 2 * Math.PI; // زاوية كل لاعب
+    const offsetX = radius * Math.cos(angle);
+    const offsetY = radius * Math.sin(angle);
 
-    if (total > 1) {
-      const angle = (i / total) * 2 * Math.PI;
-      // Distribute them slightly around the center so they don't overlap
-      x += radius * Math.cos(angle);
-      y += radius * Math.sin(angle);
-    }
-
-    p.dotEl.style.left = `${x}px`;
-    p.dotEl.style.top = `${y}px`;
+    p.dotEl.style.left = `${centerX + offsetX}px`;
+    p.dotEl.style.top = `${centerY + offsetY}px`;
   });
 }
 
@@ -1091,6 +1092,7 @@ init();
 </script>
 <script src="musicControl.js"></script>
 <script src="soundFX.js"></script>
+<script src="themes.js"></script>
 <!-- 📏 Zoom Control -->
 <div id="zoomControl">
   <input type="range" id="zoomSlider" min="50" max="120" value="100" />

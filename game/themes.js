@@ -9,48 +9,50 @@ const ThemeManager = (() => {
       accent: "#b8860b"
     },
     halloween: {
-      map: "halloween_map.png", // 🎃 can be a static image or animated .gif / .webp
+      map: "halloween_map.png",
       cardGlow: "#ff6600",
       accent: "#ff3300"
     },
-    // في themes.js — استبدل الكتلة night
     night: {
-      map: "Egyptian.jpeg",     // صورة الخريطة الليلية داخل مجلد المشروع
-      cardGlow: "#ffcc00",    // توهج ذهبي ساطع (gold)
-      accent: "#b8860b"       // لمسات ذهبية/نحاسية دافئة
+      map: "Egyptian.jpeg",
+      cardGlow: "#ffcc00",
+      accent: "#b8860b"
     }
   };
 
   let current = "default";
 
   function applyTheme(name) {
-  if (!themes[name]) return console.warn("Unknown theme:", name);
-  current = name;
-  const t = themes[name];
+    if (!themes[name]) return console.warn("Unknown theme:", name);
+    current = name;
+    const t = themes[name];
 
-  document.body.className = name; // ✅ يسمح بتطبيق تنسيقات CSS بناءً على اسم الثيم
+    // ✅ أضف/أزل فقط كلاس الثيم من body
+    document.body.classList.remove("default", "halloween", "night");
+    document.body.classList.add(name);
 
-  // 🗺️ Change map image
-  const map = document.querySelector(".map");
-  if (map) {
-  map.style.backgroundImage = `url('${t.map}')`;
-  map.className = `map ${name}`; // ✅ حتى يكون عندها نفس كلاس الثيم
+    // 🗺️ تحديث صورة الخريطة بدون حذف بقية الكلاسات
+    const map = document.querySelector(".map");
+    if (map) {
+      map.style.backgroundImage = `url('${t.map}')`;
+      map.classList.remove("default", "halloween", "night");
+      map.classList.add(name);
+    }
+
+    // 🃏 تحديث الكروت النشطة
+    document.querySelectorAll(".player-card.active").forEach(card => {
+      card.style.boxShadow = `0 0 20px 6px ${t.cardGlow}`;
+      card.style.borderColor = t.cardGlow;
+      card.style.background = `${t.accent}10`;
+      card.style.color = t.cardGlow;
+    });
+
+    // 🌈 تحديث المتغيرات العامة
+    document.documentElement.style.setProperty("--gold", t.cardGlow);
+    document.documentElement.style.setProperty("--brown", t.accent);
+
+    console.log(`🎨 Theme applied: ${name}`);
   }
-
-  // 🃏 Change player card light/glow
-  document.querySelectorAll(".player-card.active").forEach(card => {
-    card.style.boxShadow = `0 0 20px 6px ${t.cardGlow}`;
-    card.style.borderColor = t.cardGlow;
-    card.style.background = `${t.accent}10`;
-    card.style.color = t.cardGlow;
-  });
-
-  // 🌈 Update CSS variables for global accent
-  document.documentElement.style.setProperty("--gold", t.cardGlow);
-  document.documentElement.style.setProperty("--brown", t.accent);
-
-  console.log(`🎨 Theme applied: ${name}`);
-}
 
   function getAvailableThemes() {
     return Object.keys(themes);
