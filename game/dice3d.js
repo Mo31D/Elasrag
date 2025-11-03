@@ -17,8 +17,8 @@ const Dice3D = (function () {
     const root = document.createElement("div");
     root.id = "dice3d-container";
 root.style.position = "absolute";
-root.style.bottom = "3%";
-root.style.right = "9%";
+root.style.bottom = "50%";
+root.style.right = "6%";
 root.style.transform = "none";
 root.style.display = "flex";
 root.style.flexDirection = "column";
@@ -94,9 +94,10 @@ function createDie(color) {
   cube.style.transform = "rotateX(0deg) rotateY(0deg)";
 
   // تدرج لوني لوجه المكعب (يحافظ على الإيحاء الثلاثي الأبعاد)
-  const baseColor = color === "green"
-    ? "radial-gradient(circle at 30% 30%, #9fffa3, #006f2a)"
-    : "radial-gradient(circle at 30% 30%, #ffbdbd, #8b0000)";
+  // 🎨 تدرج شفاف قليلاً للنرد
+const baseColor = color === "green"
+  ? "radial-gradient(circle at 30% 30%, rgba(159,255,163,0.7), rgba(0,111,42,0.6))"
+  : "radial-gradient(circle at 30% 30%, rgba(255,189,189,0.7), rgba(139,0,0,0.6))";
 
   // نصف الحجم (يستخدم لتحريك الوجوه للخارج) — نصحح بمقدار طفيف offset لتفادي الفجوات
   const half = Math.round(diceSize / 2);
@@ -104,7 +105,7 @@ function createDie(color) {
   const translateZ = Math.max(1, half - offsetFix);
 
   // حجم النقطة: نطاق أصغر يناسب الهواتف (1.5px → 4.5px تقريبًا)
-  const dotSize = Math.max(3, Math.min(10, diceSize * 0.12));
+  const dotSize = Math.max(3, Math.min(10, diceSize * 0.20));
   const dotOffset = dotSize / 2;
 
   // Helper: create a face with correct visual settings

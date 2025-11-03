@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -36,9 +36,11 @@
 
   <!-- 🎮 Interface Below Map -->
   <div class="below-map">
-    <!-- 🧍 Players -->
-    <div class="players-container" id="playersTableContainer"></div>
-
+  <!-- 🪄 After Start (Mini Floating Glass Panel) -->
+  <div class="after-start-floating hidden-panel" id="afterStartPanel">
+    <button id="resetBtn2" class="primary">🌟 Start a new game</button>
+  </div>
+</div>
     <!-- 🧾 Game Log -->
     <div class="log-panel" id="logPanel">
       <strong>Log</strong>
@@ -53,23 +55,6 @@
         </iframe>
       </div>
     </div>
-
-
-    <!-- 🎵 Music Control -->
-    <div id="musicCtl">
-      <audio id="bgMusic" loop>
-        <source src="bg.mp3" type="audio/mpeg">
-      </audio>
-      <button id="musicBtn">🎵 Toggle Music</button>
-      <div id="musicHint">Click to toggle background music</div>
-    </div>
-  </div>
-
-  <!-- 🪄 After Start (Mini Floating Glass Panel) -->
-  <div class="after-start-floating hidden-panel" id="afterStartPanel">
-    <button id="resetBtn2" class="primary">🌟 Start a new game</button>
-  </div>
-</div>
 
 <!-- 🎲 Dice script -->
 <script src="dice3d.js"></script>
@@ -154,9 +139,9 @@ const UI = {
     const price = GameState.prices[i];
 
     this.townText.innerHTML = `
-      You are in 
+        
       <span class="town-name">${townName}</span> City &nbsp;&nbsp;
-      <br>🐪 Camel price 
+      <br>🐪 price <br> 
       <span class="price-flash">$${price}</span>
     `;
 
@@ -211,9 +196,9 @@ townCoords: [
   },
 
 refreshTable() {
-  const container = document.querySelector("#playersTableContainer");
+  const container = document.querySelector("#map");
   if (!container) return;
-  container.innerHTML = "";
+  container.querySelectorAll(".player-card").forEach(el => el.remove());
 
   GameState.players.forEach((p, i) => {
     const avg = p.camels ? (p.totalSpent / p.camels).toFixed(1) : "-";
@@ -223,11 +208,50 @@ refreshTable() {
     card.className = "player-card";
     if (i === GameState.activeIndex) card.classList.add("active");
 
-    card.style.borderColor = p.color;
-    card.style.background = `${p.color}15`;
-    card.style.color = p.color;
+card.style.borderColor = p.color;
+card.style.background = `${p.color}15`;
+card.style.color = p.color;
 
-    card.innerHTML = `
+card.style.position = "absolute";
+card.style.zIndex = 2500;
+card.style.width = "26%";
+card.style.maxWidth = "160px";
+card.style.fontSize = "11px";
+card.style.opacity = "0.95";
+card.style.backdropFilter = "blur(4px)";
+card.style.borderRadius = "10px";
+card.style.transition = "all 0.3s ease";
+
+/* 🎯 تحديد موضع كل كارت لاعب بشكل يدوي */
+switch (i) {
+  
+	case 0: // اللاعب الاول
+    card.style.left = "6%";
+    card.style.bottom = "10%";
+    break;
+	
+	case 1: // اللاعب الثاني
+    card.style.right = "6%";
+    card.style.bottom = "10%";
+    break;
+	
+	case 2: // اللاعب الثالث
+    card.style.left = "6%";
+    card.style.top = "4%";
+    break;
+	
+	case 3: // اللاعب الرابع
+    card.style.right = "6%";
+    card.style.top = "4%";
+    break;
+	
+	
+	default: // أي لاعبين إضافيين
+    card.style.left = `${10 + i * 0}%`;
+    card.style.bottom = "4%";
+    break;
+}
+	card.innerHTML = `
       <div class="player-header">
         <div>
           <span class="player-dot-inline" style="background:${p.color}"></span>
@@ -250,15 +274,21 @@ refreshTable() {
       btnArea.className = "inline-buttons";
 
       btnArea.innerHTML = `
-        <div class="number-input">
-          <button class="num-btn minus">–</button>
-          <input type="number" id="inlineCamelCount" value="1" min="1" />
-          <button class="num-btn plus">+</button>
-        </div>
-        <button class="inline-buy">Buy 🐪</button>
-        <button class="inline-sell">Sell 💰</button>
-        <button class="inline-wait">Wait ⏳</button>
-      `;
+  <div class="number-input">
+    <button class="num-btn minus">–</button>
+    <input type="number" id="inlineCamelCount" value="1" min="1" />
+    <button class="num-btn plus">+</button>
+  </div>
+
+  <div class="top-row">
+    <button class="inline-buy">Buy 🐪</button>
+    <button class="inline-sell">Sell 💰</button>
+  </div>
+
+  <div class="bottom-row">
+    <button class="inline-wait">Wait ⏳</button>
+  </div>
+`;
 
 	  	  	  	  
       const input = btnArea.querySelector("#inlineCamelCount");
@@ -521,14 +551,21 @@ playerActed() {
 },
 
     advanceActivePlayer() {
-      GameState.activeIndex = (GameState.activeIndex + 1) % GameState.players.length;
-      UI.refreshTable();
-      UI.highlightActivePlayer();
+  GameState.activeIndex = (GameState.activeIndex + 1) % GameState.players.length;
+  UI.refreshTable();
+  UI.highlightActivePlayer();
 
-      const current = GameState.players[GameState.activeIndex];
-      SoundFX.nextTurn();
-      if (current && current.isAI) aiTakeTurn(current);
-    },
+  // 🪶 طيران كارت اللاعب النشط بعد تغيير الدور
+  const activeCard = document.querySelector(".player-card.active");
+  if (activeCard && !GameState.locked && GameState.started) {
+    activeCard.classList.add("flying");
+    setTimeout(() => activeCard.classList.remove("flying"), 1600);
+  }
+
+  const current = GameState.players[GameState.activeIndex];
+  SoundFX.nextTurn();
+  if (current && current.isAI) aiTakeTurn(current);
+},
 
     getRoundNumber() { return roundNumber; },
     resetRound() { actionsTaken = 0; UI.log("🔁 Round counters reset."); }
@@ -550,7 +587,11 @@ function init(){
 }
 
 function addPlayer(name, isAI = false) {
-  if (!name) return;
+  // ⚙️ إذا لم يكتب اللاعب اسمًا، يتم توليد اسم تلقائي
+if (!name || name.trim() === "") {
+  const playerNumber = GameState.players.length + 1;
+  name = `Player ${playerNumber}`;
+}
   const color = GameState.palette[GameState.players.length % GameState.palette.length];
   const p = {
     name,

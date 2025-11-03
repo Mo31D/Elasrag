@@ -21,15 +21,15 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 14px;
+  gap: 4px;
   width: 100%;
   max-width: 100vw;
   overflow-x: hidden;
 }
 .map {
   position: relative;
-  width: 100vw;           /* تملأ الشاشة أفقياً */
-  max-width: 100%;        /* لا يوجد حد أقصى */
+  width: 95%;
+  max-width: 95%;        /* لا يوجد حد أقصى */
   height: auto;
   aspect-ratio: 2 / 3;
   background: url("Silkroad_page-0001.jpeg") no-repeat center center;
@@ -39,7 +39,10 @@ body {
   margin: 0 auto;
   overflow: hidden;
 }
-
+.below-map {
+  margin-top: 4px;   /* 🔹 تقليل المسافة بين الخريطة والكروت */
+  padding-top: 0;    /* 🔹 إزالة أي حشوة داخلية */
+}
 /* ✨ Modern Caravan Entry Styling */
 .login-panel {
   background: rgba(255, 255, 255, 0.15);
@@ -260,20 +263,20 @@ th { background: #fbfbfb; font-weight: 600; }
 /* 🏙️ Small floating info box in top-right corner of the map */
 .floating-top-corner {
   position: absolute;
-  background: rgba(255, 255, 255, 0.001);
-  backdrop-filter: blur(1px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.001);
-  border-radius: 10px;
+  background: transparent;
+  backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
   padding: 6px 10px;
-  width: 30%;
-  top: 1.5%;
-  right: 5%;
+  width: 20vw;
+  top: 40%;
+  left: 12%;
   text-align: right;
   color: #4b2e05;
   font-size: 13px;
   line-height: 1.4;
   z-index: 8000;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 /* النصوص الداخلية */
@@ -330,15 +333,6 @@ th { background: #fbfbfb; font-weight: 600; }
   100% { color: #ffcc00; text-shadow: 0 0 10px #ffe066; opacity: 1; }
 }
 
-/* 🎨 Player Cards */
-.players-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 14px;
-  width: 90%;
-  max-width: 900px;
-  margin: 0 auto;
-}
 
 
 
@@ -349,19 +343,17 @@ th { background: #fbfbfb; font-weight: 600; }
 
 .player-card {
   border: 3px solid #ccc;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.85);
-  padding: 10px 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  border-radius: 1vw;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.2vw 1.4vw;
+  box-shadow: 0 0.4vw 1vw rgba(0,0,0,0.25);
   transition: transform 0.2s ease, box-shadow 0.3s ease;
+  font-size: 1vw;              /* 🔹 حجم الخط يتغير مع العرض */
+  min-width: 22vw;             /* 🔹 ضمان حد أدنى للكرت */
+  max-width: 30vw;             /* 🔹 لا يكبر أكثر من اللازم */
 }
 
-.player-card.active {
-  border-color: var(--gold);
-  background: rgba(255, 248, 220, 0.95);
-  filter: none;
-  animation: playerGlow 1.6s ease-in-out infinite alternate;
-}
+
 
 .player-header {
   display: flex;
@@ -390,12 +382,27 @@ th { background: #fbfbfb; font-weight: 600; }
   font-size: 16px;
 }
 
-/* Glow pulse using player's color */
-@keyframes playerGlow {
-  0% { box-shadow: 0 0 0px rgba(255, 255, 255, 0.3); }
-  100% { box-shadow: 0 0 20px 8px currentColor; }
+.player-card.active {
+  border-color: var(--gold);
+  background: rgba(255, 248, 220, 0.95);
+  filter: none;
+  animation: outerPlayerGlow 1.8s ease-in-out infinite alternate;
+  box-shadow: 0 0 12px 3px var(--gold); /* 🔹 توهج أولي دائم حول الكارت */
 }
 
+/* ✨ توهج خارجي نابض باللون الذهبي */
+@keyframes outerPlayerGlow {
+  0% {
+    box-shadow:
+      0 0 10px 3px rgba(255, 204, 0, 0.6),
+      0 0 20px 8px rgba(255, 204, 0, 0.3);
+  }
+  100% {
+    box-shadow:
+      0 0 20px 6px rgba(255, 204, 0, 0.9),
+      0 0 35px 14px rgba(255, 230, 120, 0.5);
+  }
+}
 .player-dot.active {
   box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
 }
@@ -441,14 +448,7 @@ th { background: #fbfbfb; font-weight: 600; }
   background: linear-gradient(90deg, #ffb300, #f57c00);
 }
 
-.inline-buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 8px;
-  flex-wrap: wrap;
-}
+
 
 .inline-buttons input {
   width: 55px;
@@ -514,46 +514,103 @@ th { background: #fbfbfb; font-weight: 600; }
   margin-bottom: 6px;
 }
 
-/* 🎮 Inline trade area */
+
+
+/* 🎮 Inline trade area – updated layout */
 .inline-buttons {
   display: flex;
+  flex-direction: column;      /* 🔹 يجعل الأزرار عمودية */
   align-items: center;
-  justify-content: space-around;
-  gap: 4px;
-  margin-top: 6px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
+.inline-buttons .top-row {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.inline-buttons .bottom-row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+
+/* ⚙️ Number Input — compact and balanced */
 .number-input {
   display: flex;
   align-items: center;
-  border: 1px solid #d2a05a;
-  border-radius: 6px;
+  justify-content: center;
+  border: 1px solid #caa74d;
+  border-radius: 8px;
+  background: #1a1a1a;                /* 🔹 خلفية سوداء أنيقة */
+  width: 90px;                        /* 🔹 توازن أفضل للعرض */
+  height: 34px;
   overflow: hidden;
-  width: 60px;
-  height: 26px;
-  background: #fffbe9;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
 }
 
+/* حقل الرقم */
 .number-input input {
-  border: none;
-  width: 32px;
+  width: 34px;
   text-align: center;
-  font-size: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;                    /* 🔹 الرقم أبيض */
+  border: none;
+  background: #000;                  /* 🔹 خلفية الرقم سوداء */
   outline: none;
-  background: transparent;
 }
 
-.num-btn {
-  background: #ffefc1;
-  border: none;
-  font-size: 14px;
-  width: 20px;
-  height: 26px;
-  cursor: pointer;
-  transition: background 0.2s;
+.num-btn.minus:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
 }
-.num-btn:hover {
-  background: #ffe08a;
+
+/* 🎯 أزرار + و - محسّنة الشكل والتوسيط */
+.num-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  line-height: 1;
+}
+
+/* زر الإنقاص (–) */
+.num-btn.minus {
+  background: linear-gradient(180deg, #2c2c2c, #1a1a1a);
+  color: #ffcc00;
+}
+.num-btn.minus:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 6px rgba(255, 204, 0, 0.6);
+}
+
+/* زر الإضافة (+) */
+.num-btn.plus {
+  background: linear-gradient(180deg, #ffd84d, #b8860b);
+  color: #3b2500;
+}
+.num-btn.plus:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
+}
+.num-btn.plus:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
+}
+.num-btn.plus:active {
+  transform: scale(0.95);
 }
 
 /* keep the buttons aligned nicely */
@@ -568,16 +625,18 @@ th { background: #fbfbfb; font-weight: 600; }
 }
 /* ✨ Mini floating "Start a new game" badge */
 .after-start-floating {
-  position: absolute;
-  top: 40px;
-  right: 35px;
+  position: relative;
+  margin: 20px auto;
+  display: flex;
+  justify-content: center;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(18px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 12px;
-  padding: 8px 10px;
+  padding: 10px 14px;
   box-shadow: 0 4px 14px rgba(0,0,0,0.25);
   transition: all 0.5s ease;
+  width: fit-content;
   z-index: 999;
 }
 .after-start-floating button.primary {
@@ -684,8 +743,8 @@ th { background: #fbfbfb; font-weight: 600; }
    ========================================= */
 .floating-dice {
   position: absolute;
-  top: 50%;
-  left: 20px;
+  top: 10%;
+  left: 10px;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -700,7 +759,7 @@ th { background: #fbfbfb; font-weight: 600; }
 }
 
 .floating-dice .dice {
-  width: 58px;
+  width: 08px;
   height: 58px;
   border-radius: 12px;
   font-size: 26px;
@@ -1241,7 +1300,7 @@ body.night .player-card:hover {
 
   #ytFrame {
     width: 100%;
-    height: 180px;
+    height: 100px;
   }
 }
 
@@ -1259,15 +1318,22 @@ body.night .player-card:hover {
 }
 
 /* كروت اللاعبين */
+/* 🎨 Player Cards — Responsive unified version */
 .players-container {
   display: grid;
-  grid-template-columns: repeat(2, minmax(180px, 1fr));
-  gap: 14px 20px;
-  max-width: 800px;
-  width: 90%;
+  grid-template-columns: repeat(auto-fit, minmax(26vw, 1fr)); /* 🔹 كل كرت يأخذ نسبة من عرض الشاشة */
+  gap: 1.5vw 2vw;       /* 🔹 مسافة مرنة بين الكروت */
+  width: 94%;           /* 🔹 أقل من 100% لإضافة تنفس بصري */
+  max-width: 95vw;      /* 🔹 يمنع التمدد الزائد */
+  margin: 0 auto;       /* 🔹 توسيط الحاوية */
   justify-items: center;
 }
-
+@media (max-width: 600px) {
+  .players-container {
+    grid-template-columns: repeat(1, 90%); /* 🔹 كرت واحد في كل صف */
+    gap: 3vw;
+  }
+}
 /* السجل */
 .log-panel {
   width: 90%;
@@ -1354,38 +1420,98 @@ body.night .player-card:hover {
   opacity: 0.8;
 }
 
-/* ✨ Zoom Control — Golden Theme */
+
 #zoomControl {
-  position: fixed;
-  top: 50%;
-  right: 14px;
-  transform: translateY(-50%);
-  z-index: 7000;
-  background: rgba(218, 165, 32, 0.15);
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 215, 0, 0.4);
-  border-radius: 14px;
-  padding: 6px;
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
-  opacity: 0.4;                      /* يبدأ باهت قليلاً */
-  transition: opacity 0.8s ease;     /* يجعل التلاشي ناعم */
+  position: absolute;
+  left:1.5vw;
+  top: 1.5vw;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  width: auto;
+  height: 160px;
+  z-index: 8000;
+  opacity: 0.25;
+  transition: opacity 0.4s ease;
 }
 
-#zoomControl:hover {
+#zoomControl:hover,
+#zoomControl:active {
   opacity: 1;
-  background: rgba(255, 215, 0, 0.25);
-  box-shadow: 0 0 12px rgba(255, 215, 0, 0.45);
 }
 
 #zoomSlider {
   writing-mode: bt-lr;
   -webkit-appearance: slider-vertical;
-  width: 22px;
-  height: 180px;
+  width: 12px;
+  height: 140px;
   cursor: pointer;
-  accent-color: gold;               /* اللون الذهبي للمؤشر */
+  accent-color: #ffcc00;
+  background: linear-gradient(to top, #000 0%, #000 50%, #ffcc00 50%, #ffcc00 100%);
   border-radius: 10px;
-  background: linear-gradient(to top, #b8860b, #ffd700, #fff8dc);
-  box-shadow: inset 0 0 6px rgba(255, 215, 0, 0.4);
-  opacity: 0.95;
+  border: 1px solid #b8860b;
 }
+
+#zoomSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffea70, #c8a200);
+  border: 2px solid #000;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
+  cursor: pointer;
+}
+
+#zoomSlider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #ffea70, #c8a200);
+  border: 2px solid #000;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
+  cursor: pointer;
+}
+
+#zoomControl:hover #zoomSlider::-webkit-slider-thumb {
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.9);
+}
+
+
+/* =========================================
+   🪶 حركة كارت اللاعب النشط إلى منتصف الشاشة
+   ========================================= */
+@keyframes flyToCenter {
+  0% {
+    transform: translateY(0) scale(1);
+    z-index: 1;
+  }
+  40% {
+    transform: translateY(-40vh) scale(1.25);
+    z-index: 9999;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    z-index: 1;
+  }
+}
+
+.player-card.flying {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) scale(1.1);
+  transition: all 0.8s ease;
+  z-index: 9999;
+}
+
+/* 🫥 إخفاء أرقام الزهر الرقمي فقط */
+.die {
+  color: transparent !important;   /* يجعل الرقم شفافًا */
+  text-shadow: none !important;    /* يمنع أي توهج حول الرقم */
+}
+
