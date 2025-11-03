@@ -32,6 +32,15 @@
   </div>
 </div>
 `);
+// 🧾 نقل logPanel ليكون بعد شريط التحكم الجديد
+// 🧾 نقل logPanel ليكون بعد شريط التحكم الجديد (يعمل دائمًا)
+setTimeout(() => {
+  const controlBar = document.getElementById("controlBar");
+  const logPanel = document.getElementById("logPanel") || document.getElementById("log");
+  if (controlBar && logPanel) {
+    controlBar.insertAdjacentElement("afterend", logPanel);
+  }
+}, 200);
 
   // عناصر الموسيقى
   const m = document.getElementById("bgMusic");

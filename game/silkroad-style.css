@@ -1373,7 +1373,8 @@ body.night .player-card:hover {
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 10px;
   padding: 10px 12px;
-  color: #fff;
+  color: #0a0a0a !important; /* أسود غامق أنيق */
+  text-shadow: none;
   font-size: 13px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
@@ -1384,6 +1385,7 @@ body.night .player-card:hover {
   color: #ffd966;
   font-size: 14px;
 }
+
 
 #log {
   max-height: 180px;
@@ -1552,137 +1554,85 @@ body.night .player-card:hover {
   font-size: clamp(9px, 2.2vw, 13px);
 }
 
-/* 🎛️ Unified Bottom Control Bar */
+/* 🧭 Control bar + log alignment */
 #controlBar {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  position: relative;
-  margin-top: 14px;
-  padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  flex-wrap: wrap;
+  gap: clamp(10px, 2vw, 20px);
   width: 95%;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 14px;
-  flex-wrap: wrap;
-  z-index: 8000;
-}
-
-#controlBar button,
-#controlBar select,
-#controlBar input[type="range"] {
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.85);
-  padding: 4px 8px;
-  font-size: 14px;
-  transition: all 0.2s ease;
-}
-
-#controlBar input[type="range"] {
-  width: 100px;
-  accent-color: var(--gold);
-}
-
-#controlBar button:hover,
-#controlBar select:hover {
-  background: rgba(255,255,255,1);
-  transform: scale(1.05);
-}
-
-/* 📱 Mobile Layout */
-@media (max-width: 600px) {
-  #controlBar {
-    flex-direction: column;
-    gap: 6px;
-    font-size: 12px;
-    padding: 8px;
-  }
-  #controlBar input[type="range"] {
-    width: 120px;
-  }
-}
-
-/* 🎛️ Responsive Unified Bottom Control Bar */
-#controlBar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(6px, 1vw, 14px);
-  width: 96%;
   max-width: 900px;
-  margin: 10px auto 0;
-  padding: clamp(6px, 1.5vw, 10px) clamp(10px, 2vw, 16px);
+  margin: 12px auto 0;
+  padding: clamp(8px, 1.5vw, 12px);
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(14px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
   font-size: clamp(12px, 1.8vw, 15px);
   z-index: 8000;
-  transition: all 0.3s ease;
 }
 
-/* جميع العناصر داخل الشريط */
-#controlBar button,
-#controlBar select,
-#controlBar input[type="range"] {
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-  background: rgba(255,255,255,0.85);
-  padding: clamp(4px, 1vw, 8px) clamp(6px, 1.5vw, 10px);
-  font-size: inherit;
-  transition: all 0.25s ease;
-  flex-shrink: 0;
+#controlBar + #logPanel {
+  margin-top: 10px;
+  width: 95%;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 
-#controlBar input[type="range"] {
-  width: clamp(80px, 20vw, 160px);
-  accent-color: var(--gold);
-}
-
-#controlBar button:hover,
-#controlBar select:hover {
-  background: rgba(255,255,255,1);
-  transform: scale(1.05);
-}
-
-/* 🎯 تفاعل ذكي مع الجوال */
+/* 📱 Responsive layout */
 @media (max-width: 700px) {
   #controlBar {
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
     padding: 10px;
+    width: 96%;
   }
-  #controlBar label {
-    display: block;
-    text-align: center;
-  }
-  #controlBar select,
-  #controlBar input[type="range"] {
-    width: 100%;
+  
+
+/* 🌟 الزر العائم Start a new game */
+#resetBtn2.floating-reset {
+  position: absolute;
+  bottom: clamp(12px, 4%, 24px);
+  right: clamp(0px, 4%, 0px);
+  z-index: 9000;
+  padding: clamp(10px, 2vw, 14px) clamp(18px, 3vw, 28px);
+  font-size: clamp(15px, 2vw, 18px);
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(135deg, #ffb400, #ff8c00);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  transition: all 0.25s ease-in-out;
+  text-transform: uppercase;
+  opacity: 0.92;
+}
+
+#resetBtn2.floating-reset:hover {
+  transform: scale(1.05);
+  opacity: 1;
+  background: linear-gradient(135deg, #ffd700, #ffae00);
+}
+
+/* 📱 تحسين الموقع على الشاشات الصغيرة */
+@media (max-width: 700px) {
+  #resetBtn2.floating-reset {
+    bottom: 10px;
+    right: 10px;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 10px;
   }
 }
 
-/* 📱 تحسين إضافي للشاشات الصغيرة جدًا */
-@media (max-width: 400px) {
-  #controlBar {
-    font-size: 12px;
-    padding: 8px;
-    border-radius: 10px;
-  }
-  #controlBar button {
-    font-size: 14px;
-  }
-}
