@@ -145,7 +145,7 @@ nav {
   position:relative;
 }
 .header-title {
-  font-size:2.4rem;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight:800;
   background:linear-gradient(90deg,#f5d67b,#fff3b3,#00f0ff);
   -webkit-background-clip:text;
@@ -175,7 +175,7 @@ nav {
 
 /* ==== CARD EFFECTS (hover, pulse, glow) ==== */
 .card {
-  width:260px;
+  width:25vw;
   border-radius:16px;
   padding:28px 20px;
   background:rgba(255,255,255,0.04);
@@ -209,18 +209,22 @@ nav {
 }
 .card-desc {
   color:#ccc;
-  font-size:0.95rem;
+  font-size: clamp(0.8rem, 2.5vw, 1rem);
   line-height:1.5;
 }
 
 /* mobile */
-@media (max-width:700px){
-  .grid { flex-direction:column; gap:30px; }
-  .card { width:90%; }
-  .header-card { width:90%; padding:24px; }
-  .header-title { font-size:1.9rem; }
+@media (max-width:1000px){
+  .card { width:40%; }
+  .header-title { font-size:2rem; }
 }
 
+@media (max-width:500px){
+  .header-title { font-size:1.6rem; }
+  .card { width:95%; padding:16px; }
+  .elara-popup { width:60%; height:50vh; }
+  .elara-orb { width:140px; height:140px; top:10%; }
+}
 /* ========== Elara Assistant Styling ========== */
 .elara-card {
   background: #0e0e0f;
@@ -281,8 +285,8 @@ nav {
   top: 7%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 220px;
-  height: 220px;
+  width: 30vw;
+  height: 30vw;
   border-radius: 50%;
   background: radial-gradient(circle at 40% 40%, rgba(0,255,255,0.25), rgba(255,255,255,0.08));
   box-shadow:
@@ -312,9 +316,9 @@ nav {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, calc(-50% + 160px)) scale(0.92);
-  width: 420px;
-  height: 520px;
+  transform: translate(-50%, calc(-50% + 8vh)) scale(0.92);
+  width: clamp(340px, 50vw, 420px); /* مرنة بين الموبايل والديسكتوب */
+  height: clamp(420px, 60vh, 520px);
   border-radius: 22px;
   background: radial-gradient(circle at 30% 30%, rgba(0,255,255,0.1), rgba(10,10,20,0.9));
   border: 1px solid rgba(0,255,255,0.25);
@@ -334,7 +338,13 @@ nav {
   transition: all 0.5s ease;
   animation: none; /* ← مهم: لا تعمل الحركة على التحميل */
 }
-
+@media (max-width:600px){
+  .elara-popup {
+    width: 85vw;
+    height: 70vh;
+    border-radius: 16px;
+  }
+}
 /* عند تفعيلها بواسطة النقر على الـ orb */
 .elara-popup.active {
   opacity: 1;
