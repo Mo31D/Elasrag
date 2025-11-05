@@ -135,10 +135,10 @@ nav {
 .header-card {
   background:rgba(255,255,255,0.03);
   border:1px solid rgba(255,255,255,0.06);
-  padding:40px;
   border-radius:16px;
   backdrop-filter:blur(10px);
-  max-width:720px;
+  width: clamp(200px, 80vw, 350px);
+  padding: clamp(20px, 5vw, 40px);
   box-shadow:0 0 60px rgba(255,230,150,0.15);
   animation:breathing 6s ease-in-out infinite;
   z-index:10;
@@ -340,9 +340,9 @@ nav {
 }
 @media (max-width:600px){
   .elara-popup {
-    width: 85vw;
-    height: 70vh;
-    border-radius: 16px;
+    width: 50vw;
+    height: 40vh;
+    border-radius: 14px;
   }
 }
 /* عند تفعيلها بواسطة النقر على الـ orb */
@@ -558,7 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const heart = document.getElementById("heartbeatSound");
   const breath = document.getElementById("breathSound");
   heart.volume = 0.25;
-  breath.volume = 0.001;
+  breath.volume = 0.002;
 
   const cycleDuration = 6000; // نفس مدة حركة الكروت
   const cycleStart = Date.now(); // مرجع البداية لتقدير موقع الدورة
