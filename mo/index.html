@@ -228,16 +228,14 @@ nav {
   line-height: 1.45;
 }
 
-  .card {
-  width: clamp(160px, 18vw, 220px);
-  padding: clamp(12px, 1.8vw, 20px);
+.card {
+  width: clamp(200px, 50vw, 300px);
+  padding: clamp(14px, 2vw, 22px);
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.08);
   backdrop-filter: blur(12px);
-  /* ✨ نفس التوهج الذهبي الخاص بالكارت العلوي */
   box-shadow: 0 0 60px rgba(255,230,150,0.15), 0 0 80px rgba(0,255,255,0.08);
   transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
-  will-change: transform, box-shadow, filter;
   animation: breathing 6s ease-in-out infinite;
   position: relative;
   z-index: 12;
