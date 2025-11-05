@@ -140,7 +140,7 @@ nav {
   backdrop-filter:blur(10px);
   max-width:720px;
   box-shadow:0 0 60px rgba(255,230,150,0.15);
-  animation:breathing 8s ease-in-out infinite;
+  animation:breathing 6s ease-in-out infinite;
   z-index:10;
   position:relative;
 }
@@ -190,8 +190,9 @@ nav {
 }
 @keyframes cardPulse {
   0%,100% { transform:scale(1); box-shadow:0 0 25px rgba(255,230,150,0.08); }
-  50% { transform:scale(1.03); box-shadow:0 0 50px rgba(0,255,255,0.3); }
+  50% { transform:scale(1.04); box-shadow:0 0 55px rgba(0,255,255,0.35); }
 }
+
 .card:hover {
   transform:translateY(-8px) scale(1.05);
   box-shadow:0 0 65px rgba(0,255,255,0.45);
@@ -219,8 +220,260 @@ nav {
   .header-card { width:90%; padding:24px; }
   .header-title { font-size:1.9rem; }
 }
+
+/* ========== Elara Assistant Styling ========== */
+.elara-card {
+  background: #0e0e0f;
+  border: 1px solid #2c2c2c;
+  border-radius: 18px;
+  padding: 18px;
+  margin-top: 30px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 25px rgba(255,255,255,0.05);
+  font-family: 'Cairo', 'Poppins', sans-serif;
+}
+
+.elara-avatar {
+  font-size: 20px;
+}
+
+@keyframes orbGlow {
+  0% {
+    filter: brightness(1) hue-rotate(0deg);
+    box-shadow:
+      0 0 60px rgba(255, 235, 150, 0.2),
+      0 0 120px rgba(255, 235, 150, 0.1),
+      inset 0 0 40px rgba(0, 255, 255, 0.15);
+  }
+  50% {
+    filter: brightness(1.5) hue-rotate(30deg);
+    box-shadow:
+      0 0 100px rgba(255, 235, 150, 0.35),
+      0 0 160px rgba(255, 235, 150, 0.2),
+      inset 0 0 60px rgba(0, 255, 255, 0.25);
+  }
+  100% {
+    filter: brightness(1) hue-rotate(60deg);
+    box-shadow:
+      0 0 60px rgba(255, 235, 150, 0.2),
+      0 0 120px rgba(255, 235, 150, 0.1),
+      inset 0 0 40px rgba(0, 255, 255, 0.15);
+  }
+}
+
+@keyframes orbRotate {
+  0% { transform: translateX(-50%) rotate(0deg); }
+  100% { transform: translateX(-50%) rotate(360deg); }
+}
+
+/* ✨ لمعان داخلي يدور ببطء */
+@keyframes orbShine {
+  0% { filter: brightness(1) hue-rotate(0deg); }
+  50% { filter: brightness(1.4) hue-rotate(60deg); }
+  100% { filter: brightness(1) hue-rotate(120deg); }
+}
+
+/* === CENTRAL INTELLIGENT ORB (The Mind of the Page) === */
+.elara-orb {
+  position: fixed;
+  top: 7%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, rgba(0,255,255,0.25), rgba(255,255,255,0.08));
+  box-shadow:
+    0 0 40px rgba(0,255,255,0.3),
+    0 0 80px rgba(255,230,150,0.25),
+    inset 0 0 50px rgba(0,255,255,0.15);
+  backdrop-filter: blur(18px);
+  animation: orbGlow 6s ease-in-out infinite alternate, orbRotate 60s linear infinite;
+  cursor: pointer;
+  z-index: 50;
+  transition: all 0.5s ease;
+  border: 1px solid rgba(255,255,255,0.15);
+  opacity: 0.5;
+}
+
+.elara-orb:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+  box-shadow:
+    0 0 80px rgba(255,255,255,0.5),
+    0 0 120px rgba(0,255,255,0.6),
+    inset 0 0 80px rgba(0,255,255,0.4);
+  filter: brightness(1.2);
+}
+
+/* 🌌 Popup – Conscious Intelligent Window (base state: hidden) */
+.elara-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, calc(-50% + 160px)) scale(0.92);
+  width: 420px;
+  height: 520px;
+  border-radius: 22px;
+  background: radial-gradient(circle at 30% 30%, rgba(0,255,255,0.1), rgba(10,10,20,0.9));
+  border: 1px solid rgba(0,255,255,0.25);
+  box-shadow:
+    0 0 30px rgba(0,255,255,0.4),
+    0 0 80px rgba(255,230,150,0.15),
+    inset 0 0 40px rgba(0,255,255,0.15);
+  backdrop-filter: blur(22px) saturate(160%);
+  overflow: hidden;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+
+  /* default = hidden */
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + 160px)) scale(0.92);
+  transition: all 0.5s ease;
+  animation: none; /* ← مهم: لا تعمل الحركة على التحميل */
+}
+
+/* عند تفعيلها بواسطة النقر على الـ orb */
+.elara-popup.active {
+  opacity: 1;
+  transform: translate(-50%, calc(-50% + 160px)) scale(1);
+  box-shadow:
+    0 0 60px rgba(0,255,255,0.5),
+    0 0 120px rgba(255,230,150,0.25),
+    inset 0 0 60px rgba(0,255,255,0.2);
+
+  /* شغّل تأثير الاستيقاظ عند الفتح فقط (بدون forwards) */
+  animation: popupAwaken 1.6s ease-out;
+}
+
+/* تأثير استيقاظ الذكاء */
+@keyframes popupAwaken {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 200px)) scale(0.7);
+    filter: blur(20px);
+  }
+  60% {
+    opacity: 0.9;
+    transform: translate(-50%, calc(-50% + 150px)) scale(1.05);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, calc(-50% + 160px)) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* رأس النافذة */
+.elara-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(90deg, rgba(0,255,255,0.15), rgba(255,230,150,0.1));
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  font-weight: bold;
+  font-size: 15px;
+  letter-spacing: 0.6px;
+  color: #eafcff;
+  text-shadow: 0 0 8px rgba(0,255,255,0.5);
+}
+
+/* الرسائل */
+.elara-box {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: radial-gradient(circle at 40% 80%, rgba(255,255,255,0.02), rgba(0,0,0,0.3));
+}
+
+.elara-message {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 85%;
+  white-space: pre-wrap;
+  animation: fadeInMessage 0.6s ease;
+}
+
+.elara-message.user {
+  background: rgba(255,255,255,0.08);
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+  color: #fff;
+  box-shadow: 0 0 15px rgba(255,255,255,0.1);
+}
+
+.elara-message.ai {
+  background: rgba(0,255,255,0.12);
+  align-self: flex-start;
+  border-bottom-left-radius: 0;
+  border-left: 2px solid rgba(0,255,255,0.6);
+  color: #e8ffff;
+  box-shadow: 0 0 20px rgba(0,255,255,0.2);
+}
+
+@keyframes fadeInMessage {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* الإدخال */
+.elara-input {
+  display: flex;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.2);
+  padding: 10px;
+  backdrop-filter: blur(10px);
+}
+
+.elara-input input {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px;
+  outline: none;
+  font-size: 15px;
+  transition: 0.3s ease;
+}
+
+.elara-input input:focus {
+  border-color: rgba(0,255,255,0.4);
+  box-shadow: 0 0 8px rgba(0,255,255,0.3);
+}
+
+.elara-input button {
+  background: linear-gradient(90deg, #00f0ff, #f5d67b);
+  border: none;
+  color: #000;
+  padding: 0 16px;
+  margin-left: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.elara-input button:hover {
+  filter: brightness(1.2);
+  transform: scale(1.05);
+}
+
+
+
 </style>
 </head>
+
+
 <body>
 
 <div class="bg">
@@ -233,12 +486,28 @@ nav {
   <div class="logo">Elasrag</div>
   <ul class="nav-links">
     <li><a href="../index.html">Home</a></li>
-    <li><a href="#">About</a></li>
-    <li><a href="#">Contact</a></li>
   </ul>
 </nav>
 
 <div id="cv-hub">
+	<!-- 🌐 Conscious Orb (The Mind of the Page) -->
+
+
+<div class="elara-popup" id="elaraPopup">
+  <div class="elara-header">
+    <span class="elara-avatar">✨</span>
+    <span class="elara-title">Ask Mo — Conscious Assistant</span>
+  </div>
+
+  <div class="elara-box" id="elaraBox">
+    <div class="elara-message ai">(connected to Mo’s mind 🩵)</div>
+  </div>
+
+  <div class="elara-input">
+    <input id="elaraInput" type="text" placeholder="Type your message..." />
+    <button id="elaraSend">➤</button>
+  </div>
+</div>
   <div class="header-card">
     <div class="header-title">Elasrag CV Hub</div>
     <div class="header-sub">Choose the CV type below</div>
@@ -265,6 +534,12 @@ nav {
   </div>
 </div>
 
+
+<div class="elara-orb" id="elaraOrb" title="Talk to Mo"></div>
+
+  
+</div>
+
 <audio id="heartbeatSound" src="heartbeat.mp3" preload="auto"></audio>
 <audio id="breathSound" src="breath.mp3" preload="auto"></audio>
 
@@ -272,27 +547,11 @@ nav {
 document.addEventListener("DOMContentLoaded", () => {
   const heart = document.getElementById("heartbeatSound");
   const breath = document.getElementById("breathSound");
-  heart.volume = 0.18;
-  breath.volume = 0.12;
+  heart.volume = 0.35;
+  breath.volume = 0.01;
 
-  // السماح بالتشغيل بعد أول تفاعل من المستخدم
-  const startSounds = () => {
-    startHeartbeat();
-    startBreathing();
-    document.removeEventListener("click", startSounds);
-  };
-  document.addEventListener("click", startSounds);
-
-  // الإيقاف عند مغادرة الصفحة أو الانتقال
-  window.addEventListener("beforeunload", stopAll);
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) stopAll();
-    else resumeAll();
-  });
-
-  let hbTimer, brTimer;
-  const bpm = 48; // synced with 1.25s visual pulse
-  const hbInterval = (60 / bpm) * 1000;
+  const cycleDuration = 6000; // نفس مدة حركة الكروت
+  const cycleStart = Date.now(); // مرجع البداية لتقدير موقع الدورة
 
   function playHeart() {
     heart.currentTime = 0;
@@ -300,19 +559,55 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function startHeartbeat() {
+    const bpm = 48;
+    const hbInterval = (60 / bpm) * 1000;
     playHeart();
     hbTimer = setInterval(playHeart, hbInterval);
   }
 
   function startBreathing() {
+    breath.playbackRate = 0.5; // يجعل النفس ≈ 6 ثوانٍ
+    breath.loop = false;
     breath.currentTime = 0;
     breath.play().catch(()=>{});
+
+    // أعِد التشغيل مع كل دورة كروت جديدة
     brTimer = setInterval(() => {
       breath.currentTime = 0;
       breath.play().catch(()=>{});
-    }, 8000);
+    }, cycleDuration);
   }
 
+  function startAllSynced() {
+    startHeartbeat();
+
+    // احسب أين نحن الآن في دورة الكروت
+    const elapsed = (Date.now() - cycleStart) % cycleDuration;
+    const halfCycle = cycleDuration / 2;
+
+    if (elapsed < 400 || elapsed > (cycleDuration - 400)) {
+      // الكروت الآن تقريباً في وضع البداية ↓ ابدأ فورًا
+      startBreathing();
+    } else {
+      // الكروت في منتصف الحركة ↑ انتظر حتى تنتهي الدورة الحالية
+      const wait = cycleDuration - elapsed;
+      console.log(`⏳ Waiting ${wait}ms until next breathing cycle...`);
+      setTimeout(() => startBreathing(), wait);
+    }
+
+    document.removeEventListener("click", startAllSynced);
+  }
+
+  document.addEventListener("click", startAllSynced);
+
+  // إيقاف واستئناف عند الانتقال أو فقدان التركيز
+  window.addEventListener("beforeunload", stopAll);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) stopAll();
+    else resumeAll();
+  });
+
+  let hbTimer, brTimer;
   function stopAll() {
     clearInterval(hbTimer);
     clearInterval(brTimer);
@@ -326,6 +621,105 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+<script>
+const orb = document.getElementById('elaraOrb');
+const popup = document.getElementById('elaraPopup');
+const elaraBox = document.getElementById('elaraBox');
+const elaraInput = document.getElementById('elaraInput');
+const elaraSend = document.getElementById('elaraSend');
 
+orb.addEventListener('click', () => {
+  popup.classList.toggle('active');
+});
+
+function appendElara(text, sender) {
+  const msg = document.createElement('div');
+  msg.classList.add('elara-message', sender);
+  msg.textContent = text;
+  elaraBox.appendChild(msg);
+  elaraBox.scrollTop = elaraBox.scrollHeight;
+}
+
+
+// ================== NORA Connection ==================
+const NORA_API = "https://d8c51f0b-f174-4a02-aae3-5bbaa55491df-00-nu4ld0rfik3f.spock.replit.dev/chat";
+// 👆 غيّر هذا إلى رابط Replit الفعلي الخاص بنورا
+
+async function sendToNora(message) {
+  try {
+    const res = await fetch(NORA_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+    const data = await res.json();
+    return data.reply || "(No response from Nora)";
+  } catch (err) {
+    console.error("Nora connection error:", err);
+    return "(Connection error with Nora 🫧)";
+  }
+}
+
+// === تأثير بصري عند التفكير (توهج الفقاعة) ===
+function setOrbThinking(state) {
+  const orb = document.getElementById("elaraOrb");
+  if (!orb) return;
+  if (state) {
+    orb.style.transition = "all 0.4s ease";
+    orb.style.filter = "brightness(1.4) saturate(1.2)";
+    orb.style.boxShadow = `
+      0 0 100px rgba(0,255,255,0.6),
+      0 0 160px rgba(255,230,150,0.25),
+      inset 0 0 80px rgba(0,255,255,0.3)
+    `;
+    orb.style.transform = "translate(-50%, -50%) scale(1.06)";
+  } else {
+    orb.style.filter = "";
+    orb.style.boxShadow = "";
+    orb.style.transform = "translate(-50%, -50%) scale(1)";
+  }
+}
+
+// === الإرسال إلى نورا وعرض الرد في الفقاعة ===
+async function sendElara() {
+  const text = elaraInput.value.trim();
+  if (!text) return;
+  appendElara(text, "user");
+  elaraInput.value = "";
+
+  // رسالة مؤقتة أثناء التفكير
+  const thinkingMsg = document.createElement("div");
+  thinkingMsg.classList.add("elara-message", "ai");
+  thinkingMsg.textContent = "Nora is thinking...";
+  elaraBox.appendChild(thinkingMsg);
+  elaraBox.scrollTop = elaraBox.scrollHeight;
+
+  // تشغيل تأثير التفكير
+  setOrbThinking(true);
+
+  try {
+    const reply = await sendToNora(text);
+    // استبدال الرسالة المؤقتة برد نورا
+    thinkingMsg.textContent = reply;
+  } catch (err) {
+    thinkingMsg.textContent = "(Connection issue with Nora 🫧)";
+    console.error(err);
+  } finally {
+    // إيقاف تأثير التفكير
+    setOrbThinking(false);
+  }
+}
+
+// === الأحداث المعتادة (كما هي عندك) ===
+elaraSend.onclick = sendElara;
+elaraInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendElara();
+});
+
+elaraSend.onclick = sendElara;
+elaraInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendElara();
+});
+</script>
 </body>
 </html>
