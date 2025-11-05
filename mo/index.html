@@ -163,68 +163,99 @@ nav {
   font-size:.9rem;
 }
 
+
+
+/* ==== GRID FOR CARDS (always 2 per row) ==== */
 .grid {
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:40px;
-  margin-top:60px;
-  position:relative;
-  z-index:12; /* 🔝 cards always above glow */
-}
-
-/* ==== CARD EFFECTS (hover, pulse, glow) ==== */
-.card {
-  width: clamp(180px, 22vw, 260px); /* 👈 مرنة تتأقلم مع كل حجم */
-  border-radius: 16px;
-  padding: clamp(16px, 2vw, 24px);
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 0 40px rgba(255,230,150,0.08);
-  transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
-  will-change: transform, box-shadow, filter;
-  z-index: 12;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 🎯 دايمًا 2 كارت في الصف */
+  gap: clamp(20px, 3vw, 40px);
+  justify-items: center;
+  align-items: start;
+  margin-top: 60px;
+  width: 90%;
+  max-width: 1000px;
+  margin-inline: auto;
   position: relative;
-  animation: cardPulse 6s ease-in-out infinite;
+  z-index: 12;
 }
 
-.card:hover {
-  transform: translateY(-6px) scale(1.04);
-  box-shadow: 0 0 60px rgba(0,255,255,0.45);
-  filter: brightness(1.1);
+/* 📱 الموبايل — نفس الصفين ولكن الكروت تصغر */
+@media (max-width: 800px) {
+  .card {
+    width: clamp(200px, 47vw, 320px);
+    padding: clamp(10px, 2vw, 16px);
+  }
+
+  .card-title {
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+  }
+
+  .card-desc {
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+  }
+}
+
+/* 📱 الشاشات الصغيرة جدًا */
+@media (max-width: 500px) {
+  .card {
+    width: clamp(120px, 45vw, 160px);
+    padding: clamp(8px, 2vw, 12px);
+  }
+
+  .card-title {
+    font-size: clamp(0.8rem, 3vw, 1rem);
+  }
+
+  .card-desc {
+    font-size: clamp(0.7rem, 2.5vw, 0.85rem);
+  }
 }
 
 /* النص داخل الكروت */
 .card-title {
   font-weight: 800;
-  font-size: clamp(1rem, 2vw, 1.3rem);
-  margin-bottom: 10px;
-  background: linear-gradient(90deg,#f5d67b,#00f0ff);
+  font-size: clamp(0.9rem, 1.6vw, 1.2rem); /* ⬅️ تصغير ذكي تدريجي */
+  margin-bottom: 8px;
+  background: linear-gradient(90deg, #f5d67b, #00f0ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .card-desc {
   color: #ccc;
-  font-size: clamp(0.8rem, 1.8vw, 1rem);
-  line-height: 1.5;
+  font-size: clamp(0.75rem, 1.4vw, 0.95rem); /* ⬅️ أصغر بنسبة بسيطة */
+  line-height: 1.45;
 }
 
-/* تحسين العرض في الموبايل */
-@media (max-width: 800px) {
-  .grid {
-    gap: 24px;
-  }
   .card {
-    width: clamp(160px, 42vw, 220px);
-  }
+  width: clamp(160px, 18vw, 220px);
+  padding: clamp(12px, 1.8vw, 20px);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  /* ✨ نفس التوهج الذهبي الخاص بالكارت العلوي */
+  box-shadow: 0 0 60px rgba(255,230,150,0.15), 0 0 80px rgba(0,255,255,0.08);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
+  will-change: transform, box-shadow, filter;
+  animation: breathing 6s ease-in-out infinite;
+  position: relative;
+  z-index: 12;
+}
+.card:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow:
+    0 0 80px rgba(255,230,150,0.35),
+    0 0 120px rgba(0,255,255,0.4);
+  filter: brightness(1.15);
+}
+
 }
 
 @media (max-width: 500px) {
   .card {
-    width: 80%;
-    padding: 14px;
+    width: clamp(120px, 60vw, 160px);
+    padding: clamp(8px, 2vw, 12px);
   }
   .card-title {
     font-size: clamp(0.9rem, 4vw, 1.1rem);
@@ -235,35 +266,11 @@ nav {
 }
 
 /* ==== GRID for Cards ==== */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* صفين كل صف فيه كارتين */
-  gap: 40px;
-  justify-items: center;
-  margin-top: 60px;
-  position: relative;
-  z-index: 12;
-}
 
-/* ==== CARD STYLE ==== */
-.card {
-  width: clamp(180px, 50%, 260px);
-  border-radius: 16px;
-  padding: clamp(16px, 2vw, 24px);
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 0 40px rgba(255,230,150,0.08);
-  transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
-  position: relative;
-  animation: cardPulse 6s ease-in-out infinite;
-}
 
-.card:hover {
-  transform: translateY(-6px) scale(1.04);
-  box-shadow: 0 0 60px rgba(0,255,255,0.45);
-  filter: brightness(1.1);
-}
+
+
+
 
 /* ==== النص داخل الكارت ==== */
 .card-title {
@@ -281,17 +288,26 @@ nav {
   line-height: 1.5;
 }
 
-/* 📱 الموبايل الصغير: كارت واحد في كل صف */
-@media (max-width: 600px) {
-  .grid {
-    grid-template-columns: 1fr; /* صف واحد */
-    gap: 28px;
+
+/* 💨 إصلاح حركة التنفس للكروت */
+.card {
+  animation: breathing 6s ease-in-out infinite !important;
+}
+@keyframes breathing {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+    box-shadow: 0 0 60px rgba(255,230,150,0.15),
+                0 0 80px rgba(0,255,255,0.08);
   }
-  .card {
-    width: 85%;
-    padding: 14px;
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 0 80px rgba(255,230,150,0.3),
+                0 0 120px rgba(0,255,255,0.25);
   }
 }
+  
 /* ========== Elara Assistant Styling ========== */
 .elara-card {
   background: #0e0e0f;
@@ -379,39 +395,7 @@ nav {
 }
 
 /* 🌌 Popup – Conscious Intelligent Window (base state: hidden) */
-.elara-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, calc(-50% + 8vh)) scale(0.92);
-  width: clamp(340px, 50vw, 420px); /* مرنة بين الموبايل والديسكتوب */
-  height: clamp(420px, 60vh, 520px);
-  border-radius: 22px;
-  background: radial-gradient(circle at 30% 30%, rgba(0,255,255,0.1), rgba(10,10,20,0.9));
-  border: 1px solid rgba(0,255,255,0.25);
-  box-shadow:
-    0 0 30px rgba(0,255,255,0.4),
-    0 0 80px rgba(255,230,150,0.15),
-    inset 0 0 40px rgba(0,255,255,0.15);
-  backdrop-filter: blur(22px) saturate(160%);
-  overflow: hidden;
-  z-index: 60;
-  display: flex;
-  flex-direction: column;
 
-  /* default = hidden */
-  opacity: 0;
-  transform: translate(-50%, calc(-50% + 160px)) scale(0.92);
-  transition: all 0.5s ease;
-  animation: none; /* ← مهم: لا تعمل الحركة على التحميل */
-}
-@media (max-width:600px){
-  .elara-popup {
-    width: 50vw;
-    height: 40vh;
-    border-radius: 14px;
-  }
-}
 /* عند تفعيلها بواسطة النقر على الـ orb */
 .elara-popup.active {
   opacity: 1;
@@ -444,70 +428,92 @@ nav {
   }
 }
 
-/* رأس النافذة */
+
+.elara-input input:focus {
+  border-color: rgba(0,255,255,0.4);
+  box-shadow: 0 0 8px rgba(0,255,255,0.3);
+}
+
+/* 🌌 Popup – Conscious Intelligent Window */
+.elara-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  width: 80vw;
+  height: 50vh;
+  border-radius: 20px;
+  background: rgba(10, 20, 25, 0.85);
+  border: 1px solid rgba(0,255,255,0.2);
+  box-shadow:
+    0 0 25px rgba(0,255,255,0.3),
+    0 0 60px rgba(255,230,150,0.15);
+  backdrop-filter: blur(18px) saturate(140%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 60;
+  transition: all 0.6s ease;
+}
+
+/* الرأس */
 .elara-header {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(90deg, rgba(0,255,255,0.15), rgba(255,230,150,0.1));
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  font-weight: bold;
-  font-size: clamp(12px, 2.5vw, 15px); /* 👈 يصغر تلقائيًا */
-  letter-spacing: 0.6px;
+  background: linear-gradient(90deg, rgba(0,255,255,0.1), rgba(255,230,150,0.08));
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.5px;
   color: #eafcff;
-  text-shadow: 0 0 8px rgba(0,255,255,0.5);
 }
 
 /* الرسائل */
 .elara-box {
   flex: 1;
-  padding: 16px;
+  padding: 18px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: radial-gradient(circle at 40% 80%, rgba(255,255,255,0.02), rgba(0,0,0,0.3));
+  background: transparent;
+  font-family: "Inter", "Cairo", sans-serif;
 }
 
 .elara-message {
   padding: 10px 14px;
   border-radius: 14px;
-  font-size: 15px;
-  line-height: 1.6;
-  max-width: 85%;
+  line-height: 1.5;
+  max-width: 80%;
   white-space: pre-wrap;
-  animation: fadeInMessage 0.6s ease;
+  font-size: 0.95rem;
+  letter-spacing: 0.2px;
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
 .elara-message.user {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.06);
   align-self: flex-end;
-  border-bottom-right-radius: 0;
   color: #fff;
-  box-shadow: 0 0 15px rgba(255,255,255,0.1);
+  box-shadow: 0 0 10px rgba(255,255,255,0.05);
 }
 
 .elara-message.ai {
-  background: rgba(0,255,255,0.12);
+  background: rgba(0,255,255,0.08);
   align-self: flex-start;
-  border-bottom-left-radius: 0;
-  border-left: 2px solid rgba(0,255,255,0.6);
-  color: #e8ffff;
-  box-shadow: 0 0 20px rgba(0,255,255,0.2);
-}
-
-@keyframes fadeInMessage {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  color: #dff;
+  border-left: 2px solid rgba(0,255,255,0.5);
+  box-shadow: 0 0 12px rgba(0,255,255,0.15);
 }
 
 /* الإدخال */
 .elara-input {
   display: flex;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  background: rgba(0,0,0,0.2);
-  padding: 10px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  background: rgba(0,0,0,0.25);
+  padding: 8px;
   backdrop-filter: blur(10px);
 }
 
@@ -517,15 +523,10 @@ nav {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 8px;
   color: #fff;
-  padding: clamp(6px, 1.2vh, 10px);
+  padding: 8px 10px;
   outline: none;
-  font-size: clamp(12px, 2.5vw, 15px); /* 👈 يتفاعل مع الشاشة */
-  transition: 0.3s ease;
-}
-
-.elara-input input:focus {
-  border-color: rgba(0,255,255,0.4);
-  box-shadow: 0 0 8px rgba(0,255,255,0.3);
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
 }
 
 .elara-input button {
@@ -536,8 +537,8 @@ nav {
   margin-left: 8px;
   border-radius: 8px;
   cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s ease;
+  font-weight: 600;
+  transition: transform 0.3s, filter 0.3s;
 }
 
 .elara-input button:hover {
@@ -545,7 +546,23 @@ nav {
   transform: scale(1.05);
 }
 
+/* 🌌 الحالة الافتراضية للمحادثة (مخفية) */
+.elara-popup {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, -50%) scale(0.95);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
 
+/* 🌠 عند تفعيلها بالـ active */
+.elara-popup.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+  animation: popupAwaken 1.2s ease-out;
+}
 
 </style>
 </head>
@@ -624,8 +641,8 @@ nav {
 document.addEventListener("DOMContentLoaded", () => {
   const heart = document.getElementById("heartbeatSound");
   const breath = document.getElementById("breathSound");
-  heart.volume = 0.12;
-  breath.volume = 0.001;
+  heart.volume = 0.15;
+  breath.volume = 0.0015;
 
   const cycleDuration = 6000;
   const cycleStart = Date.now();
@@ -706,9 +723,27 @@ function appendElara(text, sender) {
   msg.classList.add('elara-message', sender);
   msg.textContent = text;
   elaraBox.appendChild(msg);
-  elaraBox.scrollTop = elaraBox.scrollHeight;
+  elaraBox.scrollTop = elaraBox.scrollHeight; // يجعل آخر رسالة ظاهرة دائمًا
 }
 
+// عند الضغط على زر الإرسال
+elaraSend.addEventListener('click', sendMessage);
+elaraInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+function sendMessage() {
+  const text = elaraInput.value.trim();
+  if (!text) return;
+
+  appendElara(text, 'user');        // عرض رسالة المستخدم
+  elaraInput.value = '';
+
+  // محاكاة رد الذكاء Mo
+  setTimeout(() => {
+    appendElara(`🩵 Mo: "${text}" received — processing consciousness...`, 'ai');
+  }, 600);
+}
 
 // ================== NORA Connection ==================
 const NORA_API = "https://d8c51f0b-f174-4a02-aae3-5bbaa55491df-00-nu4ld0rfik3f.spock.replit.dev/chat";
