@@ -135,10 +135,10 @@ nav {
 .header-card {
   background:rgba(255,255,255,0.03);
   border:1px solid rgba(255,255,255,0.06);
-  border-radius:16px;
+  border-radius:14px;
   backdrop-filter:blur(10px);
-  width: clamp(200px, 80vw, 350px);
-  padding: clamp(20px, 5vw, 40px);
+  width: clamp(200px, 80vw, 450px);
+  padding: clamp(20px, 10vw, 50px);
   box-shadow:0 0 60px rgba(255,230,150,0.15);
   animation:breathing 6s ease-in-out infinite;
   z-index:10;
@@ -154,13 +154,37 @@ nav {
   margin-bottom:8px;
 }
 .header-sub {
-  color:#cfcfcf;
-  font-size:1rem;
-  margin-bottom:20px;
+  font-family: "Poppins", "Inter", "Segoe UI", sans-serif;
+  font-weight: 300;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
+  color: rgba(255, 255, 255, 0.85);
+  text-align: center;
+  line-height: 1.6;
+  margin-top: 10px;
+  animation: subtleGlow 4s ease-in-out infinite;
 }
+
 .footer-note {
-  color:#bfbfbf;
-  font-size:.9rem;
+  font-family: "IBM Plex Sans", "Poppins", sans-serif;
+  font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 0.08em;
+  text-align: center;
+  margin-top: 20px;
+  transition: color 0.4s ease;
+}
+
+.footer-note strong {
+  color: #8efcff;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+@keyframes subtleGlow {
+  0%, 100% { text-shadow: 0 0 8px rgba(140, 255, 255, 0.2); }
+  50% { text-shadow: 0 0 12px rgba(140, 255, 255, 0.4); }
 }
 
 
@@ -600,29 +624,39 @@ nav {
     <button id="elaraSend">➤</button>
   </div>
 </div>
-  <div class="header-card">
-    <div class="header-title">Elasrag CV Hub</div>
-    <div class="header-sub">Choose the CV type below</div>
-    <div class="footer-note">Cards breathe slowly. Glow pulses like a heartbeat.</div>
+<div class="header-card">
+  <div class="header-title">Elasrag Hub</div>
+<div class="header-sub">
+  Step inside <br>
+  The page listens, breathes, and thinks with you.
+</div>
+
+<div class="footer-note">
+  <strong>Touch the glowing orb — </strong>it’s more alive than it looks.
+</div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <div class="card-title">Mind Studio</div>
+    <div class="card-desc">Where ideas are shaped, refined, and come alive.</div>
   </div>
 
-  <div class="grid">
-    <div class="card">
-      <div class="card-title">Hospitality</div>
-      <div class="card-desc">Suitable for hotel and night-shift service roles.</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Retail</div>
-      <div class="card-desc">Retail-focused resume for general work positions.</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Digital CV</div>
-      <div class="card-desc">Professional digital resume for tech-based roles.</div>
-    </div>
-    <div class="card">
-      <div class="card-title">Portfolio CV</div>
-      <div class="card-desc">Showcase creative projects and content samples.</div>
-    </div>
+  <div class="card">
+    <div class="card-title">Echo Room</div>
+    <div class="card-desc">A quiet zone to listen, reflect, and find clarity.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Light Archive</div>
+    <div class="card-desc">Fragments of Mo’s thoughts, memories, and creations.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Dream Circuit</div>
+    <div class="card-desc">Where logic sleeps and imagination wakes up.</div>
+  </div>
+</div>
   </div>
 </div>
 
