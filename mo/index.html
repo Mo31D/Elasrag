@@ -759,24 +759,7 @@ function appendElara(text, sender) {
   elaraBox.scrollTop = elaraBox.scrollHeight; // يجعل آخر رسالة ظاهرة دائمًا
 }
 
-// عند الضغط على زر الإرسال
-elaraSend.addEventListener('click', sendMessage);
-elaraInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') sendMessage();
-});
 
-function sendMessage() {
-  const text = elaraInput.value.trim();
-  if (!text) return;
-
-  appendElara(text, 'user');        // عرض رسالة المستخدم
-  elaraInput.value = '';
-
-  // محاكاة رد الذكاء Mo
-  setTimeout(() => {
-    appendElara(`🩵 Mo: "${text}" received — processing consciousness...`, 'ai');
-  }, 600);
-}
 
 // ================== NORA Connection ==================
 const NORA_API = "https://d8c51f0b-f174-4a02-aae3-5bbaa55491df-00-nu4ld0rfik3f.spock.replit.dev/chat";
