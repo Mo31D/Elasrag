@@ -175,55 +175,122 @@ nav {
 
 /* ==== CARD EFFECTS (hover, pulse, glow) ==== */
 .card {
-  width:25vw;
-  border-radius:16px;
-  padding:28px 20px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.08);
-  backdrop-filter:blur(12px);
-  box-shadow:0 0 40px rgba(255,230,150,0.08);
-  transition:transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
-  will-change:transform, box-shadow, filter;
-  z-index:12;
-  position:relative;
-  animation:cardPulse 6s ease-in-out infinite;
-}
-@keyframes cardPulse {
-  0%,100% { transform:scale(1); box-shadow:0 0 25px rgba(255,230,150,0.08); }
-  50% { transform:scale(1.04); box-shadow:0 0 55px rgba(0,255,255,0.35); }
+  width: clamp(180px, 22vw, 260px); /* 👈 مرنة تتأقلم مع كل حجم */
+  border-radius: 16px;
+  padding: clamp(16px, 2vw, 24px);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 40px rgba(255,230,150,0.08);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
+  will-change: transform, box-shadow, filter;
+  z-index: 12;
+  position: relative;
+  animation: cardPulse 6s ease-in-out infinite;
 }
 
 .card:hover {
-  transform:translateY(-8px) scale(1.05);
-  box-shadow:0 0 65px rgba(0,255,255,0.45);
-  filter:brightness(1.1);
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 0 60px rgba(0,255,255,0.45);
+  filter: brightness(1.1);
 }
 
+/* النص داخل الكروت */
 .card-title {
-  font-weight:800;
-  font-size:1.2rem;
-  margin-bottom:10px;
-  background:linear-gradient(90deg,#f5d67b,#00f0ff);
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+  font-weight: 800;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  margin-bottom: 10px;
+  background: linear-gradient(90deg,#f5d67b,#00f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
+
 .card-desc {
-  color:#ccc;
-  font-size: clamp(0.8rem, 2.5vw, 1rem);
-  line-height:1.5;
+  color: #ccc;
+  font-size: clamp(0.8rem, 1.8vw, 1rem);
+  line-height: 1.5;
 }
 
-/* mobile */
-@media (max-width:1000px){
-  .card { width:40%; }
-  .header-title { font-size:2rem; }
+/* تحسين العرض في الموبايل */
+@media (max-width: 800px) {
+  .grid {
+    gap: 24px;
+  }
+  .card {
+    width: clamp(160px, 42vw, 220px);
+  }
 }
 
-@media (max-width:500px){
-  .header-title { font-size:1.6rem; }
-  .card { width:95%; padding:16px; }
-  .elara-popup { width:60%; height:50vh; }
-  .elara-orb { width:140px; height:140px; top:10%; }
+@media (max-width: 500px) {
+  .card {
+    width: 80%;
+    padding: 14px;
+  }
+  .card-title {
+    font-size: clamp(0.9rem, 4vw, 1.1rem);
+  }
+  .card-desc {
+    font-size: clamp(0.75rem, 3.5vw, 0.9rem);
+  }
+}
+
+/* ==== GRID for Cards ==== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* صفين كل صف فيه كارتين */
+  gap: 40px;
+  justify-items: center;
+  margin-top: 60px;
+  position: relative;
+  z-index: 12;
+}
+
+/* ==== CARD STYLE ==== */
+.card {
+  width: clamp(180px, 50%, 260px);
+  border-radius: 16px;
+  padding: clamp(16px, 2vw, 24px);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 40px rgba(255,230,150,0.08);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
+  position: relative;
+  animation: cardPulse 6s ease-in-out infinite;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.04);
+  box-shadow: 0 0 60px rgba(0,255,255,0.45);
+  filter: brightness(1.1);
+}
+
+/* ==== النص داخل الكارت ==== */
+.card-title {
+  font-weight: 800;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  margin-bottom: 10px;
+  background: linear-gradient(90deg,#f5d67b,#00f0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.card-desc {
+  color: #ccc;
+  font-size: clamp(0.8rem, 1.8vw, 1rem);
+  line-height: 1.5;
+}
+
+/* 📱 الموبايل الصغير: كارت واحد في كل صف */
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr; /* صف واحد */
+    gap: 28px;
+  }
+  .card {
+    width: 85%;
+    padding: 14px;
+  }
 }
 /* ========== Elara Assistant Styling ========== */
 .elara-card {
@@ -386,7 +453,7 @@ nav {
   padding: 14px 16px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   font-weight: bold;
-  font-size: 15px;
+  font-size: clamp(12px, 2.5vw, 15px); /* 👈 يصغر تلقائيًا */
   letter-spacing: 0.6px;
   color: #eafcff;
   text-shadow: 0 0 8px rgba(0,255,255,0.5);
@@ -450,9 +517,9 @@ nav {
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 8px;
   color: #fff;
-  padding: 10px;
+  padding: clamp(6px, 1.2vh, 10px);
   outline: none;
-  font-size: 15px;
+  font-size: clamp(12px, 2.5vw, 15px); /* 👈 يتفاعل مع الشاشة */
   transition: 0.3s ease;
 }
 
@@ -557,11 +624,13 @@ nav {
 document.addEventListener("DOMContentLoaded", () => {
   const heart = document.getElementById("heartbeatSound");
   const breath = document.getElementById("breathSound");
-  heart.volume = 0.25;
-  breath.volume = 0.002;
+  heart.volume = 0.12;
+  breath.volume = 0.001;
 
-  const cycleDuration = 6000; // نفس مدة حركة الكروت
-  const cycleStart = Date.now(); // مرجع البداية لتقدير موقع الدورة
+  const cycleDuration = 6000;
+  const cycleStart = Date.now();
+
+  let hbTimer, brTimer;
 
   function playHeart() {
     heart.currentTime = 0;
@@ -576,32 +645,36 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function startBreathing() {
-    breath.playbackRate = 0.5; // يجعل النفس ≈ 6 ثوانٍ
+    breath.playbackRate = 0.5;
     breath.loop = false;
     breath.currentTime = 0;
     breath.play().catch(()=>{});
-
-    // أعِد التشغيل مع كل دورة كروت جديدة
     brTimer = setInterval(() => {
       breath.currentTime = 0;
       breath.play().catch(()=>{});
     }, cycleDuration);
   }
 
+  function stopAll() {
+    clearInterval(hbTimer);
+    clearInterval(brTimer);
+    hbTimer = null;
+    brTimer = null;
+    heart.pause();
+    breath.pause();
+    heart.currentTime = 0;
+    breath.currentTime = 0;
+  }
+
   function startAllSynced() {
     startHeartbeat();
-
-    // احسب أين نحن الآن في دورة الكروت
     const elapsed = (Date.now() - cycleStart) % cycleDuration;
     const halfCycle = cycleDuration / 2;
 
     if (elapsed < 400 || elapsed > (cycleDuration - 400)) {
-      // الكروت الآن تقريباً في وضع البداية ↓ ابدأ فورًا
       startBreathing();
     } else {
-      // الكروت في منتصف الحركة ↑ انتظر حتى تنتهي الدورة الحالية
       const wait = cycleDuration - elapsed;
-      console.log(`⏳ Waiting ${wait}ms until next breathing cycle...`);
       setTimeout(() => startBreathing(), wait);
     }
 
@@ -610,25 +683,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.addEventListener("click", startAllSynced);
 
-  // إيقاف واستئناف عند الانتقال أو فقدان التركيز
+  /* 🛑 يتوقف عند مغادرة الصفحة أو التنقل */
   window.addEventListener("beforeunload", stopAll);
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) stopAll();
-    else resumeAll();
   });
-
-  let hbTimer, brTimer;
-  function stopAll() {
-    clearInterval(hbTimer);
-    clearInterval(brTimer);
-    heart.pause();
-    breath.pause();
-  }
-
-  function resumeAll() {
-    if (!hbTimer) startHeartbeat();
-    if (!brTimer) startBreathing();
-  }
 });
 </script>
 <script>
