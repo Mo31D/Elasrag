@@ -1,69 +1,124 @@
-
-
 /* =========================================
-   🎨 STYLE SYSTEM
+   Silkroad — Cleaned & Consolidated CSS
+   Source (original): silkroad-style.css. See original for reference.  [oai_citation:1‡silkroad-style.css](file-service://file-WSKaLWyE4jS3ytQ8Hjucku)
+   Notes: kept behaviors, themes (default/night/halloween), responsive rules.
    ========================================= */
-:root {
---map-width: 900px;   /* wider map */
---map-height: 1000px; /* shorter map */
+
+/* -----------------------------------------
+   :root variables
+   ----------------------------------------- */
+:root{
+  --map-width: 900px;
+  --map-height: 1000px;
   --gold: #ffcc00;
   --brown: #8a5930;
   --sand: #f7eed8;
+  --text-dark: #2b2b2b;
+  --panel-tint: rgba(255,255,255,0.15);
 }
-body {
+
+/* -----------------------------------------
+   Base layout & map
+   ----------------------------------------- */
+*{box-sizing: border-box;}
+body{
   font-family: system-ui, sans-serif;
   margin: 14px;
   background: var(--sand);
-  color: #2b2b2b;
+  color: var(--text-dark);
 }
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 4px;
-  width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
+.container{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:4px;
+  width:100%;
+  max-width:100vw;
+  overflow-x:hidden;
 }
-.map {
-  position: relative;
-  width: 85%;
-  max-width: 85%;
-  height: auto;
-  aspect-ratio: 2 / 3;
+
+/* map */
+.map{
+  position:relative;
+  width:85%;
+  max-width:85%;
+  height:auto;
+  aspect-ratio:2 / 3; /* preserves 1024×1536-ish aspect */
   background: url("Silkroad_page-0001.jpeg") no-repeat center center;
-  background-size: contain; /* ✅ يضمن ظهور الصورة كاملة */
-  border: 2px solid var(--brown);
-  border-radius: 2px;
-  margin: 0 auto;
-  overflow: hidden;
-  max-height: 90vh; /* ✅ لا يتجاوز 90٪ من ارتفاع الشاشة */
+  background-size:contain;
+  border:2px solid var(--brown);
+  border-radius:2px;
+  margin:0 auto;
+  overflow:hidden;
+  max-height:90vh;
+  z-index:1000;
 }
-.below-map {
-  margin-top: 4px;   /* 🔹 تقليل المسافة بين الخريطة والكروت */
-  padding-top: 0;    /* 🔹 إزالة أي حشوة داخلية */
+
+/* -----------------------------------------
+   Panels: glass/login/sidebar/log
+   ----------------------------------------- */
+.panel,
+.sidebar,
+.login-panel,
+.login-floating,
+.log-panel,
+.after-start-floating{
+  transition: all .4s ease;
 }
-/* ✨ Modern Caravan Entry Styling */
-.login-panel {
+
+/* Sidebar / glass panels */
+.sidebar{
+  width:460px;
+  background: var(--panel-tint);
+  backdrop-filter: blur(18px) saturate(180%);
+  border-radius:12px;
+  padding:12px;
+  border:none!important;
+  box-shadow:none!important;
+}
+
+/* Log area */
+#log,
+.log-panel{
+  max-height:180px;
+  overflow:auto;
+  font-size:13px;
+  padding:8px;
+  border-radius:6px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px) saturate(160%);
+  border:1px solid rgba(255,255,255,0.25);
+  color: #2b2b2b;
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+}
+
+/* 💎 Caravan Entry — Restored Original */
+.login-floating {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(220px, 40%, 300px);
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(18px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 14px;
-  padding: 20px;
+  padding: clamp(10px, 2vw, 20px);
   box-shadow: 0 8px 28px rgba(0,0,0,0.25);
   text-align: center;
-  color: #5b3a00;
-  transition: all 0.6s ease;
+  color: #4b2e05;
+  z-index: 2000;
+  transition: all 0.4s ease;
 }
-.login-panel h2 {
+.login-floating h2 {
   font-size: 20px;
   font-weight: 700;
   color: #b8860b;
   text-shadow: 0 1px 2px #fff;
   margin-bottom: 12px;
 }
-.login-panel input {
+.login-floating input {
   width: 90%;
   padding: 10px;
   font-size: 14px;
@@ -74,7 +129,14 @@ body {
   outline: none;
   text-align: center;
 }
-.login-panel button {
+.login-floating .btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.login-floating button {
+  flex: 1;
   padding: 10px 14px;
   border-radius: 8px;
   border: none;
@@ -82,351 +144,159 @@ body {
   font-weight: 600;
   transition: transform 0.2s ease, background 0.3s ease;
 }
-.login-panel button:hover { transform: scale(1.05); }
-.login-panel .primary {
+.login-floating button:hover { transform: scale(1.05); }
+.login-floating .primary { background: linear-gradient(90deg, #ffcc00, #ffaa00); color: #3a2500; }
+.login-floating .ai { background: linear-gradient(90deg, #89f7fe, #66a6ff); color: #003366; }
+.login-floating .reset {
+  position: absolute;
+  top: 10px;
+  right: 10px;
   background: linear-gradient(90deg, #ffcc00, #ffaa00);
   color: #3a2500;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
-.login-panel .ai {
-  background: linear-gradient(90deg, #89f7fe, #66a6ff);
-  color: #003366;
+.login-floating .reset:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
 }
-.login-panel .reset {
-  background: linear-gradient(90deg, #ff4d4d, #b30000);
-  color: #fff;
-}
-.hidden-panel { opacity: 0; transform: scale(0.9); pointer-events: none; }
-
-
-/* =============================
-   🗺️ Town Nodes (Swapped Layout)
-   ============================= */
-
-/* دائرة المدينة (السعر في المنتصف) */
-.node {
-  position: absolute;
-  width: 4.8vw;
-  height: 4.8vw;
-  min-width: 20px;
-  min-height: 20px;
-  max-width: 32px;
-  max-height: 32px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at 50% 50%,
-    rgba(255, 220, 120, 0.75) 0%,   /* 💛 توهج داخلي أهدأ */
-    rgba(255, 200, 40, 0.4) 45%,
-    rgba(255, 170, 0, 0.15) 90%,
-    transparent 100%
-  );
-  border: 1.5px solid rgba(255, 210, 100, 0.3); /* 🟡 حافة ذهبية شفافة أكثر */
-  box-shadow:
-  0 0 4px 1px rgba(255, 200, 60, 0.4),
-  0 0 8px 3px rgba(255, 180, 30, 0.25);
-    inset 0 0 4px rgba(255, 255, 255, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
-  z-index: 2000;
-  transition: transform 0.3s ease, box-shadow 0.4s ease;
-  transform: scale(1);
-}
-
-
-.node:hover {
-  transform: scale(1.15);
-  box-shadow:
-    0 0 10px 4px rgba(255, 210, 100, 0.6),
-    0 0 20px 8px rgba(255, 190, 60, 0.4),
-    inset 0 0 6px rgba(255, 255, 255, 0.3);
-}
-
-/* السعر داخل الدائرة */
-.node .price-main {
-  font-weight: 800;
-  color: #b8860b;
-  position: relative;
-  z-index: 2100;
-  font-size: clamp(8px, 2vw, 11px);
-}
-/* اسم المدينة تحت الدائرة مباشرة */
-.node .town-small {
-  position: absolute;
-  top: 50%;       /* المسافة بين الاسم والدائرة */
-  left: -80%;
-  transform: translateX(-50%);
-  font-size: 9.5px;
-  color: #fff;
-  font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-  white-space: nowrap;
+.hidden-panel {
+  opacity: 0;
+  transform: scale(0.85);
   pointer-events: none;
 }
 
-/* Highlighted current town */
-.town-current {
-  border-color: #ffd84d;
-  box-shadow:
-    0 0 16px 6px rgba(255, 210, 80, 0.95),
-    0 0 32px 14px rgba(255, 200, 60, 0.7);
+
+/* after-start-floating (start/new-game button inside map) */
+.after-start-floating{
+  position:absolute;
+  top:0;
+  right:0;
+  z-index:2000;
+  background:none!important;
+  border:none!important;
+  box-shadow:none!important;
+  padding:0!important;
+}
+.after-start-floating button.primary{
+  background: linear-gradient(90deg,#ffcc00,#ffaa00);
+  color:#3a2500;
+  border:none;
+  font-size:12px;
+  font-weight:700;
+  padding:6px 10px;
+  border-radius:8px;
+}
+
+/* -----------------------------------------
+   Nodes (towns) and prices
+   ----------------------------------------- */
+.node{
+  position:absolute;
+  width:4.8vw;
+  height:4.8vw;
+  min-width:20px;
+  min-height:20px;
+  max-width:32px;
+  max-height:32px;
+  border-radius:50%;
+  background: radial-gradient(circle at 50% 50%,
+    rgba(255,220,120,0.75) 0%,
+    rgba(255,200,40,0.4) 45%,
+    rgba(255,170,0,0.15) 90%,
+    transparent 100%);
+  border:1.5px solid rgba(255,210,100,0.3);
+  box-shadow: 0 0 4px 1px rgba(255,200,60,0.4), 0 0 8px 3px rgba(255,180,30,0.25), inset 0 0 4px rgba(255,255,255,0.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+  z-index:2000;
+  transition: transform .3s ease, box-shadow .4s ease;
+}
+.node:hover{ transform:scale(1.15); box-shadow: 0 0 10px 4px rgba(255,210,100,0.6), 0 0 20px 8px rgba(255,190,60,0.4), inset 0 0 6px rgba(255,255,255,0.3); }
+
+.node .price-main{
+  font-weight:800;
+  color:#ffffff;
+  z-index:2100;
+  font-size:clamp(9px,2.2vw,13px);
+  text-shadow:0 1px 2px rgba(0,0,0,0.7);
+}
+
+/* small town label */
+.node .town-small{
+  position:absolute;
+  top:50%;
+  left:-80%;
+  transform:translateX(-50%);
+  font-size:9.5px;
+  color:#fff;
+  font-weight:600;
+  text-shadow:0 1px 3px rgba(0,0,0,0.6);
+  white-space:nowrap;
+  pointer-events:none;
+}
+
+/* highlighted current town */
+.town-current{
+  border-color:#ffd84d;
+  box-shadow: 0 0 16px 6px rgba(255,210,80,0.95), 0 0 32px 14px rgba(255,200,60,0.7);
   animation: pulseNode 1.6s ease-in-out infinite alternate;
 }
-
-@keyframes pulseNode {
-  0% {
-    transform: scale(1);
-    box-shadow:
-      0 0 10px 3px rgba(255, 210, 80, 0.8),
-      0 0 20px 8px rgba(255, 190, 60, 0.5);
-  }
-  100% {
-    transform: scale(1.15);
-    box-shadow:
-      0 0 20px 8px rgba(255, 230, 100, 1),
-      0 0 40px 20px rgba(255, 200, 60, 0.8);
-  }
+@keyframes pulseNode{
+  0%{ transform:scale(1); box-shadow: 0 0 10px 3px rgba(255,210,80,0.8), 0 0 20px 8px rgba(255,190,60,0.5); }
+ 100%{ transform:scale(1.15); box-shadow: 0 0 20px 8px rgba(255,230,100,1), 0 0 40px 20px rgba(255,200,60,0.8); }
 }
 
-@keyframes flashInner {
-  0% {
-    background: linear-gradient(#fff7e8, #f1d9b1);
-  }
-  100% {
-    background: var(--gold);
-  }
-}
-
-/* 🧍 Player markers on map — Responsive and glowing */
-.player-dot {
-  position: absolute;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  border: 2px solid #fff;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4), 0 0 8px currentColor;
+/* -----------------------------------------
+   Player markers & cards
+   ----------------------------------------- */
+/* player dot on map */
+.player-dot{
+  position:absolute;
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  border:2px solid #fff;
+  box-shadow:0 0 6px rgba(0,0,0,0.4), 0 0 8px currentColor;
   animation: playerPulse 2s infinite ease-in-out;
-  transition: left 1s linear, top 1s linear;
-  z-index: 1800;
+  transition:left 1s linear, top 1s linear;
+  z-index:1800;
+  width:clamp(10px,1.6vw,18px);
+  height:clamp(10px,1.6vw,18px);
+}
+@keyframes playerPulse{
+  0%{ transform:translate(-50%,-50%) scale(1); opacity:0.9; box-shadow:0 0 6px currentColor; }
+  50%{ transform:translate(-50%,-50%) scale(1.2); opacity:1; box-shadow:0 0 12px currentColor; }
+  100%{ transform:translate(-50%,-50%) scale(1); opacity:0.9; box-shadow:0 0 6px currentColor; }
+}
+.player-dot.active{ box-shadow: 0 0 10px currentColor, 0 0 20px currentColor; }
 
-  /* 🔹 حجم متفاعل حسب عرض الشاشة */
-  width: clamp(10px, 1.6vw, 18px);
-  height: clamp(10px, 1.6vw, 18px);
+/* inline small dot by player name */
+.player-dot-inline{
+  display:inline-block;
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  border:1px solid #fff;
+  box-shadow:0 0 2px rgba(0,0,0,0.4);
+  margin-right:6px;
+  vertical-align:middle;
+  transition:all .3s ease;
 }
+.player-dot-inline.active{ box-shadow:0 0 12px 4px var(--gold); animation: flash 1.2s infinite alternate; }
+@keyframes flash{ 0%{opacity:1; transform:scale(1);} 100%{opacity:0.6; transform:scale(1.3);} }
 
-@keyframes playerPulse {
-  0%   { transform: translate(-50%, -50%) scale(1);   opacity: 0.9; }
-  50%  { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1);   opacity: 0.9; }
-}
-
-/* ✨ Transparent glass sidebar panel background */
-.sidebar {
-  width: 460px;
-  background: rgba(255, 255, 255, 0.1); /* subtle white transparency */
-  backdrop-filter: blur(18px) saturate(180%);
-  border-radius: 12px;
-  padding: 12px;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* 🪶 Transparent game log area */
-#log {
-  max-height: 180px;
-  overflow: auto;
-  font-size: 13px;
-  padding: 8px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08); /* light transparent tint */
-  backdrop-filter: blur(10px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #2b2b2b;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
-}
-
-button {
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: #fff;
-  cursor: pointer;
-}
-button.primary { background: #2e77ff; color: #fff; border: none; }
-input { padding: 6px; border-radius: 6px; border: 1px solid #ccc; }
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 6px 8px; border-bottom: 1px solid #f2f2f2; font-size: 13px; text-align:center;}
-th { background: #fbfbfb; font-weight: 600; }
-#turnBanner {
-  text-align:center; padding:8px; background:#ffe599;
-  border-radius:6px; font-weight:700; color:#5b3a00;
-  animation: blink 2s infinite;
-}
-@keyframes blink {0%,100%{opacity:1;}50%{opacity:0.6;}}
-
-/* Small colored dot beside player name */
-.player-dot-inline {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: 1px solid #fff;
-  box-shadow: 0 0 2px rgba(0,0,0,0.4);
-  margin-right: 6px;
-  vertical-align: middle;
-  transition: all 0.3s ease;
-}
-
-/* Flashing/glowing effect for active player */
-.player-dot-inline.active {
-  box-shadow: 0 0 12px 4px var(--gold);
-  animation: flash 1.2s infinite alternate;
-}
-
-@keyframes flash {
-  0% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0.6; transform: scale(1.3); }
-}
-
-.die {
-  width: 48px;
-  height: 48px;
-  line-height: 48px;
-  border-radius: 8px;
-  text-align: center;
-  font-size: 26px;
-  font-weight: bold;
-  color: #fff;
-  position: absolute;
-  bottom: 10px;
-  user-select: none;
-  transition: transform 0.3s;
-}
-#greenDie { left: 30px; top: 360px; background: transparent; }
-#redDie { left: 30px; top: 405px; background: transparent; }
-.die.roll { transform: scale(1.2) rotate(10deg); }
-/* 🏙️ Small floating info box in top-right corner of the map */
-.floating-top-corner {
-  position: absolute;
-  background: transparent;
-  backdrop-filter: none;
-  border: none;
-  box-shadow: none;
-  border-radius: 0;
-  padding: 6px 10px;
-  width: 20vw;
-  top: 40%;
-  left: 12%;
-  text-align: right;
-  color: #4b2e05;
-  font-size: 13px;
-  line-height: 1.4;
-  z-index: 8000;
-}
-
-/* النصوص الداخلية */
-.floating-top-corner #currentTownText {
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.floating-top-corner #turnBanner {
-  background: rgba(255, 230, 150, 0.8);
-  margin-top: 4px;
-  padding: 4px 6px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 12px;
-  text-align: center;
-  color: #5b3a00;
-  animation: blink 2s infinite;
-}
-#currentTownText {
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
-  line-height: 1.7;
-  text-align: center;
-}
-
-/* ✨ Flashing effects */
-.town-name {
-  color: #ffffff;
-  font-weight: 800;
-  animation: flashTown 1.5s infinite alternate;
-}
-
-.price-flash {
-  color: #ffffff;
-  font-weight: 900;
-  font-size: 24px;
-  text-shadow:
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000,
-     0 0 10px #ffffff;
-  animation: flashPrice 1.2s infinite alternate;
-}
-
-@keyframes flashTown {
-  0% { color: #b22222; text-shadow: 0 0 2px #ff9999; opacity: 0.8; }
-  100% { color: #ff2d2d; text-shadow: 0 0 10px #ff6666; opacity: 1; }
-}
-@keyframes flashPrice {
-  0% { color: #d4a017; text-shadow: 0 0 2px #ffd966; opacity: 0.8; }
-  100% { color: #ffcc00; text-shadow: 0 0 10px #ffe066; opacity: 1; }
-}
-
-
-
+.player-card{border:3px solid #ccc;border-radius:1vw;background:rgba(255,255,255,0.9);padding:clamp(12px,1.8vw,22px);box-shadow:0 0.4vw 1vw rgba(0,0,0,0.25);transition:transform .2s ease,box-shadow .3s ease;font-size:clamp(11px,1vw,15px);min-width:clamp(180px,32vw,340px);max-width:clamp(200px,36vw,380px);opacity:.95;backdrop-filter:blur(4px);}
 
 .player-card:hover {
   transform: scale(1.04);
   box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-}
-
-.player-card {
-  border: 3px solid #ccc;
-  border-radius: 1vw;
-  background: rgba(255, 255, 255, 0.9);
-  padding: clamp(8px, 1.2vw, 16px); /* 🔹 مرن حسب الشاشة */
-  box-shadow: 0 0.4vw 1vw rgba(0,0,0,0.25);
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-  font-size: clamp(11px, 1vw, 15px); /* 🔹 حجم النص مرن */
-  min-width: clamp(120px, 22vw, 200px);
-  max-width: clamp(140px, 30vw, 240px);
-  opacity: 0.95;
-  backdrop-filter: blur(4px);
-}
-
-
-
-.player-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.player-info {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  row-gap: 6px;
-  column-gap: 10px;
-  font-size: 13px;
-}
-
-.player-info div {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.player-info span.icon {
-  font-size: 16px;
 }
 
 .player-card.active {
@@ -434,10 +304,9 @@ th { background: #fbfbfb; font-weight: 600; }
   background: rgba(255, 248, 220, 0.95);
   filter: none;
   animation: outerPlayerGlow 1.8s ease-in-out infinite alternate;
-  box-shadow: 0 0 12px 3px var(--gold); /* 🔹 توهج أولي دائم حول الكارت */
+  box-shadow: 0 0 12px 3px var(--gold);
 }
 
-/* ✨ توهج خارجي نابض باللون الذهبي */
 @keyframes outerPlayerGlow {
   0% {
     box-shadow:
@@ -450,1244 +319,395 @@ th { background: #fbfbfb; font-weight: 600; }
       0 0 35px 14px rgba(255, 230, 120, 0.5);
   }
 }
-.player-dot.active {
-  box-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+
+/* player card layout pieces */
+.player-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; font-weight:700; font-size:14px; }
+.player-info{ display:grid; grid-template-columns:1fr 1fr; row-gap:6px; column-gap:10px; font-size:13px; }
+.player-info div{ display:flex; align-items:center; gap:6px; }
+.turn-status{ font-size:12px; color:var(--gold); animation: blink 1.2s infinite; }
+@keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+/* flying animation for active card (kept as in original) */
+@keyframes flyToCenter{
+  0%{ transform:translateY(0) scale(1); z-index:1; }
+  40%{ transform:translateY(-40vh) scale(1.25); z-index:9999; }
+  100%{ transform:translateY(0) scale(1); z-index:1; }
+}
+.player-card.flying{
+  position:absolute!important;
+  left:50% !important;
+  top:50% !important;
+  transform:translate(-50%,-50%) scale(1.1);
+  transition: all .8s ease;
+  z-index:9999;
 }
 
-@keyframes dotFlash {
-  0% {
-    box-shadow: 0 0 6px 2px currentColor, 0 0 10px rgba(255,255,255,0.6);
-    transform: scale(1);
-  }
-  100% {
-    box-shadow: 0 0 16px 8px currentColor, 0 0 14px rgba(255,255,255,0.8);
-    transform: scale(1.3);
-  }
-}
+/* -----------------------------------------
+   Buttons, controls and trade area
+   ----------------------------------------- */
+button{ padding:8px 10px; border-radius:6px; border:1px solid rgba(0,0,0,0.08); background:#fff; cursor:pointer; }
+button.primary{ background:#2e77ff; color:#fff; border:none; }
+input{ padding:6px; border-radius:6px; border:1px solid #ccc; }
+table{ width:100%; border-collapse:collapse; }
+th, td{ padding:6px 8px; border-bottom:1px solid #f2f2f2; font-size:13px; text-align:center; }
+th{ background:#fbfbfb; font-weight:600; }
 
+/* trade-controls */
+.trade-controls{ display:flex; justify-content:center; gap:12px; margin-top:10px; }
+.trade-controls button{ padding:8px 16px; border-radius:8px; font-size:14px; font-weight:700; border:none; cursor:pointer; transition:all .2s ease; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.3); }
+.trade-controls button:hover{ transform:translateY(-2px); box-shadow:0 4px 10px rgba(0,0,0,0.25); }
 
-/* 🌟 Main buttons */
-.trade-controls button {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-
-.trade-controls button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-/* Button colors */
-#buyBtn {
-  background: linear-gradient(90deg, #4caf50, #2e7d32);
-}
-#sellBtn {
-  background: linear-gradient(90deg, #e53935, #b71c1c);
-}
-#waitBtn {
-  background: linear-gradient(90deg, #ffb300, #f57c00);
-}
-
-
-
-.inline-buttons input {
-  width: 55px;
-  padding: 4px 6px;
-  border-radius: 6px;
-  border: 1px solid #d2a05a;
-  text-align: center;
-  font-size: 13px;
-}
-
-.inline-buttons button {
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
+/* specific colors for buy/sell/wait */
+#buyBtn{ background: linear-gradient(90deg,#4caf50,#2e7d32); }
+#sellBtn{ background: linear-gradient(90deg,#e53935,#b71c1c); }
+#waitBtn{ background: linear-gradient(90deg,#ffb300,#f57c00); }
 .inline-buy { background: linear-gradient(90deg, #4caf50, #2e7d32); }
 .inline-sell { background: linear-gradient(90deg, #e53935, #b71c1c); }
 .inline-wait { background: linear-gradient(90deg, #ffb300, #f57c00); }
-
 .inline-buttons button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* =======================
-   🧍 Enhanced Player Card Layout
-   ======================= */
-
-.player-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-weight: 700;
-  font-size: 14px;
-  color: inherit;
-}
-
-.turn-status {
-  font-size: 12px;
-  color: var(--gold);
-  animation: blink 1.2s infinite;
-}
-@keyframes blink {
-  0%,100%{opacity:1;}50%{opacity:0.4;}
-}
-
-.player-divider {
-  border: none;
-  border-bottom: 1px dashed rgba(0,0,0,0.2);
-  margin: 4px 0 6px;
-}
-
-.player-info-grid {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  margin-bottom: 6px;
-}
-
-
-
-/* 🎮 Inline trade area – updated layout */
+/* 🎯 Unified trade controls row */
 .inline-buttons {
   display: flex;
-  flex-direction: column;      /* 🔹 يجعل الأزرار عمودية */
   align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-}
-
-.inline-buttons .top-row {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
+  justify-content: space-between;
+  gap: 0.5vw;
   width: 100%;
+  flex-wrap: nowrap;
+  margin-top: 0.5vw;
 }
 
-.inline-buttons .bottom-row {
+/* 🎯 تصميم جديد لمربع العدد + الأزرار */
+.inline-buttons {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4vw;
   width: 100%;
+  margin-top: 0.6vw;
+  flex-wrap: nowrap;
 }
 
-
-/* ⚙️ Number Input — compact and balanced */
 .number-input {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border: 1px solid #caa74d;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.65);
+  border: 1px solid rgba(255,204,0,0.4);
   border-radius: 8px;
-  background: #1a1a1a;                /* 🔹 خلفية سوداء أنيقة */
-  width: 90px;                        /* 🔹 توازن أفضل للعرض */
-  height: 34px;
-  overflow: hidden;
+  padding: 2px 4px;
+  width: clamp(70px, 18%, 110px);
+  height: clamp(26px, 4vw, 34px);
   box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
 }
 
-/* حقل الرقم */
 .number-input input {
-  width: 34px;
+  width: 38%;
   text-align: center;
-  font-size: 15px;
+  font-size: clamp(11px, 1.2vw, 13px);
   font-weight: 700;
-  color: #ffffff;                    /* 🔹 الرقم أبيض */
+  color: #ffcc00;
+  background: transparent;
   border: none;
-  background: #000;                  /* 🔹 خلفية الرقم سوداء */
   outline: none;
 }
 
-.num-btn.minus:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
-}
-
-/* 🎯 أزرار + و - محسّنة الشكل والتوسيط */
+/* أزرار + و - */
 .num-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  font-size: 15px;
-  font-weight: 700;
-  border: none;
+  width: clamp(24px, 4vw, 32px);
+  height: clamp(24px, 4vw, 32px);
   border-radius: 6px;
+  font-size: clamp(14px, 2vw, 16px);
+  font-weight: 800;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  line-height: 1;
+  transition: transform 0.15s ease;
 }
-
-/* زر الإنقاص (–) */
 .num-btn.minus {
   background: linear-gradient(180deg, #2c2c2c, #1a1a1a);
   color: #ffcc00;
 }
-.num-btn.minus:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 6px rgba(255, 204, 0, 0.6);
-}
-
-/* زر الإضافة (+) */
 .num-btn.plus {
   background: linear-gradient(180deg, #ffd84d, #b8860b);
   color: #3b2500;
 }
-.num-btn.plus:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 8px rgba(255, 204, 0, 0.6);
-}
-.num-btn.plus:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 10px rgba(255, 204, 0, 0.8);
-}
-.num-btn.plus:active {
-  transform: scale(0.95);
-}
+.num-btn:hover { transform: scale(1.1); }
 
-/* keep the buttons aligned nicely */
+/* أزرار البيع والشراء والانتظار */
 .inline-buy, .inline-sell, .inline-wait {
-  padding: 5px 8px;
-  font-size: 12px;
   flex: 1;
-  border-radius: 6px;
-  font-weight: 600;
-  color: #fff;
-  text-shadow: 0 1px 1px rgba(0,0,0,0.3);
-}
-/* ✨ Mini floating "Start a new game" badge */
-.after-start-floating {
-  position: absolute;
-  top: 0%; /* 🔹 قرب أعلى الخريطة */
-  right: 0%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(18px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 12px;
-  padding: 10px 14px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-  transition: all 0.5s ease;
-  width: fit-content;
-  z-index: 9999;
-}
-.after-start-floating button.primary {
-  background: linear-gradient(90deg, #ffcc00, #ffaa00);
-  color: #3a2500;
-  border: none;
-  font-size: 12px;
-  font-weight: 700;
-  padding: 6px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: transform 0.2s ease, background 0.3s ease;
-}
-.after-start-floating button.primary:hover {
-  transform: scale(1.05);
-}
-
-
-/* 💎 Floating Glass Sign-In Box (Centered on Map) */
-.login-floating {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: clamp(220px, 40%, 300px); /* 🔹 حجم مرن حسب الشاشة */
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(18px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  padding: clamp(10px, 2vw, 20px);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.25);
   text-align: center;
-  color: #4b2e05;
-  z-index: 999;
-  transition: all 0.4s ease;
-}
-
-.login-floating h2 {
-  font-size: 16px;
+  padding: clamp(3px, 0.8vw, 6px);
+  font-size: clamp(11px, 1.4vw, 13px);
   font-weight: 700;
-  color: #b8860b;
-  margin-bottom: 10px;
-  text-shadow: 0 1px 2px #fff;
-}
-
-.login-floating input {
-  width: 90%;
-  padding: 8px;
-  font-size: 13px;
-  border-radius: 6px;
-  border: 1px solid #e0c080;
-  background: #fffdf7;
-  margin-bottom: 8px;
-  text-align: center;
-  outline: none;
-}
-
-.login-floating .btns {
-  display: flex;
-  justify-content: space-between;
-  gap: 6px;
-  margin-bottom: 6px;
-}
-
-.login-floating button {
-  flex: 1;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  transition: transform 0.2s ease, background 0.3s ease;
-}
-
-.login-floating button:hover {
-  transform: scale(1.05);
-}
-
-.login-floating .primary {
-  background: linear-gradient(90deg, #ffcc00, #ffaa00);
-  color: #3a2500;
-}
-
-.login-floating .ai {
-  background: linear-gradient(90deg, #89f7fe, #66a6ff);
-  color: #003366;
-}
-
-.login-floating .reset {
-  background: linear-gradient(90deg, #ff4d4d, #b30000);
-  color: #fff;
-  width: 100%;
-  margin-top: 4px;
-}
-
-.hidden-panel {
-  opacity: 0;
-  transform: scale(0.85);
-  pointer-events: none;
-}
-/* =========================================
-   🎲 Floating 3D Dice (middle-left on map)
-   ========================================= */
-.floating-dice {
-  position: absolute;
-  top: 10%;
-  left: 10px;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  z-index: 1500;
-  background: none;
-  backdrop-filter: none;
-  border: none;
-  box-shadow: none;
-  padding: 0;
-}
-
-.floating-dice .dice {
-  width: 08px;
-  height: 58px;
-  border-radius: 12px;
-  font-size: 26px;
-  font-weight: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
-  color: #fff;
-  box-shadow:
-    inset 0 2px 6px rgba(255,255,255,0.5),
-    inset 0 -2px 6px rgba(0,0,0,0.4),
-    0 5px 15px rgba(0,0,0,0.4);
-  transition: transform 0.4s ease, box-shadow 0.4s ease;
-  transform-style: preserve-3d;
-  perspective: 600px;
-}
-
-.floating-dice .dice.green {
-  background: radial-gradient(circle at 30% 30%, #a8ff9f, #009b00);
-  border: 2px solid #007f00;
-}
-
-.floating-dice .dice.red {
-  background: radial-gradient(circle at 30% 30%, #ff9f9f, #b00000);
-  border: 2px solid #7a0000;
-}
-
-.floating-dice .dice.roll {
-  animation: roll3D 0.6s ease-in-out;
-}
-
-@keyframes roll3D {
-  0%   { transform: rotateX(0deg) rotateY(0deg) scale(1); }
-  25%  { transform: rotateX(90deg) rotateY(45deg) scale(1.05); }
-  50%  { transform: rotateX(180deg) rotateY(90deg) scale(1.1); }
-  75%  { transform: rotateX(270deg) rotateY(135deg) scale(1.05); }
-  100% { transform: rotateX(360deg) rotateY(180deg) scale(1); }
-}
-
-.floating-sidebar {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(10px) saturate(160%);
-}
-
-.floating-sidebar {
-  position: absolute;
-  top: 50%;
-  right: 20px;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  z-index: 1500;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 12px;
-  padding: 10px;
-  width: 280px;
-}
-
-/* 🏕️ Ensure Caravan Entry panel stays above towns and map dots */
-.login-floating,
-.after-start-floating {
-  position: absolute !important;
-  z-index: 12000 !important;
-}
-
-/* Layer hierarchy */
-.map { z-index: 1000; }
-.node { z-index: 2000; position: absolute; }
-.floating-dice { z-index: 3000; }
-.floating-sidebar, #musicCtl { z-index: 4000; }
-.login-floating, .after-start-floating { z-index: 12000; } /* topmost */
-
-/* 🌟 Rebalanced floating sidebar inside the map */
-.floating-sidebar {
-  position: absolute;
-  top: 50%;
-  right: 25px;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 360px;
-  max-height: 88%;
-  overflow-y: auto;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(14px) saturate(180%);
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-  padding: 14px;
-  z-index: 4000;
-}
-
-/* 3D dice used by dice3d.js */
-#dice3d-container { pointer-events: none; }
-.dice3d-cube { width: 100%; height: 100%; position: absolute; transform-style: preserve-3d; }
-.dice3d-face {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  border-radius: 10px;
-  overflow: visible;
-  display: block;
-}
-/* dots */
-.dice3d-dot {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.25);
-}
-/* ensure the 3D container sits visually above other UI elements */
-#dice3d-container { z-index: 6000; transform-origin: center; }
-
-
-/* =========================================
-   PLAYER DOT ENHANCEMENT
-   ========================================= */
-
-@keyframes playerPulse {
-  0%, 100% { box-shadow: 0 0 6px currentColor; opacity: 1; }
-  50% { box-shadow: 0 0 12px currentColor; opacity: 0.7; }
-}
-
-/* collapsed sidebar styling (mobile) */
-.sidebar.sidebar-collapsed {
-  width: 220px !important;
-  padding: 8px !important;
-  font-size: 13px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
-}
-
-/* ensure numeric .die behaves well when resized */
-.die {
   border-radius: 8px;
-  padding: 0 4px;
-  box-sizing: border-box;
+  color: #fff;
   white-space: nowrap;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
-
-/* reduce music hint size on small screens */
-#musicHint { font-size: 10px !important; right: 44px !important; bottom: 18px !important; }
-
-.dice3d-dot {
-  transition: transform 0.2s ease;
-}
-.dice3d-wrapper:hover .dice3d-dot {
-  transform: scale(1.15);
-}
-
-
-.dice3d-cube { transform-style: preserve-3d; -webkit-transform-style: preserve-3d; }
-.dice3d-face {
-  box-sizing: border-box;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* dots minor transitions */
-.dice3d-dot { transition: transform .12s ease; }
-.dice3d-wrapper:active .dice3d-dot,
-.dice3d-wrapper:hover .dice3d-dot { transform: scale(1.08); }
-
-.dice3d-wrapper {
-  display: block;
-  position: relative;
-  width: auto;
-  height: auto;
-  -webkit-transform-style: preserve-3d;
-  transform-style: preserve-3d;
-  perspective: 800px;
-  border: none !important;
-  box-shadow: none !important;
-  max-width: none !important;
-  max-height: none !important;
-  user-select: none;
-  touch-action: manipulation;
-}
-
-
-/* Extra in silkroad-style.css */
-/* =========================================
-   🎃 Halloween Theme (dark & spooky)
-   ========================================= */
-body.halloween {
-  background-color: #000; /* الخلفية الأساسية سوداء */
-  color: #ff6600;
-  transition: background 0.6s ease, color 0.6s ease;
-}
-
-/* الخريطة تصبح أكثر ظلاماً */
-.map.halloween,
-body.halloween .map {
-  filter: brightness(0.65) contrast(1.1);
-  border-color: #ff6600;
-}
-
-/* اللوحات الزجاجية (الـ panels والـ sidebar) */
-body.halloween .login-floating,
-body.halloween .sidebar,
-body.halloween .after-start-floating {
-  background: rgba(20, 0, 0, 0.6);
-  backdrop-filter: blur(12px) saturate(160%);
-  border-color: rgba(255, 102, 0, 0.4);
-  box-shadow: 0 4px 18px rgba(255, 100, 0, 0.3);
-}
-
-/* بطاقات اللاعبين */
-body.halloween .player-card {
-  background: rgba(15, 0, 0, 0.8);
-  border-color: #ff6600;
-  color: #ffa64d;
-}
-
-/* النصوص المتوهجة */
-body.halloween .player-card.active {
-  box-shadow: 0 0 20px 6px #ff6600;
-  animation: halloweenGlow 1.6s infinite alternate;
-}
-
-@keyframes halloweenGlow {
-  0% { box-shadow: 0 0 10px #ff3300; }
-  100% { box-shadow: 0 0 25px #ff6600; }
-}
-
-/* إشعاع خافت فوق الخريطة */
-body.halloween .map::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 40%, rgba(255, 120, 0, 0.15), transparent 80%);
-  pointer-events: none;
-  mix-blend-mode: screen;
-  animation: flicker 2s infinite;
-}
-
-@keyframes flicker {
-  0%,100% { opacity: 0.7; }
-  50% { opacity: 0.3; }
-}
-
-/* 🌙 Dynamic Map Backgrounds Based on Theme */
-body.default .map {
-  background: url("Silkroad_page-0001.jpeg") no-repeat center center;
-  background-size: contain;
-}
-
-body.halloween .map {
-  background: url("halloween_map.png") no-repeat center center;
-  background-size: contain;
-  filter: brightness(0.9) contrast(1.1);
-}
-
-/* ===== Egyptian Nights (Night) theme ===== */
-body.night {
-  background-color: #000;                 /* خلفية سوداء مطلقة */
-  color: #e6d9b7;                         /* نص ذهبي فاتح للنوافذ */
-  transition: background 0.45s ease, color 0.45s ease;
-}
-
-/* خريطة الليل */
-body.night .map {
-  background: url("Egyptian.jpeg") no-repeat center center;
-  background-size: contain;
-  filter: brightness(0.55) contrast(1.15) saturate(1.05);
-  border-color: rgba(184,134,11,0.6);     /* إطار ذهبي باهت */
-  position: relative;
-}
-
-
-
-/* اللوحات الزجاجية — نستخدم زجاج داكن (glass) */
-body.night .login-floating,
-body.night .sidebar,
-body.night .after-start-floating,
-body.night #musicCtl,
-body.night .floating-sidebar {
-  border: none !important;
-  box-shadow: none !important;
-  background: linear-gradient(180deg, rgba(20,18,16,0.28), rgba(10,8,6,0.32)) !important;
-  
-  backdrop-filter: blur(14px) saturate(140%);
-  
-  color: #e6d9b7;
-}
-
-/* بطاقات اللاعبين — glass look افتراضي */
-body.night .player-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-  border: 1px solid rgba(255,206,75,0.08);
-  color: #e6d9b7;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
-  transition: transform 0.18s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-
-/* عندما يحين دور اللاعب — توهج ذهبي مركزي */
-body.night .player-card.active {
-  background: linear-gradient(180deg, rgba(255,247,205,0.04), rgba(255,236,153,0.02));
-  border-color: rgba(255,204,0,0.95);
-  box-shadow:
-    0 6px 30px rgba(0,0,0,0.6),
-    0 0 28px 6px rgba(255,204,0,0.18), /* outer soft gold halo */
-    0 0 8px 2px rgba(255,245,180,0.65) inset; /* inner warm highlight */
-  animation: egyptianGoldPulse 1.3s infinite alternate;
-  transform: translateY(-2px);
-}
-
-/* ضوء نابض ذهبي */
-@keyframes egyptianGoldPulse {
-  0% {
-    box-shadow:
-      0 6px 18px rgba(0,0,0,0.6),
-      0 0 18px 2px rgba(255,204,0,0.08),
-      0 0 6px 1px rgba(255,245,180,0.5) inset;
-    transform: translateY(0);
-  }
-  100% {
-    box-shadow:
-      0 10px 30px rgba(0,0,0,0.65),
-      0 0 36px 10px rgba(255,204,0,0.22),
-      0 0 12px 3px rgba(255,245,180,0.75) inset;
-    transform: translateY(-2px);
-  }
-}
-
-/* كروت اللاعبين — تفاصيل داخلية */
-body.night .player-header, body.night .player-info, body.night .turn-status {
-  color: #f7e9c8;
-}
-
-/* نقاط اللاعب الصغيرة (player-dot-inline) تتوهج بلون ذهبي باهت */
-body.night .player-dot-inline.active {
-  box-shadow: 0 0 10px 4px rgba(255,204,0,0.18);
-}
-body.night .player-card:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 10px 36px rgba(0,0,0,0.65), 0 0 30px 8px rgba(255,204,0,0.06);
-}
-
-/* 📱 تحسين الخريطة والمدن للشاشات الصغيرة */
-@media (max-width: 768px) {
-  :root {
-    --map-width: 100%;
-    --map-height: auto;
-  }
-
-  .map {
-    max-width: 100%;
-    border-width: 6px;
-  }
-
-  .node {
-    width: 3.5vw;
-    height: 3.5vw;
-    min-width: 14px;
-    min-height: 14px;
-    max-width: 22px;
-    max-height: 22px;
-  }
-
-
-
-  .node .town-small {
-    font-size: 8px;
-    bottom: -14px;
-  }
-
-
-
-  .sidebar {
-    width: 100%;
-    margin-top: 10px;
-  }
-}
-
-
-/* 📱 تحسين اللوحة الجانبية والمحتوى الداخلي للشاشات الصغيرة */
-@media (max-width: 768px) {
-  /* تقليل حجم اللوحة الجانبية نفسها */
-  .sidebar,
-  .panel,
-  .floating-sidebar {
-    width: 90% !important;
-    padding: 8px !important;
-    font-size: 12px !important;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    margin: 0 auto;
-  }
-
-  /* تقليل حجم العناوين والنصوص */
-  .sidebar strong,
-  .panel strong,
-  #turnBanner,
-  #currentTownText {
-    font-size: 10px !important;
-    line-height: 1.4;
-  }
-
-  /* تصغير كروت اللاعبين */
-  .player-card {
-    padding: 8px 10px;
-    border-width: 2px;
-    border-radius: 8px;
-    font-size: 12px;
-  }
-
-  .player-header {
-    font-size: 12px;
-  }
-
-  .player-info-grid {
-    font-size: 11px;
-  }
-
-  .inline-buttons button,
-  .inline-buttons input {
-    font-size: 11px;
-    padding: 3px 6px;
-  }
-
-  .inline-buy,
-  .inline-sell,
-  .inline-wait {
-    font-size: 11px;
-    padding: 4px 6px;
-  }
-
-  /* الأزرار العامة */
-  button {
-    font-size: 12px !important;
-    padding: 6px 10px !important;
-    border-radius: 6px !important;
-  }
-
-  /* واجهة تسجيل الدخول الزجاجية */
-  .login-floating {
-    width: 200px !important;
-    padding: 12px !important;
-  }
-
-  .login-floating h2 {
-    font-size: 13px !important;
-  }
-
-  .login-floating input {
-    font-size: 11px !important;
-    padding: 6px !important;
-  }
-
-  .login-floating button {
-    font-size: 11px !important;
-    padding: 5px 7px !important;
-  }
-
-  /* صندوق السجلات (log) */
-  #log {
-    max-height: 120px;
-    font-size: 11px;
-    padding: 6px;
-  }
-
-  /* خفض حجم عناصر الموسيقى والثيم */
-  #musicCtl, #themeCtl {
-    font-size: 11px !important;
-    gap: 6px !important;
-    padding: 6px !important;
-  }
-
-  #musicVol {
-    width: 70px !important;
-  }
-
-  #musicBtn {
-    width: 28px !important;
-    height: 28px !important;
-    font-size: 14px !important;
-  }
-
-  select,
-  input,
-  label {
-    font-size: 11px !important;
-  }
-}
-
-
-/* 📱 تحسين العرض على الشاشات الصغيرة */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column; /* خريطة فوق، واللوحة تحت */
-    align-items: center;
-  }
-
-  .map {
-    width: 95vw;           /* اجعل الخريطة تملأ أغلب الشاشة */
-    max-width: none;
-  }
-
-  .sidebar,
-  .panel,
-  .floating-sidebar {
-    width: 90vw !important;   /* اجعل اللوحة أصغر لتناسب الموبايل */
-    max-height: 60vh;
-    right: 50%;
-    transform: translateX(50%);
-    padding: 8px !important;
-    font-size: 13px;
-  }
-
-  #musicCtl, #themeCtl {
-    flex-direction: column;
-    width: 100%;
-    align-items: stretch;
-  }
-
-  #ytFrame {
-    width: 100%;
-    height: 100px;
-  }
-}
-
-/* =========================================
-   🎮 Player & Log Area Below Map
-   ========================================= */
-.below-map {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  margin-top: 18px;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-/* كروت اللاعبين */
-/* 🎨 Player Cards — Responsive unified version */
-.players-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(26vw, 1fr)); /* 🔹 كل كرت يأخذ نسبة من عرض الشاشة */
-  gap: 1.5vw 2vw;       /* 🔹 مسافة مرنة بين الكروت */
-  width: 94%;           /* 🔹 أقل من 100% لإضافة تنفس بصري */
-  max-width: 95vw;      /* 🔹 يمنع التمدد الزائد */
-  margin: 0 auto;       /* 🔹 توسيط الحاوية */
-  justify-items: center;
-}
-@media (max-width: 600px) {
-  .players-container {
-    grid-template-columns: repeat(1, 90%); /* 🔹 كرت واحد في كل صف */
-    gap: 3vw;
-  }
-}
-/* السجل */
-.log-panel {
-  width: 90%;
-  max-width: 800px;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 10px;
-  padding: 10px 12px;
-  color: #0a0a0a !important; /* أسود غامق أنيق */
-  text-shadow: none;
-  font-size: 13px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-.log-panel strong {
-  display: block;
-  margin-bottom: 6px;
-  color: #ffd966;
-  font-size: 14px;
-}
-
-
-#log {
-  max-height: 180px;
-  overflow-y: auto;
-  font-size: 13px;
-}
-
-
-.trade-controls {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 10px;
-}
-
-.trade-controls button {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 700;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  color: #fff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-
-#buyBtn {
-  background: linear-gradient(90deg, #4caf50, #2e7d32);
-}
-#sellBtn {
-  background: linear-gradient(90deg, #e53935, #b71c1c);
-}
-#waitBtn {
-  background: linear-gradient(90deg, #ffb300, #f57c00);
-}
-.trade-controls button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-/* 🎵 Music Control */
-#musicCtl {
-  margin-top: 18px;
-  text-align: center;
-}
-#musicBtn {
-  padding: 6px 14px;
-  border-radius: 8px;
-  background: linear-gradient(90deg, #66a6ff, #89f7fe);
-  color: #003366;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: transform 0.2s ease;
-}
-#musicBtn:hover {
+.inline-buy { background: linear-gradient(90deg, #4caf50, #2e7d32); }
+.inline-sell { background: linear-gradient(90deg, #e53935, #b71c1c); }
+.inline-wait { background: linear-gradient(90deg, #ffb300, #f57c00); }
+
+.inline-buttons button:hover {
   transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
 }
-#musicHint {
-  margin-top: 6px;
-  font-size: 12px;
-  color: #555;
-  opacity: 0.8;
-}
-
-
-#zoomControl {
-  position: absolute;
-  left:1.5vw;
-  top: 1.5vw;
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
-  gap: 6px;
-  background: none;
-  border: none;
-  padding: 0;
-  width: auto;
-  height: 160px;
-  z-index: 8000;
-  opacity: 0.25;
-  transition: opacity 0.4s ease;
-}
-
-#zoomControl:hover,
-#zoomControl:active {
-  opacity: 1;
-}
-
-#zoomSlider {
-  writing-mode: bt-lr;
-  -webkit-appearance: slider-vertical;
-  width: 12px;
-  height: 140px;
-  cursor: pointer;
-  accent-color: #ffcc00;
-  background: linear-gradient(to top, #000 0%, #000 50%, #ffcc00 50%, #ffcc00 100%);
-  border-radius: 10px;
-  border: 1px solid #b8860b;
-}
-
-#zoomSlider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ffea70, #c8a200);
-  border: 2px solid #000;
-  box-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
-  cursor: pointer;
-}
-
-#zoomSlider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, #ffea70, #c8a200);
-  border: 2px solid #000;
-  box-shadow: 0 0 6px rgba(255, 215, 0, 0.7);
-  cursor: pointer;
-}
-
-#zoomControl:hover #zoomSlider::-webkit-slider-thumb {
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.9);
-}
-
 
 /* =========================================
-   🪶 حركة كارت اللاعب النشط إلى منتصف الشاشة
+   Dice 3D / floating dice / numeric die
    ========================================= */
-@keyframes flyToCenter {
-  0% {
-    transform: translateY(0) scale(1);
-    z-index: 1;
-  }
-  40% {
-    transform: translateY(-40vh) scale(1.25);
-    z-index: 9999;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    z-index: 1;
-  }
+#dice3d-container{ pointer-events:none; z-index:6000; transform-origin:center; }
+.dice3d-cube{ width:100%; height:100%; position:absolute; transform-style:preserve-3d; }
+.dice3d-face{ position:absolute; width:100%; height:100%; box-sizing:border-box; border-radius:10px; overflow:visible; display:block; backface-visibility:hidden; -webkit-backface-visibility:hidden; border:none!important; box-shadow:none!important; }
+.dice3d-dot{ box-shadow:0 1px 2px rgba(0,0,0,0.25); transition: transform .12s ease; }
+.dice3d-wrapper{ display:block; position:relative; width:auto; height:auto; transform-style:preserve-3d; perspective:800px; user-select:none; touch-action:manipulation; border:none!important; box-shadow:none!important; max-width:none!important; max-height:none!important; }
+
+/* floating 3D dice (UI placement) */
+.floating-dice{ position:absolute; top:10%; left:10px; transform:translateY(-50%); display:flex; flex-direction:column; align-items:center; gap:12px; z-index:1500; background:none; padding:0; box-shadow:none; }
+.floating-dice .dice{ width:58px; height:58px; border-radius:12px; font-size:26px; font-weight:900; display:flex; align-items:center; justify-content:center; text-shadow:0 1px 3px rgba(0,0,0,0.3); color:#fff; transition:transform .4s ease, box-shadow .4s ease; transform-style:preserve-3d; perspective:600px; }
+.floating-dice .dice.green{ background: radial-gradient(circle at 30% 30%, #a8ff9f, #009b00); border:2px solid #007f00; }
+.floating-dice .dice.red{ background: radial-gradient(circle at 30% 30%, #ff9f9f, #b00000); border:2px solid #7a0000; }
+.floating-dice .dice.roll{ animation: roll3D .6s ease-in-out; }
+@keyframes roll3D{
+  0%{ transform: rotateX(0deg) rotateY(0deg) scale(1); }
+ 25%{ transform: rotateX(90deg) rotateY(45deg) scale(1.05); }
+ 50%{ transform: rotateX(180deg) rotateY(90deg) scale(1.1); }
+ 75%{ transform: rotateX(270deg) rotateY(135deg) scale(1.05); }
+ 100%{ transform: rotateX(360deg) rotateY(180deg) scale(1); }
 }
 
-.player-card.flying {
-  position: absolute !important;
-  left: 50% !important;
-  top: 50% !important;
-  transform: translate(-50%, -50%) scale(1.1);
-  transition: all 0.8s ease;
-  z-index: 9999;
-}
+/* numeric die visuals — keep number hidden when desired */
+.die{ width:48px; height:48px; line-height:48px; border-radius:8px; text-align:center; font-size:26px; font-weight:bold; color:transparent!important; text-shadow:none!important; position:absolute; bottom:10px; user-select:none; transition:transform .3s; padding:0 4px; box-sizing:border-box; white-space:nowrap; }
 
-/* 🫥 إخفاء أرقام الزهر الرقمي فقط */
-.die {
-  color: transparent !important;   /* يجعل الرقم شفافًا */
-  text-shadow: none !important;    /* يمنع أي توهج حول الرقم */
-}
-
-.node .price-main {
-  color: #ffffff;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.7);
-  font-weight: 800;
-  font-size: clamp(9px, 2.2vw, 13px);
-}
-
-/* 🧭 Control bar + log alignment */
-#controlBar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: clamp(10px, 2vw, 20px);
-  width: 95%;
-  max-width: 900px;
-  margin: 12px auto 0;
-  padding: clamp(8px, 1.5vw, 12px);
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(14px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
-  font-size: clamp(12px, 1.8vw, 15px);
-  z-index: 8000;
-}
-
-#controlBar + #logPanel {
-  margin-top: 10px;
-  width: 95%;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  background: rgba(255, 255, 255, 0.12);
+/* -----------------------------------------
+   Floating sidebars & zoom control
+   ----------------------------------------- */
+.floating-sidebar,
+.floating-sidebar *{ box-sizing:border-box; }
+.floating-sidebar{
+  position:absolute;
+  top:50%;
+  right:20px;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  z-index:1500;
+  background:rgba(255,255,255,0.08);
   backdrop-filter: blur(12px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:12px;
+  padding:10px;
+  width:280px;
 }
 
-/* 📱 Responsive layout */
-@media (max-width: 700px) {
-  #controlBar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-    padding: 10px;
-    width: 96%;
-  }
-  
+/* zoom control */
+#zoomControl{
+  position:absolute;
+  left:1.5vw;
+  top:1.5vw;
+  display:flex;
+  flex-direction:column-reverse;
+  align-items:center;
+  gap:6px;
+  background:none;
+  border:none;
+  padding:0;
+  width:auto;
+  height:160px;
+  z-index:8000;
+  opacity:.25;
+  transition:opacity .4s ease;
+}
+#zoomControl:hover{ opacity:1; }
+#zoomSlider{ writing-mode:bt-lr; -webkit-appearance:slider-vertical; width:12px; height:140px; cursor:pointer; accent-color:var(--gold); background:linear-gradient(to top,#000 0%,#000 50%,#ffcc00 50%,#ffcc00 100%); border-radius:10px; border:1px solid #b8860b; }
+#zoomSlider::-webkit-slider-thumb{ -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:radial-gradient(circle at 30% 30%, #ffea70, #c8a200); border:2px solid #000; box-shadow:0 0 6px rgba(255,215,0,0.7); cursor:pointer; }
+#zoomSlider::-moz-range-thumb{ width:18px; height:18px; border-radius:50%; background:radial-gradient(circle at 30% 30%, #ffea70, #c8a200); border:2px solid #000; box-shadow:0 0 6px rgba(255,215,0,0.7); cursor:pointer; }
+#zoomControl:hover #zoomSlider::-webkit-slider-thumb{ box-shadow:0 0 10px rgba(255,215,0,0.9); }
 
-/* 🌟 الزر العائم Start a new game */
-#resetBtn2.floating-reset {
-  position: absolute;
-  bottom: clamp(12px, 4%, 24px);
-  right: clamp(0px, 4%, 0px);
-  z-index: 9000;
-  padding: clamp(10px, 2vw, 14px) clamp(18px, 3vw, 28px);
-  font-size: clamp(15px, 2vw, 18px);
-  font-weight: bold;
-  color: #fff;
-  background: linear-gradient(135deg, #ffb400, #ff8c00);
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-  transition: all 0.25s ease-in-out;
-  text-transform: uppercase;
-  opacity: 0.92;
+/* -----------------------------------------
+   Player & log area below map
+   ----------------------------------------- */
+.below-map{ display:flex; flex-direction:column; align-items:center; gap:16px; margin-top:18px; margin-bottom:20px; width:100%; }
+
+/* players grid */
+.players-container{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(30vw, 1fr));
+  gap:1.8vw 2.2vw;
+  width:96%;
+  max-width:96vw;
+  margin:0 auto;
+  justify-items:center;
 }
 
-#resetBtn2.floating-reset:hover {
-  transform: scale(1.05);
-  opacity: 1;
-  background: linear-gradient(135deg, #ffd700, #ffae00);
+@media (max-width:600px){
+  .players-container{ grid-template-columns: repeat(1,92%); gap:3.5vw; }
 }
 
-/* 📱 تحسين الموقع على الشاشات الصغيرة */
-@media (max-width: 700px) {
-  #resetBtn2.floating-reset {
-    bottom: 10px;
-    right: 10px;
-    font-size: 14px;
-    padding: 10px 18px;
-    border-radius: 10px;
-  }
+/* log panel */
+.log-panel{ width:90%; max-width:800px; color:#0a0a0a !important; text-shadow:none; font-size:13px; box-shadow:0 4px 10px rgba(0,0,0,0.25); border-radius:10px; padding:10px 12px; }
+
+/* controlBar & responsiveness */
+#controlBar{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:clamp(10px,2vw,20px);
+  width:95%;
+  max-width:900px;
+  margin:12px auto 0;
+  padding:clamp(8px,1.5vw,12px);
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(14px) saturate(180%);
+  border:1px solid rgba(255,255,255,0.25);
+  border-radius:14px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.25);
+  font-size:clamp(12px,1.8vw,15px);
+  z-index:8000;
 }
 
-/* =========================================
-   🎵 Control Bar — Always One Line
-   ========================================= */
-#controlBar, #musicCtl {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  flex-wrap: nowrap;
-  padding: 4px 6px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px) saturate(180%);
-  border-radius: 8px;
-  margin-top: 6px;
-  font-size: clamp(9px, 1.3vw, 14px); /* 🔹 حجم مرن صغير */
-}
-
-#controlBar select,
-#musicCtl select,
-#controlBar input[type="range"],
-#musicCtl input[type="range"],
-#musicBtn {
-  flex: 0 1 auto;
-  min-width: 40px;
-  max-width: 28%;
-  height: clamp(22px, 3vw, 28px);
-  font-size: clamp(9px, 1.3vw, 13px);
-  padding: 2px 4px;
-  box-sizing: border-box;
-}
-
-#musicBtn {
-  width: clamp(22px, 3vw, 30px);
-  height: clamp(22px, 3vw, 30px);
-  padding: 0;
-}
-
-/* تأكيد بقاء العناصر في صف واحد على الموبايل */
-@media (max-width: 768px) {
-  #controlBar, #musicCtl {
-    gap: 4px;
-    font-size: 11px;
+/* mobile specific: make control bar single line scrollable */
+@media (max-width:700px){
+  #controlBar{
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center !important;
+    justify-content:center !important;
+    flex-wrap:nowrap !important;
+    overflow-x:auto !important;
+    gap:4px !important;
+    white-space:nowrap !important;
+    width:100% !important;
+    font-size:clamp(8px,1.1vw,13px) !important;
+    padding:4px 6px !important;
+    background: rgba(255,255,255,0.08);
+    border-radius:8px;
+    margin:4px auto 0 auto;
+    box-sizing:border-box;
   }
 
   #controlBar select,
-  #musicCtl select,
   #controlBar input[type="range"],
-  #musicCtl input[type="range"],
-  #musicBtn {
-    max-width: 24%;
+  #controlBar button,
+  #controlBar label{
+    flex:0 1 auto !important;
+    min-width:auto !important;
+    width:auto !important;
+    height:clamp(20px,3vw,26px) !important;
+    padding:1px 3px !important;
+    margin:0 !important;
+    font-size:clamp(8px,1vw,12px) !important;
+    box-sizing:border-box;
   }
+  #controlBar select{ max-width:22% !important; }
 }
+
+/* -----------------------------------------
+   Themes: halloween & night
+   (kept visual behavior from original)
+   ----------------------------------------- */
+
+/* Halloween */
+body.halloween{ background-color:#000; color:#ff6600; transition:background .6s ease,color .6s ease; }
+body.halloween .map{ filter:brightness(0.65) contrast(1.1); border-color:#ff6600; }
+body.halloween .login-floating, body.halloween .sidebar, body.halloween .after-start-floating{
+  background: rgba(20,0,0,0.6);
+  backdrop-filter: blur(12px) saturate(160%);
+  border-color: rgba(255,102,0,0.4);
+  box-shadow:0 4px 18px rgba(255,100,0,0.3);
+}
+body.halloween .player-card{ background: rgba(15,0,0,0.8); border-color:#ff6600; color:#ffa64d; }
+body.halloween .player-card.active{ box-shadow:0 0 20px 6px #ff6600; animation: halloweenGlow 1.6s infinite alternate; }
+@keyframes halloweenGlow{ 0%{ box-shadow:0 0 10px #ff3300 } 100%{ box-shadow:0 0 25px #ff6600 } }
+body.halloween .map::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle at 50% 40%, rgba(255,120,0,0.15), transparent 80%);
+  pointer-events:none;
+  mix-blend-mode:screen;
+  animation:flicker 2s infinite;
+}
+@keyframes flicker{ 0%,100%{opacity:0.7} 50%{opacity:0.3} }
+body.halloween .map{ background:url("halloween_map.png") no-repeat center center; background-size:contain; filter:brightness(0.9) contrast(1.1); }
+
+/* Night / Egyptian Nights */
+body.night{ background-color:#000; color:#e6d9b7; transition:background .45s ease, color .45s ease; }
+body.night .map{ background: url("Egyptian.jpeg") no-repeat center center; background-size:contain; filter:brightness(0.55) contrast(1.15) saturate(1.05); border-color: rgba(184,134,11,0.6); position:relative; }
+body.night .login-floating, body.night .sidebar, body.night .after-start-floating, body.night #musicCtl, body.night .floating-sidebar{
+  border:none!important;
+  box-shadow:none!important;
+  background: linear-gradient(180deg, rgba(20,18,16,0.28), rgba(10,8,6,0.32)) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  color: #e6d9b7;
+}
+body.night .player-card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border:1px solid rgba(255,206,75,0.08);
+  color:#e6d9b7;
+  box-shadow:0 6px 18px rgba(0,0,0,0.6);
+}
+body.night .player-card.active{
+  background: linear-gradient(180deg, rgba(255,247,205,0.04), rgba(255,236,153,0.02));
+  border-color: rgba(255,204,0,0.95);
+  box-shadow: 0 6px 30px rgba(0,0,0,0.6), 0 0 28px 6px rgba(255,204,0,0.18), 0 0 8px 2px rgba(255,245,180,0.65) inset;
+  animation: egyptianGoldPulse 1.3s infinite alternate;
+  transform: translateY(-2px);
+}
+@keyframes egyptianGoldPulse{
+  0%{ box-shadow: 0 6px 18px rgba(0,0,0,0.6), 0 0 18px 2px rgba(255,204,0,0.08), 0 0 6px 1px rgba(255,245,180,0.5) inset; transform:translateY(0); }
+ 100%{ box-shadow: 0 10px 30px rgba(0,0,0,0.65), 0 0 36px 10px rgba(255,204,0,0.22), 0 0 12px 3px rgba(255,245,180,0.75) inset; transform:translateY(-2px); }
+}
+
+/* -----------------------------------------
+   Responsive rules (consolidated)
+   ----------------------------------------- */
+@media (max-width:768px){
+  :root{ --map-width:100%; --map-height:auto; }
+  .map{ max-width:100%; border-width:6px; width:95vw; }
+  .node{ width:3.5vw; height:3.5vw; min-width:14px; min-height:14px; max-width:22px; max-height:22px; }
+  .node .town-small{ font-size:8px; bottom:-14px; }
+  .sidebar, .panel, .floating-sidebar{ width:90% !important; padding:8px !important; font-size:12px !important; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.2); margin:0 auto; }
+  .player-card{ padding:8px 10px; border-width:2px; border-radius:8px; font-size:12px; }
+  .player-header{ font-size:12px; }
+  .player-info-grid{ font-size:11px; }
+  .inline-buttons button, .inline-buttons input {
+  width: 100%;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #d2a05a;
+  text-align: center;
+  font-size: clamp(11px, 1.2vw, 14px);
+}
+  .inline-buy, .inline-sell, .inline-wait{ font-size:11px; padding:4px 6px; }
+  button{ font-size:12px !important; padding:6px 10px !important; border-radius:6px !important; }
+  .login-floating{ width:200px !important; padding:12px !important; }
+  .login-floating h2{ font-size:13px !important; }
+  .login-floating input{ font-size:11px !important; padding:6px !important; }
+  .login-floating button{ font-size:11px !important; padding:5px 7px !important; }
+  #log{ max-height:120px; font-size:11px; padding:6px; }
+  #musicCtl, #themeCtl{ font-size:11px !important; gap:6px !important; padding:6px !important; }
+  #musicVol{ width:70px !important; }
+  #musicBtn{ width:28px !important; height:28px !important; font-size:14px !important; }
+  select, input, label{ font-size:11px !important; }
+  .container{ flex-direction:column; align-items:center; }
+  .sidebar, .panel, .floating-sidebar{ width:90vw !important; max-height:60vh; right:50%; transform:translateX(50%); padding:8px !important; font-size:13px; }
+  #ytFrame{ width:100%; height:100px; }
+}
+
+/* small screen players container tweak repeated for clarity */
+@media (max-width:600px){
+  .players-container{ grid-template-columns: repeat(1,90%); gap:3vw; }
+}
+
+/* end of cleaned file */

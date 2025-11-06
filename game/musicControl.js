@@ -2,7 +2,7 @@
   const logSection = document.getElementById("log");
   const panel = logSection?.parentElement || document.querySelector(".panel") || document.body;
 
-  panel.insertAdjacentHTML("beforeend", `
+panel.insertAdjacentHTML("beforeend", `
 <audio id="bgMusic" src="market_breeze.mp3" loop></audio>
 
 <div id="controlBar">
