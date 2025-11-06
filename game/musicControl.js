@@ -3,35 +3,29 @@
   const panel = logSection?.parentElement || document.querySelector(".panel") || document.body;
 
   panel.insertAdjacentHTML("beforeend", `
-  <audio id="bgMusic" src="market_breeze.mp3" loop></audio>
+<audio id="bgMusic" src="market_breeze.mp3" loop></audio>
 
-  <div id="controlBar">
-  <div class="theme-group">
-    <label for="themeSel">🎨</label>
-    <select id="themeSel">
-	<option value="night" selected>🌙 Egyptian Nights</option>
-      <option value="default">🏜️ Default</option>
-      <option value="halloween">🎃 Halloween</option>
-      
-    </select>
-  </div>
+<div id="controlBar">
+  <label for="themeSel">🎨</label>
+  <select id="themeSel">
+    <option value="night" selected>🌙 Egyptian Nights</option>
+    <option value="default">🏜️ Default</option>
+    <option value="halloween">🎃 Halloween</option>
+  </select>
 
-  <div class="music-group">
-    
-    <input id="musicVol" type="range" min="0" max="0.5" step="0.01" value="0.25">
-  </div>
-<button id="musicBtn" title="Mute / Unmute">🎵</button>
-  <div class="track-group">
-    <select id="musicSel">
-	<option value="egynights.mp3">🌙 Egyptian Nights</option>
-      <option value="market_breeze.mp3" selected>🌅 Desert</option>
-      <option value="halloween_theme.mp3">🎃 Halloween</option>
-      
-      <option value="youtube">📺 YouTube Player</option>
-    </select>
-  </div>
+  <input id="musicVol" type="range" min="0" max="0.5" step="0.01" value="0.25">
+
+  <button id="musicBtn" title="Mute / Unmute">🎵</button>
+
+  <select id="musicSel">
+    <option value="egynights.mp3">🌙 Egyptian Nights</option>
+    <option value="market_breeze.mp3" selected>🌅 Desert</option>
+    <option value="halloween_theme.mp3">🎃 Halloween</option>
+    <option value="youtube">📺 YouTube Player</option>
+  </select>
 </div>
 `);
+
 // 🧾 نقل logPanel ليكون بعد شريط التحكم الجديد
 // 🧾 نقل logPanel ليكون بعد شريط التحكم الجديد (يعمل دائمًا)
 setTimeout(() => {

@@ -390,12 +390,14 @@ th { background: #fbfbfb; font-weight: 600; }
   border: 3px solid #ccc;
   border-radius: 1vw;
   background: rgba(255, 255, 255, 0.9);
-  padding: 1.2vw 1.4vw;
+  padding: clamp(8px, 1.2vw, 16px); /* 🔹 مرن حسب الشاشة */
   box-shadow: 0 0.4vw 1vw rgba(0,0,0,0.25);
   transition: transform 0.2s ease, box-shadow 0.3s ease;
-  font-size: 1vw;              /* 🔹 حجم الخط يتغير مع العرض */
-  min-width: 22vw;             /* 🔹 ضمان حد أدنى للكرت */
-  max-width: 30vw;             /* 🔹 لا يكبر أكثر من اللازم */
+  font-size: clamp(11px, 1vw, 15px); /* 🔹 حجم النص مرن */
+  min-width: clamp(120px, 22vw, 200px);
+  max-width: clamp(140px, 30vw, 240px);
+  opacity: 0.95;
+  backdrop-filter: blur(4px);
 }
 
 
@@ -707,18 +709,18 @@ th { background: #fbfbfb; font-weight: 600; }
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%); /* ✅ center perfectly */
-  width: 260px;
+  transform: translate(-50%, -50%);
+  width: clamp(220px, 40%, 300px); /* 🔹 حجم مرن حسب الشاشة */
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(18px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 14px;
-  padding: 16px 18px;
+  padding: clamp(10px, 2vw, 20px);
   box-shadow: 0 8px 28px rgba(0,0,0,0.25);
   text-align: center;
   color: #4b2e05;
   z-index: 999;
-  transition: all 0.6s ease;
+  transition: all 0.4s ease;
 }
 
 .login-floating h2 {
@@ -1637,3 +1639,55 @@ body.night .player-card:hover {
   }
 }
 
+/* =========================================
+   🎵 Control Bar — Always One Line
+   ========================================= */
+#controlBar, #musicCtl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  padding: 4px 6px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px) saturate(180%);
+  border-radius: 8px;
+  margin-top: 6px;
+  font-size: clamp(9px, 1.3vw, 14px); /* 🔹 حجم مرن صغير */
+}
+
+#controlBar select,
+#musicCtl select,
+#controlBar input[type="range"],
+#musicCtl input[type="range"],
+#musicBtn {
+  flex: 0 1 auto;
+  min-width: 40px;
+  max-width: 28%;
+  height: clamp(22px, 3vw, 28px);
+  font-size: clamp(9px, 1.3vw, 13px);
+  padding: 2px 4px;
+  box-sizing: border-box;
+}
+
+#musicBtn {
+  width: clamp(22px, 3vw, 30px);
+  height: clamp(22px, 3vw, 30px);
+  padding: 0;
+}
+
+/* تأكيد بقاء العناصر في صف واحد على الموبايل */
+@media (max-width: 768px) {
+  #controlBar, #musicCtl {
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  #controlBar select,
+  #musicCtl select,
+  #controlBar input[type="range"],
+  #musicCtl input[type="range"],
+  #musicBtn {
+    max-width: 24%;
+  }
+}
