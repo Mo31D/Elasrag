@@ -28,16 +28,17 @@ body {
 }
 .map {
   position: relative;
-  width: 94%;
-  max-width: 94%;        /* لا يوجد حد أقصى */
+  width: 85%;
+  max-width: 85%;
   height: auto;
   aspect-ratio: 2 / 3;
   background: url("Silkroad_page-0001.jpeg") no-repeat center center;
-  background-size: cover; /* يملأ العرض بالكامل */
+  background-size: contain; /* ✅ يضمن ظهور الصورة كاملة */
   border: 2px solid var(--brown);
   border-radius: 2px;
   margin: 0 auto;
   overflow: hidden;
+  max-height: 90vh; /* ✅ لا يتجاوز 90٪ من ارتفاع الشاشة */
 }
 .below-map {
   margin-top: 4px;   /* 🔹 تقليل المسافة بين الخريطة والكروت */
