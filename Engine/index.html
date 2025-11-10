@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backstage Organizing Brain | Elasrag</title>
+  <meta name="description" content="Sharper decisions, lighter execution, and results measured by KPI/EHR — while keeping your privacy 100%. Book a quick audit now.">
+  <style>
+  /* Reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+    direction: ltr;
+  }
+  header {
+    background-color: #fff;
+    border-bottom: 1px solid #e6e6e6;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+  }
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+  }
+  nav ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+  }
+  nav ul li a:hover {
+    color: #0077c2;
+  }
+  .lang-switch {
+    margin-left: 20px;
+    font-size: 0.9rem;
+  }
+  .lang-switch a {
+    color: #0077c2;
+    text-decoration: none;
+    margin: 0 5px;
+  }
+  .hero {
+    background: linear-gradient(135deg, #e0e8f9, #f9f9f9);
+    padding: 80px 0;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #222;
+  }
+  .hero p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #555;
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: #0077c2;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .btn.secondary {
+    background-color: #555;
+    margin-left: 10px;
+  }
+  .section {
+    padding: 60px 0;
+  }
+  .metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    text-align: center;
+  }
+  .metric {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex: 1 1 250px;
+    max-width: 300px;
+  }
+  .metric h3 {
+    font-size: 1.8rem;
+    color: #0077c2;
+    margin-bottom: 10px;
+  }
+  .metric p {
+    color: #666;
+    font-size: 1rem;
+  }
+  .steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  .step {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex: 1 1 calc(25% - 20px);
+    text-align: center;
+  }
+  .step h4 {
+    font-size: 1.3rem;
+    color: #0077c2;
+    margin-bottom: 10px;
+  }
+  .services {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  .service-card {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex: 1 1 300px;
+    max-width: 350px;
+  }
+  .service-card h4 {
+    font-size: 1.4rem;
+    color: #0077c2;
+    margin-bottom: 10px;
+  }
+  .service-card p {
+    font-size: 1rem;
+    margin-bottom: 15px;
+    color: #555;
+  }
+  .service-card .cta {
+    text-align: center;
+  }
+  .engine {
+    background-color: #e6f0fa;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .engine h3 {
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    color: #0077c2;
+  }
+  .engine p {
+    font-size: 1rem;
+    margin-bottom: 20px;
+    color: #555;
+  }
+  .privacy, .cases, .target, .faq {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 40px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  .faq details {
+    margin-bottom: 10px;
+  }
+  .faq summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #0077c2;
+  }
+  .cta-form {
+    background-color: #0077c2;
+    color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .cta-form h3 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+  }
+  .cta-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .cta-form input, .cta-form textarea, .cta-form select {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+  }
+  .cta-form input[type="submit"] {
+    background-color: #fff;
+    color: #0077c2;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  footer {
+    background-color: #f0f4f8;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  footer a {
+    color: #0077c2;
+    text-decoration: none;
+  }
+  @media (max-width: 768px) {
+    nav ul {
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .steps .step {
+      flex: 1 1 100%;
+    }
+    .service-card {
+      flex: 1 1 100%;
+    }
+    .metrics {
+      flex-direction: column;
+    }
+  }
+  </style>
+</head>
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo"><strong>Elasrag</strong></div>
+      <ul>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="#cases">Case Studies</a></li>
+        <li><a href="#faq">FAQ</a></li>
+        <li><a href="#cta">Book Audit</a></li>
+      </ul>
+      <div class="lang-switch"><a href="index.html">EN</a> | <a href="engine-Ar.html">AR</a></div>
+    </nav>
+  </div>
+</header>
+<section class="hero">
+  <div class="container">
+    <h1>An Organizing Brain Behind the Scenes for Entrepreneurs</h1>
+    <p>Sharper decisions, lighter execution, and results measured by KPI/EHR — while keeping your privacy 100%.</p>
+    <a href="#cta" class="btn">Book a Quick Audit</a>
+    <a href="#engine" class="btn secondary">See the Commercial Versions (Mo Engine)</a>
+  </div>
+</section>
+<section class="section">
+  <div class="container">
+    <div class="metrics">
+      <div class="metric">
+        <h3>+EHR</h3>
+        <p>Increase your effective hourly rate by improving pricing and operations.</p>
+      </div>
+      <div class="metric">
+        <h3>↓ Cycle Time</h3>
+        <p>Shorten the time from idea to cash to increase liquidity.</p>
+      </div>
+      <div class="metric">
+        <h3>Quality Consistency</h3>
+        <p>Weekly governance via WS_ and specific steps.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="how" class="section">
+  <div class="container">
+    <h2 style="text-align: center; margin-bottom: 30px;">How we work</h2>
+    <div class="steps">
+      <div class="step">
+        <h4>Evidence Gathering</h4>
+        <p>Analyze your data and markets to extract insights.</p>
+      </div>
+      <div class="step">
+        <h4>Decision Making</h4>
+        <p>We use a one-way/two-way door system to make KPI-driven decisions.</p>
+      </div>
+      <div class="step">
+        <h4>Tracking Board</h4>
+        <p>Set up KPI/EHR dashboards to continuously monitor performance.</p>
+      </div>
+      <div class="step">
+        <h4>Weekly Delivery</h4>
+        <p>Weekly WS_ updates with recommendations and next actions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="services" class="section">
+  <div class="container">
+    <h2 style="text-align: center; margin-bottom: 30px;">Packaged Services</h2>
+    <div class="services">
+      <div class="service-card">
+        <h4>Quick Audit</h4>
+        <p>One week to diagnose pricing and operations and set improvement priorities.</p>
+        <p>Includes: a concise report, an initial KPI dashboard, and a 30‑day action map.</p>
+        <div class="cta"><a href="#cta" class="btn">Start Now</a></div>
+      </div>
+      <div class="service-card">
+        <h4>Operator Brain (Subscription)</h4>
+        <p>A monthly subscription including weekly WS_, KPI updates, and light SOP documentation.</p>
+        <p>Ideal for businesses seeking a steady partner to follow up on development.</p>
+        <div class="cta"><a href="#cta" class="btn">Request Subscription</a></div>
+      </div>
+      <div class="service-card">
+        <h4>Limited Partnership</h4>
+        <p>Revenue-share joint ventures, available for one active client, with clear boundaries.</p>
+        <p>Perfect for high-return long-term ideas.</p>
+        <div class="cta"><a href="#cta" class="btn">Submit Your Project</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="engine" class="section">
+  <div class="container">
+    <div class="engine">
+      <h3>Mo Engine — Commercial Versions</h3>
+      <p>Access WS_, KPI Canvas, Decision Log, and light SOP templates to apply Mo’s methodology in your organization.</p>
+      <a href="#cta" class="btn">Download a Free Sample</a>
+    </div>
+  </div>
+</section>
+<section id="privacy" class="section">
+  <div class="container">
+    <div class="privacy">
+      <h3>Privacy & Governance</h3>
+      <p>We commit to a Zero-PII approach and a light NDA. All public materials are redacted and credit is given to your executive front.</p>
+      <p>Our system ensures that your intellectual property and sensitive data stay protected.</p>
+    </div>
+  </div>
+</section>
+<section id="cases" class="section">
+  <div class="container">
+    <div class="cases">
+      <h3>Redacted Case Studies</h3>
+      <p>Real numbers without revealing client identities:</p>
+      <ul style="list-style: disc; margin-left: 20px;">
+        <li>27% increase in average order value and 18% reduction in delivery time.</li>
+        <li>Improved EHR by £15 per hour.</li>
+        <li>Cut order processing time from 72 hours to 24 hours.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+<section id="target" class="section">
+  <div class="container">
+    <div class="target">
+      <h3>Who is this for?</h3>
+      <p>✅ Small/family businesses that need an organizing brain and clear measurement of results.</p>
+      <p>❌ Those looking for full execution without participation, or legal/tax consulting.</p>
+    </div>
+  </div>
+</section>
+<section id="faq" class="section">
+  <div class="container">
+    <div class="faq">
+      <h3>Frequently Asked Questions</h3>
+      <details>
+        <summary>Do I need special tools?</summary>
+        <p>No, we work with the tools you have and help you choose the right digital tools if needed.</p>
+      </details>
+      <details>
+        <summary>How are results measured?</summary>
+        <p>Using clear KPIs such as EHR, cycle time, and number of deliveries or sales.</p>
+      </details>
+      <details>
+        <summary>Is this legal or tax advice?</summary>
+        <p>No, we provide organizational and strategic consultancy only. Please consult legal/tax professionals for that.</p>
+      </details>
+      <details>
+        <summary>What do “one-way” and “two-way” mean?</summary>
+        <p>A one-way door decision is irreversible and executed quickly; a two-way door decision is reversible and requires additional review.</p>
+      </details>
+    </div>
+  </div>
+</section>
+<section id="cta" class="section">
+  <div class="container">
+    <div class="cta-form">
+      <h3>Let’s Start With a Focused Audit</h3>
+      <form>
+        <input type="text" name="business" placeholder="Business Type / Sector" required>
+        <input type="text" name="kpi" placeholder="List your top two KPIs currently" required>
+        <select name="decision">
+          <option value="">Choose preferred decision style</option>
+          <option value="one">One-way</option>
+          <option value="two">Two-way</option>
+          <option value="unsure">Not sure</option>
+        </select>
+        <textarea name="challenge" placeholder="Biggest challenge you face now" rows="3" required></textarea>
+        <input type="text" name="contact" placeholder="Email or WhatsApp" required>
+        <input type="text" name="time" placeholder="Best times for the call (e.g., between 3pm–5pm)" required>
+        <label style="display: flex; align-items: center; font-size: 0.9rem;">
+          <input type="checkbox" required style="margin-right: 10px;"> I agree to the NDA and privacy policy.
+        </label>
+        <input type="submit" value="Book Now">
+      </form>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="container">
+    <p>© 2025 Elasrag. All rights reserved. Use of AI technologies with human review.</p>
+    <p><a href="#">Privacy Policy</a> · <a href="#">Terms of Service</a></p>
+  </div>
+</footer>
+</body>
+</html>
