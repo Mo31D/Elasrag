@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <!-- Meta -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مو ثينكينج — النسخة المستنسخة (تجاري) | Elasrag</title>
+  <meta name="description" content="مو ثينكينج — النسخة المستنسخة: محرّك قرار قابل للمحاسبة. سبرنت 14 يوم، مؤشرات قياس واضحة، زر إيقاف آمن، وسياسات Zero-PII."/>
+  <meta property="og:title" content="مو ثينكينج — النسخة المستنسخة (تجاري)"/>
+  <meta property="og:description" content="محرّك قرار قابل للمحاسبة: حكم → 3 خطوات → مؤشرات KPI → زر إيقاف → TrustNote. حمّل الحزمة التجارية."/>
+  <meta property="og:type" content="website"/>
+  <meta name="theme-color" content="#0a71c2"/>
+
+  <!-- Styles -->
+  <style>
+    :root{
+      --bg:#f9fbfd; --fg:#222; --muted:#586174; --brand:#0a71c2; --brand-2:#0f5ea3;
+      --card:#ffffff; --line:#e7edf3; --ok:#1b8f3a; --warn:#c2840a; --shadow:0 8px 24px rgba(2,24,43,.08);
+      --radius:12px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial,Helvetica,sans-serif;
+      background:var(--bg); color:var(--fg); line-height:1.65;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    a{color:var(--brand);text-decoration:none}
+    a:hover{text-decoration:underline}
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid var(--line);
+    }
+    .container{width:92%; max-width:1200px; margin:0 auto}
+    nav{display:flex; align-items:center; justify-content:space-between; padding:16px 0}
+    .logo{font-weight:800; letter-spacing:.3px}
+    .menu{display:flex; gap:18px; align-items:center}
+    .menu a{font-weight:600; color:#283241}
+    .lang{font-size:.9rem}
+    /* Hero */
+    .hero{
+      background: radial-gradient(1200px 400px at 80% -10%, #dfefff 0%, transparent 60%), linear-gradient(200deg, #eef5ff 0%, #f9fbfd 60%);
+      border-bottom:1px solid var(--line);
+    }
+    .hero-inner{padding:72px 0; display:grid; grid-template-columns:1.1fr .9fr; gap:28px; align-items:center}
+    .hero h1{font-size:2.4rem; line-height:1.15; margin-bottom:16px; letter-spacing:.2px}
+    .hero p.lead{font-size:1.15rem; color:var(--muted); margin-bottom:20px}
+    .badge{display:inline-flex; gap:8px; align-items:center; color:#0a4c23; background:#e7f7ec; padding:8px 12px; border-radius:999px; font-weight:700; font-size:.9rem; margin-bottom:14px}
+    .cta{display:flex; gap:12px; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      background:var(--brand); color:#fff; border:0; padding:12px 18px; border-radius:10px; font-weight:700; cursor:pointer; box-shadow:var(--shadow)
+    }
+    .btn.secondary{background:#2f3b52}
+    .btn.ghost{background:transparent; color:var(--brand); border:1px solid var(--brand); box-shadow:none}
+    .hero-card{
+      background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow)
+    }
+    .pill{display:inline-block; padding:6px 10px; border-radius:999px; background:#eef4ff; color:#1f4d86; font-weight:700; font-size:.82rem}
+    .list{margin-top:12px}
+    .list li{margin:8px 0 0 0}
+    /* Sections */
+    section{padding:60px 0}
+    h2{font-size:1.8rem; margin-bottom:14px}
+    p.sub{color:var(--muted); margin-bottom:22px}
+    .grid{display:grid; gap:18px}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    .card{
+      background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow)
+    }
+    .kpis{display:flex; gap:14px; flex-wrap:wrap; margin-top:6px}
+    .kpi{background:#f2f7ff; border:1px dashed #b9d2ff; color:#0f3b74; border-radius:10px; padding:8px 10px; font-weight:700; font-size:.92rem}
+    .note{font-size:.92rem; color:var(--muted)}
+    .check{color:var(--ok); font-weight:800}
+    .warn{color:var(--warn); font-weight:800}
+    .table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:12px; border:1px solid var(--line); background:#fff}
+    .table th,.table td{padding:12px 14px; border-bottom:1px solid var(--line); text-align:start}
+    .table th{background:#f6f9fe; color:#14365f; font-size:.92rem}
+    .table tr:last-child td{border-bottom:0}
+    details summary{cursor:pointer; font-weight:700; color:#0f3b74}
+    footer{border-top:1px solid var(--line); background:#f2f6fb; color:#42506a}
+    footer .inner{padding:22px 0; text-align:center; font-size:.92rem}
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero-inner{grid-template-columns:1fr}
+      .grid.cols-3{grid-template-columns:1fr}
+      .grid.cols-2{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">Elasrag</div>
+      <div class="menu">
+        <a href="#what">ما هي النسخة؟</a>
+        <a href="#how">كيف تعمل</a>
+        <a href="#diff">مو مقابل GPT</a>
+        <a href="#ethics">الأخلاقيات والخصوصية</a>
+        <a href="#download">التحميل</a>
+        <a class="lang" href="mo-thinking-replica.html" title="English version">EN</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div>
+      <div class="badge">سبرنت قرار 14 يوم • قابل للمحاسبة • آمن</div>
+      <h1>مو ثينكينج — النسخة المستنسخة (تجاري)</h1>
+      <p class="lead">محرّك قرار قابل للمحاسبة يسلّم نتيجة ملموسة خلال 14 يوم: <strong>حُكم → 3 خطوات → مؤشرات KPI → زر إيقاف → TrustNote</strong>. مبني على عدستي Iceberg وPOL، وبحوكمة Zero-PII.</p>
+      <div class="cta">
+        <!-- AR download goes to engine-ar.html#engine -->
+        <a class="btn" href="engine-ar.html#engine">التحميل بالعربية</a>
+        <!-- EN download goes to index.html#engine -->
+        <a class="btn secondary" href="index.html#engine">Download in English</a>
+        <a class="btn ghost" href="#what">تعرّف كيف تعمل النسخة</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <span class="pill">المخرج القياسي STANDARD</span>
+      <ul class="list">
+        <li><strong>الحُكم:</strong> بيان قرار بلغة عربية بسيطة.</li>
+        <li><strong>S1 (≤ 14 يوم):</strong> 3 إجراءات سهلة بتكلفة قليلة.</li>
+        <li><strong>S2 (هيكلي):</strong> الحلّ الدائم إذا نجح S1.</li>
+        <li><strong>زر الإيقاف:</strong> متى نوقف أو نُبدّل (KPI مبكّر بعد 3 أيام).</li>
+        <li><strong>KPIs:</strong> مؤشّر أو اثنان بعتبات وزمن واضح.</li>
+        <li><strong>TrustNote:</strong> ماذا سنفعل ولماذا (بدون حِيَل مظلمة).</li>
+      </ul>
+      <div class="kpis">
+        <div class="kpi">+متوسط السلة / الهامش</div>
+        <div class="kpi">↓ زمن الدورة</div>
+        <div class="kpi">+التفعيل</div>
+        <div class="kpi">+EHR</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS THE REPLICA -->
+<section id="what">
+  <div class="container">
+    <h2>ما هي النسخة المستنسخة؟</h2>
+    <p class="sub">هي <strong>محرّك قرار مُمنتج</strong> يحاكي أنماط تفكير مو مع حواجز تشغيلية. يحوّل أي موجز مُربك إلى خطة قصيرة وآمنة يمكن تنفيذها هذا الأسبوع.</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <h3>1) العدسات</h3>
+        <p><strong>Iceberg:</strong> فصل الإشارات السطحية عن الأسباب العميقة. <br/>
+           <strong>POL:</strong> تحويل الأقطاب (ربح/خسارة، ارتفاع/انخفاض الأسعار) إلى <em>فرص</em> على مستويات S1/S2/S3.</p>
+      </div>
+      <div class="card">
+        <h3>2) البوابات</h3>
+        <p>يمرّ القرار عبر بوابات <strong>الدليل</strong> و<strong>المخاطر</strong> و<strong>الأخلاق</strong> و<strong>الثقة</strong>. إذا فشلت بوابة، نوقف التسليم — بدون تخمين.</p>
+      </div>
+      <div class="card">
+        <h3>3) العيّنة الذهبية</h3>
+        <p>مجموعة «Golden Set» لمعايرة النسخة. نتابع <strong>Replica-Match%</strong> ولا نُسلّم إلا عند بلوغ عتبة القبول.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <h2>كيف تعمل (سبرنت 14 يوم)</h2>
+    <p class="sub">قصيرة، قابلة للقياس، ويمكن الرجوع عنها. مصمّمة لتحريك رقم واحد بأمان.</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>اليوم 0–1</h3>
+        <ul class="list">
+          <li>اتصال 30 دقيقة (7 أسئلة دخول سريعة).</li>
+          <li><strong>حُكم</strong> بلغة بسيطة + 3 خطوات + KPI مبكّر.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>الأيام 2–13</h3>
+        <ul class="list">
+          <li>متابعة خفيفة (واتساب/إيميل) وتعديلات صغيرة.</li>
+          <li><span class="check">لو تحرّك الـKPI</span> → نجهّز S2 (هيكلي).</li>
+          <li><span class="warn">لو توقّف الـKPI</span> → نُفعّل <strong>زر الإيقاف</strong>.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">النتيجة: لقطة «قبل/بعد» بمؤشّر أو اثنين، مع SOP خفيفة للحفاظ على المكسب.</p>
+  </div>
+</section>
+
+<!-- MO vs GPT -->
+<section id="diff">
+  <div class="container">
+    <h2>مو ثينكينج مقابل GPT العام</h2>
+    <p class="sub">كلاهما مدعوم بالذكاء الاصطناعي، لكن واحد فقط <em>قابل للمحاسبة</em> و<em>آمن تشغيلًا</em>.</p>
+    <table class="table" aria-label="Mo vs GPT">
+      <thead><tr><th>البُعد</th><th>مو ثينكينج</th><th>GPT العام</th></tr></thead>
+      <tbody>
+        <tr><td>المهمة</td><td>محرّك قرار قابل للمحاسبة</td><td>مساعد محادثة عام</td></tr>
+        <tr><td>المنهج</td><td>Iceberg + POL + بوابات</td><td>بدون منهج ثابت</td></tr>
+        <tr><td>المخرجات</td><td>STANDARD (حُكم → S1/S2 → زر إيقاف → KPIs → TrustNote)</td><td>أفكار/نصوص حرّة</td></tr>
+        <tr><td>القياس</td><td>1–2 KPI بعتبات وإطار زمني</td><td>غالبًا غير محدد</td></tr>
+        <tr><td>المخاطر</td><td>زر إيقاف صريح وإمكانية الرجوع</td><td>لا يوجد شرط توقف</td></tr>
+        <tr><td>الخصوصية</td><td>Zero-PII + تنقيح + NDA</td><td>غير مضمون</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ETHICS & PRIVACY -->
+<section id="ethics">
+  <div class="container">
+    <h2>الأخلاقيات والثقة والخصوصية</h2>
+    <div class="grid cols-3">
+      <div class="card">
+        <h3>Zero-PII</h3>
+        <p>لا نطلب بيانات شخصية. المخرجات العامة مُنقّحة. تُسند الفضل للواجهة التنفيذية لديك.</p>
+      </div>
+      <div class="card">
+        <h3>TrustNote</h3>
+        <p>كل تسليم يتضمن مذكرة قصيرة: ماذا سنفعل، لماذا هو عادل، وكيف نتجنب الحِيَل المظلمة.</p>
+      </div>
+      <div class="card">
+        <h3>قابلية الرجوع</h3>
+        <p>KPI مبكّر بعد 3 أيام. إذا لم يتحرك الرقم، نوقف أو نُبدّل. الأمان أولًا.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="container">
+    <h2>حمّل الحزمة التجارية</h2>
+    <p class="sub">احصل على WS_، وKPI Canvas، وDecision Log، وSOP خفيفة. ابدأ بعينة مجانية.</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>التحميل (عربي)</h3>
+        <p>ينقلك إلى قسم المحرك في الصفحة العربية.</p>
+        <a class="btn" href="engine-ar.html#engine" aria-label="تحميل مو ثينكينج بالعربية">التحميل بالعربية</a>
+      </div>
+      <div class="card">
+        <h3>Download (English)</h3>
+        <p>Goes to the Engine section on the English page.</p>
+        <a class="btn secondary" href="index.html#engine" aria-label="Download Mo Thinking English">Download in English</a>
+      </div>
+    </div>
+    <p class="note" style="margin-top:10px">تحتاج دمج القوالب في سير عملك؟ اذكر ذلك في نموذج الدخول لنُفصّل لوحة البداية لك.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <h2>الأسئلة الشائعة</h2>
+    <div class="grid cols-2">
+      <div class="card">
+        <details>
+          <summary>هل هذه استشارة أم أداة؟</summary>
+          <p>الاثنان معًا: محرّك قرار مُمنتج مع مراجعة بشرية. ستحصل على خطة 3 خطوات وحواجز أمان وSOP خفيفة.</p>
+        </details>
+        <details>
+          <summary>هل أحتاج برمجيات خاصة؟</summary>
+          <p>لا. نبدأ بما لديك؛ وإن لزم نقترح أدوات خفيفة مألوفة لفريقك.</p>
+        </details>
+      </div>
+      <div class="card">
+        <details>
+          <summary>ماذا لو لم يتحسّن الـKPI؟</summary>
+          <p>نُفعّل زر الإيقاف. نوقف أو نُبدّل. لا فخ «تكلفة غارقة».</p>
+        </details>
+        <details>
+          <summary>هل توجد أمثلة؟</summary>
+          <p>نعم — مذكّرات حالات منقّحة بأرقام حقيقية متاحة عند الطلب.</p>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container inner">
+    <p>© 2025 Elasrag — قرارات مدعومة بالمراجعة البشرية. <a href="index.html#privacy">الخصوصية</a> · <a href="index.html#faq">الأسئلة الشائعة</a></p>
+  </div>
+</footer>
+</body>
+</html>

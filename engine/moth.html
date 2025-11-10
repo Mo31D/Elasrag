@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Meta -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mo Thinking — The Replica (Commercial) | Elasrag</title>
+  <meta name="description" content="Mo Thinking Replica: an accountable decision engine. 14-day sprints, measurable KPIs, Kill-Switch safety, and Zero-PII governance."/>
+  <meta property="og:title" content="Mo Thinking — The Replica (Commercial)"/>
+  <meta property="og:description" content="An accountable decision engine: judgment → 3 steps → KPIs → Kill-Switch → TrustNote. Download the commercial kit."/>
+  <meta property="og:type" content="website"/>
+  <meta name="theme-color" content="#0a71c2"/>
+
+  <!-- Styles -->
+  <style>
+    :root{
+      --bg:#f9fbfd; --fg:#222; --muted:#586174; --brand:#0a71c2; --brand-2:#0f5ea3;
+      --card:#ffffff; --line:#e7edf3; --ok:#1b8f3a; --warn:#c2840a; --shadow:0 8px 24px rgba(2,24,43,.08);
+      --radius:12px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Arial,Helvetica,sans-serif;
+      background:var(--bg); color:var(--fg); line-height:1.65;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    a{color:var(--brand);text-decoration:none}
+    a:hover{text-decoration:underline}
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:10; background:#fff; border-bottom:1px solid var(--line);
+    }
+    .container{width:92%; max-width:1200px; margin:0 auto}
+    nav{display:flex; align-items:center; justify-content:space-between; padding:16px 0}
+    .logo{font-weight:800; letter-spacing:.3px}
+    .menu{display:flex; gap:18px; align-items:center}
+    .menu a{font-weight:600; color:#283241}
+    .lang{font-size:.9rem}
+    /* Hero */
+    .hero{
+      background: radial-gradient(1200px 400px at 20% -10%, #dfefff 0%, transparent 60%), linear-gradient(160deg, #eef5ff 0%, #f9fbfd 60%);
+      border-bottom:1px solid var(--line);
+    }
+    .hero-inner{padding:72px 0; display:grid; grid-template-columns:1.1fr .9fr; gap:28px; align-items:center}
+    .hero h1{font-size:2.4rem; line-height:1.15; margin-bottom:16px; letter-spacing:.2px}
+    .hero p.lead{font-size:1.15rem; color:var(--muted); margin-bottom:20px}
+    .badge{display:inline-flex; gap:8px; align-items:center; color:#0a4c23; background:#e7f7ec; padding:8px 12px; border-radius:999px; font-weight:700; font-size:.9rem; margin-bottom:14px}
+    .cta{display:flex; gap:12px; flex-wrap:wrap}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      background:var(--brand); color:#fff; border:0; padding:12px 18px; border-radius:10px; font-weight:700; cursor:pointer; box-shadow:var(--shadow)
+    }
+    .btn.secondary{background:#2f3b52}
+    .btn.ghost{background:transparent; color:var(--brand); border:1px solid var(--brand); box-shadow:none}
+    .hero-card{
+      background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow)
+    }
+    .pill{display:inline-block; padding:6px 10px; border-radius:999px; background:#eef4ff; color:#1f4d86; font-weight:700; font-size:.82rem}
+    .list{margin-top:12px}
+    .list li{margin:8px 0 0 0}
+    /* Sections */
+    section{padding:60px 0}
+    h2{font-size:1.8rem; margin-bottom:14px}
+    p.sub{color:var(--muted); margin-bottom:22px}
+    .grid{display:grid; gap:18px}
+    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
+    .grid.cols-2{grid-template-columns:repeat(2,1fr)}
+    .card{
+      background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px; box-shadow:var(--shadow)
+    }
+    .kpis{display:flex; gap:14px; flex-wrap:wrap; margin-top:6px}
+    .kpi{background:#f2f7ff; border:1px dashed #b9d2ff; color:#0f3b74; border-radius:10px; padding:8px 10px; font-weight:700; font-size:.92rem}
+    .note{font-size:.92rem; color:var(--muted)}
+    .check{color:var(--ok); font-weight:800}
+    .warn{color:var(--warn); font-weight:800}
+    .table{width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:12px; border:1px solid var(--line); background:#fff}
+    .table th,.table td{padding:12px 14px; border-bottom:1px solid var(--line); text-align:left}
+    .table th{background:#f6f9fe; color:#14365f; font-size:.92rem}
+    .table tr:last-child td{border-bottom:0}
+    details summary{cursor:pointer; font-weight:700; color:#0f3b74}
+    footer{border-top:1px solid var(--line); background:#f2f6fb; color:#42506a}
+    footer .inner{padding:22px 0; text-align:center; font-size:.92rem}
+    /* Responsive */
+    @media (max-width: 980px){
+      .hero-inner{grid-template-columns:1fr}
+      .grid.cols-3{grid-template-columns:1fr}
+      .grid.cols-2{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="container">
+    <nav>
+      <div class="logo">Elasrag</div>
+      <div class="menu">
+        <a href="#what">What is the Replica?</a>
+        <a href="#how">How it Works</a>
+        <a href="#diff">Mo vs GPT</a>
+        <a href="#ethics">Ethics & Privacy</a>
+        <a href="#download">Download</a>
+        <a class="lang" href="engine-ar.html" title="Arabic version">AR</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container hero-inner">
+    <div>
+      <div class="badge">14-Day Decision Sprint • Accountable • Safe</div>
+      <h1>Mo Thinking — The Replica (Commercial)</h1>
+      <p class="lead">An accountable decision engine that delivers a tangible result in 14 days: <strong>Judgment → 3 steps → KPIs → Kill-Switch → TrustNote</strong>. Built on the Iceberg &amp; POL lenses, with Zero-PII governance.</p>
+      <div class="cta">
+        <!-- EN download goes to index.html#engine -->
+        <a class="btn" href="index.html#engine">Download Mo Thinking (EN)</a>
+        <!-- AR download goes to engine-ar.html#engine -->
+        <a class="btn secondary" href="engine-ar.html#engine">التحميل بالعربية</a>
+        <a class="btn ghost" href="#what">See how the Replica works</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <span class="pill">STANDARD Output</span>
+      <ul class="list">
+        <li><strong>Judgment:</strong> a plain-English decision statement.</li>
+        <li><strong>S1 (≤14 days):</strong> 3 simple actions with minimal cost.</li>
+        <li><strong>S2 (structural):</strong> the lasting fix if S1 works.</li>
+        <li><strong>Kill-Switch:</strong> when to stop or pivot (3-day early KPI).</li>
+        <li><strong>KPIs:</strong> 1–2 leading metrics, clear thresholds.</li>
+        <li><strong>TrustNote:</strong> what we’ll do and why (no dark patterns).</li>
+      </ul>
+      <div class="kpis">
+        <div class="kpi">+AOV / Margin</div>
+        <div class="kpi">↓ Cycle Time</div>
+        <div class="kpi">+Activation</div>
+        <div class="kpi">+EHR</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IS THE REPLICA -->
+<section id="what">
+  <div class="container">
+    <h2>What exactly is the Replica?</h2>
+    <p class="sub">It’s a <strong>productized decision engine</strong> that mirrors Mo’s reasoning patterns with operational safeguards. It turns any messy brief into a short, safe plan you can execute this week.</p>
+    <div class="grid cols-3">
+      <div class="card">
+        <h3>1) Lenses</h3>
+        <p><strong>Iceberg:</strong> separate surface signals from deeper causes. <br/>
+           <strong>POL:</strong> convert opposites (win/loss, price up/down) into <em>opportunities</em> at S1/S2/S3 depths.</p>
+      </div>
+      <div class="card">
+        <h3>2) Gates</h3>
+        <p>Decisions pass <strong>Evidence</strong>, <strong>Risk</strong>, <strong>Ethics</strong>, and <strong>Trust</strong> gates. If a gate fails, delivery pauses—no guesswork.</p>
+      </div>
+      <div class="card">
+        <h3>3) Harness</h3>
+        <p>A “golden set” of cases to calibrate the replica. We track <strong>Replica-Match%</strong> and only ship when it meets the acceptance bar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <h2>How it works (14-Day Sprint)</h2>
+    <p class="sub">Short, measurable, and reversible. Designed to move one number safely.</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>Day 0–1</h3>
+        <ul class="list">
+          <li>30-min intake (7 quick questions).</li>
+          <li>Plain-English <strong>Judgment</strong> + 3 steps + early KPI.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Days 2–13</h3>
+        <ul class="list">
+          <li>Light follow-ups (WhatsApp/email), small tweaks.</li>
+          <li><span class="check">If KPI moves</span> → prepare S2 (structural).</li>
+          <li><span class="warn">If KPI stalls</span> → trigger the <strong>Kill-Switch</strong>.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">Result: a Before/After snapshot with 1–2 KPIs, plus a minimal SOP to keep the gain.</p>
+  </div>
+</section>
+
+<!-- MO vs GPT -->
+<section id="diff">
+  <div class="container">
+    <h2>Mo Thinking vs. Generic GPT</h2>
+    <p class="sub">Both are AI-assisted, but only one is <em>accountable</em> and <em>operationally safe</em>.</p>
+    <table class="table" aria-label="Mo vs GPT">
+      <thead><tr><th>Dimension</th><th>Mo Thinking</th><th>Generic GPT</th></tr></thead>
+      <tbody>
+        <tr><td>Mission</td><td>Accountable decision engine</td><td>General chat assistant</td></tr>
+        <tr><td>Method</td><td>Iceberg + POL + Gates</td><td>No fixed method</td></tr>
+        <tr><td>Output</td><td>STANDARD (Judgment → S1/S2 → Kill-Switch → KPIs → TrustNote)</td><td>Free-form tips/ideas</td></tr>
+        <tr><td>Measurement</td><td>1–2 KPIs, thresholds, timeframe</td><td>Often missing</td></tr>
+        <tr><td>Risk</td><td>Explicit Kill-Switch, reversibility</td><td>No stop condition</td></tr>
+        <tr><td>Privacy</td><td>Zero-PII + redaction + NDA</td><td>Not guaranteed</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ETHICS & PRIVACY -->
+<section id="ethics">
+  <div class="container">
+    <h2>Ethics, Trust & Privacy</h2>
+    <div class="grid cols-3">
+      <div class="card">
+        <h3>Zero-PII</h3>
+        <p>No personal data required. Public outputs are redacted. Your executive front receives the credit.</p>
+      </div>
+      <div class="card">
+        <h3>TrustNote</h3>
+        <p>Every delivery includes a short note: what we’ll do, why it’s fair, and how we avoid dark patterns.</p>
+      </div>
+      <div class="card">
+        <h3>Reversibility</h3>
+        <p>Early KPI in 3 days. If it doesn’t move, we pause or pivot. Safety first.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOWNLOAD -->
+<section id="download">
+  <div class="container">
+    <h2>Download the Commercial Kit</h2>
+    <p class="sub">Get WS_, KPI Canvas, Decision Log and light SOP templates. Start with the free sample.</p>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>Download (English)</h3>
+        <p>Goes to the Engine section on your English page.</p>
+        <a class="btn" href="index.html#engine" aria-label="Download Mo Thinking English">Download Mo Thinking (EN)</a>
+      </div>
+      <div class="card">
+        <h3>التحميل (عربي)</h3>
+        <p>ينقلك إلى قسم المحرك في الصفحة العربية.</p>
+        <a class="btn secondary" href="engine-ar.html#engine" aria-label="تحميل مو ثينكينج بالعربية">التحميل بالعربية</a>
+      </div>
+    </div>
+    <p class="note" style="margin-top:10px">Need help integrating the templates into your workflow? Add a note in the intake and we’ll tailor your starting board.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <h2>FAQ</h2>
+    <div class="grid cols-2">
+      <div class="card">
+        <details>
+          <summary>Is this consulting or a tool?</summary>
+          <p>Both: a productized decision engine plus human review. You get a 3-step plan, guardrails, and minimal SOP.</p>
+        </details>
+        <details>
+          <summary>Do I need special software?</summary>
+          <p>No. We start with what you have; if needed, we propose lean tools you already know.</p>
+        </details>
+      </div>
+      <div class="card">
+        <details>
+          <summary>What happens if the KPI doesn’t improve?</summary>
+          <p>The Kill-Switch triggers. We pause or pivot. No sunk-cost traps.</p>
+        </details>
+        <details>
+          <summary>Can I see examples?</summary>
+          <p>Yes—redacted case notes with real numbers are available on request.</p>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container inner">
+    <p>© 2025 Elasrag — Human-reviewed AI decisions. <a href="index.html#privacy">Privacy</a> · <a href="index.html#faq">FAQ</a></p>
+  </div>
+</footer>
+</body>
+</html>
