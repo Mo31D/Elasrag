@@ -375,7 +375,7 @@ th{ background:#fbfbfb; font-weight:600; }
   align-items: center;
   justify-content: space-between;
   gap: 0.5vw;
-  width: 100%;
+  width: 50%;
   flex-wrap: nowrap;
   margin-top: 0.5vw;
 }
@@ -391,52 +391,6 @@ th{ background:#fbfbfb; font-weight:600; }
   flex-wrap: nowrap;
 }
 
-.number-input {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: rgba(0,0,0,0.65);
-  border: 1px solid rgba(255,204,0,0.4);
-  border-radius: 8px;
-  padding: 2px 4px;
-  width: clamp(70px, 18%, 110px);
-  height: clamp(26px, 4vw, 34px);
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
-}
-
-.number-input input {
-  width: 38%;
-  text-align: center;
-  font-size: clamp(11px, 1.2vw, 13px);
-  font-weight: 700;
-  color: #ffcc00;
-  background: transparent;
-  border: none;
-  outline: none;
-}
-
-/* أزرار + و - */
-.num-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: clamp(24px, 4vw, 32px);
-  height: clamp(24px, 4vw, 32px);
-  border-radius: 6px;
-  font-size: clamp(14px, 2vw, 16px);
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-.num-btn.minus {
-  background: linear-gradient(180deg, #2c2c2c, #1a1a1a);
-  color: #ffcc00;
-}
-.num-btn.plus {
-  background: linear-gradient(180deg, #ffd84d, #b8860b);
-  color: #3b2500;
-}
-.num-btn:hover { transform: scale(1.1); }
 
 /* أزرار البيع والشراء والانتظار */
 .inline-buy, .inline-sell, .inline-wait {
@@ -711,3 +665,114 @@ body.night .player-card.active{
 }
 
 /* end of cleaned file */
+
+
+/* =========================================
+   🏙️ Restore "You are in city" + "Camel price" style
+   ========================================= */
+.floating-top-corner {
+  position: absolute;
+  background: transparent;
+  backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 6px 10px;
+  width: 20vw;
+  top: 40%;
+  left: 12%;
+  text-align: right;
+  color: #4b2e05;
+  font-size: 13px;
+  line-height: 1.4;
+  z-index: 8000;
+}
+
+.floating-top-corner #currentTownText {
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.town-name {
+  color: #ffffff;
+  font-weight: 800;
+  animation: flashTown 1.5s infinite alternate;
+}
+
+.price-flash {
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 24px;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+     0 0 10px #ffffff;
+  animation: flashPrice 1.2s infinite alternate;
+}
+
+@keyframes flashTown {
+  0% { color: #b22222; text-shadow: 0 0 2px #ff9999; opacity: 0.8; }
+  100% { color: #ff2d2d; text-shadow: 0 0 10px #ff6666; opacity: 1; }
+}
+
+@keyframes flashPrice {
+  0% { color: #d4a017; text-shadow: 0 0 2px #ffd966; opacity: 0.8; }
+  100% { color: #ffcc00; text-shadow: 0 0 10px #ffe066; opacity: 1; }
+}
+
+.inline-buttons #inlineCamelCount { all: revert; }
+.inline-buttons #inlineCamelCount::-webkit-outer-spin-button,
+.inline-buttons #inlineCamelCount::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.inline-buttons #inlineCamelCount { -moz-appearance: textfield; }
+
+
+
+
+/* === Fix: compact number box + stable layout inside player-card === */
+.player-card .inline-buttons{
+  display: grid;
+  grid-template-columns: auto 1fr 1fr;
+  grid-auto-rows: min-content;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+/* compact numeric input */
+.player-card .inline-buttons #inlineCamelCount{
+  all: revert;
+  width: clamp(44px, 5ch, 64px) !important; /* small, fixed-ish */
+  padding: 4px 6px;
+  text-align: center;
+  border: 1px solid #d2a05a;
+  border-radius: 6px;
+  -moz-appearance: textfield;
+}
+.player-card .inline-buttons #inlineCamelCount::-webkit-outer-spin-button,
+.player-card .inline-buttons #inlineCamelCount::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* place buttons as two rows next to the input */
+.player-card .inline-buttons .top-row,
+.player-card .inline-buttons .bottom-row{
+  display: flex;
+  gap: 6px;
+  grid-column: 2 / 4;
+}
+.player-card .inline-buttons .top-row{ grid-row: 1; }
+.player-card .inline-buttons .bottom-row{ grid-row: 2; }
+
+/* override mobile rule that forced 100% width */
+@media (max-width: 768px){
+  .player-card .inline-buttons button,
+  .player-card .inline-buttons #inlineCamelCount{
+    width: auto !important;
+  }
+}
