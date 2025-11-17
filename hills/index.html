@@ -14,7 +14,7 @@
             min-height: 100vh;
         }
 
-        /* نستخدم body.locked لإظهار شاشة الباسورد فقط */
+        /* lock state */
         body.locked .container {
             display: none;
         }
@@ -120,37 +120,36 @@
             justify-content: center;
         }
 
-        /* player بحجم موبايل على الشاشات الواسعة (فيديو طولي) */
-        video {
+        /* vertical YouTube embed, phone-like size on wide screens */
+        .video-frame {
             width: 100%;
             max-width: 420px;
+            aspect-ratio: 9 / 16; /* vertical 9:16 */
             border-radius: 12px;
+            overflow: hidden;
             background: #000;
         }
 
-        .download-link {
-            margin-top: 10px;
-            text-align: center;
+        .video-frame iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
 
-        .download-link a {
-            text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 6px;
-            border: 1px solid #0077cc;
-            color: #0077cc;
-            font-size: 0.95rem;
-        }
-
-        .download-link a:hover {
-            background: #0077cc;
-            color: #ffffff;
-        }
-
+        .alt-link,
         .note {
             margin-top: 12px;
             font-size: 0.85rem;
             color: #666;
+        }
+
+        .alt-link a {
+            color: #0077cc;
+            text-decoration: none;
+        }
+
+        .alt-link a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -173,25 +172,39 @@
 
     <p>
         This page contains the phone recording related to the incident at the Ambleside Hill BP station
-        on <strong>4 November 2025</strong>. You can watch the video below or download a copy using the link provided.
+        on <strong>4 November 2025</strong>.
     </p>
 
     <div class="video-wrapper">
-        <video controls playsinline>
-            <source src="Hills-Bp.mov" type="video/quicktime">
-            <source src="Hills-Bp.mov" type="video/mp4">
-            Your browser does not support the video tag. 
-            Please use the download link below to access the file.
-        </video>
+        <div class="video-frame">
+            <iframe
+                src="https://www.youtube-nocookie.com/embed/_mHgN9ar5_k?rel=0&modestbranding=1"
+                title="Hills / BP – Ambleside Incident"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+            ></iframe>
+        </div>
     </div>
 
-    <div class="download-link">
-        <a href="Hills-Bp.mov" download>Download video (Hills-Bp.mov)</a>
-    </div>
+    <p class="alt-link">
+        If the embedded player does not load correctly, you can also view the video directly on YouTube:<br>
+        <a href="https://youtube.com/shorts/_mHgN9ar5_k?si=yWzM_sUgfcqMKOKZ" target="_blank" rel="noopener noreferrer">
+            Open video on YouTube
+        </a>
+    </p>
+
+    <p class="alt-link">
+        To download the original video file directly (Google Drive):<br>
+        <a href="https://drive.google.com/file/d/1P9tKyTtmkeuNTKk3bplwaPD7QmDLkcDG/view?usp=drivesdk"
+           target="_blank" rel="noopener noreferrer">
+            Download video (Google Drive)
+        </a>
+    </p>
 
     <p class="note">
-        This video was recorded vertically on an iPhone.  
-        If you have any issue accessing or downloading the file, please let me know and I will provide an alternative method.
+        No sign-in should be required to view the video on YouTube.  
+        Depending on your Google Drive settings, you may be asked to sign in to download the file.  
+        If you experience any issue accessing it, please let me know and I will provide an alternative method.
     </p>
 </div>
 
