@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>$9 .it.com + Site.pro — Your first serious online presence</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description"
+        content="Turn your .it.com idea into a real website, hosting and email for $9. Simple, human onboarding for non-technical founders, experts and small businesses.">
+
+  <!-- Reuse existing favicons from images/ if available -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-60x60.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon-wbg-180x180.png">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+    :root {
+      --bg-body: #050712;
+      --bg-soft: #0b0e1a;
+      --bg-card: #111624;
+      --accent: #4ade80;
+      --accent-soft: rgba(74, 222, 128, 0.12);
+      --accent-strong: #22c55e;
+      --text-main: #f9fafb;
+      --text-soft: #d1d5db;
+      --text-muted: #9ca3af;
+      --border-subtle: #1f2933;
+      --danger: #f97373;
+      --shadow-soft: 0 22px 45px rgba(15, 23, 42, 0.6);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --max-width: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #000;
+      color: var(--text-main);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* الخلفية المتوهجة العامة */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      background: conic-gradient(
+        from 90deg,
+        rgba(255,255,255,0.05),
+        rgba(255,230,150,0.2),
+        rgba(0,230,255,0.1),
+        rgba(255,255,255,0.05)
+      );
+      animation: rotateAI 14s linear infinite;
+      filter: blur(110px);
+      top: -10%;
+      left: -10%;
+      z-index: 0;
+    }
+
+    @keyframes rotateAI {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* نخلي المحتوى فوق الجلو */
+    .page,
+    .hero,
+    .section,
+    .site-footer,
+    .site-header,
+    .elasrag-menu {
+      position: relative;
+      z-index: 1;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* === NAV MENU (طابع Elasrag) === */
+
+    .elasrag-menu {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.65);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 25px rgba(255, 230, 150, 0.15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 32px;
+      z-index: 10;
+      animation: fadeInMenu 0.8s ease forwards;
+    }
+
+    @keyframes fadeInMenu {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .elasrag-menu .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 1.1em;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .brand-dot {
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(90deg, #f5d67b, #fff5da, #00f0ff);
+      -webkit-background-clip: padding-box;
+      color: #141414;
+      font-weight: 800;
+      font-size: 0.8em;
+      box-shadow: 0 0 20px rgba(255,230,150,0.4);
+    }
+
+    .logo-text {
+      background: linear-gradient(90deg, #f5d67b, #fff5da, #00f0ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 700;
+      font-size: 0.85em;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 24px;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #e6e6e6;
+      font-weight: 600;
+      font-size: 0.86rem;
+      position: relative;
+      transition: color 0.25s ease;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: linear-gradient(90deg, #ffefb0, #00f0ff);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover {
+      color: #ffffff;
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ffefb0, #f8de88, #00f0ff);
+  color: #000000 !important;
+  font-weight: 700;
+  font-size: 0.8rem;
+  box-shadow: 0 0 20px rgba(255,230,150,0.4);
+  white-space: nowrap;
+}
+
+    .nav-cta:hover {
+      filter: brightness(1.05);
+    }
+
+    /* Hero */
+
+    .hero {
+      padding: 88px 0 56px; /* زيادة عشان المنيو الثابتة */
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+      gap: 40px;
+      align-items: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px 4px 4px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.13);
+      color: var(--text-soft);
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+
+    .hero-badge-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    .hero-title {
+      font-size: clamp(30px, 4vw, 38px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin: 0 0 12px;
+    }
+
+    .hero-highlight {
+      color: var(--accent-strong);
+    }
+
+    .hero-subtitle {
+      margin: 0 0 20px;
+      color: var(--text-soft);
+      font-size: 15px;
+    }
+
+    .hero-assets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 18px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .hero-assets span {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    .hero-assets .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
+      border-radius: var(--radius-pill);
+      padding: 11px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.16s ease, transform 0.1s ease, box-shadow 0.16s ease;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--accent-strong);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-strong), #a3e635);
+      color: #022c22;
+      box-shadow: 0 18px 40px rgba(34, 197, 94, 0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 22px 50px rgba(34, 197, 94, 0.45);
+    }
+
+    .btn-secondary {
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-soft);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(31, 41, 55, 0.95);
+      transform: translateY(-1px);
+    }
+
+    .hero-note {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .hero-note b {
+      color: var(--accent-strong);
+      font-weight: 600;
+    }
+
+    .hero-side {
+      position: relative;
+    }
+
+    .hero-card {
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 18px 18px 16px;
+      box-shadow: 0 0 35px rgba(255,230,150,0.25);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-tagline {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .hero-price {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .hero-price-main {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-price-main span {
+      font-size: 16px;
+      margin-left: 2px;
+    }
+
+    .hero-price-note {
+      font-size: 12px;
+      color: var(--text-soft);
+    }
+
+    .hero-checklist {
+      display: grid;
+      grid-template-columns: minmax(0,1fr);
+      gap: 8px;
+      margin: 14px 0 8px;
+      padding: 0;
+      list-style: none;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .hero-checklist li {
+      display: flex;
+      gap: 8px;
+    }
+
+    .hero-check-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      background: var(--accent-soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 10px;
+      color: var(--accent-strong);
+    }
+
+    .hero-mini-copy {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .hero-ribbon {
+      position: absolute;
+      right: 14px;
+      top: 12px;
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(251, 191, 36, 0.08);
+      border: 1px solid rgba(250, 204, 21, 0.5);
+      color: #facc15;
+      font-weight: 600;
+    }
+
+    .hero-bubbles {
+      position: absolute;
+      inset: -40px;
+      pointer-events: none;
+      opacity: 0.4;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(59,130,246,0.34), transparent 60%),
+        radial-gradient(circle at 80% 10%, rgba(251,191,36,0.3), transparent 55%),
+        radial-gradient(circle at 85% 80%, rgba(16,185,129,0.35), transparent 60%);
+      mix-blend-mode: screen;
+    }
+
+    /* Sections */
+
+    main {
+      padding-bottom: 56px;
+    }
+
+    .section {
+      padding: 32px 0;
+      position: relative;
+    }
+
+    .section + .section {
+      border-top: 1px solid rgba(15, 23, 42, 0.9);
+    }
+
+    .section-header {
+      margin-bottom: 22px;
+    }
+
+    .section-kicker {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: 22px;
+      margin: 0 0 6px;
+      letter-spacing: -0.03em;
+    }
+
+    .section-subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-soft);
+      max-width: 640px;
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,1);
+      color: var(--text-muted);
+      font-size: 11px;
+      border: 1px solid rgba(31,41,55,0.9);
+    }
+
+    .tag-pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+    }
+
+    /* Cards & grids */
+
+    .grid-2 {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-4 {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      position: relative;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 18px 18px 16px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 30px rgba(255,230,150,0.18);
+    }
+
+    .card-soft {
+      background: radial-gradient(circle at top, rgba(15,23,42,1), rgba(15,23,42,0.85));
+      border-color: rgba(51, 65, 85, 0.8);
+    }
+
+    .card-title {
+      margin: 0 0 4px;
+      font-size: 15px;
+    }
+
+    .card-tagline {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .card-body {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .card-list {
+      list-style: none;
+      padding: 0;
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    .card-list li {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .card-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.9);
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    /* Who it's for */
+
+    .segment-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    /* Steps */
+
+    .steps {
+      counter-reset: step;
+      display: grid;
+      gap: 14px;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(55,65,81,0.85);
+    }
+
+    .step-index {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .step-title {
+      font-size: 14px;
+      margin: 0 0 2px;
+    }
+
+    .step-body {
+      font-size: 13px;
+      color: var(--text-soft);
+    }
+
+    /* Bundle grid */
+
+    .bundle-grid {
+      display: grid;
+      gap: 18px;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+    }
+
+    .bundle-item-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 4px;
+    }
+
+    /* Video */
+
+    .video-wrapper {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      background: radial-gradient(circle at top left, #111827, #020617);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+    }
+
+    .video-frame {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+    }
+
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: var(--radius-lg);
+    }
+
+    .video-caption {
+      padding: 10px 14px 12px;
+      font-size: 12px;
+      color: var(--text-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .video-caption small {
+      color: var(--text-muted);
+    }
+
+    /* FAQ */
+
+    .faq-list {
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(55,65,81,0.9);
+      background: rgba(15,23,42,0.9);
+      overflow: hidden;
+    }
+
+    .faq-item + .faq-item {
+      border-top: 1px solid rgba(31,41,55,0.9);
+    }
+
+    .faq-question {
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .faq-question h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .faq-toggle {
+      font-size: 18px;
+      color: var(--text-muted);
+      transition: transform 0.16s ease;
+    }
+
+    .faq-answer {
+      padding: 0 14px 12px;
+      font-size: 13px;
+      color: var(--text-soft);
+      display: none;
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    .faq-item.open .faq-toggle {
+      transform: rotate(90deg);
+      color: var(--accent-strong);
+    }
+
+    /* Trust strip */
+
+    .trust-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 18px;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    .trust-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px dashed rgba(55,65,81,0.9);
+    }
+
+    .trust-pill span {
+      font-size: 13px;
+    }
+
+    /* Footer */
+
+    .site-footer {
+      border-top: 1px solid rgba(15,23,42,0.9);
+      padding: 20px 0 28px;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: radial-gradient(circle at top, #020617, #000);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: underline;
+      text-decoration-style: dotted;
+      text-underline-offset: 3px;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 960px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hero {
+        padding-top: 96px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .grid-2,
+      .grid-3,
+      .grid-4,
+      .bundle-grid {
+        grid-template-columns: minmax(0,1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .elasrag-menu {
+        padding: 12px 18px;
+      }
+
+      .nav-links {
+        display: none; /* لو حابب نعمل منيو موبايل بعدين */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .video-caption {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body id="top">
+
+<!-- NAV Elasrag-style مع نفس نص البراند القديم -->
+<nav class="elasrag-menu">
+  <div class="logo">
+    <span class="brand-dot">.it.com</span>
+    <span class="logo-text">+ Site.pro bundle</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#who">Who it’s for</a></li>
+    <li><a href="#bundle">What you get</a></li>
+    <li><a href="#video">Watch demo</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="https://site.pro/itcom" class="nav-cta">Get started for $9</a></li>
+  </ul>
+</nav>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="page hero-grid">
+      <div>
+        <div class="hero-badge">
+          <span class="hero-badge-pill">For non-technical humans</span>
+          <span>Serious presence, tiny risk</span>
+        </div>
+        <h1 class="hero-title">
+          Serious online presence for <span class="hero-highlight">$9</span>
+        </h1>
+        <p class="hero-subtitle">
+          Turn your idea or name into a real <b>.it.com</b> website, hosting and email
+          in one evening — without fighting with tech, templates or endless choices.
+        </p>
+
+        <div class="hero-assets">
+          <span><span class="dot"></span> .it.com domain name</span>
+          <span><span class="dot"></span> AI website, ready to edit</span>
+          <span><span class="dot"></span> Fast hosting</span>
+          <span><span class="dot"></span> Business email</span>
+        </div>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://site.pro/itcom">
+            Start with my .it.com
+          </a>
+          <a class="btn btn-secondary" href="#video">
+            Watch how it works
+          </a>
+        </div>
+        <p class="hero-note">
+          <b>$9 once</b> to get started. If it works for you, you can grow and upgrade later.
+          If it doesn’t, you still keep your .it.com name.
+        </p>
+      </div>
+
+      <div class="hero-side">
+        <div class="hero-card" aria-label="$9 bundle summary">
+          <div class="hero-bubbles" aria-hidden="true"></div>
+          <div class="hero-ribbon">Most people overcomplicate this.</div>
+          <div class="hero-tagline">One simple decision → four assets</div>
+          <div class="hero-price">
+            <div class="hero-price-main">$9<span>bundle</span></div>
+            <div class="hero-price-note">for your first serious online presence</div>
+          </div>
+          <ul class="hero-checklist">
+            <li><span class="hero-check-icon">✓</span><span>Clean .it.com brand you’re proud to put on your profile, card or email.</span></li>
+            <li><span class="hero-check-icon">✓</span><span>AI builds a first version of your site, you just adjust the story and contacts.</span></li>
+            <li><span class="hero-check-icon">✓</span><span>Safe way to test an idea or new market without touching your main website.</span></li>
+          </ul>
+          <p class="hero-mini-copy">
+            You don’t need “the perfect site”. You need one clear place where people can find you,
+            understand what you do and contact you today.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="section">
+    <div class="page">
+      <div class="section-header">
+        <div class="section-kicker">How it works</div>
+        <h2 class="section-title">From idea to live .it.com in three short moves</h2>
+        <p class="section-subtitle">
+          No jargon, no fifteen tabs open. Just a guided path from “I have an idea”
+          to “here is my link, you can check it now”.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div class="steps" aria-label="Three steps to go live">
+          <div class="step">
+            <div class="step-index">1</div>
+            <div>
+              <h3 class="step-title">Pick or connect your .it.com name</h3>
+              <p class="step-body">
+                Already have a .it.com? Connect it in a few clicks.
+                Still choosing? Search for a name that feels like you or your project.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-index">2</div>
+            <div>
+              <h3 class="step-title">Let AI build the first version</h3>
+              <p class="step-body">
+                Answer a few simple questions about who you are and what you offer.
+                The builder creates a basic site and structure for you — no design degree required.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-index">3</div>
+            <div>
+              <h3 class="step-title">Adjust the story and hit “publish”</h3>
+              <p class="step-body">
+                Replace the demo text with your words, add one clear call to action
+                and your contacts. That’s enough for a serious first impression.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-soft">
+          <p class="card-tagline">Psychology, not just technology</p>
+          <h3 class="card-title">Designed for people who secretly dislike tech</h3>
+          <div class="card-body">
+            <p>
+              Many founders, experts and small businesses delay their website for months
+              because it feels heavy, confusing and expensive. This bundle is built to
+              feel light and safe:
+            </p>
+            <ul class="card-list">
+              <li><span class="card-dot"></span><span><b>Low risk:</b> $9 is small enough to try, big enough to feel serious.</span></li>
+              <li><span class="card-dot"></span><span><b>Clear edges:</b> one page, one message, one call-to-action to start with.</span></li>
+              <li><span class="card-dot"></span><span><b>Room to grow:</b> when it works, you can add e-commerce, automations and more.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="trust-strip">
+        <div class="trust-pill">
+          <span class="tag-pill-dot"></span>
+          <span>Powered by Site.pro infrastructure</span>
+        </div>
+        <div class="trust-pill">
+          <span class="tag-pill-dot"></span>
+          <span>.it.com brand recognised globally</span>
+        </div>
+        <div class="trust-pill">
+          <span class="tag-pill-dot"></span>
+          <span>Keep your domain even if you change tools later</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section id="who" class="section">
+    <div class="page">
+      <div class="section-header">
+        <div class="section-kicker">Who this is for</div>
+        <h2 class="section-title">Four groups who win the most from a $9 start</h2>
+        <p class="section-subtitle">
+          The bundle works for many people, but these four profiles benefit the fastest.
+        </p>
+      </div>
+
+      <div class="grid-4">
+        <div class="card">
+          <div class="segment-label">Self-employed experts</div>
+          <h3 class="card-title">Coaches, trainers & consultants</h3>
+          <p class="card-body">
+            Turn your name into a clean .it.com brand. One focused page instead of
+            ten conflicting social profiles.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-dot"></span><span>Simple “who I help / how / next step” structure.</span></li>
+            <li><span class="card-dot"></span><span>A link you’re not shy to put under every post.</span></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="segment-label">Startups & new ideas</div>
+          <h3 class="card-title">Look real before everything is ready</h3>
+          <p class="card-body">
+            Funders, partners and journalists search your name. A serious .it.com site
+            says “we exist and we care”.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-dot"></span><span>Explain the idea, team and traction on one page.</span></li>
+            <li><span class="card-dot"></span><span>Ship now, iterate as you learn.</span></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="segment-label">Small & medium businesses</div>
+          <h3 class="card-title">Test new lines without touching the main site</h3>
+          <p class="card-body">
+            Use .it.com as a safe sandbox: new region, product or language —
+            without disturbing your corporate website.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-dot"></span><span>Launch a dedicated landing in days, not months.</span></li>
+            <li><span class="card-dot"></span><span>If it works, scale. If not, you only spent $9.</span></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="segment-label">High-testing marketers</div>
+          <h3 class="card-title">MLM, performance & similar niches</h3>
+          <p class="card-body">
+            Spin up multiple .it.com landings quickly, keep control of your brand and data,
+            and double-down on what converts.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-dot"></span><span>Many landing pages, one simple ecosystem.</span></li>
+            <li><span class="card-dot"></span><span>Easy A/B testing of headlines, offers and angles.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT YOU GET -->
+  <section id="bundle" class="section">
+    <div class="page">
+      <div class="section-header">
+        <div class="section-kicker">What’s inside the $9 bundle</div>
+        <h2 class="section-title">Four long-term assets from one small decision</h2>
+        <p class="section-subtitle">
+          It’s not “just a cheap domain and a builder”.
+          It’s a starting point for a serious digital presence that can grow with you.
+        </p>
+      </div>
+
+      <div class="bundle-grid">
+        <div class="card">
+          <div class="bundle-item-label">1. The name</div>
+          <h3 class="card-title">A memorable .it.com brand</h3>
+          <p class="card-body">
+            Easy to say, easy to type, and easy to remember.
+            Works for experts, products and international projects.
+          </p>
+        </div>
+        <div class="card">
+          <div class="bundle-item-label">2. The website</div>
+          <h3 class="card-title">AI-built, human-edited site</h3>
+          <p class="card-body">
+            The AI builder gives you a ready structure in minutes.
+            You keep control over the story, offers and tone.
+          </p>
+        </div>
+        <div class="card">
+          <div class="bundle-item-label">3. The infrastructure</div>
+          <h3 class="card-title">Hosting & speed handled for you</h3>
+          <p class="card-body">
+            Fast servers and a reliable stack from Site.pro —
+            no need to learn about databases or server settings.
+          </p>
+        </div>
+        <div class="card">
+          <div class="bundle-item-label">4. The communication</div>
+          <h3 class="card-title">Professional email on your domain</h3>
+          <p class="card-body">
+            “hello@yourname.it.com” looks very different from a random free account.
+            Small change, big trust signal.
+          </p>
+        </div>
+      </div>
+
+      <div style="margin-top:18px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;">
+        <div class="tag-pill">
+          <span class="tag-pill-dot"></span>
+          <span>Upgrade later with e-commerce, automations, accounting & reseller options when you’re ready.</span>
+        </div>
+        <a class="btn btn-primary" href="https://site.pro/itcom">
+          I want this bundle
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section id="video" class="section">
+    <div class="page">
+      <div class="section-header">
+        <div class="section-kicker">See it in action</div>
+        <h2 class="section-title">Watch the builder create a site in minutes</h2>
+        <p class="section-subtitle">
+          This short video shows the real builder in action — the same engine behind your $9 bundle.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div class="video-wrapper">
+          <div class="video-frame">
+            <!-- IMPORTANT: replace VIDEO_URL_FROM_OLD_INDEX with the real video URL from their index.html -->
+            <iframe
+              src="VIDEO_URL_FROM_OLD_INDEX"
+              title="Bundle demo video"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="video-caption">
+            <span>AI does the heavy lifting. You keep the steering wheel.</span>
+            <small>Video hosted on their original platform.</small>
+          </div>
+        </div>
+
+        <div class="card card-soft">
+          <p class="card-tagline">Not “magic”, just focused tools</p>
+          <h3 class="card-title">AI as your assistant, not your boss</h3>
+          <div class="card-body">
+            <p>
+              The goal is not a “perfect AI website”. The goal is to get you over the first
+              psychological barrier: going from nothing to something real you can share.
+            </p>
+            <ul class="card-list">
+              <li><span class="card-dot"></span><span><b>You stay in control:</b> edit any text, image or section anytime.</span></li>
+              <li><span class="card-dot"></span><span><b>No lock-in to the story:</b> change your niche or offer without rebuilding everything.</span></li>
+              <li><span class="card-dot"></span><span><b>One evening rule:</b> if it takes more than one evening to publish a first page, we made it too complex.</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="section">
+    <div class="page">
+      <div class="section-header">
+        <div class="section-kicker">Questions people usually ask</div>
+        <h2 class="section-title">Quick answers before you overthink it</h2>
+        <p class="section-subtitle">
+          If you are unsure, you’re not the only one. Here are the most common doubts we hear
+          from small business owners and experts.
+        </p>
+      </div>
+
+      <div class="faq-list" aria-label="Frequently asked questions">
+        <div class="faq-item">
+          <div class="faq-question" tabindex="0">
+            <h3>“I’m not technical at all. Will I be stuck?”</h3>
+            <div class="faq-toggle">›</div>
+          </div>
+          <div class="faq-answer">
+            No. The whole point of this bundle is that you don’t need to be “a website person”.
+            You answer a few questions, AI prepares a first version, and you only adjust the words
+            so it sounds like you. If you can write a post or an email, you can handle this.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" tabindex="0">
+            <h3>What exactly do I pay $9 for?</h3>
+            <div class="faq-toggle">›</div>
+          </div>
+          <div class="faq-answer">
+            The $9 is your entry ticket into the .it.com + Site.pro ecosystem:
+            a .it.com domain name, AI-generated website, hosting and business email.
+            Later you can choose if you want to stay on the basic setup or upgrade to
+            more advanced plans and tools.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" tabindex="0">
+            <h3>Can I grow beyond one simple page?</h3>
+            <div class="faq-toggle">›</div>
+          </div>
+          <div class="faq-answer">
+            Yes. Many people start with one clean page and then grow into blogs, online shops,
+            automations or even reseller setups. The $9 bundle is the safe first step,
+            not the final destination.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" tabindex="0">
+            <h3>What if my idea changes or doesn’t work?</h3>
+            <div class="faq-toggle">›</div>
+          </div>
+          <div class="faq-answer">
+            Then the $9 did its job: you tested something in the real world.
+            You still keep your .it.com domain and can reuse it for a refined or new version
+            of your project. No one will ask you to “return” the name.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question" tabindex="0">
+            <h3>Where do I manage billing and all the technical details?</h3>
+            <div class="faq-toggle">›</div>
+          </div>
+          <div class="faq-answer">
+            All payments, renewals and advanced settings stay inside the original
+            .it.com / Site.pro systems. This page is here to explain the value in human language
+            and guide you to a clear first step, not to replace their control panel.
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:18px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:space-between;">
+        <p class="hero-note" style="margin:0;">
+          If you still feel unsure, ask one simple question:
+          “What is the real cost of waiting another six months without a proper link?”
+        </p>
+        <a class="btn btn-primary" href="https://site.pro/itcom">
+          I’m ready to try for $9
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="page footer-inner">
+    <div>© Site.pro &amp; .IT.COM partnership — bundle explained in plain language.</div>
+    <div class="footer-links">
+      <a href="https://site.pro/Terms-of-Service/" target="_blank" rel="noopener noreferrer">Terms of Service</a>
+      <a href="https://site.pro/Terms-of-Service/#privacy-policy" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+      <a href="https://it.com" target="_blank" rel="noopener noreferrer">More about .IT.COM</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Smooth scroll for internal links
+  (function () {
+    var links = document.querySelectorAll('a[href^="#"]');
+    links.forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        var targetId = this.getAttribute('href').slice(1);
+        if (!targetId) return;
+        var target = document.getElementById(targetId);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+      });
+    });
+  })();
+
+  // FAQ accordion + keyboard support
+  (function () {
+    var items = document.querySelectorAll('.faq-item');
+    items.forEach(function (item) {
+      var question = item.querySelector('.faq-question');
+
+      function toggle() {
+        var isOpen = item.classList.contains('open');
+        items.forEach(function (i) { i.classList.remove('open'); });
+        if (!isOpen) item.classList.add('open');
+      }
+
+      question.addEventListener('click', toggle);
+      question.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle();
+        }
+      });
+    });
+  })();
+</script>
+</body>
+</html>
