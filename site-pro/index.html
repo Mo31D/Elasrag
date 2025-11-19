@@ -354,15 +354,15 @@
     }
 
     .hero-card {
-      border-radius: var(--radius-lg);
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
-      padding: 18px 18px 16px;
-      box-shadow: 0 0 35px rgba(255,230,150,0.25);
-      position: relative;
-      overflow: hidden;
-      backdrop-filter: blur(14px);
-    }
+  border-radius: var(--radius-lg);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 34px 18px 16px;
+  box-shadow: 0 0 35px rgba(255,230,150,0.25);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(14px);
+}
 
     .hero-tagline {
       font-size: 13px;
@@ -428,18 +428,18 @@
       margin-top: 4px;
     }
 
-    .hero-ribbon {
-      position: absolute;
-      right: 14px;
-      top: 12px;
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(251, 191, 36, 0.08);
-      border: 1px solid rgba(250, 204, 21, 0.5);
-      color: #facc15;
-      font-weight: 600;
-    }
+.hero-ribbon {
+  position: absolute;
+  right: 14px;
+  top: 0px; /* بدل 12px */
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(251, 191, 36, 0.08);
+  border: 1px solid rgba(250, 204, 21, 0.5);
+  color: #facc15;
+  font-weight: 600;
+}
 
     .hero-bubbles {
       position: absolute;
@@ -803,7 +803,7 @@
 
     /* Responsive */
 
-    @media (max-width: 960px) {
+    @media (max-width: 400px) {
       .hero-grid {
         grid-template-columns: minmax(0, 1fr);
       }
@@ -848,6 +848,17 @@
         align-items: flex-start;
       }
     }
+	.hero-icon-row {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end; /* تفضل يمين */
+}
+
+.hero-mini-icon {
+  height: 40px;      /* أو 32 لو عايز أصغر */
+  width: auto;
+  display: block;    /* صورة عادية، بدون دايرة ولا توهج */
+}
   </style>
 </head>
 <body id="top">
@@ -877,6 +888,7 @@
           <span class="hero-badge-pill">For non-technical humans</span>
           <span>Serious presence, tiny risk</span>
         </div>
+		
         <h1 class="hero-title">
           Serious online presence for <span class="hero-highlight">$9</span>
         </h1>
@@ -890,8 +902,7 @@
           <span><span class="dot"></span> AI website, ready to edit</span>
           <span><span class="dot"></span> Fast hosting</span>
           <span><span class="dot"></span> Business email</span>
-        </div>
-
+        
         <div class="hero-actions">
           <a class="btn btn-primary" href="https://site.pro/itcom">
             Start with my .it.com
@@ -900,6 +911,8 @@
             Watch how it works
           </a>
         </div>
+		  
+  </div>
         <p class="hero-note">
           <b>$9 once</b> to get started. If it works for you, you can grow and upgrade later.
           If it doesn’t, you still keep your .it.com name.
@@ -920,12 +933,14 @@
             <li><span class="hero-check-icon">✓</span><span>AI builds a first version of your site, you just adjust the story and contacts.</span></li>
             <li><span class="hero-check-icon">✓</span><span>Safe way to test an idea or new market without touching your main website.</span></li>
           </ul>
+		  
           <p class="hero-mini-copy">
             You don’t need “the perfect site”. You need one clear place where people can find you,
             understand what you do and contact you today.
           </p>
         </div>
       </div>
+	  
     </div>
   </section>
 
