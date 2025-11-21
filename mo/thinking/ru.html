@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="ru" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mo Thinking | Консалтинг по сложным решениям</title>
+  <meta name="description" content="Прикладной консалтинг для решения жизненных и бизнес-проблем, проектирование систем принятия решений и остановка повторяющихся ошибок. Mo + Mo Thinking Engine.">
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56,189,248,0.12);
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --border: #1f2937;
+      --radius-lg: 18px;
+      --radius-md: 10px;
+      --shadow-soft: 0 18px 45px rgba(0,0,0,0.45);
+      --shadow-subtle: 0 10px 25px rgba(0,0,0,0.3);
+      --max-width: 1120px;
+      --transition-fast: 0.18s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      min-height: 100vh;
+    }
+
+    .shell {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), rgba(5,8,22,0.85), transparent);
+      border-bottom: 1px solid rgba(31,41,55,0.8);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 0.9rem 0.25rem;
+    }
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 1rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.lang-switcher span {
+  opacity: 0.6;
+}
+
+.lang-switcher a {
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.lang-switcher a:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.lang-switcher a.active-lang {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(56,189,248,0.12);
+}
+
+/* مظهر أفضل في الموبايل */
+@media (max-width: 720px) {
+  .lang-switcher {
+    margin-left: 0;
+    margin-top: 0.4rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid rgba(31,41,55,0.9);
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #e5e7eb, #6b7280 45%, #020617 100%);
+      box-shadow: 0 0 0 2px rgba(15,23,42,0.9), 0 0 0 1px rgba(148,163,184,0.6);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #e5e7eb;
+      letter-spacing: 0.07em;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .brand-name {
+      font-size: 0.98rem;
+      font-weight: 650;
+    }
+
+    .brand-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.4rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      padding-bottom: 0.2rem;
+      border-bottom: 2px solid transparent;
+      transition: color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      font-size: 0.9rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+      background: none;
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+      color: #0b1120;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(56,189,248,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 35px rgba(56,189,248,0.36);
+    }
+
+    .btn-outline {
+      border-color: rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background: rgba(15,23,42,0.98);
+    }
+
+    .btn-icon {
+      font-size: 1.05rem;
+    }
+
+    .nav-toggle {
+      display: none;
+      border: none;
+      background: none;
+      color: var(--text);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    main {
+      padding-bottom: 5rem;
+    }
+
+    section {
+      padding: 3.5rem 0;
+      scroll-margin-top: 5rem;
+    }
+
+    .hero {
+      padding-top: 3.5rem;
+      padding-bottom: 3rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.6fr);
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(56,189,248,0.35);
+      color: var(--accent);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.9rem;
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(56,189,248,0.3);
+    }
+
+    .hero-title {
+      font-size: clamp(2.1rem, 4vw, 2.9rem);
+      line-height: 1.25;
+      margin: 0 0 0.8rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title span.accent {
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 34rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .badge {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(55,65,81,0.9);
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-note {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .hero-note strong {
+      color: #e5e7eb;
+    }
+
+    .hero-secondary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.6rem;
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+
+    .hero-secondary span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hero-secondary .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .hero-panel {
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.08), transparent 55%), radial-gradient(circle at bottom, rgba(129,140,248,0.18), transparent 60%), var(--bg-alt);
+      border-radius: 24px;
+      border: 1px solid rgba(148,163,184,0.25);
+      box-shadow: var(--shadow-soft);
+      padding: 1.3rem 1.4rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hero-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(6,78,59,0.4);
+      border: 1px solid rgba(34,197,94,0.6);
+      color: #bbf7d0;
+    }
+
+    .hero-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
+    }
+
+    .hero-panel-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .hero-panel-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .hero-panel-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 0.9rem;
+      align-items: flex-start;
+    }
+
+    .mini-card {
+      background: rgba(15,23,42,0.96);
+      border-radius: 14px;
+      padding: 0.7rem 0.75rem;
+      border: 1px solid rgba(55,65,81,0.9);
+      font-size: 0.8rem;
+    }
+
+    .mini-card h4 {
+      margin: 0 0 0.35rem;
+      font-size: 0.82rem;
+    }
+
+    .mini-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+    }
+
+    .mini-chip {
+      border-radius: 999px;
+      padding: 0.15rem 0.55rem;
+      border: 1px solid rgba(75,85,99,0.9);
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .highlight-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.1rem 0 0;
+      font-size: 0.8rem;
+    }
+
+    .highlight-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .highlight-bullet {
+      margin-top: 0.3rem;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+
+    .hero-guarantee {
+      margin-top: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.96);
+      border: 1px dashed rgba(52,211,153,0.5);
+      font-size: 0.78rem;
+      color: #bbf7d0;
+    }
+
+    .hero-guarantee strong {
+      color: #4ade80;
+    }
+
+    .section-header {
+      margin-bottom: 1.8rem;
+      max-width: 40rem;
+    }
+
+    .section-kicker {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin: 0 0 0.4rem;
+      letter-spacing: -0.01em;
+    }
+
+    .section-desc {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--bg-alt);
+      border-radius: var(--radius-lg);
+      padding: 1.3rem 1.2rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      padding: 0.16rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(75,85,99,0.9);
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .card-tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .card-title {
+      font-size: 1rem;
+      margin: 0 0 0.3rem;
+    }
+
+    .card-sub {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .card-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .card-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-list-icon {
+      margin-top: 0.22rem;
+      font-size: 0.9rem;
+      color: var(--accent);
+    }
+
+    .card-footnote {
+      margin-top: 0.7rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(75,85,99,0.9);
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: rgba(15,23,42,0.96);
+    }
+
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .who-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .who-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .who-title {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .who-tagline {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(0, 2.2fr);
+      gap: 1.7rem;
+    }
+
+    .steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.86rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 0.7rem;
+      padding: 0.7rem 0.2rem;
+      border-bottom: 1px solid rgba(31,41,55,0.8);
+    }
+
+    .step:last-child {
+      border-bottom: none;
+    }
+
+    .step-index {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(75,85,99,0.9);
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+
+    .step-title {
+      font-size: 0.9rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .step-body {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .process-panel {
+      background: var(--bg-alt);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 1.1rem 1.2rem 1.2rem;
+      box-shadow: var(--shadow-subtle);
+      font-size: 0.85rem;
+    }
+
+    .process-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .process-badge {
+      font-size: 0.78rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(75,85,99,0.9);
+      color: var(--muted);
+    }
+
+    .process-keyline {
+      margin-top: 0.7rem;
+      padding: 0.5rem 0.65rem;
+      border-radius: 10px;
+      background: rgba(15,23,42,0.96);
+      border: 1px dashed rgba(248,250,252,0.16);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .process-keyline strong {
+      color: var(--text);
+    }
+
+    .pricing-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .price-card {
+      background: var(--bg-alt);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 1.3rem 1.2rem 1.2rem;
+      box-shadow: var(--shadow-subtle);
+      position: relative;
+    }
+
+    .price-card.featured {
+      border-color: rgba(56,189,248,0.7);
+      box-shadow: 0 18px 40px rgba(56,189,248,0.25);
+      background: radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 60%), var(--bg-alt);
+    }
+
+    .price-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .price-title {
+      font-size: 1rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .price-sub {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.3rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .price-main {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .price-unit {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .price-small {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .price-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .price-list li {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .price-check {
+      margin-top: 0.16rem;
+      font-size: 0.85rem;
+      color: #4ade80;
+    }
+
+    .price-cta {
+      margin-top: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .price-badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(75,85,99,0.9);
+      color: var(--muted);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.6fr);
+      gap: 1.7rem;
+    }
+
+    .faq-intro {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .faq-intro p {
+      margin-top: 0;
+      margin-bottom: 0.6rem;
+    }
+
+    .faq-list {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--bg-alt);
+      box-shadow: var(--shadow-subtle);
+      overflow: hidden;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(31,41,55,0.85);
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--text);
+      padding: 0.9rem 1rem;
+      font-size: 0.87rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .faq-question span {
+      flex: 1;
+      text-align: left;
+    }
+
+    .faq-icon {
+      margin-left: 0.6rem;
+      font-size: 1.1rem;
+      color: var(--muted);
+      transition: transform var(--transition-fast);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 1rem 0.9rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      color: var(--accent);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.5fr);
+      gap: 1.7rem;
+    }
+
+    .contact-card {
+      background: var(--bg-alt);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 1.2rem 1.2rem 1.3rem;
+      box-shadow: var(--shadow-subtle);
+      font-size: 0.87rem;
+    }
+
+    .contact-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .contact-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .contact-main {
+      font-size: 0.9rem;
+    }
+
+    .contact-main a {
+      color: var(--accent);
+    }
+
+    form {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.55rem 0.7rem;
+      border-radius: 9px;
+      border: 1px solid rgba(55,65,81,0.95);
+      background: rgba(4,7,16,0.95);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.5);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .form-row-inline {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .form-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    footer {
+      border-top: 1px solid rgba(31,41,55,0.9);
+      padding: 1.4rem 0 1.8rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    @media (max-width: 960px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-panel {
+        order: -1;
+      }
+      .cards-grid,
+      .pricing-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .who-grid,
+      .process-grid,
+      .faq-grid,
+      .contact-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        position: fixed;
+        inset-inline: 0;
+        top: 54px;
+        background: rgba(5,10,25,0.98);
+        border-bottom: 1px solid rgba(31,41,55,0.95);
+        flex-direction: column;
+        padding: 0.8rem 1.2rem 1rem;
+        transform: translateY(-120%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform var(--transition-fast), opacity var(--transition-fast);
+      }
+      .nav-links.open {
+        transform: translateY(0%);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .nav-cta {
+        display: none;
+      }
+      .nav-toggle {
+        display: block;
+      }
+      .hero {
+        padding-top: 2.6rem;
+      }
+      section {
+        padding: 3rem 0;
+      }
+      .cards-grid,
+      .pricing-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .footer-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header><div class="lang-switcher" aria-label="Change language">
+        <a href="en.html" class="lang-en">EN</a>
+        <span>·</span>
+        <a href="ar.html" class="lang-ar">AR</a>
+        <span>·</span>
+        <a href="ru.html" class="lang-ru">RU</a>
+        <span>·</span>
+        <a href="pl.html" class="lang-pl">PL</a>
+        <span>·</span>
+        <a href="fr.html" class="lang-fr">FR</a>
+        <span>·</span>
+        <a href="es.html" class="lang-sp">ES</a>
+        <span>·</span>
+        <a href="ro.html" class="lang-ro">RO</a>
+      </div>
+    <div class="shell nav">
+      <div class="brand">
+        <div class="brand-logo">Mo</div>
+        <div class="brand-text">
+          <div class="brand-name">Mo Thinking Consult</div>
+          <div class="brand-sub">Консалтинг по сложным решениям</div>
+        </div>
+      </div>
+      <button class="nav-toggle" aria-label="Открыть меню" aria-expanded="false">☰</button>
+      <nav class="nav-links" aria-label="Главная навигация">
+        <a href="#hero">Главная</a>
+        <a href="#why">Почему Mo?</a>
+        <a href="#who">Кому подходит</a>
+        <a href="#process">Как это работает</a>
+        <a href="#pricing">Тарифы</a>
+        <a href="#faq">Вопросы</a>
+        <a href="#contact">Контакты</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="#contact" class="btn btn-outline">
+          <span class="btn-icon">✉️</span>
+          <span>Записаться на вводной звонок</span>
+        </a>
+        <a href="#pricing" class="btn btn-primary">
+          <span>Начать сейчас</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section id="hero" class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            <span>Мозг, который вы арендуете, чтобы навести порядок в жизни и работе</span>
+          </div>
+          <h1 class="hero-title">
+            Консалтинг <span class="accent">Mo Thinking</span><br>
+            Более ясные решения. Меньше драмы. Реальное движение.
+          </h1>
+          <p class="hero-subtitle">
+            Вместо того чтобы тратить недели на переживания и бесконечные мысли, вы берёте в аренду мозг Mo
+            и <strong>Mo Thinking Engine</strong>, который превращает вашу ситуацию в систему:
+            факты → логика → решение → план действий → выводы, чтобы не повторять ту же ошибку снова.
+          </p>
+
+          <div class="hero-badges">
+            <span class="badge">Фокус на справедливости, а не на мести</span>
+            <span class="badge">Для основателей и «обычных людей»</span>
+            <span class="badge">Практический результат, а не общие советы</span>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-primary">
+              <span class="btn-icon">⚡</span>
+              <span>Записаться на диагностическую сессию</span>
+            </a>
+            <a href="#why" class="btn btn-outline">
+              <span>Как я с вами работаю</span>
+            </a>
+          </div>
+
+          <div class="hero-note">
+            <strong>Простой критерий:</strong> если ваша честная оценка решения ниже 95% удовлетворённости —
+            я считаю работу незавершённой и дорабатываю.
+          </div>
+
+          <div class="hero-secondary">
+            <span><span class="dot"></span> Я работаю с людьми, которые хотят реального решения и готовы услышать полную правду.</span>
+            <span>Я не помогаю в незаконных, абьюзивных или «грязных» схемах — у меня есть жёсткие фильтры.</span>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Краткое описание услуги">
+          <div class="hero-panel-header">
+            <span>Одна понятная картинка для главного инвестора в вашей жизни — вас.</span>
+            <span class="hero-status">
+              <span class="hero-status-dot"></span>
+              <span>Открыт для новых кейсов</span>
+            </span>
+          </div>
+          <div class="hero-panel-title">
+            Что именно даёт эта консультация?
+          </div>
+          <div class="hero-panel-sub">
+            Мозг Mo + <strong>Mo Thinking Engine</strong> работают как личный отдел стратегии / HR / конфликтов,
+            но не для корпорации, а для вашей жизни и проектов.
+          </div>
+          <div class="hero-panel-grid">
+            <div class="mini-card">
+              <h4>Для занятых основателей и руководителей</h4>
+              <p class="muted">Полезно, если у вас:</p>
+              <ul class="highlight-list">
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>Конфликты с сотрудниками или партнёрами, которые нужно решить честно и профессионально, не взрывая отношения и репутацию.</span>
+                </li>
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>«Подвисшие» проекты, по которым нужно чётко решить: продолжать, менять формат или закрывать.</span>
+                </li>
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>Слишком мало времени и энергии, чтобы самому просчитать все варианты и риск-сценарии.</span>
+                </li>
+              </ul>
+              <div class="mini-chip-row">
+                <span class="mini-chip">Система решений</span>
+                <span class="mini-chip">Правила безопасности</span>
+                <span class="mini-chip">Готовые runbook’и</span>
+              </div>
+            </div>
+            <div class="mini-card">
+              <h4>Для «обычного» человека под давлением</h4>
+              <p class="muted">Нужно, когда:</p>
+              <ul class="highlight-list">
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>Развод, суды, долги — и страх, что одно неверное решение разрушит годы жизни.</span>
+                </li>
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>Начальник, бывший партнёр или структура давят на вас, а вы не знаете, как ответить так, чтобы не навредить себе.</span>
+                </li>
+              </ul>
+              <div class="mini-chip-row">
+                <span class="mini-chip">Готовые тексты</span>
+                <span class="mini-chip">Приоритизация</span>
+                <span class="mini-chip">Лучше защищённость</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-guarantee">
+            <strong>Базовая формула:</strong>
+            вы приносите реальную картину и готовность к честному разговору —
+            я даю реалистичный, справедливый, исполнимый план и «карту обучения», чтобы тот же сценарий
+            с меньшей вероятностью повторился ещё раз.
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Why Mo -->
+    <section id="why">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Почему именно Mo?</div>
+          <h2 class="section-title">Mo = стратегическое мышление + совесть + исполнение</h2>
+          <p class="section-desc">
+            Я не «копирайтер» и не «лайф-коуч». Моя работа — понять систему вашей жизни или бизнеса,
+            вскрыть настоящие причины, собрать цельное решение и сделать так, чтобы вы не вернулись в ту же ловушку.
+          </p>
+        </div>
+
+        <div class="cards-grid">
+          <article class="card">
+            <div class="card-tag">
+              <span class="card-tag-dot"></span>
+              <span>Инженерия решений</span>
+            </div>
+            <h3 class="card-title">Я превращаю хаос в понятную систему</h3>
+            <p class="card-sub">
+              Любая проблема — конфликт, проект, жизненное решение — превращается в карту:
+              цель, участники, факты, опции A/B/C и понятный план действий.
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Всегда разделяю: что мы знаем точно, что только вероятно и что пока неизвестно.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Решения строятся на цепочке «Факты → Логика → Вывод», а не на эмоциях момента.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Результат — не абстракция, а runbook: кто что делает, когда и как мы поймём, что это сработало.</span>
+              </li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card-tag">
+              <span class="card-tag-dot"></span>
+              <span>Совесть и справедливость</span>
+            </div>
+            <h3 class="card-title">Я на вашей стороне, но не подыгрываю вашим слепым зонам</h3>
+            <p class="card-sub">
+              Я интуитивно становлюсь на сторону более слабого, который не умеет «красиво» подать свою историю,
+              но не буду оправдывать ваши ошибки, если именно вы разрушаете систему.
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Я не использую грязные, манипулятивные и незаконные приёмы, даже если они дают быстрый эффект.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Чётко показываю вашу зону ответственности и помогаю её закрыть.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Цель — не просто «выиграть спор», а улучшить саму систему, в которой вы живёте и работаете.</span>
+              </li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card-tag">
+              <span class="card-tag-dot"></span>
+              <span>Исполнение и планка качества</span>
+            </div>
+            <h3 class="card-title">Я работаю до тех пор, пока результат реально применим</h3>
+            <p class="card-sub">
+              Моё «овертинкинг»-мышление и навязчивое внимание к деталям работают на вас, но всегда переводятся
+              в конкретные решения, а не только в «умные мысли».
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Я пишу письма, позиции, планы действий, которые вы можете сразу отправить и применить.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Если ваша честная оценка ниже 95%, это сигнал, что работу надо доработать.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Я не хочу денег от человека, который не чувствует реальной ценности от работы.</span>
+              </li>
+            </ul>
+            <p class="card-footnote">
+              <span class="pill">Это не магия. Это системная работа, которой нужна ваша честность и готовность менять подход.</span>
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who -->
+    <section id="who">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Кому это нужно?</div>
+          <h2 class="section-title">И перегруженному основателю, и «обычному» человеку в тяжёлой ситуации</h2>
+          <p class="section-desc">
+            Mo Thinking не только для топ-менеджеров. Главный фильтр — у вас серьёзная проблема и вы хотите серьёзное решение,
+            а не новое оправдание.
+          </p>
+        </div>
+
+        <div class="who-grid">
+          <article class="card who-card">
+            <div class="who-label">Профиль №1</div>
+            <h3 class="who-title">Основатель / руководитель с перегруженной головой</h3>
+            <p class="who-tagline">
+              Несколько проектов, команда, конфликты, репутация и решения, которые при ошибке стоят десятков тысяч.
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Проблемы с сотрудниками или партнёрами — нужно решение без «ядерной войны» и провала в суде/HR.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>«Зомби-проекты»: слишком живы, чтобы закрыть, и слишком мертвы, чтобы расти. Нужен честный ответ: да / нет / поворот.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>У вас нет ресурса думать глубоко по каждому кейсу — нужен человек, который думает за вас и приносит варианты.</span>
+              </li>
+            </ul>
+            <p class="card-footnote">
+              Результат: система принятия решений для вашей жизни и бизнеса — как собственный отдел стратегии и HR в фоновом режиме.
+            </p>
+          </article>
+
+          <article class="card who-card">
+            <div class="who-label">Профиль №2</div>
+            <h3 class="who-title">«Обычный» сотрудник, разведён, с судами и долгами</h3>
+            <p class="who-tagline">
+              Ограниченный доход, высокий стресс, семейные и юридические конфликты,
+              и страх, что одно неверное движение загонит вас в яму на годы.
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Споры с бывшим партнёром, алименты, опека, угрозы — и вы не различаете, где закон, а где манипуляция.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Начальник или структура толкают вас подписать/принять то, что вы до конца не понимаете.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Вам нужен реалистичный план на 3–6 месяцев, а не жизнь в постоянном пожарном режиме.</span>
+              </li>
+            </ul>
+            <p class="card-footnote">
+              Результат: план защиты, готовые сообщения ключевым людям и приоритеты,
+              которые реально соответствуют вашим деньгам и энергии.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process -->
+    <section id="process">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Как это работает</div>
+          <h2 class="section-title">От сырого хаоса к ясному решению и плану</h2>
+          <p class="section-desc">
+            Mo Thinking Engine превращает вашу историю, эмоции и документы в понятный процесс с началом и концом —
+            а не в бесконечные разговоры без результата.
+          </p>
+        </div>
+
+        <div class="process-grid">
+          <div>
+            <ol class="steps">
+              <li class="step">
+                <div class="step-index">1</div>
+                <div>
+                  <div class="step-title">Приём кейса: увидеть ситуацию как она есть</div>
+                  <div class="step-body">
+                    Собираем всё: что произошло, кто участвует, чего вы хотите и какие ограничения по закону, деньгам и времени.
+                    Цель — честно описать ситуацию без приукрашивания и без драматизации.
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <div class="step-index">2</div>
+                <div>
+                  <div class="step-title">Анализ фактов и контекста</div>
+                  <div class="step-body">
+                    Разделяем твёрдые факты, вероятные интерпретации и пробелы.
+                    Смотрим на юридический, институциональный и психологический контекст, баланс сил.
+                    Выявляем, каких данных не хватает для серьёзного решения.
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <div class="step-index">3</div>
+                <div>
+                  <div class="step-title">Проектирование вариантов A / B / C</div>
+                  <div class="step-body">
+                    Всегда создаём несколько дорожек: более жёсткую, сбалансированную и осторожную.
+                    Каждый вариант взвешивается по влиянию, рискам, скорости, стоимости, эмоциональной нагрузке и справедливости для других.
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <div class="step-index">4</div>
+                <div>
+                  <div class="step-title">Реализация + обучение</div>
+                  <div class="step-body">
+                    Выбираем подходящий путь, переводим его в конкретные шаги, тексты, сроки.
+                    После действий упаковываем опыт в Learning Card, чтобы вы могли повторять удачные решения и не возвращаться в ту же яму.
+                  </div>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <aside class="process-panel">
+            <div class="process-badges">
+              <span class="process-badge">Без хайпа</span>
+              <span class="process-badge">Чёткие этические и правовые фильтры</span>
+              <span class="process-badge">Для сложных кейсов</span>
+            </div>
+            <p>
+              <strong>Mo Thinking</strong> — это гораздо больше, чем «курс на 14 дней» или шаблон.
+              Движок построен так, чтобы создать систему принятия решений для вашей жизни или бизнеса на более глубоком уровне:
+              психологические файлы, профессиональные файлы, правила безопасности и повторяемые «карточки решений» для типичных ситуаций.
+            </p>
+            <p>
+              Вы платите не только за один созвон, а за работу моего мозга плюс структурированного движка,
+              который помогает вам выстроить новый способ решения задач. Этот способ остаётся с вами после завершения работы.
+            </p>
+            <div class="process-keyline">
+              <strong>Важно:</strong> я не обещаю чудес и не могу контролировать весь внешний мир.
+              Я предлагаю реальное увеличение вероятности хороших исходов, меньше дорогих ошибок
+              и меньше хаоса и драмы в системах, в которых вы живёте.
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Тарифы и пакеты</div>
+          <h2 class="section-title">Серьёзный консалтинг по цене ниже рынка</h2>
+          <p class="section-desc">
+            Схожие услуги в Executive / Business / Conflict coaching часто стоят значительно дороже.
+            Я начинаю примерно с половины этого диапазона, потому что сейчас фокус — на сильных кейсах и результатах,
+            а не максимальной цене.
+          </p>
+        </div>
+
+        <p class="pricing-note">
+          <strong>Примечание:</strong> цены ниже — пример. Настройте их под вашу реальность.
+          Мы можем обсуждать их в зависимости от сложности вашего кейса.
+        </p>
+
+        <div class="pricing-grid">
+          <article class="price-card">
+            <div class="price-label">Пакет 1</div>
+            <h3 class="price-title">Фокусированная диагностическая сессия</h3>
+            <p class="price-sub">
+              Подходит, если у вас один ключевой вопрос и нужна ясность и варианты в ближайшее время.
+            </p>
+            <div class="price-row">
+              <div class="price-main">£80</div>
+              <div class="price-unit">/ сессия ~90 минут</div>
+            </div>
+            <p class="price-small">
+              Примерно вдвое ниже, чем у многих бизнес-коучей или лайф-коучей за аналогичное время.
+            </p>
+            <ul class="price-list">
+              <li>
+                <span class="price-check">✓</span>
+                <span>Приём кейса + первичный анализ фактов и контекста.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Формулировка реалистичной цели и того, что сейчас нецелесообразно.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Краткие опции A/B/C с первичной рекомендацией.</span>
+              </li>
+            </ul>
+            <div class="price-cta">
+              <span class="price-badge">Отличный старт при минимальном обязательстве</span>
+              <a href="#contact" class="btn btn-outline">Выбрать этот пакет</a>
+            </div>
+          </article>
+
+          <article class="price-card featured">
+            <div class="price-label">Пакет 2 — рекомендованный</div>
+            <h3 class="price-title">Глубокая работа с одним кейсом (4 недели)</h3>
+            <p class="price-sub">
+              Мы берём один важный файл из вашей жизни или бизнеса и доводим его от хаоса до реализации и выводов.
+            </p>
+            <div class="price-row">
+              <div class="price-main">£280</div>
+              <div class="price-unit">/ программа на 4 недели</div>
+            </div>
+            <p class="price-small">
+              Включает 3–4 созвона + ограниченную поддержку по email/WhatsApp в течение программы.
+            </p>
+            <ul class="price-list">
+              <li>
+                <span class="price-check">✓</span>
+                <span>Полный анализ кейса, фактов и психологического/юридического контекста.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Проектирование сценариев A/B/C плюс ветки «если ухудшится / если улучшится».</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Готовые письма, позиции и сценарии разговоров, которые вы можете использовать напрямую.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Learning Card — шаблон, который останется у вас как инструкция на будущее.</span>
+              </li>
+            </ul>
+            <div class="price-cta">
+              <span class="price-badge">Лучший баланс глубины, цены и ценности</span>
+              <a href="#contact" class="btn btn-primary">Выбрать этот пакет</a>
+            </div>
+          </article>
+
+          <article class="price-card">
+            <div class="price-label">Пакет 3</div>
+            <h3 class="price-title">Система решений для вашей жизни/бизнеса (3 месяца)</h3>
+            <p class="price-sub">
+              Для тех, кому нужен не только один решённый вопрос, а полноценная «операционная система» принятия решений.
+            </p>
+            <div class="price-row">
+              <div class="price-main">£780</div>
+              <div class="price-unit">/ программа на 3 месяца</div>
+            </div>
+            <p class="price-small">
+              Только для серьёзных клиентов. В этот трек я беру ограниченное количество людей одновременно.
+            </p>
+            <ul class="price-list">
+              <li>
+                <span class="price-check">✓</span>
+                <span>Полная карта вашей жизни/проектов (психология, работа, отношения, цифры).</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Проектирование правил безопасности и карточек решений для повторяющихся ситуаций (конфликты, найм, партнёрства...).</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Регулярные сессии, пересборка и обновление системы по мере развития реальных событий.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>На выходе — система, которая продолжает работать, даже когда вы заняты или вымотаны.</span>
+              </li>
+            </ul>
+            <div class="price-cta">
+              <span class="price-badge">Оптимально для основателей и сложных жизненных кейсов</span>
+              <a href="#contact" class="btn btn-outline">Обсудить этот формат</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Честные вопросы</div>
+          <h2 class="section-title">Что важно знать до начала работы</h2>
+          <p class="section-desc">
+            Лучше, чтобы вы сказали «нет» по правильной причине, чем «да» по неверной.
+            Ниже — прямые ответы на базовые вопросы.
+          </p>
+        </div>
+
+        <div class="faq-grid">
+          <div class="faq-intro">
+            <p>
+              <strong>Это коучинг?</strong><br>
+              Частично. Здесь есть слушание и вопросы, но есть и анализ, написание текстов,
+              проектирование системы и моменты, когда я скажу то, что вам неприятно слышать, если это защищает вас в долгую.
+            </p>
+            <p>
+              <strong>Mo Thinking — это просто ИИ?</strong><br>
+              Нет. Движок использует инструменты вроде ChatGPT как часть процесса.
+              Но финальные решения принимает человек с ответственностью и совестью. Вы работаете не с ботом, а с человеком,
+              который системно использует инструменты.
+            </p>
+            <p>
+              <strong>Подходит ли вам этот формат сейчас?</strong><br>
+              Если у вас есть высокорисковый кейс и вы боитесь его «завалить», или
+              ваша жизнь/бизнес ходят по одним и тем же болезненным кругам — скорее всего, ответ «да».
+            </p>
+          </div>
+
+          <div class="faq-list" aria-label="Часто задаваемые вопросы">
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Что происходит на первой сессии?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Мы собираем вашу историю: что произошло, кто участвует, важные сообщения и документы,
+                что вы чувствуете на самом деле и какого исхода хотели бы, если бы всё сложилось идеально.
+                Я не оцениваю вас, но прошу точности. Затем объясняю, как буду делить проблему на части,
+                что, по моему мнению, возможно, а что сейчас опасно или нереалистично.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Что, если мне не понравится предложенное решение?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Если ваша честная удовлетворённость ниже 95%, я считаю задачу незакрытой.
+                Мы можем переопределить проблему, попробовать другой путь или адаптировать план под вашу реальность и ценности.
+                Цель не в том, чтобы вы «согласились», а в том, чтобы решение реально работало в вашей жизни.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Можете ли вы отказаться работать со мной?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Да. Я отказываюсь, если вижу, что вы хотите в основном мести, ищете незаконные ходы
+                или полностью отрицаете свою долю ответственности. Это не сервис «как сломать людей и остаться чистым».
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Что если у меня сейчас тяжёлая финансовая ситуация?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Можно обсудить гибкие форматы: рассрочку, разделение работы на этапы
+                или фокус только на одном ключевом вопросе, вместо попытки решить всё сразу.
+                Цель — не отрезать людей, которым правда нужна помощь, только из-за временного финансового давления.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Контакты</div>
+          <h2 class="section-title">Один шаг: честно описать, что с вами происходит</h2>
+          <p class="section-desc">
+            Не нужно идеального текста. Напишите, что сейчас происходит, чего вы боитесь
+            и чего хотели бы, если бы могли выбирать без давления.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <div class="contact-row">
+              <span class="contact-label">Эл. почта</span>
+              <span class="contact-main">
+                <!-- измените адрес здесь -->
+                <a href="mailto:consult@mo-thinking.com">consult@mo-thinking.com</a>
+              </span>
+            </div>
+            <div class="contact-row">
+              <span class="contact-label">WhatsApp (удобно для голосовых)</span>
+              <span class="contact-main">
+                <!-- измените номер WhatsApp здесь -->
+                <a href="https://wa.me/000000000000" target="_blank" rel="noopener">+00 0000 000 000</a>
+              </span>
+            </div>
+            <div class="contact-row">
+              <span class="contact-label">Что будет после отправки</span>
+              <span class="contact-main">
+                Я внимательно читаю ваш кейс, оцениваю, могу ли реально помочь,
+                и отвечаю с вариантами: короткий вводный созвон, предложение тарифа
+                или, честно, «нет», если я не тот человек, который вам действительно нужен.
+              </span>
+            </div>
+            <p class="form-note">
+              <strong>Конфиденциальность:</strong> я не передаю клиентские кейсы третьим лицам.
+              Если когда-то понадобится мнение юриста или спецa, это делается только по понятной договорённости с вами.
+            </p>
+          </div>
+
+          <div class="contact-card">
+            <!-- форму можно привязать к сервису вроде Formspree -->
+            <form method="post" action="#">
+              <div class="form-row-inline">
+                <div>
+                  <label for="name">Полное имя</label>
+                  <input id="name" name="name" type="text" placeholder="Ваше имя">
+                </div>
+                <div>
+                  <label for="role">Ваша текущая роль</label>
+                  <input id="role" name="role" type="text" placeholder="Основатель / сотрудник / другое">
+                </div>
+              </div>
+
+              <div class="form-row-inline">
+                <div>
+                  <label for="email">Эл. почта</label>
+                  <input id="email" name="email" type="email" placeholder="you@example.com">
+                </div>
+                <div>
+                  <label for="whatsapp">WhatsApp (необязательно)</label>
+                  <input id="whatsapp" name="whatsapp" type="text" placeholder="Для быстрого или голосового контакта">
+                </div>
+              </div>
+
+              <div>
+                <label for="problem">С чем вы хотите, чтобы я вам помог?</label>
+                <textarea id="problem" name="problem" placeholder="Опишите: что происходит сейчас? Чего вы больше всего боитесь? Какого исхода хотели бы, если всё сложится хорошо?"></textarea>
+              </div>
+
+              <div>
+                <label for="timeline">Сроки и давление по времени</label>
+                <textarea id="timeline" name="timeline" placeholder="Ближайший суд? Дедлайн по проекту? Решение, которое нужно принять в течение нескольких дней? Напишите об этом здесь."></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary">
+                <span class="btn-icon">📩</span>
+                <span>Отправить запрос на консультацию</span>
+              </button>
+              <p class="form-note">
+                Отправка этой формы сама по себе не создаёт финансовых обязательств.
+                Мы отдельно и чётко согласуем объём работы и стоимость до старта платного этапа.
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-row">
+      <div>© <span id="year"></span> Mo Thinking Consult. Все права защищены.</div>
+      <div class="footer-links">
+        <a href="#hero">Главная</a>
+        <a href="#pricing">Тарифы</a>
+        <a href="#contact">Контакты</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // Текущий год
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Мобильное меню
+  const navToggle = document.querySelector('.nav-toggle');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (navLinks.classList.contains('open')) {
+          navLinks.classList.remove('open');
+          navToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+  }
+
+  // FAQ-аккордеон
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const btn = item.querySelector('.faq-question');
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Плавный скролл по якорям
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const targetId = this.getAttribute('href').slice(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        e.preventDefault();
+        window.scrollTo({
+          top: target.offsetTop - 70,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+</script>
+</body>
+</html>

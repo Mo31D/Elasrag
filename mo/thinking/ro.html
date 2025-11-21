@@ -1,0 +1,1856 @@
+<!DOCTYPE html>
+<html lang="ro" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mo Thinking | Consultanță pentru decizii și probleme dificile</title>
+  <meta name="description" content="Consultanță practică pentru rezolvarea problemelor din viață și business, proiectarea sistemelor de decizie și oprirea greșelilor repetate. Mo + Mo Thinking Engine.">
+  <style>
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --card: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56,189,248,0.12);
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --border: #1f2937;
+      --radius-lg: 18px;
+      --radius-md: 10px;
+      --shadow-soft: 0 18px 45px rgba(0,0,0,0.45);
+      --shadow-subtle: 0 10px 25px rgba(0,0,0,0.3);
+      --max-width: 1120px;
+      --transition-fast: 0.18s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      min-height: 100vh;
+    }
+
+    .shell {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(to bottom, rgba(5,8,22,0.96), rgba(5,8,22,0.85), transparent);
+      border-bottom: 1px solid rgba(31,41,55,0.8);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 0.9rem 0.25rem;
+    }
+.lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: 1rem;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.lang-switcher span {
+  opacity: 0.6;
+}
+
+.lang-switcher a {
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.lang-switcher a:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.lang-switcher a.active-lang {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(56,189,248,0.12);
+}
+
+/* مظهر أفضل في الموبايل */
+@media (max-width: 720px) {
+  .lang-switcher {
+    margin-left: 0;
+    margin-top: 0.4rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid rgba(31,41,55,0.9);
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 20%, #e5e7eb, #6b7280 45%, #020617 100%);
+      box-shadow: 0 0 0 2px rgba(15,23,42,0.9), 0 0 0 1px rgba(148,163,184,0.6);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #e5e7eb;
+      letter-spacing: 0.07em;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .brand-name {
+      font-size: 0.98rem;
+      font-weight: 650;
+    }
+
+    .brand-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.4rem;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      padding-bottom: 0.2rem;
+      border-bottom: 2px solid transparent;
+      transition: color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .nav-cta {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      font-size: 0.9rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+      background: none;
+      color: var(--text);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+      color: #0b1120;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(56,189,248,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 35px rgba(56,189,248,0.36);
+    }
+
+    .btn-outline {
+      border-color: rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background: rgba(15,23,42,0.98);
+    }
+
+    .btn-icon {
+      font-size: 1.05rem;
+    }
+
+    .nav-toggle {
+      display: none;
+      border: none;
+      background: none;
+      color: var(--text);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    main {
+      padding-bottom: 5rem;
+    }
+
+    section {
+      padding: 3.5rem 0;
+      scroll-margin-top: 5rem;
+    }
+
+    .hero {
+      padding-top: 3.5rem;
+      padding-bottom: 3rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.6fr);
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(56,189,248,0.35);
+      color: var(--accent);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.9rem;
+    }
+
+    .eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 4px rgba(56,189,248,0.3);
+    }
+
+    .hero-title {
+      font-size: clamp(2.1rem, 4vw, 2.9rem);
+      line-height: 1.25;
+      margin: 0 0 0.8rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-title span.accent {
+      background: linear-gradient(135deg, #22d3ee, #a855f7);
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 34rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-bottom: 1.6rem;
+    }
+
+    .badge {
+      font-size: 0.78rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(55,65,81,0.9);
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-note {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .hero-note strong {
+      color: #e5e7eb;
+    }
+
+    .hero-secondary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.6rem;
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+
+    .hero-secondary span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .hero-secondary .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .hero-panel {
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.08), transparent 55%), radial-gradient(circle at bottom, rgba(129,140,248,0.18), transparent 60%), var(--bg-alt);
+      border-radius: 24px;
+      border: 1px solid rgba(148,163,184,0.25);
+      box-shadow: var(--shadow-soft);
+      padding: 1.3rem 1.4rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .hero-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(6,78,59,0.4);
+      border: 1px solid rgba(34,197,94,0.6);
+      color: #bbf7d0;
+    }
+
+    .hero-status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.35);
+    }
+
+    .hero-panel-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+
+    .hero-panel-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .hero-panel-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 0.9rem;
+      align-items: flex-start;
+    }
+
+    .mini-card {
+      background: rgba(15,23,42,0.96);
+      border-radius: 14px;
+      padding: 0.7rem 0.75rem;
+      border: 1px solid rgba(55,65,81,0.9);
+      font-size: 0.8rem;
+    }
+
+    .mini-card h4 {
+      margin: 0 0 0.35rem;
+      font-size: 0.82rem;
+    }
+
+    .mini-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+    }
+
+    .mini-chip {
+      border-radius: 999px;
+      padding: 0.15rem 0.55rem;
+      border: 1px solid rgba(75,85,99,0.9);
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .highlight-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.1rem 0 0;
+      font-size: 0.8rem;
+    }
+
+    .highlight-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .highlight-bullet {
+      margin-top: 0.3rem;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+
+    .hero-guarantee {
+      margin-top: 0.75rem;
+      padding: 0.6rem 0.75rem;
+      border-radius: 12px;
+      background: rgba(15,23,42,0.96);
+      border: 1px dashed rgba(52,211,153,0.5);
+      font-size: 0.78rem;
+      color: #bbf7d0;
+    }
+
+    .hero-guarantee strong {
+      color: #4ade80;
+    }
+
+    .section-header {
+      margin-bottom: 1.8rem;
+      max-width: 40rem;
+    }
+
+    .section-kicker {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin: 0 0 0.4rem;
+      letter-spacing: -0.01em;
+    }
+
+    .section-desc {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: var(--bg-alt);
+      border-radius: var(--radius-lg);
+      padding: 1.3rem 1.2rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-subtle);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.75rem;
+      padding: 0.16rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(75,85,99,0.9);
+      color: var(--muted);
+      margin-bottom: 0.6rem;
+    }
+
+    .card-tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .card-title {
+      font-size: 1rem;
+      margin: 0 0 0.3rem;
+    }
+
+    .card-sub {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .card-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .card-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.45rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .card-list-icon {
+      margin-top: 0.22rem;
+      font-size: 0.9rem;
+      color: var(--accent);
+    }
+
+    .card-footnote {
+      margin-top: 0.7rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(75,85,99,0.9);
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: rgba(15,23,42,0.96);
+    }
+
+    .who-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .who-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .who-label {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .who-title {
+      font-size: 1.05rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .who-tagline {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(0, 2.2fr);
+      gap: 1.7rem;
+    }
+
+    .steps {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.86rem;
+    }
+
+    .step {
+      display: flex;
+      gap: 0.7rem;
+      padding: 0.7rem 0.2rem;
+      border-bottom: 1px solid rgba(31,41,55,0.8);
+    }
+
+    .step:last-child {
+      border-bottom: none;
+    }
+
+    .step-index {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(75,85,99,0.9);
+      color: var(--accent);
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+
+    .step-title {
+      font-size: 0.9rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .step-body {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .process-panel {
+      background: var(--bg-alt);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 1.1rem 1.2rem 1.2rem;
+      box-shadow: var(--shadow-subtle);
+      font-size: 0.85rem;
+    }
+
+    .process-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .process-badge {
+      font-size: 0.78rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(75,85,99,0.9);
+      color: var(--muted);
+    }
+
+    .process-keyline {
+      margin-top: 0.7rem;
+      padding: 0.5rem 0.65rem;
+      border-radius: 10px;
+      background: rgba(15,23,42,0.96);
+      border: 1px dashed rgba(248,250,252,0.16);
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .process-keyline strong {
+      color: var(--text);
+    }
+
+    .pricing-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .price-card {
+      background: var(--bg-alt);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 1.3rem 1.2rem 1.2rem;
+      box-shadow: var(--shadow-subtle);
+      position: relative;
+    }
+
+    .price-card.featured {
+      border-color: rgba(56,189,248,0.7);
+      box-shadow: 0 18px 40px rgba(56,189,248,0.25);
+      background: radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 60%), var(--bg-alt);
+    }
+
+    .price-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--muted);
+      margin-bottom: 0.3rem;
+    }
+
+    .price-title {
+      font-size: 1rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .price-sub {
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.3rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .price-main {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .price-unit {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .price-small {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.7rem;
+    }
+
+    .price-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .price-list li {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .price-check {
+      margin-top: 0.16rem;
+      font-size: 0.85rem;
+      color: #4ade80;
+    }
+
+    .price-cta {
+      margin-top: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .price-badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(75,85,99,0.9);
+      color: var(--muted);
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.6fr);
+      gap: 1.7rem;
+    }
+
+    .faq-intro {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .faq-intro p {
+      margin-top: 0;
+      margin-bottom: 0.6rem;
+    }
+
+    .faq-list {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      background: var(--bg-alt);
+      box-shadow: var(--shadow-subtle);
+      overflow: hidden;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(31,41,55,0.85);
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-question {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      color: var(--text);
+      padding: 0.9rem 1rem;
+      font-size: 0.87rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .faq-question span {
+      flex: 1;
+      text-align: left;
+    }
+
+    .faq-icon {
+      margin-left: 0.6rem;
+      font-size: 1.1rem;
+      color: var(--muted);
+      transition: transform var(--transition-fast);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 1rem 0.9rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      color: var(--accent);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.5fr);
+      gap: 1.7rem;
+    }
+
+    .contact-card {
+      background: var(--bg-alt);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      padding: 1.2rem 1.2rem 1.3rem;
+      box-shadow: var(--shadow-subtle);
+      font-size: 0.87rem;
+    }
+
+    .contact-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .contact-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .contact-main {
+      font-size: 0.9rem;
+    }
+
+    .contact-main a {
+      color: var(--accent);
+    }
+
+    form {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.15rem;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.55rem 0.7rem;
+      border-radius: 9px;
+      border: 1px solid rgba(55,65,81,0.95);
+      background: rgba(4,7,16,0.95);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56,189,248,0.5);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .form-row-inline {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .form-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    footer {
+      border-top: 1px solid rgba(31,41,55,0.9);
+      padding: 1.4rem 0 1.8rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    @media (max-width: 960px) {
+      .hero-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .hero-panel {
+        order: -1;
+      }
+      .cards-grid,
+      .pricing-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .who-grid,
+      .process-grid,
+      .faq-grid,
+      .contact-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-links {
+        position: fixed;
+        inset-inline: 0;
+        top: 54px;
+        background: rgba(5,10,25,0.98);
+        border-bottom: 1px solid rgba(31,41,55,0.95);
+        flex-direction: column;
+        padding: 0.8rem 1.2rem 1rem;
+        transform: translateY(-120%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform var(--transition-fast), opacity var(--transition-fast);
+      }
+      .nav-links.open {
+        transform: translateY(0%);
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .nav-cta {
+      display: none;
+      }
+      .nav-toggle {
+        display: block;
+      }
+      .hero {
+        padding-top: 2.6rem;
+      }
+      section {
+        padding: 3rem 0;
+      }
+      .cards-grid,
+      .pricing-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .footer-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header>
+	  <div class="lang-switcher" aria-label="Change language">
+        <a href="en.html" class="lang-en">EN</a>
+        <span>·</span>
+        <a href="ar.html" class="lang-ar">AR</a>
+        <span>·</span>
+        <a href="ru.html" class="lang-ru">RU</a>
+        <span>·</span>
+        <a href="pl.html" class="lang-pl">PL</a>
+        <span>·</span>
+        <a href="fr.html" class="lang-fr">FR</a>
+        <span>·</span>
+        <a href="es.html" class="lang-sp">ES</a>
+        <span>·</span>
+        <a href="ro.html" class="lang-ro">RO</a>
+      </div>
+    <div class="shell nav">
+      <div class="brand">
+        <div class="brand-logo">Mo</div>
+        <div class="brand-text">
+          <div class="brand-name">Mo Thinking Consult</div>
+          <div class="brand-sub">Consultanță pentru decizii dificile</div>
+        </div>
+      </div>
+      <button class="nav-toggle" aria-label="Deschide meniul" aria-expanded="false">☰</button>
+      <nav class="nav-links" aria-label="Navigare principală">
+        <a href="#hero">Acasă</a>
+        <a href="#why">De ce Mo</a>
+        <a href="#who">Pentru cine</a>
+        <a href="#process">Metodă</a>
+        <a href="#pricing">Pachete</a>
+        <a href="#faq">FAQ</a>
+        <a href="#contact">Contact</a>
+      </div>
+      </nav>
+      <div class="nav-cta">
+        <a href="#contact" class="btn btn-outline">
+          <span class="btn-icon">✉️</span>
+          <span>Programează un call scurt</span>
+        </a>
+        <a href="#pricing" class="btn btn-primary">
+          <span>Începe</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section id="hero" class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <div class="eyebrow">
+            <span class="eyebrow-dot"></span>
+            <span>Un creier pe care îl închiriezi ca să-ți pui viața și munca în ordine</span>
+          </div>
+          <h1 class="hero-title">
+            Consultanță <span class="accent">Mo Thinking</span><br>
+            Decizii mai clare. Mai puțin dramă. Mișcare reală înainte.
+          </h1>
+          <p class="hero-subtitle">
+            În loc să risipești săptămâni în overthinking și stres,
+            închiriezi creierul lui Mo + <strong>Mo Thinking Engine</strong>, care transformă haosul tău într-un sistem:
+            fapte → logică → decizie → plan de acțiune → învățare, ca să nu repeți același dezastru.
+          </p>
+
+          <div class="hero-badges">
+            <span class="badge">Focus pe dreptate, nu pe răzbunare</span>
+            <span class="badge">Pentru fondatori și „oameni obișnuiți”</span>
+            <span class="badge">Rezultat concret, nu sfaturi vagi</span>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#contact" class="btn btn-primary">
+              <span class="btn-icon">⚡</span>
+              <span>Programează o sesiune de diagnostic</span>
+            </a>
+            <a href="#why" class="btn btn-outline">
+              <span>Vezi cum lucrez</span>
+            </a>
+          </div>
+
+          <div class="hero-note">
+            <strong>Regulă simplă:</strong> dacă evaluarea ta sinceră este sub 95% satisfacție,
+            consider că munca nu e terminată și rafinăm până ajungem unde trebuie.
+          </div>
+
+          <div class="hero-secondary">
+            <span><span class="dot"></span> Lucrez cu oameni care vor o soluție reală și pot auzi adevărul complet.</span>
+            <span>Nu ajut în scheme ilegale, abuzive sau „murdare” — am filtre etice foarte clare.</span>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Rezumatul serviciului">
+          <div class="hero-panel-header">
+            <span>O singură imagine clară pentru principalul investitor din viața ta: tu.</span>
+            <span class="hero-status">
+              <span class="hero-status-dot"></span>
+              <span>Accept cazuri noi</span>
+            </span>
+          </div>
+          <div class="hero-panel-title">
+            Ce face concret acest tip de consultanță?
+          </div>
+          <div class="hero-panel-sub">
+            Creierul lui Mo + <strong>Mo Thinking Engine</strong> funcționează ca un departament privat
+            de Strategie / HR / Gestionare conflicte, dar pentru viața și proiectele tale, nu doar pentru companie.
+          </div>
+          <div class="hero-panel-grid">
+            <div class="mini-card">
+              <h4>Pentru fondatorul / managerul supraîncărcat</h4>
+              <p class="muted">Util când ai:</p>
+              <ul class="highlight-list">
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>Conflicte cu angajați sau asociați, pe care vrei să le rezolvi corect fără să detonezi relațiile și brandul.</span>
+                </li>
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>Proiecte blocate unde trebuie clar: continuăm, pivotăm sau închidem.</span>
+                </li>
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>Prea puțin timp și energie ca să gândești singur în profunzime fiecare scenariu.</span>
+                </li>
+              </ul>
+              <div class="mini-chip-row">
+                <span class="mini-chip">Sistem de decizie</span>
+                <span class="mini-chip">Reguli de siguranță</span>
+                <span class="mini-chip">Runbook de acțiune</span>
+              </div>
+            </div>
+            <div class="mini-card">
+              <h4>Pentru „omul obișnuit” sub presiune</h4>
+              <p class="muted">Contează când:</p>
+              <ul class="highlight-list">
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>Ești în divorț, procese, datorii — și te temi că o singură decizie greșită îți blochează anii următori.</span>
+                </li>
+                <li>
+                  <span class="highlight-bullet">•</span>
+                  <span>Un fost partener, un șef sau o instituție te presează și nu știi cum să răspunzi fără să-ți faci rău.</span>
+                </li>
+              </ul>
+              <div class="mini-chip-row">
+                <span class="mini-chip">Mesaje gata de trimis</span>
+                <span class="mini-chip">Priorități clare</span>
+                <span class="mini-chip">Protecție mai puternică</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-guarantee">
+            <strong>Formula de bază:</strong>
+            tu aduci realitatea și disponibilitatea de a o privi în față,
+            eu aduc un plan realist, corect și executabil + o Learning Card
+            care reduce mult șansa să mai intri în același scenariu.
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Why Mo -->
+    <section id="why">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">De ce Mo</div>
+          <h2 class="section-title">Mo = gândire strategică + conștiință + livrare</h2>
+          <p class="section-desc">
+            Nu sunt „copywriter” și nici „life coach”.
+            Rolul meu este să înțeleg sistemul vieții sau business-ului tău, să scot la lumină cauzele reale,
+            să proiectez o soluție completă și să facem în așa fel încât să nu mai cazi în aceeași groapă.
+          </p>
+        </div>
+
+        <div class="cards-grid">
+          <article class="card">
+            <div class="card-tag">
+              <span class="card-tag-dot"></span>
+              <span>Inginerie de decizie</span>
+            </div>
+            <h3 class="card-title">Transform haosul într-un sistem clar</h3>
+            <p class="card-sub">
+              Fiecare problemă — conflict, proiect, decizie de viață — devine hartă:
+              scop, părți implicate, fapte, opțiuni A/B/C și plan concret de execuție.
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Separ întotdeauna ce știm sigur, ce este probabil și ce nu știm încă.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Deciziile se construiesc pe lanțul „Evidence → Logic → Conclusion”, nu pe impuls sau panică.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Rezultatul este un runbook: cine face ce, când și după ce criterii știm că a funcționat.</span>
+              </li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card-tag">
+              <span class="card-tag-dot"></span>
+              <span>Conștiință și dreptate</span>
+            </div>
+            <h3 class="card-title">Sunt de partea ta, dar nu-ți lustruiesc greșelile</h3>
+            <p class="card-sub">
+              Natural, stau lângă partea mai slabă, care nu știe să-și „vândă” povestea,
+              dar nu o să-ți cosmetizez partea ta de responsabilitate dacă tu ești cel care strică sistemul.
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Nu folosesc tactici murdare, manipulare sau ocolirea legii, chiar dacă „funcționează” pe termen scurt.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Îți arăt clar partea ta și te ajut să o repari, nu să o negi.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Scopul nu este să „câștigi ceartă”, ci să îmbunătățești sistemul în care trăiești și lucrezi.</span>
+              </li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="card-tag">
+              <span class="card-tag-dot"></span>
+              <span>Execuție și standard de calitate</span>
+            </div>
+            <h3 class="card-title">Lucrez până când rezultatul este utilizabil, nu doar frumos</h3>
+            <p class="card-sub">
+              Overthinking-ul și atenția mea pe detaliu lucrează pentru tine,
+              dar se termină în rezultate pe care le poți folosi, nu doar în fraze inteligente.
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Scriu mailuri, poziții și planuri de acțiune pe care le poți trimite și aplica imediat.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Dacă nota ta sinceră este sub 95%, pentru mine dosarul nu este închis: ajustăm și îmbunătățim.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Nu vreau bani de la cineva care simte că nu a primit valoare reală.</span>
+              </li>
+            </ul>
+            <p class="card-footnote">
+              <span class="pill">Nu e magie. E muncă structurată, care cere onestitatea și implicarea ta reală.</span>
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who -->
+    <section id="who">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Pentru cine</div>
+          <h2 class="section-title">Pentru fondatorul supraîncărcat și „omul normal” hăituit de probleme</h2>
+          <p class="section-desc">
+            Mo Thinking nu este doar pentru executivi. Filtrul real e simplu:
+            ai o problemă serioasă și vrei o soluție serioasă — nu o poveste frumoasă.
+          </p>
+        </div>
+
+        <div class="who-grid">
+          <article class="card who-card">
+            <div class="who-label">Profil #1</div>
+            <h3 class="who-title">Fondator / manager cu mintea plină</h3>
+            <p class="who-tagline">
+              Mai multe proiecte, echipă, conflicte, reputație
+              și decizii care, dacă le ratezi, te costă luni sau ani.
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Probleme cu angajați sau co-fondatori — trebuie rezolvate profesionist și corect, nu cu „bombă nucleară”.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Proiecte-zombie: prea vii să le închizi, prea moarte să crească. Ai nevoie de un DA / NU / pivot asumat.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Nu mai ai resurse să faci gândire profundă la fiecare decizie — ai nevoie de cineva care gândește pentru tine și vine cu opțiuni.</span>
+              </li>
+            </ul>
+            <p class="card-footnote">
+              Rezultat: un sistem de decizie pentru viața și business-ul tău —
+              ca un mini departament de Strategie + HR în fundal.
+            </p>
+          </article>
+
+          <article class="card who-card">
+            <div class="who-label">Profil #2</div>
+            <h3 class="who-title">Angajat „normal”, divorțat, cu procese și presiune financiară</h3>
+            <p class="who-tagline">
+              Venit limitat, stres mare, conflicte de familie și legale
+              și frica că un pas greșit te împinge în jos pe termen lung.
+            </p>
+            <ul class="card-list">
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Conflicte cu fostul partener, pensie alimentară, custodie, amenințări —
+                  fără claritate între lege reală și manipulare emoțională.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Șef sau instituție care te împinge să semnezi / accepți ceva cu consecințe neclare pentru tine.</span>
+              </li>
+              <li>
+                <span class="card-list-icon">•</span>
+                <span>Vrei un plan realist pe 3–6 luni, nu doar stingerea focurilor de la o zi la alta.</span>
+              </li>
+            </ul>
+            <p class="card-footnote">
+              Rezultat: plan clar de protecție, mesaje pregătite pentru oamenii-cheie
+              și priorități aliniate cu banii și energia ta reală.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process -->
+    <section id="process">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Metodă</div>
+          <h2 class="section-title">De la haos brut la decizie clară și plan</h2>
+          <p class="section-desc">
+            Mo Thinking Engine transformă povestea ta, emoțiile și documentele
+            într-un proces cu început și final — nu în discuții infinite.
+          </p>
+        </div>
+
+        <div class="process-grid">
+          <div>
+            <ol class="steps">
+              <li class="step">
+                <div class="step-index">1</div>
+                <div>
+                  <div class="step-title">Intake: vedem situația așa cum este, nu cum am vrea</div>
+                  <div class="step-body">
+                    Adunăm tot: ce s-a întâmplat, cine e implicat, ce vrei
+                    și care sunt limitele reale (lege, bani, timp).
+                    Scop: descriere onestă, fără machiaj, fără dramă extra.
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <div class="step-index">2</div>
+                <div>
+                  <div class="step-title">Analiza faptelor și a contextului</div>
+                  <div class="step-body">
+                    Separăm fapte solide, interpretări probabile și goluri.
+                    Privim contextul legal, instituțional, psihologic și raportul de forțe.
+                    Clarificăm ce informații lipsesc pentru o decizie serioasă.
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <div class="step-index">3</div>
+                <div>
+                  <div class="step-title">Proiectarea opțiunilor A / B / C</div>
+                  <div class="step-body">
+                    Construim mereu mai multe trasee: unul mai agresiv, unul echilibrat, unul precaut.
+                    Fiecare este cântărit după impact, risc, viteză, cost,
+                    încărcare emoțională și nivel de dreptate pentru celelalte părți.
+                  </div>
+                </div>
+              </li>
+              <li class="step">
+                <div class="step-index">4</div>
+                <div>
+                  <div class="step-title">Execuție + învățare</div>
+                  <div class="step-body">
+                    Alegem drumul potrivit, îl traducem în pași concreți, texte și termene.
+                    După acțiune, distilăm totul într-o Learning Card,
+                    ca să poți repeta deciziile bune și evita aceeași gaură data viitoare.
+                  </div>
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <aside class="process-panel">
+            <div class="process-badges">
+              <span class="process-badge">Fără hype</span>
+              <span class="process-badge">Filtre etice și legale clare</span>
+              <span class="process-badge">Gândit pentru cazuri complexe</span>
+            </div>
+            <p>
+              <strong>Mo Thinking</strong> este mult mai mult decât un „program de 14 zile” sau un template.
+              Motorul este construit să creeze un sistem de decizie pentru viața sau business-ul tău la un nivel mai profund:
+              fișiere psihologice, profesionale, reguli de siguranță și „carduri de decizie” repetabile
+              pentru situațiile care tot revin.
+            </p>
+            <p>
+              Nu plătești doar pentru un call; închiriezi creierul meu plus un engine structurat
+              care te ajută să-ți construiești un mod nou de a decide.
+              Iar modul ăsta rămâne cu tine după ce terminăm.
+            </p>
+            <div class="process-keyline">
+              <strong>Important:</strong> nu promit miracole și nu controlez lumea din jurul tău.
+              Ce ofer este o creștere reală a probabilității de rezultate bune,
+              mai puține greșeli scumpe și mai puțin haos și dramă în sistemele în care trăiești.
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Pachete & prețuri</div>
+          <h2 class="section-title">Consultanță serioasă la un preț sub media pieței</h2>
+          <p class="section-desc">
+            Servicii comparabile în zona Executive / Business / Conflict coaching sunt de obicei mult mai scumpe.
+            Eu pornesc cam de la jumătate din plaja asta, pentru că acum focusul este pe cazuri puternice și rezultate,
+            nu pe tarif maxim.
+          </p>
+        </div>
+
+        <p class="pricing-note">
+          <strong>Notă:</strong> prețurile de mai jos sunt orientative; ajustează-le la realitatea ta.
+          Putem ajusta și în funcție de complexitatea cazului.
+        </p>
+
+        <div class="pricing-grid">
+          <article class="price-card">
+            <div class="price-label">Pachet 1</div>
+            <h3 class="price-title">Sesiune de diagnostic concentrată</h3>
+            <p class="price-sub">
+              Bună dacă ai un singur subiect principal și ai nevoie de claritate și opțiuni rapid.
+            </p>
+            <div class="price-row">
+              <div class="price-main">£80</div>
+              <div class="price-unit">/ ~90 minute</div>
+            </div>
+            <p class="price-small">
+              Aproximativ jumătate din ce percep mulți business / life coach pentru un slot similar.
+            </p>
+            <ul class="price-list">
+              <li>
+                <span class="price-check">✓</span>
+                <span>Preluarea cazului + analiză inițială a faptelor și a contextului.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Clarificarea unui obiectiv realist și a ceea ce nu are sens să urmărim acum.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Opțiuni A/B/C scurte cu recomandare inițială.</span>
+              </li>
+            </ul>
+            <div class="price-cta">
+              <span class="price-badge">Start bun, angajament mic</span>
+              <a href="#contact" class="btn btn-outline">Alege acest pachet</a>
+            </div>
+          </article>
+
+          <article class="price-card featured">
+            <div class="price-label">Pachet 2 — recomandat</div>
+            <h3 class="price-title">Muncă în profunzime pe un dosar (4 săptămâni)</h3>
+            <p class="price-sub">
+              Luăm un dosar important din viața sau business-ul tău
+              și îl ducem de la haos la execuție și concluzii clare.
+            </p>
+            <div class="price-row">
+              <div class="price-main">£280</div>
+              <div class="price-unit">/ program de 4 săptămâni</div>
+            </div>
+            <p class="price-small">
+              De obicei 3–4 sesiuni + suport limitat pe email / WhatsApp în timpul programului.
+            </p>
+            <ul class="price-list">
+              <li>
+                <span class="price-check">✓</span>
+                <span>Analiză completă a cazului, a faptelor și a contextului psihologic/juridic.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Proiectare de scenarii A/B/C + ramuri „dacă se înrăutățește / dacă se îmbunătățește”.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Mailuri, texte și scripturi de discuții gata de folosit.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Learning Card — un șablon care rămâne la tine ca ghid pentru viitor.</span>
+              </li>
+            </ul>
+            <div class="price-cta">
+              <span class="price-badge">Cel mai bun raport profunzime / preț / valoare</span>
+              <a href="#contact" class="btn btn-primary">Alege acest pachet</a>
+            </div>
+          </article>
+
+          <article class="price-card">
+            <div class="price-label">Pachet 3</div>
+            <h3 class="price-title">Sistem de decizie pentru viață / business (3 luni)</h3>
+            <p class="price-sub">
+              Pentru cei care vor mai mult decât rezolvarea unui singur caz:
+              un „sistem de operare” pentru deciziile lor.
+            </p>
+            <div class="price-row">
+              <div class="price-main">£780</div>
+              <div class="price-unit">/ program de 3 luni</div>
+            </div>
+            <p class="price-small">
+              Doar pentru clienți serioși. Număr limitat de persoane lucrând în paralel.
+            </p>
+            <ul class="price-list">
+              <li>
+                <span class="price-check">✓</span>
+                <span>Hartă completă a vieții/proiectelor tale (psihic, muncă, relații, cifre).</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Reguli de siguranță și carduri de decizie pentru situații recurente
+                  (conflicte, angajări, parteneriate...).</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>Sesiuni regulate + rafinarea sistemului pe măsură ce se întâmplă lucruri reale.</span>
+              </li>
+              <li>
+                <span class="price-check">✓</span>
+                <span>La final: un sistem care continuă să funcționeze chiar când ești ocupat sau epuizat.</span>
+              </li>
+            </ul>
+            <div class="price-cta">
+              <span class="price-badge">Ideal pentru fondatori și cazuri de viață complexe</span>
+              <a href="#contact" class="btn btn-outline">Discută acest format</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Întrebări directe</div>
+          <h2 class="section-title">Ce merită știut înainte să lucrăm împreună</h2>
+          <p class="section-desc">
+            Prefer să spui „nu” din motiv corect decât „da” dintr-un motiv greșit.
+            Aici sunt răspunsuri clare la întrebările de bază.
+          </p>
+        </div>
+
+        <div class="faq-grid">
+          <div class="faq-intro">
+            <p>
+              <strong>Este „coaching”?</strong><br>
+              Parțial. Există ascultare și întrebări, dar și analiză, scriere,
+              proiectare de sisteme și momente în care îți spun lucruri incomode
+              dacă asta te protejează pe termen lung.
+            </p>
+            <p>
+              <strong>Mo Thinking este doar AI?</strong><br>
+              Nu. Engine-ul folosește instrumente precum ChatGPT ca un component.
+              Dar deciziile finale sunt umane, cu responsabilitate și conștiință.
+              Nu lucrezi cu un bot, ci cu un om care știe să folosească unelte inteligente într-un mod structurat.
+            </p>
+            <p>
+              <strong>Este potrivit pentru tine acum?</strong><br>
+              Dacă ai un caz cu miză mare și ți-e teamă să nu-l strici,
+              sau dacă viața / business-ul tău repetă aceleași scenarii dureroase,
+              probabil răspunsul este „da”.
+            </p>
+          </div>
+
+          <div class="faq-list" aria-label="Întrebări frecvente">
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Ce se întâmplă concret în prima sesiune?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Strângem povestea ta: ce s-a întâmplat, cine este implicat,
+                mesaje și documente importante, ce simți de fapt
+                și ce final „bun” ai vrea pentru această poveste dacă ai putea alege.
+                Nu te judec, dar cer precizie.
+                Apoi îți arăt cum voi împărți problema, ce pare posibil
+                și ce ar fi periculos sau nerealist în acest moment.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Ce facem dacă nu-ți place soluția propusă?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Dacă satisfacția ta sinceră este sub 95%, tratez munca drept incompletă.
+                Putem reformula problema, explora alt traseu
+                sau ajusta planul la realitatea și valorile tale.
+                Scopul nu este „să fii de acord cu mine”, ci să funcționeze în viața ta reală.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Poți să refuzi să lucrezi cu mine?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Da. Spun „nu” când văd că miza ta principală este răzbunarea,
+                că vrei soluții ilegale sau că refuzi complet orice responsabilitate personală.
+                Nu este un serviciu de tip „cum să distrugi oameni și să ieși curat”.
+              </div>
+            </div>
+
+            <div class="faq-item">
+              <button class="faq-question">
+                <span>Ce se întâmplă dacă sunt într-o situație financiară grea?</span>
+                <span class="faq-icon">+</span>
+              </button>
+              <div class="faq-answer">
+                Putem discuta opțiuni flexibile: plată în rate, împărțirea muncii pe etape
+                sau focus pe un singur subiect critic în loc să încercăm să rezolvăm totul odată.
+                Ideea nu este să închid ușa oamenilor care chiar au nevoie de ajutor
+                doar pentru că momentan sunt sub presiune financiară.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <div class="shell">
+        <div class="section-header">
+          <div class="section-kicker">Contact</div>
+          <h2 class="section-title">Un singur pas: descrie sincer ce se întâmplă acum</h2>
+          <p class="section-desc">
+            Nu ai nevoie de un text perfect.
+            Scrie ce se întâmplă, de ce îți este cel mai teamă
+            și cum ar arăta un final bun pentru tine, dacă ai putea alege fără presiune.
+          </p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-card">
+            <div class="contact-row">
+              <span class="contact-label">Email</span>
+              <span class="contact-main">
+                <!-- modifică acest email -->
+                <a href="mailto:consult@mo-thinking.com">consult@mo-thinking.com</a>
+              </span>
+            </div>
+            <div class="contact-row">
+              <span class="contact-label">WhatsApp (bun pentru mesaje vocale)</span>
+              <span class="contact-main">
+                <!-- modifică numărul de WhatsApp -->
+                <a href="https://wa.me/000000000000" target="_blank" rel="noopener">+00 0000 000 000</a>
+              </span>
+            </div>
+            <div class="contact-row">
+              <span class="contact-label">Ce se întâmplă după ce trimiți mesajul</span>
+              <span class="contact-main">
+                Îți citesc cazul atent, evaluez dacă pot ajuta serios
+                și îți răspund cu opțiuni: call scurt de intro, propunere de pachet
+                sau, dacă nu sunt persoana potrivită, un „nu” onest.
+              </span>
+            </div>
+            <p class="form-note">
+              <strong>Confidențialitate:</strong> nu împărtășesc cazurile clienților cu terți.
+              Dacă va fi nevoie de opinia unui avocat sau alt specialist,
+              facem asta doar clar și de comun acord.
+            </p>
+          </div>
+
+          <div class="contact-card">
+            <!-- poți conecta formularul la un serviciu gen Formspree -->
+            <form method="post" action="#">
+              <div class="form-row-inline">
+                <div>
+                  <label for="name">Nume complet</label>
+                  <input id="name" name="name" type="text" placeholder="Numele tău complet">
+                </div>
+                <div>
+                  <label for="role">Rolul tău actual</label>
+                  <input id="role" name="role" type="text" placeholder="Fondator / angajat / altceva">
+                </div>
+              </div>
+
+              <div class="form-row-inline">
+                <div>
+                  <label for="email">Email</label>
+                  <input id="email" name="email" type="email" placeholder="tu@example.com">
+                </div>
+                <div>
+                  <label for="whatsapp">WhatsApp (opțional)</label>
+                  <input id="whatsapp" name="whatsapp" type="text" placeholder="Pentru contact rapid sau voice note">
+                </div>
+              </div>
+
+              <div>
+                <label for="problem">Cu ce vrei să te ajut?</label>
+                <textarea id="problem" name="problem" placeholder="Descrie: ce se întâmplă acum? Ce te sperie cel mai mult? Ce final ar fi, pentru tine, „un final bun” al acestei povești?"></textarea>
+              </div>
+
+              <div>
+                <label for="timeline">Timp & presiune de termen</label>
+                <textarea id="timeline" name="timeline" placeholder="Proces în instanță în curând? Deadline de proiect? Decizie pe care trebuie să o iei în câteva zile? Scrie aici."></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary">
+                <span class="btn-icon">📩</span>
+                <span>Trimite cerere de consultanță</span>
+              </button>
+              <p class="form-note">
+                Trimiterea formularului nu creează obligații financiare.
+                Vom stabili separat și clar domeniul de lucru și prețul, înainte de orice etapă plătită.
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell footer-row">
+      <div>© <span id="year"></span> Mo Thinking Consult. Toate drepturile rezervate.</div>
+      <div class="footer-links">
+        <a href="#hero">Acasă</a>
+        <a href="#pricing">Pachete</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // An curent
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Meniu mobil
+  const navToggle = document.querySelector('.nav-toggle');
+  const navLinks = document.querySelector('.nav-links');
+
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (navLinks.classList.contains('open')) {
+          navLinks.classList.remove('open');
+          navToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+  }
+
+  // Acordeon FAQ
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const btn = item.querySelector('.faq-question');
+    btn.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+
+  // Scroll lin către secțiuni
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      const targetId = this.getAttribute('href').slice(1);
+      const target = document.getElementById(targetId);
+      if (target) {
+        e.preventDefault();
+        window.scrollTo({
+          top: target.offsetTop - 70,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+</script>
+</body>
+</html>
