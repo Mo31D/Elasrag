@@ -3,1295 +3,243 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mo Thinking | High-Stakes Decision & Conflict Consulting</title>
-  <meta name="description" content="Rent Mo's mind and the Mo Thinking Engine when you're stuck in a high-stakes mess: work conflicts, complaints against companies, divorce, debt, complex life decisions. Clear analysis, concrete plans, and learning so you don't repeat the same mistakes.">
-  <style>
-    :root {
-      --bg: #050509;
-      --bg-alt: #090d16;
-      --card: #111827;
-      --card-soft: #0b1120;
-      --accent: #22d3ee;
-      --accent-soft: rgba(34,211,238,0.12);
-      --accent-strong: #06b6d4;
-      --accent-warm: #fbbf24;
-      --text: #f9fafb;
-      --muted: #9ca3af;
-      --border: #1f2937;
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 18px;
-      --shadow-soft: 0 18px 60px rgba(15,23,42,0.7);
-      --shadow-card: 0 14px 40px rgba(15,23,42,0.7);
-      --transition-fast: 0.18s ease-out;
-      --transition-med: 0.25s ease-out;
-      --max-width: 1120px;
-    } 
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: radial-gradient(circle at top, #020617 0, #020617 40%, #020617 60%, #000 100%);
-      color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
-      scroll-behavior: smooth;
-    }
-
-    body {
-      min-height: 100vh;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .shell {
-      width: 100%;
-      max-width: var(--max-width);
-      margin: 0 auto;
-      padding: 0 1.4rem;
-    }
-
-    /* ==== TOP BAR / NAV ==== */
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      backdrop-filter: blur(18px);
-      background: linear-gradient(to bottom, rgba(2,6,23,0.96), rgba(2,6,23,0.92), rgba(2,6,23,0.86));
-      border-bottom: 1px solid rgba(15,23,42,0.85);
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem 0.3rem;
-      gap: 1.5rem;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-    }
-
-    .brand-logo {
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 20%, #e5e7eb 0, #f9fafb 20%, #22d3ee 40%, #020617 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.95rem;
-      letter-spacing: 0.04em;
-      box-shadow: 0 0 0 1px rgba(148,163,184,0.5), 0 12px 35px rgba(8,47,73,0.8);
-      color: #020617;
-    }
-
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-    }
-
-    .brand-name {
-      font-size: 0.98rem;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    .brand-sub {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .lang-switch {
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    .lang-switch span {
-      opacity: 0.65;
-    }
-
-    .lang-switch a {
-      padding: 0.12rem 0.35rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      font-weight: 500;
-      font-size: 0.73rem;
-      color: var(--muted);
-      transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
-    }
-
-    .lang-switch a.active {
-      border-color: rgba(148,163,184,0.7);
-      background: rgba(15,23,42,0.9);
-      color: var(--text);
-    }
-
-    .lang-switch a:hover {
-      border-color: rgba(148,163,184,0.7);
-      color: var(--text);
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 1.1rem;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 0.9rem;
-      font-size: 0.8rem;
-    }
-
-    .nav-links a {
-      padding: 0.2rem 0.05rem;
-      color: var(--muted);
-      border-bottom: 2px solid transparent;
-      transition: color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
-      font-weight: 500;
-    }
-
-    .nav-links a:hover {
-      color: var(--text);
-      border-color: var(--accent-soft);
-      transform: translateY(-1px);
-    }
-
-    .nav-links a.nav-active {
-      color: var(--text);
-      border-color: var(--accent);
-    }
-
-    .nav-cta {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      font-size: 0.8rem;
-      padding: 0.55rem 1.1rem;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background: radial-gradient(circle at 0 0, #e0f2fe 0, #22d3ee 20%, #0ea5e9 40%, #0369a1 100%);
-      color: #0b1120;
-      box-shadow: 0 12px 35px rgba(8,47,73,0.9);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 18px 45px rgba(8,47,73,1);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border-color: rgba(148,163,184,0.8);
-      color: var(--text);
-    }
-
-    .btn-outline:hover {
-      background: rgba(15,23,42,0.9);
-      border-color: var(--accent-soft);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      border-color: transparent;
-      color: var(--muted);
-    }
-
-    .btn-ghost:hover {
-      color: var(--text);
-    }
-
-    .btn-icon {
-      font-size: 0.9rem;
-    }
-
-    .nav-toggle {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--text);
-      font-size: 1.3rem;
-      cursor: pointer;
-    }
-
-    /* ==== HERO ==== */
-
-    main {
-      padding-bottom: 4rem;
-    }
-
-    .hero {
-      padding: 2.8rem 0 2.3rem;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-      gap: 2.2rem;
-      align-items: flex-start;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      padding: 0.16rem 0.65rem;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.7);
-      background: radial-gradient(circle at 0 0, rgba(34,211,238,0.2) 0, rgba(15,23,42,0.9) 40%, rgba(15,23,42,0.96) 100%);
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-bottom: 0.9rem;
-    }
-
-    .eyebrow-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 4px rgba(34,211,238,0.25);
-    }
-
-    .eyebrow-strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .hero-title {
-      font-size: clamp(1.9rem, 3vw, 2.4rem);
-      line-height: 1.15;
-      letter-spacing: 0.01em;
-      margin: 0 0 0.8rem;
-    }
-
-    .hero-title span.hero-highlight {
-      background: linear-gradient(to right, #22d3ee, #fbbf24);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .hero-lead {
-      font-size: 0.94rem;
-      color: var(--muted);
-      max-width: 32rem;
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-
-    .hero-bullets {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 1.4rem;
-      display: grid;
-      gap: 0.45rem;
-      font-size: 0.86rem;
-      color: var(--muted);
-    }
-
-    .hero-bullets li {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .hero-bullets span.bullet-dot {
-      font-size: 0.8rem;
-      margin-top: 0.12rem;
-      color: var(--accent);
-    }
-
-    .hero-bullets strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.7rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .hero-note {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .hero-note strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    .hero-side {
-      border-radius: var(--radius-lg);
-      background: radial-gradient(circle at top, rgba(34,211,238,0.3) 0, rgba(15,23,42,0.96) 30%, rgba(15,23,42,0.98) 60%, #020617 100%);
-      border: 1px solid rgba(30,64,175,0.85);
-      padding: 1.1rem 1.1rem 1.1rem;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .hero-side-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.7rem;
-      margin-bottom: 0.6rem;
-    }
-
-    .hero-side-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-    .hero-side-pill {
-      font-size: 0.75rem;
-      padding: 0.18rem 0.6rem;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.9);
-      border: 1px solid rgba(56,189,248,0.4);
-      color: var(--muted);
-    }
-
-    .hero-side-pill strong {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .hero-side-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      gap: 0.75rem;
-      margin-top: 0.4rem;
-    }
-
-    .mini-panel {
-      background: rgba(15,23,42,0.95);
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(55,65,81,0.9);
-      padding: 0.7rem 0.75rem;
-      font-size: 0.8rem;
-    }
-
-    .mini-panel h3 {
-      margin: 0 0 0.35rem;
-      font-size: 0.84rem;
-    }
-
-    .mini-panel p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .mini-list {
-      list-style: none;
-      padding: 0;
-      margin: 0.35rem 0 0;
-      display: grid;
-      gap: 0.25rem;
-    }
-
-    .mini-list li {
-      display: flex;
-      gap: 0.35rem;
-      color: var(--muted);
-      font-size: 0.78rem;
-    }
-
-    .mini-list span.dot {
-      font-size: 0.75rem;
-      color: var(--accent);
-      margin-top: 0.06rem;
-    }
-
-    .hero-score {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 0.6rem;
-    }
-
-    .score-box {
-      background: rgba(15,23,42,0.95);
-      border-radius: var(--radius-md);
-      border: 1px solid rgba(55,65,81,0.9);
-      padding: 0.7rem 0.75rem;
-    }
-
-    .score-label {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 0.3rem;
-    }
-
-    .score-row {
-      display: flex;
-      align-items: baseline;
-      gap: 0.3rem;
-    }
-
-    .score-main {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .score-sub {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .score-note {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-top: 0.35rem;
-    }
-
-    .hero-sample {
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .hero-sample strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    /* ==== GENERIC SECTION STYLES ==== */
-
-    section {
-      padding: 2.5rem 0 2.4rem;
-      border-top: 1px solid rgba(15,23,42,0.9);
-    }
-
-    .section-heading {
-      margin-bottom: 1.4rem;
-    }
-
-    .section-eyebrow {
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 0.45rem;
-    }
-
-    .section-title {
-      font-size: 1.25rem;
-      margin: 0 0 0.35rem;
-    }
-
-    .section-lead {
-      font-size: 0.9rem;
-      color: var(--muted);
-      max-width: 34rem;
-      line-height: 1.6;
-    }
-
-    .tag-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.15rem 0.55rem;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.95);
-      border: 1px solid rgba(55,65,81,0.9);
-      font-size: 0.75rem;
-      color: var(--muted);
-    }
-
-    .tag-pill-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent-strong);
-    }
-
-    /* ==== WHO IT'S FOR / PROBLEMS ==== */
-
-    .two-col {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
-      gap: 2.1rem;
-      align-items: flex-start;
-    }
-
-    .pill-list {
-      list-style: none;
-      padding: 0;
-      margin: 0.4rem 0 0;
-      display: grid;
-      gap: 0.35rem;
-      font-size: 0.86rem;
-    }
-
-    .pill-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.5rem;
-      padding: 0.55rem 0.7rem;
-      border-radius: var(--radius-md);
-      background: rgba(15,23,42,0.96);
-      border: 1px solid rgba(31,41,55,0.9);
-    }
-
-    .pill-item-icon {
-      font-size: 0.9rem;
-      margin-top: 0.08rem;
-      color: var(--accent);
-    }
-
-    .pill-item strong {
-      display: block;
-      font-size: 0.83rem;
-      margin-bottom: 0.15rem;
-    }
-
-    .pill-item span {
-      color: var(--muted);
-      font-size: 0.82rem;
-    }
-
-    .usecase-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1rem;
-    }
-
-    .usecase-card {
-      background: var(--card-soft);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      padding: 0.9rem 0.9rem 0.85rem;
-      box-shadow: var(--shadow-card);
-      font-size: 0.83rem;
-    }
-
-    .usecase-tag {
-      font-size: 0.73rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--muted);
-      margin-bottom: 0.35rem;
-    }
-
-    .usecase-title {
-      font-size: 0.95rem;
-      margin: 0 0 0.35rem;
-    }
-
-    .usecase-text {
-      margin: 0 0 0.4rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .usecase-before-after {
-      display: grid;
-      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.05fr);
-      gap: 0.4rem;
-      font-size: 0.78rem;
-    }
-
-    .ua-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: #9ca3af;
-      margin-bottom: 0.1rem;
-    }
-
-    .ua-box {
-      background: rgba(15,23,42,0.94);
-      border-radius: var(--radius-sm);
-      border: 1px dashed rgba(55,65,81,0.9);
-      padding: 0.45rem 0.5rem;
-      line-height: 1.4;
-      color: var(--muted);
-    }
-
-    /* ==== PROCESS ==== */
-
-    .process-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
-      gap: 1.8rem;
-      align-items: flex-start;
-    }
-
-    .process-steps {
-      list-style: none;
-      padding: 0;
-      margin: 0.4rem 0 0;
-      display: grid;
-      gap: 0.8rem;
-    }
-
-    .step {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
-      gap: 0.5rem 0.7rem;
-      font-size: 0.84rem;
-      align-items: flex-start;
-    }
-
-    .step-index {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      border: 1px solid rgba(55,65,81,0.9);
-      background: rgba(15,23,42,0.98);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .step-main strong {
-      display: block;
-      font-size: 0.86rem;
-      margin-bottom: 0.1rem;
-    }
-
-    .step-main p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .process-keyline {
-      margin-top: 0.7rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-      padding: 0.6rem 0.7rem;
-      border-radius: var(--radius-md);
-      border: 1px dashed rgba(55,65,81,0.9);
-      background: rgba(15,23,42,0.95);
-    }
-
-    .process-keyline strong {
-      color: var(--text);
-    }
-
-    .process-card {
-      background: radial-gradient(circle at top, rgba(56,189,248,0.28) 0, rgba(15,23,42,0.98) 35%, rgba(15,23,42,1) 65%, #020617 100%);
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(37,99,235,0.85);
-      padding: 0.95rem 1rem 0.9rem;
-      box-shadow: var(--shadow-card);
-      font-size: 0.84rem;
-    }
-
-    .process-card-title {
-      font-size: 0.9rem;
-      margin: 0 0 0.3rem;
-    }
-
-    .process-card p {
-      margin: 0 0 0.4rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .process-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.3rem;
-    }
-
-    .badge {
-      font-size: 0.75rem;
-      padding: 0.18rem 0.55rem;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.96);
-      border: 1px solid rgba(148,163,184,0.7);
-      color: var(--muted);
-    }
-
-    /* ==== PRICING ==== */
-
-    .pricing-note {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-bottom: 1.1rem;
-    }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1.4rem;
-    }
-
-    .price-card {
-      background: var(--card-soft);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      padding: 1.1rem 1rem 1rem;
-      box-shadow: var(--shadow-card);
-      position: relative;
-      font-size: 0.85rem;
-    }
-
-    .price-card.featured {
-      border-color: rgba(34,211,238,0.7);
-      box-shadow: 0 18px 55px rgba(34,211,238,0.24);
-    }
-
-    .price-tagline {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 0.4rem;
-    }
-
-    .price-title {
-      font-size: 0.98rem;
-      margin: 0 0 0.3rem;
-    }
-
-    .price-row {
-      display: flex;
-      align-items: baseline;
-      gap: 0.25rem;
-      margin: 0.4rem 0 0.25rem;
-    }
-
-    .price-main {
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .price-unit {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .price-small {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 0.6rem;
-    }
-
-    .price-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 0.6rem;
-      display: grid;
-      gap: 0.3rem;
-    }
-
-    .price-list li {
-      display: flex;
-      gap: 0.4rem;
-      align-items: flex-start;
-    }
-
-    .price-check {
-      font-size: 0.82rem;
-      color: var(--accent);
-      margin-top: 0.08rem;
-    }
-
-    .price-list span {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .price-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      padding: 0.18rem 0.55rem;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      background: rgba(15,23,42,0.98);
-      border: 1px solid rgba(148,163,184,0.7);
-      color: var(--muted);
-      margin-bottom: 0.35rem;
-    }
-
-    .price-cta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      margin-top: 0.2rem;
-    }
-
-    /* ==== CASES ==== */
-
-    .cases-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 1.1rem;
-    }
-
-    .case-card {
-      background: var(--card);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      padding: 0.9rem 0.9rem 0.8rem;
-      font-size: 0.83rem;
-    }
-
-    .case-label {
-      font-size: 0.73rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--muted);
-      margin-bottom: 0.25rem;
-    }
-
-    .case-title {
-      font-size: 0.92rem;
-      margin: 0 0 0.25rem;
-    }
-
-    .case-body {
-      margin: 0 0 0.4rem;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .case-result {
-      font-size: 0.78rem;
-      color: var(--accent);
-    }
-
-    /* ==== ABOUT / SAFETY ==== */
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
-      gap: 1.8rem;
-      align-items: flex-start;
-    }
-
-    .about-card {
-      background: var(--card-soft);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      padding: 1rem 1rem 0.9rem;
-      box-shadow: var(--shadow-card);
-      font-size: 0.85rem;
-    }
-
-    .about-card h3 {
-      margin: 0 0 0.35rem;
-      font-size: 0.95rem;
-    }
-
-    .about-card p {
-      margin: 0 0 0.4rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .about-list {
-      list-style: none;
-      padding: 0;
-      margin: 0.35rem 0 0;
-      display: grid;
-      gap: 0.3rem;
-    }
-
-    .about-list li {
-      display: flex;
-      gap: 0.4rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .about-list span.icon {
-      font-size: 0.85rem;
-      margin-top: 0.04rem;
-      color: var(--accent);
-    }
-
-    .disclaimer {
-      font-size: 0.8rem;
-      color: var(--muted);
-      padding: 0.75rem 0.8rem;
-      border-radius: var(--radius-md);
-      border: 1px dashed rgba(55,65,81,0.9);
-      background: rgba(15,23,42,0.96);
-      line-height: 1.5;
-    }
-
-    .disclaimer strong {
-      color: var(--text);
-    }
-
-    /* ==== CONTACT ==== */
-
-    .contact-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
-      gap: 1.8rem;
-    }
-
-    .contact-card {
-      background: var(--card-soft);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      padding: 1.05rem 1rem 0.9rem;
-      box-shadow: var(--shadow-card);
-      font-size: 0.85rem;
-    }
-
-    .contact-row {
-      display: grid;
-      grid-template-columns: 0.9fr minmax(0, 1.1fr);
-      gap: 0.5rem;
-      padding: 0.4rem 0;
-      border-bottom: 1px solid rgba(31,41,55,0.85);
-    }
-
-    .contact-row:last-child {
-      border-bottom: none;
-    }
-
-    .contact-label {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    .contact-main {
-      font-size: 0.83rem;
-      color: var(--text);
-    }
-
-    .contact-main a {
-      color: var(--accent);
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 0.6rem;
-    }
-
-    label {
-      display: block;
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-bottom: 0.22rem;
-    }
-
-    input, textarea {
-      width: 100%;
-      border-radius: 10px;
-      border: 1px solid rgba(51,65,85,0.95);
-      background: rgba(15,23,42,0.96);
-      color: var(--text);
-      padding: 0.55rem 0.6rem;
-      font-size: 0.83rem;
-      outline: none;
-      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: rgba(148,163,184,0.75);
-    }
-
-    input:focus,
-    textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(34,211,238,0.3);
-      background: rgba(15,23,42,0.98);
-    }
-
-    textarea {
-      min-height: 120px;
-      resize: vertical;
-    }
-
-    .form-note {
-      font-size: 0.78rem;
-      color: var(--muted);
-      margin-top: 0.5rem;
-    }
-
-    /* ==== FOOTER ==== */
-
-    footer {
-      border-top: 1px solid rgba(15,23,42,0.9);
-      padding: 1.3rem 0 1.4rem;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .footer-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 0.8rem;
-      flex-wrap: wrap;
-    }
-
-    .footer-links a {
-      color: var(--muted);
-    }
-
-    .footer-links a:hover {
-      color: var(--accent);
-    }
-
-    /* ==== RESPONSIVE ==== */
-
-    @media (max-width: 960px) {
-      .hero-grid,
-      .two-col,
-      .process-grid,
-      .pricing-grid,
-      .cases-grid,
-      .about-grid,
-      .contact-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .hero-side {
-        margin-top: 0.3rem;
-      }
-
-      .pricing-grid,
-      .cases-grid {
-        gap: 1rem;
-      }
-    }
-
-    @media (max-width: 780px) {
-      .nav {
-        padding-inline: 0;
-      }
-
-      .nav-right {
-        gap: 0.6rem;
-      }
-
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 52px;
-        right: 1.3rem;
-        flex-direction: column;
-        align-items: flex-start;
-        background: rgba(15,23,42,0.98);
-        border-radius: 12px;
-        border: 1px solid rgba(51,65,85,0.95);
-        padding: 0.5rem 0.85rem;
-        box-shadow: var(--shadow-soft);
-      }
-
-      .nav-links.open {
-        display: flex;
-      }
-
-      .nav-links a {
-        padding: 0.3rem 0;
-      }
-
-      .nav-cta {
-        display: none;
-      }
-
-      .nav-toggle {
-        display: block;
-      }
-
-      .hero {
-        padding-top: 2.2rem;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .shell {
-        padding-inline: 1rem;
-      }
-
-      .hero-title {
-        font-size: 1.7rem;
-      }
-
-      .hero-side-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      section {
-        padding-block: 2.1rem;
-      }
-    }
-  </style>
+  <title>Mo Thinking | High-Stakes Decisions, Conflicts & Difficult Problems</title>
+  <meta name="description" content="Rent Mo’s mind + the Mo Thinking Engine when you’re stuck in a serious mess – high-stakes decisions, conflicts and difficult problems. Clear plans, concrete documents, and learning so you don’t repeat the same mistake.">
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
+	<!-- Language bar -->
+<div class="lang-bar">
+  <div class="lang-bar-inner">
+    <div class="lang-list">
+      <a href="en.html" class="lang-pill active"><span class="flag">🇬🇧</span> EN</a>
+      <a href="ar.html" class="lang-pill"><span class="flag">🇸🇦</span> AR</a>
+      <a href="sp.html" class="lang-pill"><span class="flag">🇪🇸</span> ES</a>
+      <a href="pl.html" class="lang-pill"><span class="flag">🇵🇱</span> PL</a>
+      <a href="ro.html" class="lang-pill"><span class="flag">🇷🇴</span> RO</a>
+      <a href="ru.html" class="lang-pill"><span class="flag">🇷🇺</span> RU</a>
+      <a href="fr.html" class="lang-pill"><span class="flag">🇫🇷</span> FR</a>
+    </div>
+    <div class="lang-note">More languages available</div>
+  </div>
+</div>
 
 <header>
-  <div class="shell nav">
+
+  <div class="shell nav-row">
     <div class="brand">
-      <div class="brand-logo">Mo</div>
+      <div class="brand-mark">MO</div>
       <div class="brand-text">
-        <div class="brand-name">Mo Thinking Consult</div>
+        <div class="brand-name">Mo Thinking</div>
         <div class="brand-sub">High-stakes decisions & conflicts</div>
       </div>
     </div>
-
-    <div class="nav-right">
-      <div class="lang-switch">
-        <span>Language</span>
-        <a href="en.html" class="active">EN</a>
-        <span>·</span>
-        <a href="ar.html">AR</a>
-      </div>
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="#hero" class="nav-active">Home</a>
-        <a href="#who">Who it’s for</a>
-        <a href="#problems">Problems I handle</a>
-        <a href="#process">How it works</a>
-        <a href="#pricing">Packages</a>
-        <a href="#cases">Examples</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <div class="nav-cta">
-        <a href="#contact" class="btn btn-outline">
-          <span class="btn-icon">✉️</span>
-          <span>Send your case</span>
-        </a>
-        <a href="#pricing" class="btn btn-primary">
-          <span>See packages</span>
-        </a>
-      </div>
-      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#hero">Home</a>
+      <a href="#why">Why Mo?</a>
+      <a href="#who">Who it’s for</a>
+      <a href="#process">How it works</a>
+      <a href="#pricing">Packages</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#contact" class="btn btn-outline">
+        <span class="btn-icon">✉️</span>
+        <span>Book diagnostic session</span>
+      </a>
+      <a href="#pricing" class="btn btn-primary">
+        <span class="btn-icon">⚙️</span>
+        <span>See packages</span>
+      </a>
     </div>
+    <button class="nav-toggle" type="button">Menu</button>
   </div>
 </header>
 
 <main>
   <!-- HERO -->
   <section id="hero" class="hero">
-    <div class="shell">
-      <div class="hero-grid">
-        <div>
-          <div class="eyebrow">
-            <span class="eyebrow-dot"></span>
-            <span class="eyebrow-strong">When the stakes feel too high to improvise</span>
-            <span>work, courts, money, family</span>
-          </div>
-          <h1 class="hero-title">
-            Rent my mind when you’re stuck in a
-            <span class="hero-highlight">serious mess</span>.
-          </h1>
-          <p class="hero-lead">
-            I use the Mo Thinking Engine – a structured way of thinking built from dozens of real cases –
-            to turn your chaos into a clear plan you can actually execute:
-            with emails written, options rated, and learning captured so you don’t repeat the same mistake.
-          </p>
-          <ul class="hero-bullets">
-            <li>
-              <span class="bullet-dot">•</span>
-              <span><strong>High-stakes situations only</strong> – work conflicts, HR investigations, complaints against companies, divorce, debt and complex life decisions.</span>
-            </li>
-            <li>
-              <span class="bullet-dot">•</span>
-              <span><strong>Evidence → Logic → Conclusion</strong> – we separate facts from emotion before touching the decision or the email.</span>
-            </li>
-            <li>
-              <span class="bullet-dot">•</span>
-              <span><strong>Concrete deliverables</strong> – emails, scripts, action plans and a short learning card, not just “insights”.</span>
-            </li>
-          </ul>
-          <div class="hero-actions">
-            <a href="#contact" class="btn btn-primary">
-              <span class="btn-icon">⚙️</span>
-              <span>Tell me what’s happening</span>
-            </a>
-            <a href="#cases" class="btn btn-ghost">
-              <span>Or see real-type cases first</span>
-            </a>
-          </div>
-          <p class="hero-note">
-            <strong>Important:</strong> If I don’t believe I can realistically improve your situation, I will say “no” and not take the work.
-          </p>
+    <div class="shell hero-grid">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span class="label-main">When the stakes feel too high to improvise</span>
+          <span class="label-sub">work · courts · money · family</span>
         </div>
 
-        <aside class="hero-side" aria-label="How I work at a glance">
-          <div class="hero-side-header">
-            <div class="hero-side-title">What you’re really renting</div>
-            <div class="hero-side-pill"><strong>Mo + Engine</strong> working on your file</div>
-          </div>
-          <div class="hero-side-grid">
-            <div class="mini-panel">
-              <h3>Not a coach. Not your lawyer.</h3>
-              <p>
-                I sit in the space between: I organise your facts, design the logic, and write the actual words you’ll send —
-                while respecting your lawyer, therapist or HR boundaries.
-              </p>
-              <ul class="mini-list">
-                <li><span class="dot">•</span><span>We keep you inside law, ethics and self-respect.</span></li>
-                <li><span class="dot">•</span><span>I’m obsessed with clarity, not drama.</span></li>
-              </ul>
+        <h1 class="hero-title">
+          <span class="accent">Mo Thinking</span> – rent my mind<br>
+          when you’re stuck in a <span class="highlight">serious mess</span>.
+        </h1>
+
+        <p class="hero-subtitle">
+          Instead of losing weeks to panic and overthinking, you rent my brain + the
+          <strong>Mo Thinking Engine</strong> – a system built from real high-stakes files –
+          to turn your chaos into a clear plan: evidence → logic → decision → action →
+          learning so you don’t walk into the same trap again.
+        </p>
+
+        <div class="hero-badges">
+          <span class="badge">High-stakes files: HR, courts, money, family</span>
+          <span class="badge">Evidence → Logic → Conclusion before any email is sent</span>
+          <span class="badge">Concrete outputs: ready-to-send messages + action plan + learning card</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">
+            <span class="btn-icon">⚡</span>
+            <span>Book diagnostic session</span>
+          </a>
+          <a href="#why" class="btn btn-outline">
+            <span>See how I work</span>
+          </a>
+        </div>
+
+        <div class="hero-note">
+          <strong>Money promise:</strong> if, after honest use, you feel the work didn’t clearly improve your position,
+          tell me directly – we rework it or I don’t take the money.
+        </div>
+
+        <div class="hero-secondary">
+          <span><span class="dot"></span> I work with people who want real solutions and can handle the full truth.</span>
+          <span>I won’t help with illegal, abusive or dirty strategies – there are non-negotiable safety filters.</span>
+        </div>
+      </div>
+
+      <aside class="hero-panel" aria-label="Service snapshot">
+        <div class="hero-panel-header">
+          <span>A private Strategy / HR / Disputes room – just for you.</span>
+          <span class="hero-status">
+            <span class="hero-status-dot"></span>
+            <span>Accepting new cases</span>
+          </span>
+        </div>
+
+        <div class="hero-panel-title">
+          What you’re really renting
+        </div>
+        <div class="hero-panel-sub">
+          Mo’s brain + the Mo Thinking Engine working on your real file – not theory, not motivational talk.
+        </div>
+
+        <div class="hero-panel-grid">
+          <div class="mini-card">
+            <h4>For founders / managers</h4>
+            <p class="muted">Useful when you’re juggling:</p>
+            <ul class="highlight-list">
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>HR conflicts, partners, and difficult clients where one wrong move can explode reputation or legal risk.</span>
+              </li>
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>Zombie projects: too alive to kill, too dead to grow – you need a clear decision framework.</span>
+              </li>
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>No bandwidth for deep thinking; you need someone to think for you and show clean options.</span>
+              </li>
+            </ul>
+            <div class="mini-chip-row">
+              <span class="mini-chip">Decision system</span>
+              <span class="mini-chip">Risk & safety rules</span>
+              <span class="mini-chip">Action runbooks</span>
             </div>
-            <div class="hero-score">
-              <div class="score-box">
-                <div class="score-label">Quality bar for any document we create</div>
-                <div class="score-row">
-                  <div class="score-main">95%</div>
-                  <div class="score-sub">or we rework it</div>
-                </div>
-                <p class="score-note">
-                  If your honest rating is below 95%, I treat the work as unfinished. Either we fix it or we don’t close the case.
-                </p>
-              </div>
-              <div class="hero-sample">
-                <strong>Outputs I usually deliver:</strong> structured email chains, talking points for meetings, step-by-step plans, and one “learning card” so this type of disaster doesn’t repeat.
-              </div>
+          </div>
+
+          <div class="mini-card">
+            <h4>For the “normal” person under attack</h4>
+            <p class="muted">You might be dealing with:</p>
+            <ul class="highlight-list">
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>Divorce, custody, school or employer complaints, or debt – and you’re scared of one wrong move.</span>
+              </li>
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>A boss, ex, or institution putting pressure on you and you don’t know what to say – or when to stay quiet.</span>
+              </li>
+            </ul>
+            <div class="mini-chip-row">
+              <span class="mini-chip">Ready-to-send emails / letters</span>
+              <span class="mini-chip">Priority map</span>
+              <span class="mini-chip">Better legal & emotional safety</span>
             </div>
           </div>
-        </aside>
+        </div>
+
+        <div class="hero-guarantee">
+          <strong>Quality bar:</strong> the target for any file we create together is at least
+          a <strong>95% honest satisfaction</strong> from you. If I don’t believe I can clearly improve your situation,
+          I will say “no” and not take the work.
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- WHY MO -->
+  <section id="why">
+    <div class="shell">
+      <div class="section-header">
+        <div class="section-kicker">Why Mo?</div>
+        <h2 class="section-title">Strategic brain + conscience + execution</h2>
+        <p class="section-desc">
+          I’m not a “content writer” and not a “life coach”. The work is: understand the real system of your life or business,
+          design a fair, realistic solution, and produce the actual messages and plans you can use – so this crisis becomes a turning point,
+          not just another story.
+        </p>
+      </div>
+
+      <div class="cards-grid">
+        <article class="card">
+          <div class="card-tag">
+            <span class="card-tag-dot"></span>
+            <span>Decision engineering</span>
+          </div>
+          <h3 class="card-title">Evidence → Logic → Conclusion</h3>
+          <div class="card-body">
+            Before we touch any email or WhatsApp message, we separate facts from emotion and organise the whole file.
+          </div>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>We map people, timelines, risks, and power – not just “how you feel”.</span></li>
+            <li><span class="card-list-icon">•</span><span>You see clear A/B/C options with consequences and trade-offs.</span></li>
+            <li><span class="card-list-icon">•</span><span>Every move is there for a reason you can explain to yourself and others.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-tag">
+            <span class="card-tag-dot"></span>
+            <span>Real words & documents</span>
+          </div>
+          <h3 class="card-title">Not theory – concrete outputs</h3>
+          <div class="card-body">
+            You don’t leave with “insights”. You leave with documents and runbooks that you can actually send or use.
+          </div>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Emails, letters and scripts written or edited with you, line by line.</span></li>
+            <li><span class="card-list-icon">•</span><span>Action plans: who does what, when, and what “success” really looks like.</span></li>
+            <li><span class="card-list-icon">•</span><span>A short learning card so your future self doesn’t repeat today’s mistake.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-tag">
+            <span class="card-tag-dot"></span>
+            <span>Conscience & fairness</span>
+          </div>
+          <h3 class="card-title">I stand with you – but not with your worst impulses</h3>
+          <div class="card-body">
+            The goal is justice and protection, not revenge or drama. Sometimes that means telling you “no” when you’re about to hit “send”.
+          </div>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>I won’t support illegal, abusive or self-destructive moves.</span></li>
+            <li><span class="card-list-icon">•</span><span>We respect your lawyer, therapist, or HR advisor – I work around them, not against them.</span></li>
+            <li><span class="card-list-icon">•</span><span>The filter is simple: can you explain this decision to a judge, a child, and your future self?</span></li>
+          </ul>
+        </article>
       </div>
     </div>
   </section>
@@ -1299,148 +247,46 @@
   <!-- WHO IT'S FOR -->
   <section id="who">
     <div class="shell">
-      <div class="section-heading">
-        <div class="section-eyebrow">Who this is for</div>
+      <div class="section-header">
+        <div class="section-kicker">Who is this for?</div>
         <h2 class="section-title">People who feel alone with a heavy file</h2>
-        <p class="section-lead">
-          I don’t work with “in theory” problems. I work with real files: screenshots, letters, HR emails, legal threats,
-          complex life transitions. If you recognise yourself in any of these, we’re likely a good match.
+        <p class="section-desc">
+          I don’t work with “in theory” problems. I work with real files: screenshots, HR emails, legal letters,
+          school complaints, debt letters, messy partner chats. If you recognise yourself below, we’re likely a match.
         </p>
       </div>
 
-      <div class="two-col">
-        <div>
-          <ul class="pill-list">
-            <li class="pill-item">
-              <span class="pill-item-icon">💼</span>
-              <div>
-                <strong>Employees facing HR, investigations or unfair treatment</strong>
-                <span>You feel the company is bigger and more organised than you. You’re scared of saying the wrong thing in an email or meeting.</span>
-              </div>
-            </li>
-            <li class="pill-item">
-              <span class="pill-item-icon">⚖️</span>
-              <div>
-                <strong>People dealing with divorce, custody or serious family decisions</strong>
-                <span>Everything is emotional, but the documents and deadlines are cold. You need someone calm to structure the story and define realistic targets.</span>
-              </div>
-            </li>
-            <li class="pill-item">
-              <span class="pill-item-icon">📉</span>
-              <div>
-                <strong>Founders and managers under pressure</strong>
-                <span>You’re balancing team, clients, investors and your own life. You need a private “thinking room” to test decisions before they hit reality.</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <ul class="pill-list">
-            <li class="pill-item">
-              <span class="pill-item-icon">🏦</span>
-              <div>
-                <strong>People in conflict with companies or institutions</strong>
-                <span>Banks, telecoms, landlords, service providers – you’re tired of automated answers, forms and call centres.</span>
-              </div>
-            </li>
-            <li class="pill-item">
-              <span class="pill-item-icon">🧠</span>
-              <div>
-                <strong>Overthinkers who can’t turn thinking into action</strong>
-                <span>You already have 100 thoughts and 20 screenshots. You need someone who respects your brain but forces it into a clean plan.</span>
-              </div>
-            </li>
-            <li class="pill-item">
-              <span class="pill-item-icon">🚫</span>
-              <div>
-                <strong>Not a fit?</strong>
-                <span>If your goal is to manipulate, lie, or “destroy” the other side at any cost, I’m not your person. I protect your ethics and long-term life, not just this one fight.</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROBLEMS / USE CASES -->
-  <section id="problems">
-    <div class="shell">
-      <div class="section-heading">
-        <div class="section-eyebrow">Type of problems</div>
-        <h2 class="section-title">The kinds of “serious mess” I actually take on</h2>
-        <p class="section-lead">
-          These are based on real cases I’ve already worked on – with details changed for privacy.
-          You don’t need the exact same story; you just need the same pattern: high stakes, confusion and risk of big mistakes.
-        </p>
-      </div>
-
-      <div class="usecase-grid">
-        <article class="usecase-card">
-          <div class="usecase-tag">Work & HR</div>
-          <h3 class="usecase-title">Investigation, warning or “performance” pressure</h3>
-          <p class="usecase-text">
-            You’re facing a formal process (investigation, written warning, performance plan) and every sentence you send could be used later.
+      <div class="who-grid">
+        <article class="card">
+          <div class="who-label">Profile #1</div>
+          <h3 class="who-title">Employees and “regular people” facing bigger systems</h3>
+          <p class="who-tagline">
+            You feel outnumbered or out-powered – but you don’t want to play the victim forever.
           </p>
-          <div class="usecase-before-after">
-            <div>
-              <div class="ua-label">Before</div>
-              <div class="ua-box">
-                Emotional emails, mixed stories, no clear timeline or evidence. HR controls the narrative.
-              </div>
-            </div>
-            <div>
-              <div class="ua-label">After working together</div>
-              <div class="ua-box">
-                Clean timeline, clear statements, risk map for each option, and emails that protect you without attacking blindly.
-              </div>
-            </div>
-          </div>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>HR investigations, unfair dismissal, bullying or discrimination cases.</span></li>
+            <li><span class="card-list-icon">•</span><span>Divorce, custody, landlord, bank, or school situations that are already emotional and messy.</span></li>
+            <li><span class="card-list-icon">•</span><span>Someone keeps sending emails or messages that make you panic, and you don’t know what to reply.</span></li>
+          </ul>
+          <p class="card-footnote">
+            Outcome: you get clear words, clear boundaries, and a realistic path that protects both your rights and your dignity.
+          </p>
         </article>
 
-        <article class="usecase-card">
-          <div class="usecase-tag">Companies & services</div>
-          <h3 class="usecase-title">Complaints against big organisations</h3>
-          <p class="usecase-text">
-            Telecoms, utilities, supermarkets, delivery services – where you feel like a reference number, not a human.
+        <article class="card">
+          <div class="who-label">Profile #2</div>
+          <h3 class="who-title">Founders, managers and operators under pressure</h3>
+          <p class="who-tagline">
+            You are responsible for others. The wrong decision costs people, money, and years – not just your mood.
           </p>
-          <div class="usecase-before-after">
-            <div>
-              <div class="ua-label">Before</div>
-              <div class="ua-box">
-                Endless calls, chatbots, being transferred, repeating yourself, no written trail that actually matters.
-              </div>
-            </div>
-            <div>
-              <div class="ua-label">After working together</div>
-              <div class="ua-box">
-                One structured complaint chain, clear demands, and an escalation path that reaches humans who can decide.
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="usecase-card">
-          <div class="usecase-tag">Life & family</div>
-          <h3 class="usecase-title">Divorce, debt, or life re-design under pressure</h3>
-          <p class="usecase-text">
-            When several problems hit at once – money, housing, kids, family – and your brain is in survival mode.
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Conflicts with co-founders, investors, key team members, or critical clients.</span></li>
+            <li><span class="card-list-icon">•</span><span>Projects stuck in limbo – too risky to continue blindly, too important to ignore.</span></li>
+            <li><span class="card-list-icon">•</span><span>A calendar so full that you simply don’t have the mental space to think through complex trade-offs.</span></li>
+          </ul>
+          <p class="card-footnote">
+            Outcome: your own decision system in the background – like a Strategy + HR unit focused only on your side of the table.
           </p>
-          <div class="usecase-before-after">
-            <div>
-              <div class="ua-label">Before</div>
-              <div class="ua-box">
-                100 worries, no map. You react to the latest message instead of a structured plan.
-              </div>
-            </div>
-            <div>
-              <div class="ua-label">After working together</div>
-              <div class="ua-box">
-                One system: priorities, timelines, who does what and when – and a written plan you can revisit when emotions spike.
-              </div>
-            </div>
-          </div>
         </article>
       </div>
     </div>
@@ -1449,95 +295,39 @@
   <!-- PROCESS -->
   <section id="process">
     <div class="shell">
-      <div class="section-heading">
-        <div class="section-eyebrow">How Mo Thinking works</div>
-        <h2 class="section-title">Evidence → Logic → Conclusion → Learning</h2>
-        <p class="section-lead">
-          Behind the scenes I’m using a full “Mo Thinking Engine”. You don’t need to use the jargon – you just need to feel the result:
-          less noise in your head, fewer blind spots, and a decision you can live with.
+      <div class="section-header">
+        <div class="section-kicker">How it works</div>
+        <h2 class="section-title">From heavy file to clean, executable plan</h2>
+        <p class="section-desc">
+          The shape changes with each case, but the backbone stays the same: organise → understand → decide → execute → learn.
         </p>
       </div>
 
       <div class="process-grid">
-        <div>
-          <ul class="process-steps">
-            <li class="step">
-              <div class="step-index">1</div>
-              <div class="step-main">
-                <strong>Collect the raw story and evidence</strong>
-                <p>
-                  You send me your story (voice note, message, documents, screenshots).
-                  I separate facts, feelings, assumptions, and things we don’t yet know.
-                </p>
-              </div>
-            </li>
-            <li class="step">
-              <div class="step-index">2</div>
-              <div class="step-main">
-                <strong>Define the real problem and realistic target</strong>
-                <p>
-                  Together we define: What are we actually trying to solve? What would a good outcome look like?
-                  What is not realistic right now, even if we emotionally want it?
-                </p>
-              </div>
-            </li>
-            <li class="step">
-              <div class="step-index">3</div>
-              <div class="step-main">
-                <strong>Design options A/B/C – with pros, cons and risks</strong>
-                <p>
-                  We build a small decision table: options, benefits, costs, risks, and what each option says about the person you want to be.
-                </p>
-              </div>
-            </li>
-            <li class="step">
-              <div class="step-index">4</div>
-              <div class="step-main">
-                <strong>Create the concrete output</strong>
-                <p>
-                  I write the email drafts, statements, meeting scripts and “first steps” plan – you review, edit in your own voice, and only then send.
-                </p>
-              </div>
-            </li>
-            <li class="step">
-              <div class="step-index">5</div>
-              <div class="step-main">
-                <strong>Capture the learning so you don’t repeat this</strong>
-                <p>
-                  We end with a tiny “learning card”: what happened, what you learned about yourself and the system,
-                  and how to spot early warning signs next time.
-                </p>
-              </div>
-            </li>
-          </ul>
-          <div class="process-keyline">
-            <strong>My job is not to decide for you.</strong>
-            It’s to make the picture so clear that your decision becomes obvious to you –
-            and to protect you from sending something you’ll regret later.
-          </div>
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-title">Intake & safety check</div>
+          I review your file (emails, screenshots, letters) and ask sharp questions to see if I can genuinely help.
+          If I don’t think we can improve your position, I tell you and we stop there.
         </div>
-
-        <aside class="process-card">
-          <h3 class="process-card-title">What you feel during the process</h3>
-          <p>
-            Clients usually report three moments:
-          </p>
-          <p>
-            1) <strong>Relief</strong> when everything is out of their head and on “one table”.
-          </p>
-          <p>
-            2) <strong>Sharp discomfort</strong> when we face their own mistakes and responsibilities honestly.
-          </p>
-          <p>
-            3) <strong>Calm confidence</strong> when they see a clean plan and words they can stand behind.
-          </p>
-          <div class="process-badges">
-            <span class="badge">No fake hope</span>
-            <span class="badge">No drama inflation</span>
-            <span class="badge">No ghosting</span>
-            <span class="badge">We finish what we start</span>
-          </div>
-        </aside>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-title">File organisation & map</div>
+          We map people, timelines, interests and power. We separate facts, claims, feelings, and unknowns.
+          You see your situation as a clear diagram, not a fog.
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-title">Strategy & decisions</div>
+          We design realistic targets, safety rules, and A/B/C options with consequences.
+          Then we choose the main path and a backup path – no more random reactions.
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-title">Execution & learning</div>
+          I help write / edit the actual messages and prepare you for critical conversations.
+          We close with a short learning card so your future self knows exactly what to avoid and what worked.
+        </div>
       </div>
     </div>
   </section>
@@ -1545,34 +335,37 @@
   <!-- PRICING -->
   <section id="pricing">
     <div class="shell">
-      <div class="section-heading">
-        <div class="section-eyebrow">Packages</div>
+      <div class="section-header">
+        <div class="section-kicker">Packages & pricing</div>
         <h2 class="section-title">Choose how deep you want to go</h2>
-        <p class="section-lead">
-          These ranges are there to give you a sense of scale. We can adjust up or down depending on the complexity of your file
-          and the country you live in – but I prefer to be upfront instead of “mystery pricing”.
+        <p class="section-desc">
+          Prices below are working examples. We can adjust up or down depending on complexity and your country – but I prefer to be clear, not mysterious.
         </p>
       </div>
 
       <p class="pricing-note">
-        <strong>Money promise:</strong> If you genuinely feel the work was not worth it for you, tell me honestly and we’ll fix it or I don’t take the money.
+        <strong>Money promise:</strong> if, after we finish, you genuinely feel the work didn’t clearly help you or protect you,
+        tell me honestly. We either fix it or I don’t take the money.
       </p>
 
       <div class="pricing-grid">
         <article class="price-card">
-          <div class="price-tagline">For one main decision or a single conflict</div>
-          <h3 class="price-title">Diagnostic session + mini plan</h3>
+          <div class="price-label">Package 1</div>
+          <h3 class="price-title">Diagnostic session (one file)</h3>
+          <p class="price-sub">
+            One focused call to get clarity, a first strategy, and concrete next steps for a single situation.
+          </p>
           <div class="price-row">
-            <div class="price-main">£80</div>
-            <div class="price-unit">/ ~90 min</div>
+            <div class="price-main">£60–£90</div>
+            <div class="price-unit">/ 60–90 minutes</div>
           </div>
           <p class="price-small">
-            Good if you’re not sure yet how big the problem really is – or just want to “test” working together.
+            Ideal if you’re unsure whether to go deeper or just need a strong first move.
           </p>
           <ul class="price-list">
-            <li><span class="price-check">✓</span><span>Intake of your story + key documents.</span></li>
-            <li><span class="price-check">✓</span><span>Define the real problem and a realistic target.</span></li>
-            <li><span class="price-check">✓</span><span>Short A/B/C options with my initial recommendation.</span></li>
+            <li><span class="price-check">✓</span><span>Short intake form + review of the key documents.</span></li>
+            <li><span class="price-check">✓</span><span>Live mapping of the situation and realistic target.</span></li>
+            <li><span class="price-check">✓</span><span>A/B/C options with my recommendation and key risks.</span></li>
             <li><span class="price-check">✓</span><span>One or two short email / wording suggestions.</span></li>
           </ul>
           <div class="price-cta">
@@ -1582,146 +375,123 @@
         </article>
 
         <article class="price-card featured">
+          <div class="price-label">Package 2 – Recommended</div>
           <div class="price-tagline">For when the file is already heavy</div>
-          <h3 class="price-title">Case path: from chaos to final outcome</h3>
+          <h3 class="price-title">Case path: from chaos to outcome</h3>
+          <p class="price-sub">
+            We stay with one serious case from first message to final outcome or stable stopping point.
+          </p>
           <div class="price-row">
             <div class="price-main">£250–£450</div>
             <div class="price-unit">/ per case</div>
           </div>
           <p class="price-small">
-            We stay with one case from first message to resolution (or clear stopping point) – work, complaint, divorce step, dispute, etc.
+            Includes calls, writing time, and review – not just one conversation.
           </p>
           <ul class="price-list">
             <li><span class="price-check">✓</span><span>Full intake and organisation of your documents and story.</span></li>
-            <li><span class="price-check">✓</span><span>Design of the strategy and options over time, not just one message.</span></li>
+            <li><span class="price-check">✓</span><span>Strategy design over time – not just one email.</span></li>
             <li><span class="price-check">✓</span><span>Writing and re-writing of key emails, letters, or scripts.</span></li>
             <li><span class="price-check">✓</span><span>Checkpoints before and after important calls or meetings.</span></li>
-            <li><span class="price-check">✓</span><span>Final learning card so you don’t repeat the same pattern in the future.</span></li>
+            <li><span class="price-check">✓</span><span>Closing learning card so you don’t repeat the same pattern.</span></li>
           </ul>
           <div class="price-cta">
             <span class="price-badge">Most people start here</span>
-            <a href="#contact" class="btn btn-primary">
-              <span>Send me your case</span>
-            </a>
+            <a href="#contact" class="btn btn-primary">Start a case</a>
           </div>
         </article>
 
         <article class="price-card">
-          <div class="price-tagline">For founders / managers who want an ongoing “thinking room”</div>
+          <div class="price-label">Package 3</div>
+          <div class="price-tagline">For founders who want ongoing thinking</div>
           <h3 class="price-title">Monthly decision partner</h3>
+          <p class="price-sub">
+            A private channel with me + the engine to support repeated decisions, not just one crisis.
+          </p>
           <div class="price-row">
             <div class="price-main">from £220</div>
             <div class="price-unit">/ month</div>
           </div>
           <p class="price-small">
-            Limited number of clients. You get a private channel with me and the engine for repeated decisions, not just one crisis.
+            Limited number of clients at a time to keep depth and attention high.
           </p>
           <ul class="price-list">
-            <li><span class="price-check">✓</span><span>Fixed number of deep dives per month.</span></li>
-            <li><span class="price-check">✓</span><span>Short “sanity checks” on smaller decisions.</span></li>
-            <li><span class="price-check">✓</span><span>Pattern tracking: we look at how your decisions are evolving over time.</span></li>
+            <li><span class="price-check">✓</span><span>Fixed number of deep dives per month on your most important decisions.</span></li>
+            <li><span class="price-check">✓</span><span>Quick “sanity checks” on smaller moves by voice note / email.</span></li>
+            <li><span class="price-check">✓</span><span>Pattern review every month: how your decisions and results are evolving.</span></li>
           </ul>
           <div class="price-cta">
-            <span class="price-badge">By application only</span>
-            <a href="#contact" class="btn btn-outline">Ask about availability</a>
+            <span class="price-badge">For serious, long-term work</span>
+            <a href="#contact" class="btn btn-outline">Discuss this track</a>
           </div>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- EXAMPLES / CASES -->
-  <section id="cases">
+  <!-- FAQ -->
+  <section id="faq">
     <div class="shell">
-      <div class="section-heading">
-        <div class="section-eyebrow">Examples</div>
-        <h2 class="section-title">The flavour of real cases (with details changed)</h2>
-        <p class="section-lead">
-          I protect client privacy, so I can’t show screenshots. But these are typical patterns of results.
-          Your reality will never be identical – and I won’t promise anything I can’t control – but the way we think will be the same.
+      <div class="section-header">
+        <div class="section-kicker">Honest questions</div>
+        <h2 class="section-title">What you should know before we work together</h2>
+        <p class="section-desc">
+          I prefer you say “no” for the right reasons than “yes” for the wrong ones. Here are straight answers to the basics.
         </p>
       </div>
 
-      <div class="cases-grid">
-        <article class="case-card">
-          <div class="case-label">Work conflict</div>
-          <h3 class="case-title">Investigation without destruction</h3>
-          <p class="case-body">
-            Employee accused of “unprofessional behaviour” after a conflict with a manager. HR started a formal process with very biased language.
-            We rebuilt the timeline, clarified responsibilities on both sides, and designed emails that were firm but factual.
-          </p>
-          <p class="case-result">
-            Outcome: written warning avoided, relationship cooled down, and the employee later moved to a healthier team.
-          </p>
-        </article>
+      <div class="faq-grid">
+        <div>
+          <div class="faq-item">
+            <div class="faq-q"><strong>Is this coaching, consulting, or something else?</strong></div>
+            <div class="faq-a">
+              It’s a hybrid: part coaching (questions, reflection), part consulting (analysis, structure),
+              and part ghost-writing (emails, letters, documents). The filter is simple: does it move your file forward safely?
+            </div>
+          </div>
 
-        <article class="case-card">
-          <div class="case-label">Complaint vs company</div>
-          <h3 class="case-title">From ignored customer to human conversation</h3>
-          <p class="case-body">
-            Customer stuck in a loop with a large service provider: chatbots, scripts, “there’s nothing we can do”.
-            We built one structured complaint letter chain with clear demands and escalation steps, instead of 20 emotional messages.
-          </p>
-          <p class="case-result">
-            Outcome: written apology, partial refund, and – more importantly – a sense of dignity restored for the client.
-          </p>
-        </article>
+          <div class="faq-item">
+            <div class="faq-q"><strong>Are you a lawyer or therapist?</strong></div>
+            <div class="faq-a">
+              No. I don’t replace legal or psychological professionals. I sit in the space between:
+              organising your story, designing strategy, and preparing your communication – while respecting legal and clinical boundaries.
+            </div>
+          </div>
 
-        <article class="case-card">
-          <div class="case-label">Life decision</div>
-          <h3 class="case-title">Divorce planning without burning the earth</h3>
-          <p class="case-body">
-            Person overwhelmed with divorce, kids, housing and debt at the same time. Everything felt like “the end”.
-            We mapped all constraints, defined what “a decent life in 3 years” would look like, and built a step-by-step path.
-          </p>
-          <p class="case-result">
-            Outcome: clearer agreements, less self-blame, and a practical plan instead of endless late-night panic loops.
-          </p>
-        </article>
-      </div>
-    </div>
-  </section>
+          <div class="faq-item">
+            <div class="faq-q"><strong>Do you use AI tools?</strong></div>
+            <div class="faq-a">
+              Yes, I use tools like ChatGPT as assistants – mainly to test ideas, check wording, and stress-test scenarios.
+              But you are working with a human brain and a human conscience. No important decision is left to a machine.
+            </div>
+          </div>
+        </div>
 
-  <!-- ABOUT + SAFETY -->
-  <section id="about">
-    <div class="shell">
-      <div class="section-heading">
-        <div class="section-eyebrow">Who is Mo?</div>
-        <h2 class="section-title">A human with an overthinking brain – turned into a system</h2>
-        <p class="section-lead">
-          I’m not a guru, not a “life coach”, and not a lawyer. I’m someone who has spent years building
-          a practical thinking engine because I personally couldn’t tolerate chaos, unfairness and emotional decision-making anymore.
-        </p>
-      </div>
+        <div>
+          <div class="faq-item">
+            <div class="faq-q"><strong>What if my case is small or I just need one email?</strong></div>
+            <div class="faq-a">
+              We can start with a diagnostic session and one message. If that’s enough, we stop there.
+              If it reveals a deeper pattern, we can move into the case package – but there is no pressure to “upgrade”.
+            </div>
+          </div>
 
-      <div class="about-grid">
-        <article class="about-card">
-          <h3>What I bring into your case</h3>
-          <p>
-            I’ve run real businesses, dealt with real institutions, and helped people through real crises – from work conflicts
-            to family breakdowns. I’m calm under pressure and allergic to vague thinking.
-          </p>
-          <ul class="about-list">
-            <li><span class="icon">🧩</span><span>Ability to hold all pieces of your story at once without getting emotionally flooded.</span></li>
-            <li><span class="icon">📚</span><span>Structured methods: learning cards, decision tables, and clear “before/after” maps.</span></li>
-            <li><span class="icon">✍️</span><span>Strong writing in English that translates your truth into words people can hear.</span></li>
-            <li><span class="icon">🛑</span><span>The courage to say “no, we should not do this” if a move would harm your long-term life.</span></li>
-          </ul>
-        </article>
+          <div class="faq-item">
+            <div class="faq-q"><strong>What if I’m not in the UK or not earning much?</strong></div>
+            <div class="faq-a">
+              Most work can happen online. For the price, I keep a limited number of reduced-rate slots for people in genuinely hard situations.
+              If you need that, be honest about your reality when you contact me.
+            </div>
+          </div>
 
-        <aside class="about-card">
-          <h3>Safety, limits and honesty</h3>
-          <p class="disclaimer">
-            <strong>I am not a lawyer, therapist or financial advisor.</strong><br>
-            I work on clarity, structure and communication. When we need legal or specialist input,
-            I will actively encourage you to bring them in – and I’ll help you prepare for those conversations.
-          </p>
-          <ul class="about-list">
-            <li><span class="icon">🔒</span><span>Your files are treated as confidential and are not shared with third parties without your explicit permission.</span></li>
-            <li><span class="icon">⚖️</span><span>I won’t help with illegal, abusive or clearly unethical strategies – even if they “work” in the short term.</span></li>
-            <li><span class="icon">🧪</span><span>If after a first look I feel I’m not the right person, I will say so instead of taking your money and your hope.</span></li>
-          </ul>
-        </aside>
+          <div class="faq-item">
+            <div class="faq-q"><strong>What do you expect from me as a client?</strong></div>
+            <div class="faq-a">
+              Honesty, willingness to hear uncomfortable truths, and the courage to execute the plan we agree on.
+              If you only want someone to confirm what you already decided, this is not the right service.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -1729,75 +499,68 @@
   <!-- CONTACT -->
   <section id="contact">
     <div class="shell">
-      <div class="section-heading">
-        <div class="section-eyebrow">Start here</div>
-        <h2 class="section-title">Tell me what’s happening – I’ll tell you if I can help</h2>
-        <p class="section-lead">
-          You don’t need to write a perfect summary. Start messy if you have to. I’ll ask for what’s missing.
-          After I see your message, I’ll reply with options: a paid diagnostic, a deeper case path, or an honest “no”.
+      <div class="section-header">
+        <div class="section-kicker">Start</div>
+        <h2 class="section-title">Send your file for a first look</h2>
+        <p class="section-desc">
+          Use the form below to outline your situation. Don’t try to be perfect – just be honest. I’ll reply with
+          either a suggested package or a clear “no” if I believe I can’t help.
         </p>
       </div>
 
       <div class="contact-grid">
         <div class="contact-card">
-          <div class="contact-row">
-            <span class="contact-label">Email</span>
-            <span class="contact-main">
-              <!-- CHANGE_ME: put your real email -->
-              <a href="mailto:CHANGE_ME@example.com">mo@elasrag.com</a>
-            </span>
-          </div>
-          <div class="contact-row">
-            <span class="contact-label">WhatsApp (good for voice notes)</span>
-            <span class="contact-main">
-              <!-- CHANGE_ME: put your real WhatsApp link/number -->
-              <a href="https://wa.me/qr/AJKRPOUTBWNCJ1" target="_blank" rel="noopener">+447543522131</a>
-            </span>
-          </div>
-          <div class="contact-row">
-            <span class="contact-label">What happens after you send</span>
-            <span class="contact-main">
-              I read your message carefully, check if I can realistically improve your situation, then reply with:
-              a suggested package, expected cost, and what information we still need – or I’ll tell you if I’m not the right person.
-            </span>
-          </div>
-          <p class="form-note">
-            <strong>Time zones:</strong> I’m based in the UK. If we work together, we’ll agree on times that work for both sides.
-          </p>
+          <h3>Contact form</h3>
+          <p>This is a simple static form. Connect it to your preferred tool (email, form handler, etc.).</p>
+          <form>
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" type="text" name="name" autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" type="email" name="email" autocomplete="email">
+            </div>
+            <div class="field">
+              <label for="context">Country / time zone</label>
+              <input id="context" type="text" name="context">
+            </div>
+            <div class="field">
+              <label for="summary">Very short summary of the file (2–3 lines)</label>
+              <textarea id="summary" name="summary"></textarea>
+            </div>
+            <div class="field">
+              <label for="goal">What result are you hoping for?</label>
+              <textarea id="goal" name="goal"></textarea>
+            </div>
+            <button class="btn btn-primary" type="submit">
+              <span class="btn-icon">📩</span>
+              <span>Send for review</span>
+            </button>
+          </form>
         </div>
 
-        <div class="contact-card">
-          <!-- You can connect this form to a service like Formspree or a custom backend -->
-          <form method="post" action="#">
-            <div class="form-grid">
-              <div>
-                <label for="name">Full name</label>
-                <input id="name" name="name" type="text" placeholder="Your name">
-              </div>
-              <div>
-                <label for="role">Your current situation</label>
-                <input id="role" name="role" type="text" placeholder="Employee / founder / in between / other">
-              </div>
-              <div>
-                <label for="topic">What is the main area?</label>
-                <input id="topic" name="topic" type="text" placeholder="Example: HR conflict, divorce, debt, complaint against company">
-              </div>
-              <div>
-                <label for="message">Tell me what’s happening (rough version is fine)</label>
-                <textarea id="message" name="message" placeholder="Key events, important dates, what you’re afraid of, what you hope for. You can mention if you have documents ready to share."></textarea>
-              </div>
-              <div>
-                <button type="submit" class="btn btn-primary">
-                  <span class="btn-icon">✉️</span>
-                  <span>Send safely</span>
-                </button>
-              </div>
-            </div>
-            <p class="form-note">
-              Please don’t include very sensitive data (ID numbers, full addresses, children’s full names) in the first message.
-              We can handle that securely later if needed.
-            </p>
-          </form>
+        <div class="contact-side">
+          <h4>How I usually reply</h4>
+          <p>
+            I read your message and – if needed – ask for 1–3 key documents (for example: last HR email, last court letter,
+            last message from the other side). Then I answer with:
+          </p>
+          <ul class="contact-list">
+            <li>• whether I believe I can help;</li>
+            <li>• which package makes sense (if any);</li>
+            <li>• and the earliest time we can realistically start.</li>
+          </ul>
+          <p>
+            If I’m not the right person for your situation, I’ll say so directly instead of wasting your time.
+          </p>
+
+          <h4>Direct contact</h4>
+          <p>You can also contact me directly if you prefer:</p>
+          <ul class="contact-list">
+            <li>• Email: <a href="mailto:mo@elasrag.com">mo@elasrag.com</a></li>
+            <li>• Telegram / WhatsApp: by agreement after first email</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -1806,48 +569,14 @@
 
 <footer>
   <div class="shell">
-    <div class="footer-row">
-      <div>© <span id="year"></span> Mo Thinking. All rights reserved.</div>
-      <div class="footer-links">
-        <a href="#hero">Back to top</a>
-        <span>·</span>
-        <a href="#about">About</a>
-        <span>·</span>
-        <a href="#contact">Work with me</a>
-      </div>
-    </div>
+    <span>© <span id="year"></span> Mo Thinking. All rights reserved.</span>
+    <span>Built around the Mo Thinking Engine – Evidence → Logic → Conclusion → Action → Learning.</span>
   </div>
 </footer>
 
 <script>
-  // Set current year in footer
+  // simple year
   document.getElementById('year').textContent = new Date().getFullYear();
-
-  // Mobile nav toggle
-  const navToggle = document.querySelector('.nav-toggle');
-  const navLinks = document.querySelector('.nav-links');
-
-  navToggle.addEventListener('click', function() {
-    const isOpen = navLinks.classList.toggle('open');
-    this.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  });
-
-  // Smooth scroll for nav links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      const targetId = this.getAttribute('href').slice(1);
-      const target = document.getElementById(targetId);
-      if (target) {
-        e.preventDefault();
-        window.scrollTo({
-          top: target.offsetTop - 70,
-          behavior: 'smooth'
-        });
-        navLinks.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', 'false');
-      }
-    });
-  });
 </script>
 </body>
 </html>
