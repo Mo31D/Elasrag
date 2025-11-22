@@ -135,14 +135,6 @@
     border-bottom: 1px solid rgba(15,23,42,0.9);
   }
 
-  .nav-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 0;
-    gap: 1.5rem;
-  }
-
   .brand {
     display: flex;
     align-items: center;
@@ -181,29 +173,42 @@
     color: var(--muted);
   }
 
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    font-size: 0.86rem;
-  }
+/* ====== HEADER (TWO ROWS) ====== */
+.nav-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 0 0.4rem;
+  gap: 1rem;
+}
 
-  .nav-links a {
-    color: var(--muted);
-    text-decoration: none;
-    padding: 0.2rem 0.2rem;
-    border-radius: 999px;
-  }
+.nav-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.4rem 0 0.75rem;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(15,23,42,0.7);
+  font-size: 0.86rem;
+}
 
-  .nav-links a:hover {
-    color: var(--text);
-  }
+.nav-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  line-height: 1;
+  text-align: center;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.2rem 0.2rem;
+  border-radius: 999px;
+}
 
-  .nav-cta {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
+.nav-links a:hover {
+  color: var(--text);
+} 
 
   .btn {
     display: inline-flex;
@@ -378,15 +383,12 @@
     box-shadow: var(--shadow-soft);
   }
 
-  .hero-panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.76rem;
-    color: var(--muted);
-    margin-bottom: 0.75rem;
-  }
+.hero-panel-header {
+  display: flex;
+  flex-direction: column; 
+  gap: 0.35rem;
+  align-items: flex-end;
+}
 
   .hero-status {
     display: inline-flex;
@@ -880,7 +882,7 @@
 
   /* ===== RESPONSIVE ===== */
 
-  @media (max-width: 960px) {
+  @media (max-width: 200px) {
     .hero-grid {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -932,3 +934,8 @@
       display: none;
     }
   }
+  #other-services {
+  padding: 3rem 0 4rem;
+  border-top: 1px solid var(--border);
+  background: radial-gradient(circle at top, #02081f 0, #020617 60%);
+}
