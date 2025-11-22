@@ -32,7 +32,7 @@
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
   }
-
+  
   a {
     color: var(--accent);
     text-decoration: none;
@@ -53,7 +53,38 @@
     margin: 0 auto;
     padding: 0 1.4rem;
   }
+/* نفس تأثير ELASRAG LOGIN بالظبط لكن على موقع MoThinking */
+body {
+  position: relative;
+  overflow-x: hidden;
+}
 
+/* طبقة التوهج */
+body::before {
+  content: '';
+  position: fixed;
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+  background: conic-gradient(
+    from 90deg,
+    rgba(255,255,255,0.05),
+    rgba(255,230,150,0.2),
+    rgba(0,230,255,0.1),
+    rgba(255,255,255,0.05)
+  );
+  animation: rotateAI 12s linear infinite;
+  filter: blur(100px);
+  z-index: 0;              /* مهم: مش -1 */
+  pointer-events: none;
+}
+
+/* نفس keyframes */
+@keyframes rotateAI {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
   /* =========================
      TOP LANGUAGE BAR (CLEAN)
      ========================= */
@@ -79,7 +110,14 @@
     font-size: 0.78rem;
     color: var(--muted);
   }
-
+/* ارفع المحتوى فوق طبقة التوهج */
+.lang-bar,
+header,
+main,
+footer {
+  position: relative;
+  z-index: 1;
+}
   .lang-list {
     display: flex;
     flex-wrap: wrap;
@@ -882,7 +920,7 @@
 
   /* ===== RESPONSIVE ===== */
 
-  @media (max-width: 200px) {
+  @media (max-width: 400px) {
     .hero-grid {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -934,8 +972,42 @@
       display: none;
     }
   }
-  #other-services {
-  padding: 3rem 0 4rem;
-  border-top: 1px solid var(--border);
-  background: radial-gradient(circle at top, #02081f 0, #020617 60%);
+/* === نقل توهج كارت اللوجين لكروت other-services فقط === */
+#other-services .card {
+  position: relative;
+  background: rgba(255,255,255,0.04); /* نفس شفافية كارت اللوجين */
+  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 50px rgba(255,230,150,0.2); /* نفس التوهج الذهبي */
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+/* لما تعمل hover نفس إحساس اللوجين */
+#other-services .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 70px rgba(255,230,150,0.35),
+              0 0 30px rgba(0,230,255,0.18);
+  border-color: rgba(255,230,150,0.35);
+}
+
+/* توهج داخلي ناعم زي اللي حوالين مربع اللوجين */
+#other-services .card::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at top,
+    rgba(255,230,150,0.12),
+    transparent 60%
+  );
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ارفع محتوى الكارت فوق التوهج */
+#other-services .card > * {
+  position: relative;
+  z-index: 1;
 }
