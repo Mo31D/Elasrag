@@ -920,7 +920,7 @@ footer {
 
   /* ===== RESPONSIVE ===== */
 
-  @media (max-width: 400px) {
+  @media (max-width: 600px) {
     .hero-grid {
       grid-template-columns: minmax(0, 1fr);
     }
