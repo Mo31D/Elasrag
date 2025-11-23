@@ -1196,9 +1196,6 @@ section[data-collapsible].open .collapsible-content {
   transition: 0.25s ease;
 }
 
-.other-services-header:hover::after {
-  opacity: 0.9;
-}
 
 /* arrow position + animation */
 .fake-arrow {
