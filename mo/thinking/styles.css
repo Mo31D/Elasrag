@@ -1150,3 +1150,124 @@ section[data-collapsible].open .collapsible-content {
 .faq-item.open .faq-arrow{
   transform: rotate(180deg);
 }
+
+/* hide checkbox */
+.collapse-check {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* header look + clickability */
+.other-services-header {
+  cursor: pointer;
+  padding: 1.1rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(31,41,55,0.9);
+  background: radial-gradient(circle at top left, rgba(2,8,31,0.9), rgba(2,6,23,0.98) 60%);
+  transition: 0.25s ease;
+  position: relative;
+  display: block;
+}
+
+/* subtle premium hover */
+.other-services-header:hover {
+  border-color: rgba(34,211,238,0.55);
+  box-shadow:
+    0 0 0 1px rgba(34,211,238,0.25),
+    0 12px 32px rgba(34,211,238,0.12);
+  transform: translateY(-2px);
+}
+
+/* small "shine" line to hint importance */
+.other-services-header::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 10px;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(34,211,238,0.9),
+    transparent
+  );
+  opacity: 0;
+  transition: 0.25s ease;
+}
+
+.other-services-header:hover::after {
+  opacity: 0.9;
+}
+
+/* arrow position + animation */
+.fake-arrow {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 0.95rem;
+  opacity: 0.7;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* collapsed by default */
+#other-services-content {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: 0.35s ease;
+}
+
+/* ✅ open when checked */
+#other-services-toggle:checked ~ #other-services-content {
+  max-height: 4000px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* rotate arrow when open */
+#other-services-toggle:checked + .other-services-header .fake-arrow {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* slight "active" state */
+#other-services-toggle:checked + .other-services-header {
+  border-color: var(--accent);
+  box-shadow: 0 18px 55px rgba(34,211,238,0.18);
+}
+/* ✅ Fix: prevent top clipping of other-services cards when opened by checkbox */
+#other-services-toggle:checked ~ #other-services-content {
+  transform: translateY(0) !important;
+  overflow: visible !important;
+  padding-top: 0.9rem;   /* مسافة تحت الهيدر */
+  margin-top: 0.2rem;    /* فصل بسيط إضافي */
+}
+/* === Make all arrows / bullets / checks use site blue === */
+.collapse-arrow,
+.fake-arrow,
+.card-list-icon,
+.highlight-bullet,
+.price-check {
+  color: var(--accent) !important;
+}
+
+/* لو عندك أي ✓ أو • جوّه عناصر تانية بدون كلاس */
+.price-list li::marker,
+.card-list li::marker,
+.highlight-list li::marker {
+  color: var(--accent);
+}
+
+/* FAQ arrows use site blue */
+.faq-arrow {
+  color: var(--accent) !important;
+}
+
+#faq li::marker,
+#faq .card-list-icon,
+#faq .highlight-bullet,
+#faq .price-check {
+  color: var(--accent) !important;
+}

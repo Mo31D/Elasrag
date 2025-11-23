@@ -433,25 +433,28 @@
     </div>
   </section>
 <!-- Extra services section -->
-<section id="other-services" data-collapsible data-default="closed">
+<section id="other-services" data-default="closed">
   <div class="shell">
-    <div class="section-header collapsible-header">
-      <div class="section-kicker">Other services</div>
+
+    <!-- ✅ checkbox hidden controls open/close -->
+    <input type="checkbox" id="other-services-toggle" class="collapse-check">
+
+    <!-- ✅ كله بقي clickable -->
+    <label for="other-services-toggle" class="section-header collapsible-header other-services-header">
+      <div class="section-kicker">OTHER SERVICES</div>
       <h2 class="section-title">Other ways I can help your business</h2>
       <p class="section-desc">
         Beyond Mo Thinking cases, I can also support you with websites, social media, business setup, accounting and IT.
       </p>
 
-<button class="collapse-toggle" type="button"
-        aria-expanded="false"
-        aria-controls="other-services-content">
-  <span class="collapse-label"></span>
-  <span class="collapse-arrow">▾</span>
-</button>
+      <!-- السهم موجود للـ indication بس -->
+      <span class="fake-arrow">▾</span>
+    </label>
 
-    <!-- collapsible content wrapper -->
+    <!-- ✅ نفس المحتوى بتاعك -->
     <div id="other-services-content" class="collapsible-content">
       <div class="who-grid">
+
         <!-- Service 1 -->
         <article class="card">
           <div class="who-label">Service #1</div>
