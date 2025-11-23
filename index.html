@@ -1,38 +1,809 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ELASRAG</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mo Thinking | High-Stakes Decisions, Conflicts & Difficult Problems</title>
+  <meta name="description" content="Rent Mo’s mind + the Mo Thinking Engine when you’re stuck in a serious mess – high-stakes decisions, conflicts and difficult problems. Clear plans, concrete documents, and learning so you don’t repeat the same mistake.">
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <nav class="elasrag-menu">
-    <div class="logo">ELASRAG</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-    </ul>
-  </nav>
-
-  <div id="elasrag-login">
-    <div class="card">
-      <div class="title">ELASRAG ACCESS</div><br>
-      <div class="subtitle">Secure Login Portal</div>
-      <div class="desc" id="typewriter"></div>
-
-      <form id="accessForm"><br>
-        <label for="pw">Password</label>
-        <input type="password" id="pw" placeholder="•••••" required>
-        <button type="submit">Enter</button>
-        <div class="msg" id="msg"></div>
-      </form>
-
-      <a class="btn" href="mo/thinking/index.html" target="_blank">🌐 Mo Thinking Engine</a>
-      <a class="btn" href="game/index.html" target="_blank">🎮 The Grant Grand Silkroad — Game Demo</a>
-      <a class="btn" href="mo/index.html" target="_blank">📄 MO</a>
+	<!-- Language bar -->
+<div class="lang-bar">
+  <div class="lang-bar-inner">
+    <div class="lang-list">
+      <a href="index.html" class="lang-pill active"><span class="flag">🇬🇧</span> EN</a>
+      <a href="ar.html" class="lang-pill"><span class="flag">🇸🇦</span> AR</a>
+      <a href="es.html" class="lang-pill"><span class="flag">🇪🇸</span> ES</a>
+      <a href="pl.html" class="lang-pill"><span class="flag">🇵🇱</span> PL</a>
+      <a href="ro.html" class="lang-pill"><span class="flag">🇷🇴</span> RO</a>
+      <a href="ru.html" class="lang-pill"><span class="flag">🇷🇺</span> RU</a>
+      <a href="fr.html" class="lang-pill"><span class="flag">🇫🇷</span> FR</a>
     </div>
+    <div class="lang-note">More languages available</div>
+  </div>
+</div>
+
+<header>
+  <div class="shell nav-top">
+<div class="brand">
+  <img src="logo.gif" class="logo-img" alt="Mo Thinking logo">
+  <div class="brand-text">
+    <div class="brand-name">Mo Thinking</div>
+    <div class="brand-sub">High-stakes decisions & conflicts</div>
+  </div>
+</div>
+
+    <div class="nav-cta">
+      <a href="#contact" class="btn btn-outline">
+        <span class="btn-icon">✉️</span>
+        <span>Book diagnostic session</span>
+      </a>
+      <a href="#pricing" class="btn btn-primary">
+        <span class="btn-icon">⚙️</span>
+        <span>See packages</span>
+      </a>
+    </div>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
   </div>
 
-  <script src="script.js"></script>
+  <nav id="nav-links" class="nav-links" aria-label="Main navigation">
+    <a href="#hero">Home</a>
+    <a href="#why">Why Mo?</a>
+    <a href="#who">Who it’s for</a>
+    <a href="#process">How it works</a>
+    <a href="#pricing">Packages</a>
+    <a href="#faq">FAQ</a>
+    <a href="#other-services">Other services</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section id="hero" class="hero">
+    <div class="shell hero-grid">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span class="label-main">When the stakes feel too high to improvise</span>
+          <span class="label-sub">work · courts · money · family</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span class="accent">Mo Thinking</span> – rent my mind<br>
+          when you’re stuck in a <span class="highlight">serious mess</span>.
+        </h1>
+
+        <p class="hero-subtitle">
+          Instead of losing weeks to panic and overthinking, you rent my brain + the
+          <strong>Mo Thinking Engine</strong> – a system built from real high-stakes files –
+          to turn your chaos into a clear plan: evidence → logic → decision → action →
+          learning so you don’t walk into the same trap again.
+        </p>
+
+        <div class="hero-badges">
+          <span class="badge">High-stakes files: HR, courts, money, family</span>
+          <span class="badge">Evidence → Logic → Conclusion before any email is sent</span>
+          <span class="badge">Concrete outputs: ready-to-send messages + action plan + learning card</span>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">
+            <span class="btn-icon">⚡</span>
+            <span>Book diagnostic session</span>
+          </a>
+          <a href="#why" class="btn btn-outline">
+            <span>See how I work</span>
+          </a>
+        </div>
+
+        <div class="hero-note">
+          <strong>Money promise:</strong> if, after honest use, you feel the work didn’t clearly improve your position,
+          tell me directly – we rework it or I don’t take the money.
+        </div>
+
+        <div class="hero-secondary">
+          <span><span class="dot"></span> I work with people who want real solutions and can handle the full truth.</span>
+          <span>I won’t help with illegal, abusive or dirty strategies – there are non-negotiable safety filters.</span>
+        </div>
+      </div>
+
+      <aside class="hero-panel" aria-label="Service snapshot">
+        <div class="hero-panel-header">
+    <span class="hero-status">
+      <span class="hero-status-dot"></span>
+      <span>Accepting new cases</span>
+    </span>
+
+    <span>A private Strategy / HR / Disputes room – just for you.</span>
+  </div>
+
+        <div class="hero-panel-title">
+          What you’re really renting
+        </div>
+        <div class="hero-panel-sub">
+          Mo’s brain + the Mo Thinking Engine working on your real file – not theory, not motivational talk.
+        </div>
+
+        <div class="hero-panel-grid">
+          <div class="mini-card">
+            <h4>For founders / managers</h4>
+            <p class="muted">Useful when you’re juggling:</p>
+            <ul class="highlight-list">
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>HR conflicts, partners, and difficult clients where one wrong move can explode reputation or legal risk.</span>
+              </li>
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>Zombie projects: too alive to kill, too dead to grow – you need a clear decision framework.</span>
+              </li>
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>No bandwidth for deep thinking; you need someone to think for you and show clean options.</span>
+              </li>
+            </ul>
+            <div class="mini-chip-row">
+              <span class="mini-chip">Decision system</span>
+              <span class="mini-chip">Risk & safety rules</span>
+              <span class="mini-chip">Action runbooks</span>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <h4>For the “normal” person under attack</h4>
+            <p class="muted">You might be dealing with:</p>
+            <ul class="highlight-list">
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>Divorce, custody, school or employer complaints, or debt – and you’re scared of one wrong move.</span>
+              </li>
+              <li>
+                <span class="highlight-bullet">•</span>
+                <span>A boss, ex, or institution putting pressure on you and you don’t know what to say – or when to stay quiet.</span>
+              </li>
+            </ul>
+            <div class="mini-chip-row">
+              <span class="mini-chip">Ready-to-send emails / letters</span>
+              <span class="mini-chip">Priority map</span>
+              <span class="mini-chip">Better legal & emotional safety</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-guarantee">
+          <strong>Quality bar:</strong> the target for any file we create together is at least
+          a <strong>95% honest satisfaction</strong> from you. If I don’t believe I can clearly improve your situation,
+          I will say “no” and not take the work.
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- WHY MO -->
+  <section id="why">
+    <div class="shell">
+      <div class="section-header">
+        <div class="section-kicker">Why Mo?</div>
+        <h2 class="section-title">Strategic brain + conscience + execution</h2>
+        <p class="section-desc">
+          I’m not a “content writer” and not a “life coach”. The work is: understand the real system of your life or business,
+          design a fair, realistic solution, and produce the actual messages and plans you can use – so this crisis becomes a turning point,
+          not just another story.
+        </p>
+      </div>
+
+      <div class="cards-grid">
+        <article class="card">
+          <div class="card-tag">
+            <span class="card-tag-dot"></span>
+            <span>Decision engineering</span>
+          </div>
+          <h3 class="card-title">Evidence → Logic → Conclusion</h3>
+          <div class="card-body">
+            Before we touch any email or WhatsApp message, we separate facts from emotion and organise the whole file.
+          </div>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>We map people, timelines, risks, and power – not just “how you feel”.</span></li>
+            <li><span class="card-list-icon">•</span><span>You see clear A/B/C options with consequences and trade-offs.</span></li>
+            <li><span class="card-list-icon">•</span><span>Every move is there for a reason you can explain to yourself and others.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-tag">
+            <span class="card-tag-dot"></span>
+            <span>Real words & documents</span>
+          </div>
+          <h3 class="card-title">Not theory – concrete outputs</h3>
+          <div class="card-body">
+            You don’t leave with “insights”. You leave with documents and runbooks that you can actually send or use.
+          </div>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Emails, letters and scripts written or edited with you, line by line.</span></li>
+            <li><span class="card-list-icon">•</span><span>Action plans: who does what, when, and what “success” really looks like.</span></li>
+            <li><span class="card-list-icon">•</span><span>A short learning card so your future self doesn’t repeat today’s mistake.</span></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-tag">
+            <span class="card-tag-dot"></span>
+            <span>Conscience & fairness</span>
+          </div>
+          <h3 class="card-title">I stand with you – but not with your worst impulses</h3>
+          <div class="card-body">
+            The goal is justice and protection, not revenge or drama. Sometimes that means telling you “no” when you’re about to hit “send”.
+          </div>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>I won’t support illegal, abusive or self-destructive moves.</span></li>
+            <li><span class="card-list-icon">•</span><span>We respect your lawyer, therapist, or HR advisor – I work around them, not against them.</span></li>
+            <li><span class="card-list-icon">•</span><span>The filter is simple: can you explain this decision to a judge, a child, and your future self?</span></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IT'S FOR -->
+  <section id="who">
+    <div class="shell">
+      <div class="section-header">
+        <div class="section-kicker">Who is this for?</div>
+        <h2 class="section-title">People who feel alone with a heavy file</h2>
+        <p class="section-desc">
+          I don’t work with “in theory” problems. I work with real files: screenshots, HR emails, legal letters,
+          school complaints, debt letters, messy partner chats. If you recognise yourself below, we’re likely a match.
+        </p>
+      </div>
+
+      <div class="who-grid">
+        <article class="card">
+          <div class="who-label">Profile #1</div>
+          <h3 class="who-title">Employees and “regular people” facing bigger systems</h3>
+          <p class="who-tagline">
+            You feel outnumbered or out-powered – but you don’t want to play the victim forever.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>HR investigations, unfair dismissal, bullying or discrimination cases.</span></li>
+            <li><span class="card-list-icon">•</span><span>Divorce, custody, landlord, bank, or school situations that are already emotional and messy.</span></li>
+            <li><span class="card-list-icon">•</span><span>Someone keeps sending emails or messages that make you panic, and you don’t know what to reply.</span></li>
+          </ul>
+          <p class="card-footnote">
+            Outcome: you get clear words, clear boundaries, and a realistic path that protects both your rights and your dignity.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="who-label">Profile #2</div>
+          <h3 class="who-title">Founders, managers and operators under pressure</h3>
+          <p class="who-tagline">
+            You are responsible for others. The wrong decision costs people, money, and years – not just your mood.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Conflicts with co-founders, investors, key team members, or critical clients.</span></li>
+            <li><span class="card-list-icon">•</span><span>Projects stuck in limbo – too risky to continue blindly, too important to ignore.</span></li>
+            <li><span class="card-list-icon">•</span><span>A calendar so full that you simply don’t have the mental space to think through complex trade-offs.</span></li>
+          </ul>
+          <p class="card-footnote">
+            Outcome: your own decision system in the background – like a Strategy + HR unit focused only on your side of the table.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process">
+    <div class="shell">
+      <div class="section-header">
+        <div class="section-kicker">How it works</div>
+        <h2 class="section-title">From heavy file to clean, executable plan</h2>
+        <p class="section-desc">
+          The shape changes with each case, but the backbone stays the same: organise → understand → decide → execute → learn.
+        </p>
+      </div>
+
+      <div class="process-grid">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-title">Intake & safety check</div>
+          I review your file (emails, screenshots, letters) and ask sharp questions to see if I can genuinely help.
+          If I don’t think we can improve your position, I tell you and we stop there.
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-title">File organisation & map</div>
+          We map people, timelines, interests and power. We separate facts, claims, feelings, and unknowns.
+          You see your situation as a clear diagram, not a fog.
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-title">Strategy & decisions</div>
+          We design realistic targets, safety rules, and A/B/C options with consequences.
+          Then we choose the main path and a backup path – no more random reactions.
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-title">Execution & learning</div>
+          I help write / edit the actual messages and prepare you for critical conversations.
+          We close with a short learning card so your future self knows exactly what to avoid and what worked.
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+<!-- Extra services section -->
+<section id="other-services" data-default="closed">
+  <div class="shell">
+
+    <!-- ✅ checkbox hidden controls open/close -->
+    <input type="checkbox" id="other-services-toggle" class="collapse-check">
+
+    <!-- ✅ كله بقي clickable -->
+    <label for="other-services-toggle" class="section-header collapsible-header other-services-header">
+      <div class="section-kicker">OTHER SERVICES</div>
+      <h2 class="section-title">Other ways I can help your business</h2>
+      <p class="section-desc">
+        Beyond Mo Thinking cases, I can also support you with websites, social media, business setup, accounting and IT.
+      </p>
+
+      <!-- السهم موجود للـ indication بس -->
+      <span class="fake-arrow">▾</span>
+    </label>
+
+    <!-- ✅ نفس المحتوى بتاعك -->
+    <div id="other-services-content" class="collapsible-content">
+      <div class="who-grid">
+
+        <!-- Service 1 -->
+        <article class="card">
+          <div class="who-label">Service #1</div>
+          <h3 class="who-title">Website & online presence – built for real humans</h3>
+          <p class="who-tagline">
+            Simple, clean websites for people and small businesses – plus full management and honest audits of what you already have.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Design and build a focused website for you or your business (no noise, clear offer, clear next step).</span></li>
+            <li><span class="card-list-icon">•</span><span>Take over the day-to-day care of your site: updates, content tweaks, basic security and uptime checks.</span></li>
+            <li><span class="card-list-icon">•</span><span>Audit your current website: what confuses people, what kills trust, and what search engines probably don’t like.</span></li>
+            <li><span class="card-list-icon">•</span><span>Refresh structure, wording and basic SEO so normal humans – and search engines – understand what you really do.</span></li>
+          </ul>
+        </article>
+		
+        <!-- Service 2 -->
+        <article class="card">
+          <div class="who-label">Service #2</div>
+          <h3 class="who-title">White-Label Partnership (for partners)</h3>
+          <p class="who-tagline">
+            Run Mo Thinking in the background while you offer the service under your own brand and identity.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Back-end analysis and decision design fully handled by Mo Thinking.</span></li>
+            <li><span class="card-list-icon">•</span><span>Ready-to-send deliverables branded for you, not for Mo.</span></li>
+            <li><span class="card-list-icon">•</span><span>Flexible models: revenue share, fixed wholesale price, or monthly retainer.</span></li>
+            <li><span class="card-list-icon">•</span><span>Start safely with a paid pilot before scaling.</span></li>
+          </ul>
+          <p class="card-footnote">
+            Ideal for consultants and companies who want a powerful thinking engine without building one from scratch.
+          </p>
+        </article>
+        <!-- Service 3 -->
+        <article class="card">
+          <div class="who-label">Service #3</div>
+          <h3 class="who-title">Social media & content – a real online image, not fake hype</h3>
+          <p class="who-tagline">
+            We set up or clean your social media accounts and build a calm, honest online image that respects how your customer actually feels.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Create or rebuild your business profiles on the right platforms (not “everywhere for no reason”).</span></li>
+            <li><span class="card-list-icon">•</span><span>Plan and prepare professional content: posts, captions, simple visuals, and small scripts for short videos or lives.</span></li>
+            <li><span class="card-list-icon">•</span><span>Connect your content to real business goals: enquiries, bookings, repeat customers – not just “likes”.</span></li>
+            <li><span class="card-list-icon">•</span><span>Design a simple “tone of voice” so every post sounds like the same trustworthy person, not five different people.</span></li>
+          </ul>
+        </article>
+
+        <!-- Service 4 -->
+        <article class="card">
+          <div class="who-label">Service #4</div>
+          <h3 class="who-title">Small business accounting & exit support – practical, not scary</h3>
+          <p class="who-tagline">
+            Help for individuals and small businesses who feel lost with numbers, self-assessment, or closing / selling a business.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Help you prepare and organise the information for your self assessment, so your accountant or HMRC can actually read it.</span></li>
+            <li><span class="card-list-icon">•</span><span>Build simple spreadsheets and tracking habits so you finally know: what comes in, what goes out, and what is profit.</span></li>
+            <li><span class="card-list-icon">•</span><span>Support people who are leaving a business: organise stock, offers and sales so you don’t throw value in the bin.</span></li>
+            <li><span class="card-list-icon">•</span><span>Make your small business “readable” for a potential buyer: clear story, clean numbers, simple documents.</span></li>
+          </ul>
+          <p class="card-footnote">
+            Note: this is practical help to make the paperwork and numbers understandable and ready – not formal legal or tax advice.
+          </p>
+        </article>
+
+        <!-- Service 5 -->
+        <article class="card">
+          <div class="who-label">Service #5</div>
+          <h3 class="who-title">New business setup & operations – from idea to a working system</h3>
+          <p class="who-tagline">
+            For people opening a new small business who want more than motivation – they want steps, documents and a working system.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Turn your idea into a simple plan: what you offer, to whom, at what prices, and what “good” looks like in the first 90 days.</span></li>
+            <li><span class="card-list-icon">•</span><span>Help with the practical steps: forms, basic registrations, and what to prepare before talking to an accountant or lawyer.</span></li>
+            <li><span class="card-list-icon">•</span><span>Review or design your core documents: job descriptions, basic work rules, simple contracts and house rules.</span></li>
+            <li><span class="card-list-icon">•</span><span>Design the “flow” of your place (shop, office, small factory): who does what, where things go, and how to avoid chaos.</span></li>
+            <li><span class="card-list-icon">•</span><span>Design the “flow” of your place (shop, office, small factory): who does what, where things go, and how to avoid chaos.</span></li>
+          </ul>
+        </article>
+
+        <!-- Service 6 -->
+        <article class="card">
+          <div class="who-label">Service #6</div>
+          <h3 class="who-title">IT & customer psychology – tools + how people actually feel</h3>
+          <p class="who-tagline">
+            Bridge between “IT people” and real customers: choose tools, set them up, and design offers that fit how your customer thinks.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Help you choose and set up basic IT: domains, hosting, email, simple CRMs, booking tools, and online payment options.</span></li>
+            <li><span class="card-list-icon">•</span><span>Translate your needs into clear tasks for developers or IT providers – and translate their language back to human.</span></li>
+            <li><span class="card-list-icon">•</span><span>Study your customer’s feelings and behaviour: what they fear, what they hope for, and what blocks them from buying.</span></li>
+            <li><span class="card-list-icon">•</span><span>Design pricing plans, offers, guarantees and review systems that respect the customer’s psychology and protect your brand.</span></li>
+          </ul>
+        </article>
+
+      </div>
+    </div>
+  </section>
+  
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="shell">
+      <div class="section-header">
+        <div class="section-kicker">Packages & pricing</div>
+        <h2 class="section-title">Choose how deep you want to go</h2>
+        <p class="section-desc">
+          Prices below are working examples. We can adjust up or down depending on complexity and your country – but I prefer to be clear, not mysterious.
+        </p>
+      </div>
+
+      <p class="pricing-note">
+        <strong>Money promise:</strong> if, after we finish, you genuinely feel the work didn’t clearly help you or protect you,
+        tell me honestly. We either fix it or I don’t take the money.
+      </p>
+
+      <div class="pricing-grid">
+        <article class="price-card">
+          <div class="price-label">Package 1</div>
+          <h3 class="price-title">Diagnostic session (one file)</h3>
+          <p class="price-sub">
+            One focused call to get clarity, a first strategy, and concrete next steps for a single situation.
+          </p>
+          <div class="price-row">
+            <div class="price-main">£60–£90</div>
+            <div class="price-unit">/ 60–90 minutes</div>
+          </div>
+          <p class="price-small">
+            Ideal if you’re unsure whether to go deeper or just need a strong first move.
+          </p>
+          <ul class="price-list">
+            <li><span class="price-check">✓</span><span>Short intake form + review of the key documents.</span></li>
+            <li><span class="price-check">✓</span><span>Live mapping of the situation and realistic target.</span></li>
+            <li><span class="price-check">✓</span><span>A/B/C options with my recommendation and key risks.</span></li>
+            <li><span class="price-check">✓</span><span>One or two short email / wording suggestions.</span></li>
+          </ul>
+          <div class="price-cta">
+            <span class="price-badge">Low commitment, high clarity</span>
+            <a href="#contact" class="btn btn-outline">Book diagnostic</a>
+          </div>
+        </article>
+
+        <article class="price-card featured">
+          <div class="price-label">Package 2 – Recommended</div>
+          <div class="price-tagline">For when the file is already heavy</div>
+          <h3 class="price-title">Case path: from chaos to outcome</h3>
+          <p class="price-sub">
+            We stay with one serious case from first message to final outcome or stable stopping point.
+          </p>
+          <div class="price-row">
+            <div class="price-main">£250–£450</div>
+            <div class="price-unit">/ per case</div>
+          </div>
+          <p class="price-small">
+            Includes calls, writing time, and review – not just one conversation.
+          </p>
+          <ul class="price-list">
+            <li><span class="price-check">✓</span><span>Full intake and organisation of your documents and story.</span></li>
+            <li><span class="price-check">✓</span><span>Strategy design over time – not just one email.</span></li>
+            <li><span class="price-check">✓</span><span>Writing and re-writing of key emails, letters, or scripts.</span></li>
+            <li><span class="price-check">✓</span><span>Checkpoints before and after important calls or meetings.</span></li>
+            <li><span class="price-check">✓</span><span>Closing learning card so you don’t repeat the same pattern.</span></li>
+          </ul>
+          <div class="price-cta">
+            <span class="price-badge">Most people start here</span>
+            <a href="#contact" class="btn btn-primary">Start a case</a>
+          </div>
+        </article>
+
+        <article class="price-card">
+          <div class="price-label">Package 3</div>
+          <div class="price-tagline">For founders who want ongoing thinking</div>
+          <h3 class="price-title">Monthly decision partner</h3>
+          <p class="price-sub">
+            A private channel with me + the engine to support repeated decisions, not just one crisis.
+          </p>
+          <div class="price-row">
+            <div class="price-main">from £220</div>
+            <div class="price-unit">/ month</div>
+          </div>
+          <p class="price-small">
+            Limited number of clients at a time to keep depth and attention high.
+          </p>
+          <ul class="price-list">
+            <li><span class="price-check">✓</span><span>Fixed number of deep dives per month on your most important decisions.</span></li>
+            <li><span class="price-check">✓</span><span>Quick “sanity checks” on smaller moves by voice note / email.</span></li>
+            <li><span class="price-check">✓</span><span>Pattern review every month: how your decisions and results are evolving.</span></li>
+          </ul>
+          <div class="price-cta">
+            <span class="price-badge">For serious, long-term work</span>
+            <a href="#contact" class="btn btn-outline">Discuss this track</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+  
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="shell">
+      <div class="section-header">
+        <div class="section-kicker">Start</div>
+        <h2 class="section-title">Send your file for a first look</h2>
+        <p class="section-desc">
+          Use the form below to outline your situation. Don’t try to be perfect – just be honest. I’ll reply with
+          either a suggested package or a clear “no” if I believe I can’t help.
+        </p>
+      </div>
+
+      <div class="contact-grid">
+        <div class="contact-card">
+          <h3>Contact form</h3>
+          <p>This is a simple static form. Connect it to your preferred tool (email, form handler, etc.).</p>
+          <form action="https://formspree.io/f/xwpzyrjl" method="POST">
+  <div class="field">
+    <label for="name">Name</label>
+    <input id="name" type="text" name="name" autocomplete="name" required>
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" autocomplete="email" required>
+  </div>
+
+  <div class="field">
+    <label for="context">Country / time zone</label>
+    <input id="context" type="text" name="context">
+  </div>
+
+  <div class="field">
+    <label for="summary">Very short summary of the file (2–3 lines)</label>
+    <textarea id="summary" name="summary" required></textarea>
+  </div>
+
+  <div class="field">
+    <label for="goal">What result are you hoping for?</label>
+    <textarea id="goal" name="goal"></textarea>
+  </div>
+
+  <!-- optional: simple anti-spam honeypot -->
+  <input type="text" name="_gotcha" style="display:none">
+
+  <button class="btn btn-primary" type="submit">
+    <span class="btn-icon">📩</span>
+    <span>Send for review</span>
+  </button>
+</form>
+        </div>
+
+        <div class="contact-side">
+          <h4>How I usually reply</h4>
+          <p>
+            I read your message and – if needed – ask for 1–3 key documents (for example: last HR email, last court letter,
+            last message from the other side). Then I answer with:
+          </p>
+          <ul class="contact-list">
+            <li>• whether I believe I can help;</li>
+            <li>• which package makes sense (if any);</li>
+            <li>• and the earliest time we can realistically start.</li>
+          </ul>
+          <p>
+            If I’m not the right person for your situation, I’ll say so directly instead of wasting your time.
+          </p>
+
+          <h4>Direct contact</h4>
+          <p>You can also contact me directly if you prefer:</p>
+          <ul class="contact-list">
+            <li>• Email: <a href="mailto:mo@elasrag.com">mo@elasrag.com</a></li>
+            <li>• Telegram / WhatsApp: by agreement after first email</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+<!-- FAQ -->
+<section id="faq">
+  <div class="shell">
+    <div class="section-header">
+      <div class="section-kicker">Honest questions</div>
+      <h2 class="section-title">What you should know before we work together</h2>
+      <p class="section-desc">
+        I prefer you say “no” for the right reasons than “yes” for the wrong ones. Here are straight answers to the basics.
+      </p>
+    </div>
+
+    <div class="faq-grid">
+      <div>
+
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">
+            <strong>Is this coaching, consulting, or something else?</strong>
+            <span class="faq-arrow" aria-hidden="true">▾</span>
+          </div>
+          <div class="faq-a">
+            It’s a hybrid: part coaching (questions, reflection), part consulting (analysis, structure),
+            and part ghost-writing (emails, letters, documents). The filter is simple: does it move your file forward safely?
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">
+            <strong>Are you a lawyer or therapist?</strong>
+            <span class="faq-arrow" aria-hidden="true">▾</span>
+          </div>
+          <div class="faq-a">
+            No. I don’t replace legal or psychological professionals. I sit in the space between:
+            organising your story, designing strategy, and preparing your communication – while respecting legal and clinical boundaries.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">
+            <strong>Do you use AI tools?</strong>
+            <span class="faq-arrow" aria-hidden="true">▾</span>
+          </div>
+          <div class="faq-a">
+            Yes, I use tools like ChatGPT as assistants – mainly to test ideas, check wording, and stress-test scenarios.
+            But you are working with a human brain and a human conscience. No important decision is left to a machine.
+          </div>
+        </div>
+
+      </div>
+
+      <div>
+
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">
+            <strong>What if my case is small or I just need one email?</strong>
+            <span class="faq-arrow" aria-hidden="true">▾</span>
+          </div>
+          <div class="faq-a">
+            We can start with a diagnostic session and one message. If that’s enough, we stop there.
+            If it reveals a deeper pattern, we can move into the case package – but there is no pressure to “upgrade”.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">
+            <strong>What if I’m not in the UK or not earning much?</strong>
+            <span class="faq-arrow" aria-hidden="true">▾</span>
+          </div>
+          <div class="faq-a">
+            Most work can happen online. For the price, I keep a limited number of reduced-rate slots for people in genuinely hard situations.
+            If you need that, be honest about your reality when you contact me.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-q" role="button" tabindex="0" aria-expanded="false">
+            <strong>What do you expect from me as a client?</strong>
+            <span class="faq-arrow" aria-hidden="true">▾</span>
+          </div>
+          <div class="faq-a">
+            Honesty, willingness to hear uncomfortable truths, and the courage to execute the plan we agree on.
+            If you only want someone to confirm what you already decided, this is not the right service.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>  
+  
+
+  
+  
+  
+</main>
+
+<footer>
+  <div class="shell">
+    <span>© <span id="year"></span> Mo Thinking. All rights reserved.</span>
+    <span>Built around the Mo Thinking Engine – Evidence → Logic → Conclusion → Action → Learning.</span>
+  </div>
+</footer>
+
+<script>
+  // Mobile nav toggle
+  const toggleBtn = document.querySelector('.nav-toggle');
+  const navLinks  = document.querySelector('.nav-links');
+
+  if (toggleBtn && navLinks) {
+    toggleBtn.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+      const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      toggleBtn.setAttribute('aria-expanded', String(!expanded));
+    });
+  }
+
+  // تثبيت توهج كروت other-services عند الضغط
+  const serviceCards = document.querySelectorAll('#other-services .card');
+  if (serviceCards.length) {
+    serviceCards.forEach(card => {
+      card.addEventListener('click', () => {
+        serviceCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+      });
+    });
+  }
+
+  // FAQ accordion
+  const faqItems = document.querySelectorAll('#faq .faq-item');
+  faqItems.forEach(item => {
+    const q = item.querySelector('.faq-q');
+    if (!q) return;
+
+    const toggle = () => {
+      const isOpen = item.classList.toggle('open');
+      q.setAttribute('aria-expanded', String(isOpen));
+    };
+
+    q.addEventListener('click', toggle);
+    q.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+// Collapsible sections (e.g., Other services)
+document.querySelectorAll('section[data-collapsible]').forEach(section => {
+  const btn = section.querySelector('.collapse-toggle');
+  const content = section.querySelector('.collapsible-content');
+  if (!btn || !content) return;
+
+  // default state from data-default="closed" or "open"
+  const defaultClosed = section.getAttribute('data-default') === 'closed';
+  if (!defaultClosed) {
+    section.classList.add('open');
+    btn.setAttribute('aria-expanded', 'true');
+  } else {
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', () => {
+    const isOpen = section.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(isOpen));
+  });
+});
+  // simple year
+  const yearSpan = document.getElementById("year");
+  if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+</script>
+
 </body>
 </html>
