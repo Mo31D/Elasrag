@@ -1033,3 +1033,120 @@ footer {
               0 0 40px rgba(0,230,255,0.25);
   border-color: rgba(255,230,150,0.55);
 }
+/* =========================
+   COLLAPSIBLE SECTIONS
+   ========================= */
+
+section[data-collapsible] .collapsible-content {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    max-height 420ms ease,
+    opacity 260ms ease,
+    transform 260ms ease;
+  will-change: max-height, opacity, transform;
+}
+
+section[data-collapsible].open .collapsible-content {
+  max-height: 5000px; /* big enough for content */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.collapsible-header {
+  position: relative;
+  padding-right: 3.2rem; /* space for toggle */
+}
+
+.collapse-toggle {
+  position: absolute;
+  top: 0.2rem;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148,163,184,0.55);
+  background: rgba(15,23,42,0.9);
+  color: var(--text);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.collapse-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.collapse-arrow {
+  display: inline-block;
+  transform: translateY(-1px);
+  transition: transform 220ms ease;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+section[data-collapsible].open .collapse-arrow {
+  transform: rotate(180deg);
+}
+
+section[data-collapsible].open .collapse-label::after {
+  content: "Hide";
+}
+section[data-collapsible]:not(.open) .collapse-label::after {
+  content: "Show";
+}
+section[data-collapsible].open .collapsible-content {
+  overflow: visible;      /* يمنع قص الكروت والـ shadow */
+  padding-top: 0.5rem;    /* مسافة بسيطة تحت الهيدر */
+}
+
+/* =========================
+   FAQ ACCORDION
+   ========================= */
+
+.faq-item .faq-q{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:0.75rem;
+  cursor:pointer;
+  user-select:none;
+}
+
+.faq-item .faq-arrow{
+  display:inline-block;
+  transition: transform 220ms ease;
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* answer hidden by default */
+.faq-item .faq-a{
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    max-height 420ms ease,
+    opacity 260ms ease,
+    transform 260ms ease;
+  will-change: max-height, opacity, transform;
+}
+
+/* open state */
+.faq-item.open .faq-a{
+  max-height: 2000px;  /* big enough */
+  opacity: 1;
+  transform: translateY(0);
+  overflow: visible;
+  margin-top: 0.5rem;
+}
+
+.faq-item.open .faq-arrow{
+  transform: rotate(180deg);
+}
