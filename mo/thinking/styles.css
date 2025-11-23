@@ -942,36 +942,40 @@ footer {
     }
   }
 
-  @media (max-width: 720px) {
-    .nav-links {
-      display: none;
-    }
-
-    .nav-cta {
-      display: none;
-    }
-
-    .nav-toggle {
-      display: inline-flex;
-    }
-
-    .cards-grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
-
-    .hero {
-      padding-top: 1.6rem;
-    }
-
-    .lang-bar-inner {
-      padding: 0.35rem 1rem;
-      row-gap: 0.35rem;
-    }
-
-    .lang-note {
-      display: none;
-    }
+@media (max-width: 720px) {
+  .nav-links {
+    display: none;
   }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-cta {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  .cards-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero {
+    padding-top: 1.6rem;
+  }
+
+  .lang-bar-inner {
+    padding: 0.35rem 1rem;
+    row-gap: 0.35rem;
+  }
+
+  .lang-note {
+    display: none;
+  }
+}
 /* === نقل توهج كارت اللوجين لكروت other-services فقط === */
 #other-services .card {
   position: relative;
@@ -1010,4 +1014,22 @@ footer {
 #other-services .card > * {
   position: relative;
   z-index: 1;
+}
+
+/* توهج ثابت لما تختار كارت (بالضغط) */
+#other-services .card.active,
+#other-services .card:active {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 0 90px rgba(255,230,150,0.55),
+              0 0 40px rgba(0,230,255,0.25);
+  border-color: rgba(255,230,150,0.55);
+}
+
+/* دعم كيبورد / وصولية */
+#other-services .card:focus-visible {
+  outline: none;
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 0 90px rgba(255,230,150,0.55),
+              0 0 40px rgba(0,230,255,0.25);
+  border-color: rgba(255,230,150,0.55);
 }

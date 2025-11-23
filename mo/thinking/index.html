@@ -46,10 +46,10 @@
       </a>
     </div>
 
-    <button class="nav-toggle" type="button">Menu</button>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
   </div>
 
-  <nav class="nav-links" aria-label="Main navigation">
+  <nav id="nav-links" class="nav-links" aria-label="Main navigation">
     <a href="#hero">Home</a>
     <a href="#why">Why Mo?</a>
     <a href="#who">Who it’s for</a>
@@ -516,32 +516,40 @@
         <div class="contact-card">
           <h3>Contact form</h3>
           <p>This is a simple static form. Connect it to your preferred tool (email, form handler, etc.).</p>
-          <form>
-            <div class="field">
-              <label for="name">Name</label>
-              <input id="name" type="text" name="name" autocomplete="name">
-            </div>
-            <div class="field">
-              <label for="email">Email</label>
-              <input id="email" type="email" name="email" autocomplete="email">
-            </div>
-            <div class="field">
-              <label for="context">Country / time zone</label>
-              <input id="context" type="text" name="context">
-            </div>
-            <div class="field">
-              <label for="summary">Very short summary of the file (2–3 lines)</label>
-              <textarea id="summary" name="summary"></textarea>
-            </div>
-            <div class="field">
-              <label for="goal">What result are you hoping for?</label>
-              <textarea id="goal" name="goal"></textarea>
-            </div>
-            <button class="btn btn-primary" type="submit">
-              <span class="btn-icon">📩</span>
-              <span>Send for review</span>
-            </button>
-          </form>
+          <form action="https://formspree.io/f/xwpzyrjl" method="POST">
+  <div class="field">
+    <label for="name">Name</label>
+    <input id="name" type="text" name="name" autocomplete="name" required>
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" autocomplete="email" required>
+  </div>
+
+  <div class="field">
+    <label for="context">Country / time zone</label>
+    <input id="context" type="text" name="context">
+  </div>
+
+  <div class="field">
+    <label for="summary">Very short summary of the file (2–3 lines)</label>
+    <textarea id="summary" name="summary" required></textarea>
+  </div>
+
+  <div class="field">
+    <label for="goal">What result are you hoping for?</label>
+    <textarea id="goal" name="goal"></textarea>
+  </div>
+
+  <!-- optional: simple anti-spam honeypot -->
+  <input type="text" name="_gotcha" style="display:none">
+
+  <button class="btn btn-primary" type="submit">
+    <span class="btn-icon">📩</span>
+    <span>Send for review</span>
+  </button>
+</form>
         </div>
 
         <div class="contact-side">
@@ -595,10 +603,27 @@
             <li><span class="card-list-icon">•</span><span>Refresh structure, wording and basic SEO so normal humans – and search engines – understand what you really do.</span></li>
           </ul>
         </article>
-
+		
         <!-- Service 2 -->
         <article class="card">
           <div class="who-label">Service #2</div>
+          <h3 class="who-title">White-Label Partnership (for partners)</h3>
+          <p class="who-tagline">
+            Run Mo Thinking in the background while you offer the service under your own brand and identity.
+          </p>
+          <ul class="card-list">
+            <li><span class="card-list-icon">•</span><span>Back-end analysis and decision design fully handled by Mo Thinking.</span></li>
+            <li><span class="card-list-icon">•</span><span>Ready-to-send deliverables branded for you, not for Mo.</span></li>
+            <li><span class="card-list-icon">•</span><span>Flexible models: revenue share, fixed wholesale price, or monthly retainer.</span></li>
+            <li><span class="card-list-icon">•</span><span>Start safely with a paid pilot before scaling.</span></li>
+          </ul>
+          <p class="card-footnote">
+            Ideal for consultants and companies who want a powerful thinking engine without building one from scratch.
+          </p>
+        </article>
+        <!-- Service 3 -->
+        <article class="card">
+          <div class="who-label">Service #3</div>
           <h3 class="who-title">Social media & content – a real online image, not fake hype</h3>
           <p class="who-tagline">
             We set up or clean your social media accounts and build a calm, honest online image that respects how your customer actually feels.
@@ -611,9 +636,9 @@
           </ul>
         </article>
 
-        <!-- Service 3 -->
+        <!-- Service 4 -->
         <article class="card">
-          <div class="who-label">Service #3</div>
+          <div class="who-label">Service #4</div>
           <h3 class="who-title">Small business accounting & exit support – practical, not scary</h3>
           <p class="who-tagline">
             Help for individuals and small businesses who feel lost with numbers, self-assessment, or closing / selling a business.
@@ -629,9 +654,9 @@
           </p>
         </article>
 
-        <!-- Service 4 -->
+        <!-- Service 5 -->
         <article class="card">
-          <div class="who-label">Service #4</div>
+          <div class="who-label">Service #5</div>
           <h3 class="who-title">New business setup & operations – from idea to a working system</h3>
           <p class="who-tagline">
             For people opening a new small business who want more than motivation – they want steps, documents and a working system.
@@ -641,12 +666,13 @@
             <li><span class="card-list-icon">•</span><span>Help with the practical steps: forms, basic registrations, and what to prepare before talking to an accountant or lawyer.</span></li>
             <li><span class="card-list-icon">•</span><span>Review or design your core documents: job descriptions, basic work rules, simple contracts and house rules.</span></li>
             <li><span class="card-list-icon">•</span><span>Design the “flow” of your place (shop, office, small factory): who does what, where things go, and how to avoid chaos.</span></li>
+            <li><span class="card-list-icon">•</span><span>Design the “flow” of your place (shop, office, small factory): who does what, where things go, and how to avoid chaos.</span></li>
           </ul>
         </article>
 
-        <!-- Service 5 -->
+        <!-- Service 6 -->
         <article class="card">
-          <div class="who-label">Service #5</div>
+          <div class="who-label">Service #6</div>
           <h3 class="who-title">IT & customer psychology – tools + how people actually feel</h3>
           <p class="who-tagline">
             Bridge between “IT people” and real customers: choose tools, set them up, and design offers that fit how your customer thinks.
@@ -658,6 +684,8 @@
             <li><span class="card-list-icon">•</span><span>Design pricing plans, offers, guarantees and review systems that respect the customer’s psychology and protect your brand.</span></li>
           </ul>
         </article>
+
+		
       </div>
     </div>
   </section>
@@ -671,8 +699,33 @@
 </footer>
 
 <script>
+  // Mobile nav toggle
+  const toggleBtn = document.querySelector('.nav-toggle');
+  const navLinks  = document.querySelector('.nav-links');
+
+  if (toggleBtn && navLinks) {
+    toggleBtn.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+      const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      toggleBtn.setAttribute('aria-expanded', String(!expanded));
+    });
+  }
+
+  // تثبيت توهج كروت other-services عند الضغط
+  const serviceCards = document.querySelectorAll('#other-services .card');
+  if (serviceCards.length) {
+    serviceCards.forEach(card => {
+      card.addEventListener('click', () => {
+        serviceCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+      });
+    });
+  }
+
   // simple year
-  document.getElementById('year').textContent = new Date().getFullYear();
+  const yearSpan = document.getElementById("year");
+  if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 </script>
+
 </body>
 </html>

@@ -46,7 +46,7 @@
         </a>
       </div>
 
-      <button class="nav-toggle" type="button">Menu</button>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
     </div>
 
     <nav class="nav-links" aria-label="Main navigation">
@@ -520,32 +520,40 @@
           <div class="contact-card">
             <h3>Formularz kontaktowy</h3>
             <p>To prosty, statyczny formularz. Podepnij go pod dowolny handler (email, form handler itd.).</p>
-            <form>
-              <div class="field">
-                <label for="name">Imię</label>
-                <input id="name" type="text" name="name" autocomplete="name">
-              </div>
-              <div class="field">
-                <label for="email">Email</label>
-                <input id="email" type="email" name="email" autocomplete="email">
-              </div>
-              <div class="field">
-                <label for="context">Kraj / strefa czasowa</label>
-                <input id="context" type="text" name="context">
-              </div>
-              <div class="field">
-                <label for="summary">Bardzo krótki opis (2–3 linijki)</label>
-                <textarea id="summary" name="summary"></textarea>
-              </div>
-              <div class="field">
-                <label for="goal">Jaki wynik chcesz osiągnąć?</label>
-                <textarea id="goal" name="goal"></textarea>
-              </div>
-              <button class="btn btn-primary" type="submit">
-                <span class="btn-icon">📩</span>
-                <span>Wyślij do analizy</span>
-              </button>
-            </form>
+            <form action="https://formspree.io/f/xwpzyrjl" method="POST">
+  <div class="field">
+    <label for="name">Name</label>
+    <input id="name" type="text" name="name" autocomplete="name" required>
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" autocomplete="email" required>
+  </div>
+
+  <div class="field">
+    <label for="context">Country / time zone</label>
+    <input id="context" type="text" name="context">
+  </div>
+
+  <div class="field">
+    <label for="summary">Very short summary of the file (2–3 lines)</label>
+    <textarea id="summary" name="summary" required></textarea>
+  </div>
+
+  <div class="field">
+    <label for="goal">What result are you hoping for?</label>
+    <textarea id="goal" name="goal"></textarea>
+  </div>
+
+  <!-- optional: simple anti-spam honeypot -->
+  <input type="text" name="_gotcha" style="display:none">
+
+  <button class="btn btn-primary" type="submit">
+    <span class="btn-icon">📩</span>
+    <span>Send for review</span>
+  </button>
+</form>
           </div>
 
           <div class="contact-side">
@@ -575,99 +583,120 @@
       </div>
     </section>
 
-    <!-- Extra services section -->
-    <section id="other-services">
-      <div class="shell">
-        <div class="section-header">
-          <div class="section-kicker">Inne usługi</div>
-          <h2 class="section-title">Inne sposoby, w jakie mogę pomóc Twojemu biznesowi</h2>
-          <p class="section-desc">
-            Oprócz spraw Mo Thinking, mogę wesprzeć Cię w stronach www, social mediach,
-            zakładaniu firm, księgowości i IT.
-          </p>
-        </div>
+<!-- Sekcja dodatkowych usług -->
+<section id="other-services">
+  <div class="shell">
+    <div class="section-header">
+      <div class="section-kicker">Inne usługi</div>
+      <h2 class="section-title">Inne sposoby, w jakie mogę pomóc Twojemu biznesowi</h2>
+      <p class="section-desc">
+        Poza przypadkami Mo Thinking mogę też wesprzeć Cię w stronach www, mediach społecznościowych,
+        zakładaniu firmy, księgowości oraz IT.
+      </p>
+    </div>
 
-        <div class="who-grid">
-          <!-- Service 1 -->
-          <article class="card">
-            <div class="who-label">Usługa #1</div>
-            <h3 class="who-title">Strona www i obecność online — zrobione dla prawdziwych ludzi</h3>
-            <p class="who-tagline">
-              Proste, czyste strony dla osób i małych firm — plus stała opieka i uczciwy audyt tego, co już masz.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Projekt i budowa strony skoncentrowanej na Tobie/usłudze (bez szumu, jasna propozycja, jasny następny krok).</span></li>
-              <li><span class="card-list-icon">•</span><span>Codzienna opieka nad stroną: aktualizacje, poprawki treści, podstawowe bezpieczeństwo i monitoring.</span></li>
-              <li><span class="card-list-icon">•</span><span>Audyt obecnej strony: co miesza ludziom w głowie, co zabija zaufanie i czego nie lubią wyszukiwarki.</span></li>
-              <li><span class="card-list-icon">•</span><span>Aktualizacja struktury, tekstów i podstawowego SEO, żeby ludzie — i wyszukiwarki — rozumieli, co naprawdę robisz.</span></li>
-            </ul>
-          </article>
+    <div class="who-grid">
+      <!-- Usługa 1 -->
+      <article class="card">
+        <div class="who-label">Usługa #1</div>
+        <h3 class="who-title">Strona www i obecność online – dla prawdziwych ludzi</h3>
+        <p class="who-tagline">
+          Proste, czyste strony dla osób i małych firm – plus pełna opieka i uczciwy audyt tego, co już masz.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Zaprojektuję i zbuduję dla Ciebie skupioną stronę (bez szumu: jasna oferta i jasny następny krok).</span></li>
+          <li><span class="card-list-icon">•</span><span>Przejmę codzienną opiekę nad stroną: aktualizacje, drobne poprawki treści, podstawowe bezpieczeństwo i kontrolę działania.</span></li>
+          <li><span class="card-list-icon">•</span><span>Zrobię audyt obecnej strony: co ludzi myli, co niszczy zaufanie i czego wyszukiwarki raczej nie lubią.</span></li>
+          <li><span class="card-list-icon">•</span><span>Odświeżę strukturę, teksty i podstawowe SEO tak, by zwykli ludzie i wyszukiwarki rozumieli, czym naprawdę się zajmujesz.</span></li>
+        </ul>
+      </article>
 
-          <!-- Service 2 -->
-          <article class="card">
-            <div class="who-label">Usługa #2</div>
-            <h3 class="who-title">Social media i treści — prawdziwy wizerunek bez fałszywego hype’u</h3>
-            <p class="who-tagline">
-              Ustawiamy lub czyścimy Twoje kanały i budujemy spokojny, szczery obraz online szanujący realne emocje klienta.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Stworzenie lub przebudowa profili na właściwych platformach (nie „wszędzie bez sensu”).</span></li>
-              <li><span class="card-list-icon">•</span><span>Planowanie i przygotowanie treści: posty, opisy, proste grafiki, skrypty krótkich wideo lub live.</span></li>
-              <li><span class="card-list-icon">•</span><span>Powiązanie treści z realnymi celami biznesu: zapytania, rezerwacje, powracający klienci — nie tylko „lajki”.</span></li>
-              <li><span class="card-list-icon">•</span><span>Stworzenie spójnego tonu komunikacji, żeby wszystko brzmiało jak od jednej wiarygodnej osoby.</span></li>
-            </ul>
-          </article>
+      <!-- Usługa 2 -->
+      <article class="card">
+        <div class="who-label">Usługa #2</div>
+        <h3 class="who-title">Współpraca White-Label (dla partnerów)</h3>
+        <p class="who-tagline">
+          Mo Thinking działa w tle, a Ty oferujesz usługę pod własną marką i tożsamością.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Analiza „od zaplecza” i projektowanie decyzji w pełni po stronie Mo Thinking.</span></li>
+          <li><span class="card-list-icon">•</span><span>Gotowe materiały do wysłania z Twoim brandingiem, nie z brandingiem Mo.</span></li>
+          <li><span class="card-list-icon">•</span><span>Elastyczne modele: udział w przychodach, stała cena hurtowa lub miesięczny retainer.</span></li>
+          <li><span class="card-list-icon">•</span><span>Bezpieczny start: płatny pilotaż zanim przejdziesz do skali.</span></li>
+        </ul>
+        <p class="card-footnote">
+          Idealne dla konsultantów i firm, które chcą mocnego „silnika myślenia” bez budowania go od zera.
+        </p>
+      </article>
 
-          <!-- Service 3 -->
-          <article class="card">
-            <div class="who-label">Usługa #3</div>
-            <h3 class="who-title">Księgowość małej firmy i wsparcie przy wyjściu — praktycznie, bez strachu</h3>
-            <p class="who-tagline">
-              Pomoc dla osób i małych firm zagubionych w liczbach, self-assessment lub zamykaniu/sprzedaży biznesu.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Przygotowanie danych do self-assessment tak, żeby księgowy lub HMRC mogli to czytać.</span></li>
-              <li><span class="card-list-icon">•</span><span>Proste tabele i nawyki monitorowania: w końcu wiesz, co wchodzi, co wychodzi i ile zostaje.</span></li>
-              <li><span class="card-list-icon">•</span><span>Wsparcie przy wychodzeniu z biznesu: porządkowanie zapasów, ofert i sprzedaży bez wyrzucania wartości.</span></li>
-              <li><span class="card-list-icon">•</span><span>Uczynienie firmy „czytelną” dla kupującego: jasna historia, czyste liczby i proste dokumenty.</span></li>
-            </ul>
-            <p class="card-footnote">
-              Uwaga: to praktyczna pomoc w uporządkowaniu papierów i liczb — nie formalna porada prawna ani podatkowa.
-            </p>
-          </article>
+      <!-- Usługa 3 -->
+      <article class="card">
+        <div class="who-label">Usługa #3</div>
+        <h3 class="who-title">Social media i treści – prawdziwy wizerunek, bez fałszywego hype’u</h3>
+        <p class="who-tagline">
+          Założymy lub uporządkujemy Twoje konta i zbudujemy spokojny, uczciwy obraz online,
+          który szanuje to, jak naprawdę czuje się klient.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Stworzenie lub przebudowa profili na właściwych platformach (nie „wszędzie bez sensu”).</span></li>
+          <li><span class="card-list-icon">•</span><span>Planowanie i przygotowanie profesjonalnych treści: posty, opisy, proste grafiki i krótkie scenariusze do wideo lub live.</span></li>
+          <li><span class="card-list-icon">•</span><span>Powiązanie treści z realnymi celami biznesowymi: zapytania, rezerwacje, powracający klienci – nie tylko „lajki”.</span></li>
+          <li><span class="card-list-icon">•</span><span>Zaprojektowanie prostego „tonu komunikacji”, żeby każdy post brzmiał jak ta sama, godna zaufania osoba.</span></li>
+        </ul>
+      </article>
 
-          <!-- Service 4 -->
-          <article class="card">
-            <div class="who-label">Usługa #4</div>
-            <h3 class="who-title">Zakładanie i prowadzenie nowego biznesu — od pomysłu do działającego systemu</h3>
-            <p class="who-tagline">
-              Dla tych, którzy startują z małą firmą i potrzebują więcej niż motywacji — potrzebują kroków, dokumentów i systemu.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Przekucie pomysłu w prosty plan: co sprzedajesz, komu, za ile i co znaczy „dobrze” w pierwszych 90 dniach.</span></li>
-              <li><span class="card-list-icon">•</span><span>Pomoc w praktycznych krokach: formularze, podstawowe rejestracje, co przygotować przed rozmową z księgowym lub prawnikiem.</span></li>
-              <li><span class="card-list-icon">•</span><span>Projekt lub przegląd dokumentów bazowych: opisy ról, zasady pracy, proste umowy.</span></li>
-              <li><span class="card-list-icon">•</span><span>Ułożenie „przepływu” miejsca (sklep/biuro/mała produkcja): kto co robi, gdzie idą rzeczy i jak uniknąć chaosu.</span></li>
-            </ul>
-          </article>
+      <!-- Usługa 4 -->
+      <article class="card">
+        <div class="who-label">Usługa #4</div>
+        <h3 class="who-title">Księgowość małej firmy i wsparcie przy zamknięciu/wyjściu – praktycznie, bez straszenia</h3>
+        <p class="who-tagline">
+          Pomoc dla osób i małych firm, które gubią się w liczbach, self-assessment
+          albo w zamykaniu / sprzedaży firmy.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Pomogę przygotować i uporządkować dane do self-assessment tak, by księgowy lub HMRC mogli je łatwo przeczytać.</span></li>
+          <li><span class="card-list-icon">•</span><span>Stworzę proste arkusze i nawyki śledzenia, żebyś wiedział(a): co wpływa, co wypływa i jaki jest zysk.</span></li>
+          <li><span class="card-list-icon">•</span><span>Wsparcie przy wychodzeniu z biznesu: uporządkowanie zapasów, ofert i sprzedaży, by nie wyrzucać wartości do kosza.</span></li>
+          <li><span class="card-list-icon">•</span><span>Przygotowanie firmy „do czytania” dla potencjalnego kupca: jasna historia, czyste liczby, proste dokumenty.</span></li>
+        </ul>
+        <p class="card-footnote">
+          Uwaga: to praktyczna pomoc w uporządkowaniu papierów i liczb – nie formalna porada prawna ani podatkowa.
+        </p>
+      </article>
 
-          <!-- Service 5 -->
-          <article class="card">
-            <div class="who-label">Usługa #5</div>
-            <h3 class="who-title">IT + psychologia klienta — narzędzia i to, jak ludzie naprawdę czują</h3>
-            <p class="who-tagline">
-              Most między technologią a prawdziwymi klientami: dobór narzędzi, konfiguracja i oferty dopasowane do ich myślenia.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Dobór i ustawienie podstaw IT: domeny, hosting, poczta, proste CRM, rezerwacje i płatności online.</span></li>
-              <li><span class="card-list-icon">•</span><span>Tłumaczenie Twoich potrzeb na jasne zadania dla devów — i tłumaczenie ich języka na ludzki.</span></li>
-              <li><span class="card-list-icon">•</span><span>Analiza emocji i zachowań klientów: co ich blokuje, czego się boją i czego pragną.</span></li>
-              <li><span class="card-list-icon">•</span><span>Projektowanie cen, gwarancji i systemów opinii, które szanują psychologię klienta i chronią markę.</span></li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
+      <!-- Usługa 5 -->
+      <article class="card">
+        <div class="who-label">Usługa #5</div>
+        <h3 class="who-title">Zakładanie nowej firmy i operacje – od pomysłu do działającego systemu</h3>
+        <p class="who-tagline">
+          Dla osób otwierających mały biznes, które chcą więcej niż motywacji – chcą kroków, dokumentów i działającego systemu.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Zamienię pomysł w prosty plan: co oferujesz, komu, w jakich cenach i jak wygląda „dobry start” w pierwszych 90 dniach.</span></li>
+          <li><span class="card-list-icon">•</span><span>Pomogę w praktycznych krokach: formularze, podstawowe rejestracje i przygotowanie do rozmowy z księgowym lub prawnikiem.</span></li>
+          <li><span class="card-list-icon">•</span><span>Przejrzę lub zaprojektuję kluczowe dokumenty: opisy stanowisk, proste zasady pracy, umowy i regulaminy.</span></li>
+          <li><span class="card-list-icon">•</span><span>Zaprojektuję „przepływ” miejsca (sklep, biuro, mała pracownia): kto co robi, gdzie co jest i jak uniknąć chaosu.</span></li>
+        </ul>
+      </article>
+
+      <!-- Usługa 6 -->
+      <article class="card">
+        <div class="who-label">Usługa #6</div>
+        <h3 class="who-title">IT i psychologia klienta – narzędzia + to, co ludzie naprawdę czują</h3>
+        <p class="who-tagline">
+          Most między „ludźmi od IT” a prawdziwymi klientami: wybór narzędzi, konfiguracja
+          i projektowanie ofert zgodnych z myśleniem klienta.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Pomogę dobrać i ustawić podstawowe IT: domenę, hosting, e-mail, proste CRM, rezerwacje i płatności online.</span></li>
+          <li><span class="card-list-icon">•</span><span>Przetłumaczę Twoje potrzeby na jasne zadania dla programistów/IT – i ich język na ludzki.</span></li>
+          <li><span class="card-list-icon">•</span><span>Zbadam emocje i zachowania klientów: czego się boją, na co liczą i co blokuje ich przed zakupem.</span></li>
+          <li><span class="card-list-icon">•</span><span>Zaprojektuję cenniki, oferty, gwarancje i system opinii, które szanują psychologię klienta i chronią Twoją markę.</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
   </main>
 
   <footer>

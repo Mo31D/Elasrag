@@ -46,7 +46,7 @@
         </a>
       </div>
 
-      <button class="nav-toggle" type="button">Menú</button>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
     </div>
 
     <nav class="nav-links">
@@ -517,32 +517,40 @@
           <div class="contact-card">
             <h3>Formulario de contacto</h3>
             <p>Formulario estático simple. Conéctalo al sistema que quieras (email, form handler, etc.).</p>
-            <form>
-              <div class="field">
-                <label for="name">Nombre</label>
-                <input id="name" type="text" name="name" autocomplete="name">
-              </div>
-              <div class="field">
-                <label for="email">Correo electrónico</label>
-                <input id="email" type="email" name="email" autocomplete="email">
-              </div>
-              <div class="field">
-                <label for="context">País / zona horaria</label>
-                <input id="context" type="text" name="context">
-              </div>
-              <div class="field">
-                <label for="summary">Resumen muy corto (2–3 líneas)</label>
-                <textarea id="summary" name="summary"></textarea>
-              </div>
-              <div class="field">
-                <label for="goal">¿Qué resultado esperas?</label>
-                <textarea id="goal" name="goal"></textarea>
-              </div>
-              <button class="btn btn-primary" type="submit">
-                <span class="btn-icon">📩</span>
-                <span>Enviar para revisión</span>
-              </button>
-            </form>
+           <form action="https://formspree.io/f/xwpzyrjl" method="POST">
+  <div class="field">
+    <label for="name">Name</label>
+    <input id="name" type="text" name="name" autocomplete="name" required>
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" autocomplete="email" required>
+  </div>
+
+  <div class="field">
+    <label for="context">Country / time zone</label>
+    <input id="context" type="text" name="context">
+  </div>
+
+  <div class="field">
+    <label for="summary">Very short summary of the file (2–3 lines)</label>
+    <textarea id="summary" name="summary" required></textarea>
+  </div>
+
+  <div class="field">
+    <label for="goal">What result are you hoping for?</label>
+    <textarea id="goal" name="goal"></textarea>
+  </div>
+
+  <!-- optional: simple anti-spam honeypot -->
+  <input type="text" name="_gotcha" style="display:none">
+
+  <button class="btn btn-primary" type="submit">
+    <span class="btn-icon">📩</span>
+    <span>Send for review</span>
+  </button>
+</form>
           </div>
 
           <div class="contact-side">
@@ -572,94 +580,117 @@
       </div>
     </section>
 
-    <!-- Extra services section -->
-    <section id="other-services">
-      <div class="shell">
-        <div class="section-header">
-          <div class="section-kicker">Otros servicios</div>
-          <h2 class="section-title">Otras formas en que puedo ayudarte con tu negocio</h2>
-          <p class="section-desc">
-            Además de Mo Thinking, también puedo apoyarte con webs, redes sociales,
-            creación de negocios, contabilidad e IT.
-          </p>
-        </div>
+<!-- Sección de servicios extra -->
+<section id="other-services">
+  <div class="shell">
+    <div class="section-header">
+      <div class="section-kicker">Otros servicios</div>
+      <h2 class="section-title">Otras formas en las que puedo ayudar a tu negocio</h2>
+      <p class="section-desc">
+        Además de los casos de Mo Thinking, también puedo apoyarte con sitios web,
+        redes sociales, puesta en marcha de negocios, contabilidad e IT.
+      </p>
+    </div>
 
-        <div class="who-grid">
-          <article class="card">
-            <div class="who-label">Servicio #1</div>
-            <h3 class="who-title">Web y presencia online — pensada para humanos reales</h3>
-            <p class="who-tagline">
-              Webs limpias y simples para personas y pequeños negocios — con gestión completa y auditoría honesta.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Diseño y construcción de una web enfocada (oferta clara, siguiente paso claro).</span></li>
-              <li><span class="card-list-icon">•</span><span>Mantenimiento diario: actualizaciones, cambios de contenido, seguridad básica, monitoreo.</span></li>
-              <li><span class="card-list-icon">•</span><span>Auditoría de tu web actual: qué confunde, qué mata confianza y qué no gusta al SEO.</span></li>
-              <li><span class="card-list-icon">•</span><span>Mejora de estructura/texto/SEO básico para que humanos y buscadores entiendan tu trabajo real.</span></li>
-            </ul>
-          </article>
+    <div class="who-grid">
+      <!-- Servicio 1 -->
+      <article class="card">
+        <div class="who-label">Servicio #1</div>
+        <h3 class="who-title">Web y presencia online – creada para personas reales</h3>
+        <p class="who-tagline">
+          Sitios web simples y limpios para personas y pequeños negocios – más gestión completa y auditorías honestas de lo que ya tienes.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Diseño y construcción de una web enfocada para ti o tu negocio (sin ruido, oferta clara y siguiente paso claro).</span></li>
+          <li><span class="card-list-icon">•</span><span>Me encargo del cuidado diario del sitio: actualizaciones, ajustes de contenido, seguridad básica y revisiones de funcionamiento.</span></li>
+          <li><span class="card-list-icon">•</span><span>Auditoría de tu web actual: qué confunde a la gente, qué rompe la confianza y qué probablemente no le gusta a Google.</span></li>
+          <li><span class="card-list-icon">•</span><span>Refresco de estructura, textos y SEO básico para que personas normales y motores de búsqueda entiendan lo que realmente haces.</span></li>
+        </ul>
+      </article>
 
-          <article class="card">
-            <div class="who-label">Servicio #2</div>
-            <h3 class="who-title">Redes sociales y contenido — imagen real sin hype falso</h3>
-            <p class="who-tagline">
-              Creamos/limpiamos tus cuentas y construimos una presencia coherente y honesta.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Creación o reconstrucción de perfiles en plataformas correctas (no en todas por defecto).</span></li>
-              <li><span class="card-list-icon">•</span><span>Planificación y preparación de contenido: posts, textos, visuales simples, scripts de vídeo.</span></li>
-              <li><span class="card-list-icon">•</span><span>Contenido ligado a objetivos reales: consultas, reservas, clientes recurrentes.</span></li>
-              <li><span class="card-list-icon">•</span><span>Tono de voz coherente para que todo suene a una sola marca confiable.</span></li>
-            </ul>
-          </article>
+      <!-- Servicio 2 -->
+      <article class="card">
+        <div class="who-label">Servicio #2</div>
+        <h3 class="who-title">Colaboración White-Label (para partners)</h3>
+        <p class="who-tagline">
+          Mo Thinking trabaja en segundo plano mientras tú ofreces el servicio con tu propia marca e identidad.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Análisis interno y diseño de decisiones totalmente gestionados por Mo Thinking.</span></li>
+          <li><span class="card-list-icon">•</span><span>Entregables listos para enviar con tu marca, no con la de Mo.</span></li>
+          <li><span class="card-list-icon">•</span><span>Modelos flexibles: reparto de ingresos, precio mayorista fijo o retainer mensual.</span></li>
+          <li><span class="card-list-icon">•</span><span>Empieza con un piloto pagado antes de escalar.</span></li>
+        </ul>
+        <p class="card-footnote">
+          Ideal para consultores y empresas que quieren un motor de pensamiento potente sin construirlo desde cero.
+        </p>
+      </article>
 
-          <article class="card">
-            <div class="who-label">Servicio #3</div>
-            <h3 class="who-title">Contabilidad para pequeños negocios y salida — práctica, sin miedo</h3>
-            <p class="who-tagline">
-              Ayuda para quienes se pierden con números, self-assessment o cierre/venta de negocios.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Organizar datos para self-assessment que tu contable/HMRC puedan leer.</span></li>
-              <li><span class="card-list-icon">•</span><span>Tablas simples y hábitos de seguimiento para saber ingresos, gastos y beneficio.</span></li>
-              <li><span class="card-list-icon">•</span><span>Apoyo al salir de un negocio: stock, ofertas y venta sin tirar valor.</span></li>
-              <li><span class="card-list-icon">•</span><span>Hacer tu negocio “legible” para un comprador: historia clara, números limpios, docs simples.</span></li>
-            </ul>
-            <p class="card-footnote">
-              Nota: ayuda práctica para ordenar números/papeles — no asesoría legal o fiscal oficial.
-            </p>
-          </article>
+      <!-- Servicio 3 -->
+      <article class="card">
+        <div class="who-label">Servicio #3</div>
+        <h3 class="who-title">Redes sociales y contenido – imagen real, no hype falso</h3>
+        <p class="who-tagline">
+          Montamos o limpiamos tus cuentas y construimos una presencia online tranquila y honesta que respeta cómo se siente tu cliente.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Crear o reconstruir perfiles de tu negocio en las plataformas correctas (no “en todas porque sí”).</span></li>
+          <li><span class="card-list-icon">•</span><span>Planificar y preparar contenido profesional: posts, textos, visuales simples y pequeños guiones para vídeos cortos o directos.</span></li>
+          <li><span class="card-list-icon">•</span><span>Conectar el contenido con objetivos reales: consultas, reservas, clientes recurrentes – no solo “likes”.</span></li>
+          <li><span class="card-list-icon">•</span><span>Diseñar un “tono de voz” simple para que cada publicación suene como la misma persona confiable.</span></li>
+        </ul>
+      </article>
 
-          <article class="card">
-            <div class="who-label">Servicio #4</div>
-            <h3 class="who-title">Lanzar y operar un negocio nuevo — de idea a sistema</h3>
-            <p class="who-tagline">
-              Para quien inicia un pequeño negocio y necesita pasos, documentos y un sistema real.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Convertir tu idea en plan simple: qué ofreces, a quién, precio, y qué es “bien” en 90 días.</span></li>
-              <li><span class="card-list-icon">•</span><span>Ayuda con pasos prácticos: formularios, registros básicos, preparación para contable/abogado.</span></li>
-              <li><span class="card-list-icon">•</span><span>Diseñar o revisar documentos base: roles, reglas, contratos simples.</span></li>
-              <li><span class="card-list-icon">•</span><span>Diseñar el “flujo” del lugar para evitar caos operativo.</span></li>
-            </ul>
-          </article>
+      <!-- Servicio 4 -->
+      <article class="card">
+        <div class="who-label">Servicio #4</div>
+        <h3 class="who-title">Contabilidad para pequeños negocios y apoyo para cerrar/salir – práctica, sin miedo</h3>
+        <p class="who-tagline">
+          Ayuda para personas y pequeños negocios que se sienten perdidos con los números, el self-assessment o el cierre/venta.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Ayudarte a preparar y organizar la información para tu self-assessment de forma clara para tu contable o HMRC.</span></li>
+          <li><span class="card-list-icon">•</span><span>Crear hojas de cálculo simples y hábitos de seguimiento para que sepas qué entra, qué sale y cuál es tu beneficio.</span></li>
+          <li><span class="card-list-icon">•</span><span>Apoyar a quien está saliendo de un negocio: organizar stock, ofertas y ventas para no tirar valor a la basura.</span></li>
+          <li><span class="card-list-icon">•</span><span>Hacer tu negocio “legible” para un posible comprador: historia clara, números limpios y documentos simples.</span></li>
+        </ul>
+        <p class="card-footnote">
+          Nota: es ayuda práctica para que los papeles y números queden claros y listos, no asesoría legal o fiscal formal.
+        </p>
+      </article>
 
-          <article class="card">
-            <div class="who-label">Servicio #5</div>
-            <h3 class="who-title">IT + psicología del cliente — herramientas y emociones reales</h3>
-            <p class="who-tagline">
-              Puente entre tecnología y clientes reales: elegir herramientas, configurarlas y diseñar ofertas que encajen con su mente.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Elegir/configurar lo básico: dominios, hosting, email, CRM simple, reservas y pagos online.</span></li>
-              <li><span class="card-list-icon">•</span><span>Traducir tus necesidades en tareas claras para devs — y su lenguaje a humano.</span></li>
-              <li><span class="card-list-icon">•</span><span>Estudiar miedos, esperanzas y bloqueos reales del cliente.</span></li>
-              <li><span class="card-list-icon">•</span><span>Diseñar precios, garantías y reseñas que respeten esa psicología y protejan tu marca.</span></li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
+      <!-- Servicio 5 -->
+      <article class="card">
+        <div class="who-label">Servicio #5</div>
+        <h3 class="who-title">Montaje y operación de nuevos negocios – de idea a sistema funcionando</h3>
+        <p class="who-tagline">
+          Para quien abre un pequeño negocio y quiere algo más que motivación: pasos, documentos y un sistema real que funcione.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Convertir tu idea en un plan simple: qué ofreces, a quién, a qué precio y cómo se ve un buen inicio en 90 días.</span></li>
+          <li><span class="card-list-icon">•</span><span>Ayuda con pasos prácticos: formularios, registros básicos y qué preparar antes de hablar con contable o abogado.</span></li>
+          <li><span class="card-list-icon">•</span><span>Revisar o diseñar documentos clave: descripciones de puesto, reglas básicas de trabajo, contratos simples y normas internas.</span></li>
+          <li><span class="card-list-icon">•</span><span>Diseñar el “flujo” del lugar (tienda, oficina, pequeño taller): quién hace qué, dónde van las cosas y cómo evitar el caos.</span></li>
+        </ul>
+      </article>
+
+      <!-- Servicio 6 -->
+      <article class="card">
+        <div class="who-label">Servicio #6</div>
+        <h3 class="who-title">IT y psicología del cliente – herramientas + cómo se siente la gente</h3>
+        <p class="who-tagline">
+          Puente entre “la gente de IT” y clientes reales: elegir herramientas, configurarlas y diseñar ofertas que encajen con la mente del cliente.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Ayudarte a elegir y configurar IT básico: dominios, hosting, email, CRM simple, reservas y pagos online.</span></li>
+          <li><span class="card-list-icon">•</span><span>Traducir tus necesidades en tareas claras para desarrolladores/proveedores y traducir su lenguaje a humano.</span></li>
+          <li><span class="card-list-icon">•</span><span>Estudiar emociones y comportamiento del cliente: qué teme, qué espera y qué le bloquea para comprar.</span></li>
+          <li><span class="card-list-icon">•</span><span>Diseñar precios, ofertas, garantías y sistemas de reseñas que respeten la psicología del cliente y protejan tu marca.</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
   </main>
 
   <footer>

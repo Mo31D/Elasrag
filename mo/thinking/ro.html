@@ -46,7 +46,7 @@
         </a>
       </div>
 
-      <button class="nav-toggle" type="button">Meniu</button>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">Menu</button>
     </div>
 
     <nav class="nav-links" aria-label="Main navigation">
@@ -519,32 +519,40 @@
           <div class="contact-card">
             <h3>Formular de contact</h3>
             <p>Este un formular static simplu. Conectează-l la handlerul pe care îl vrei (email, form handler etc.).</p>
-            <form>
-              <div class="field">
-                <label for="name">Nume</label>
-                <input id="name" type="text" name="name" autocomplete="name">
-              </div>
-              <div class="field">
-                <label for="email">Email</label>
-                <input id="email" type="email" name="email" autocomplete="email">
-              </div>
-              <div class="field">
-                <label for="context">Țara / fus orar</label>
-                <input id="context" type="text" name="context">
-              </div>
-              <div class="field">
-                <label for="summary">Rezumat foarte scurt (2–3 rânduri)</label>
-                <textarea id="summary" name="summary"></textarea>
-              </div>
-              <div class="field">
-                <label for="goal">Ce rezultat vrei să obții?</label>
-                <textarea id="goal" name="goal"></textarea>
-              </div>
-              <button class="btn btn-primary" type="submit">
-                <span class="btn-icon">📩</span>
-                <span>Trimite pentru analiză</span>
-              </button>
-            </form>
+            <form action="https://formspree.io/f/xwpzyrjl" method="POST">
+  <div class="field">
+    <label for="name">Name</label>
+    <input id="name" type="text" name="name" autocomplete="name" required>
+  </div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input id="email" type="email" name="email" autocomplete="email" required>
+  </div>
+
+  <div class="field">
+    <label for="context">Country / time zone</label>
+    <input id="context" type="text" name="context">
+  </div>
+
+  <div class="field">
+    <label for="summary">Very short summary of the file (2–3 lines)</label>
+    <textarea id="summary" name="summary" required></textarea>
+  </div>
+
+  <div class="field">
+    <label for="goal">What result are you hoping for?</label>
+    <textarea id="goal" name="goal"></textarea>
+  </div>
+
+  <!-- optional: simple anti-spam honeypot -->
+  <input type="text" name="_gotcha" style="display:none">
+
+  <button class="btn btn-primary" type="submit">
+    <span class="btn-icon">📩</span>
+    <span>Send for review</span>
+  </button>
+</form>
           </div>
 
           <div class="contact-side">
@@ -574,99 +582,121 @@
       </div>
     </section>
 
-    <!-- Extra services section -->
-    <section id="other-services">
-      <div class="shell">
-        <div class="section-header">
-          <div class="section-kicker">Alte servicii</div>
-          <h2 class="section-title">Alte moduri în care îți pot ajuta afacerea</h2>
-          <p class="section-desc">
-            Pe lângă cazurile Mo Thinking, te pot sprijini cu site-uri, social media,
-            lansarea afacerii, contabilitate și IT.
-          </p>
-        </div>
+<!-- Secțiunea serviciilor extra -->
+<section id="other-services">
+  <div class="shell">
+    <div class="section-header">
+      <div class="section-kicker">Alte servicii</div>
+      <h2 class="section-title">Alte moduri în care îți pot ajuta afacerea</h2>
+      <p class="section-desc">
+        Dincolo de cazurile Mo Thinking, te pot sprijini și cu site-uri web,
+        social media, deschiderea afacerii, contabilitate și IT.
+      </p>
+    </div>
 
-        <div class="who-grid">
-          <!-- Service 1 -->
-          <article class="card">
-            <div class="who-label">Serviciul #1</div>
-            <h3 class="who-title">Site și prezență online — făcute pentru oameni reali</h3>
-            <p class="who-tagline">
-              Site-uri simple și curate pentru persoane și firme mici — plus administrare și audit sincer pentru ce ai deja.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Design și construire de site focusat pe tine/afacerea ta (fără zgomot, ofertă clară, pas următor clar).</span></li>
-              <li><span class="card-list-icon">•</span><span>Îngrijirea zilnică a site-ului: update-uri, editări de conținut, securitate de bază și monitorizare.</span></li>
-              <li><span class="card-list-icon">•</span><span>Audit pe site-ul actual: ce încurcă oamenii, ce distruge încrederea și ce nu le place motoarelor de căutare.</span></li>
-              <li><span class="card-list-icon">•</span><span>Actualizare structură, texte și SEO de bază ca oamenii — și căutarea — să înțeleagă ce faci cu adevărat.</span></li>
-            </ul>
-          </article>
+    <div class="who-grid">
+      <!-- Serviciul 1 -->
+      <article class="card">
+        <div class="who-label">Serviciul #1</div>
+        <h3 class="who-title">Website & prezență online – făcute pentru oameni reali</h3>
+        <p class="who-tagline">
+          Site-uri simple și curate pentru persoane și afaceri mici – plus administrare completă și audituri sincere pentru ce ai deja.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Proiectez și construiesc un site clar și focusat pentru tine sau afacerea ta (fără zgomot: ofertă clară și pas următor clar).</span></li>
+          <li><span class="card-list-icon">•</span><span>Preiau îngrijirea de zi cu zi a site-ului: update-uri, mici ajustări de conținut, securitate de bază și verificări de funcționare.</span></li>
+          <li><span class="card-list-icon">•</span><span>Audit pentru site-ul tău actual: ce îi încurcă pe oameni, ce omoară încrederea și ce nu place probabil motoarelor de căutare.</span></li>
+          <li><span class="card-list-icon">•</span><span>Reîmprospătez structura, textele și SEO-ul de bază ca să fie ușor de înțeles pentru oameni și pentru Google.</span></li>
+        </ul>
+      </article>
 
-          <!-- Service 2 -->
-          <article class="card">
-            <div class="who-label">Serviciul #2</div>
-            <h3 class="who-title">Social media și conținut — imagine reală, fără hype fals</h3>
-            <p class="who-tagline">
-              Construim sau curățăm conturile și dezvoltăm o imagine online calmă și sinceră, care respectă emoțiile reale ale clienților.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Creare sau reconstrucție de conturi pe platformele potrivite (nu „peste tot, fără motiv”).</span></li>
-              <li><span class="card-list-icon">•</span><span>Planificare și pregătire de conținut: postări, texte, vizuale simple, scenarii pentru video scurte sau live-uri.</span></li>
-              <li><span class="card-list-icon">•</span><span>Legarea conținutului de obiective reale: cereri, programări, clienți recurenti — nu doar „like-uri”.</span></li>
-              <li><span class="card-list-icon">•</span><span>Definirea unui ton coerent ca totul să sune ca de la aceeași persoană de încredere.</span></li>
-            </ul>
-          </article>
+      <!-- Serviciul 2 -->
+      <article class="card">
+        <div class="who-label">Serviciul #2</div>
+        <h3 class="who-title">Parteneriat White-Label (pentru parteneri)</h3>
+        <p class="who-tagline">
+          Mo Thinking rulează în fundal, iar tu oferi serviciul sub propriul tău brand și identitate.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Analiza din spate și designul deciziilor sunt gestionate complet de Mo Thinking.</span></li>
+          <li><span class="card-list-icon">•</span><span>Livrabile gata de trimis, branduite pentru tine, nu pentru Mo.</span></li>
+          <li><span class="card-list-icon">•</span><span>Modele flexibile: împărțire de venituri, preț fix wholesale sau abonament lunar.</span></li>
+          <li><span class="card-list-icon">•</span><span>Începe în siguranță cu un pilot plătit înainte de scalare.</span></li>
+        </ul>
+        <p class="card-footnote">
+          Ideal pentru consultanți și companii care vor un motor de gândire puternic fără să îl construiască de la zero.
+        </p>
+      </article>
 
-          <!-- Service 3 -->
-          <article class="card">
-            <div class="who-label">Serviciul #3</div>
-            <h3 class="who-title">Contabilitate pentru afaceri mici și sprijin la ieșire — practic, fără frică</h3>
-            <p class="who-tagline">
-              Ajutor pentru persoane și firme mici pierdute în cifre, self-assessment sau închiderea/vânzarea unei afaceri.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Pregătirea și organizarea datelor pentru self-assessment ca să le poată citi contabilul sau HMRC.</span></li>
-              <li><span class="card-list-icon">•</span><span>Tabele simple și obiceiuri de urmărire: intrări, ieșiri și profit clar.</span></li>
-              <li><span class="card-list-icon">•</span><span>Sprijin la ieșirea dintr-o afacere: organizare stoc, oferte și vânzare fără să arunci valoarea.</span></li>
-              <li><span class="card-list-icon">•</span><span>Faci afacerea „citibilă” pentru un cumpărător: poveste clară, cifre curate, documente simple.</span></li>
-            </ul>
-            <p class="card-footnote">
-              Notă: aceasta este asistență practică pentru ordine în acte și cifre — nu consultanță legală sau fiscală oficială.
-            </p>
-          </article>
+      <!-- Serviciul 3 -->
+      <article class="card">
+        <div class="who-label">Serviciul #3</div>
+        <h3 class="who-title">Social media & conținut – imagine reală, nu hype fals</h3>
+        <p class="who-tagline">
+          Îți setăm sau curățăm conturile de social media și construim o imagine online calmă și sinceră,
+          care respectă cum se simte clientul tău în realitate.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Creăm sau refacem profilele afacerii pe platformele potrivite (nu „peste tot fără motiv”).</span></li>
+          <li><span class="card-list-icon">•</span><span>Planificăm și pregătim conținut profesionist: postări, texte, vizuale simple și mini-scenarii pentru video scurte sau live-uri.</span></li>
+          <li><span class="card-list-icon">•</span><span>Legăm conținutul de obiective reale de business: întrebări, rezervări, clienți care revin – nu doar „like-uri”.</span></li>
+          <li><span class="card-list-icon">•</span><span>Definim un „ton al vocii” simplu, ca fiecare postare să sune ca aceeași persoană de încredere.</span></li>
+        </ul>
+      </article>
 
-          <!-- Service 4 -->
-          <article class="card">
-            <div class="who-label">Serviciul #4</div>
-            <h3 class="who-title">Lansare și operare de afacere nouă — de la idee la sistem funcțional</h3>
-            <p class="who-tagline">
-              Pentru cei care pornesc o afacere mică și au nevoie de pași, documente și un sistem care chiar funcționează.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Transformarea ideii într-un plan simplu: ce oferi, cui, la ce preț și ce înseamnă „bine” în primele 90 de zile.</span></li>
-              <li><span class="card-list-icon">•</span><span>Ajutor cu pașii practici: formulare, înregistrări de bază, ce să pregătești înainte de a vorbi cu contabilul sau avocatul.</span></li>
-              <li><span class="card-list-icon">•</span><span>Proiectare sau revizie de documente de bază: roluri, reguli de lucru, contracte simple.</span></li>
-              <li><span class="card-list-icon">•</span><span>Design pentru „fluxul” locului (magazin/birou/producție mică): cine face ce, unde merg lucrurile, cum evităm haosul.</span></li>
-            </ul>
-          </article>
+      <!-- Serviciul 4 -->
+      <article class="card">
+        <div class="who-label">Serviciul #4</div>
+        <h3 class="who-title">Contabilitate pentru afaceri mici & sprijin la ieșire – practic, fără frică</h3>
+        <p class="who-tagline">
+          Ajutor pentru persoane și afaceri mici care se simt pierdute cu cifrele,
+          self-assessment sau închiderea / vânzarea unei afaceri.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Te ajut să pregătești și să organizezi informațiile pentru self-assessment, ca să fie clare pentru contabil sau HMRC.</span></li>
+          <li><span class="card-list-icon">•</span><span>Construiesc foi de calcul simple și obiceiuri de urmărire ca să știi: ce intră, ce iese și care e profitul.</span></li>
+          <li><span class="card-list-icon">•</span><span>Sprijin pentru cei care ies dintr-o afacere: organizăm stocul, ofertele și vânzările ca să nu arunci valoare la gunoi.</span></li>
+          <li><span class="card-list-icon">•</span><span>Fac afacerea ta „lizibilă” pentru un potențial cumpărător: poveste clară, cifre curate, documente simple.</span></li>
+        </ul>
+        <p class="card-footnote">
+          Notă: acesta este ajutor practic pentru a face actele și cifrele ușor de înțeles și gata – nu consultanță legală sau fiscală formală.
+        </p>
+      </article>
 
-          <!-- Service 5 -->
-          <article class="card">
-            <div class="who-label">Serviciul #5</div>
-            <h3 class="who-title">IT + psihologia clientului — instrumente și cum simt oamenii de fapt</h3>
-            <p class="who-tagline">
-              Punte între tehnologie și clienții reali: alegem uneltele, le configurăm și proiectăm oferte potrivite modului lor de gândire.
-            </p>
-            <ul class="card-list">
-              <li><span class="card-list-icon">•</span><span>Alegere și configurare IT de bază: domenii, hosting, email, CRM simplu, programări și plăți online.</span></li>
-              <li><span class="card-list-icon">•</span><span>Traducerea nevoilor tale în sarcini clare pentru dezvoltatori — și a limbajului lor în limbaj uman.</span></li>
-              <li><span class="card-list-icon">•</span><span>Analiza emoțiilor și comportamentului clienților: ce îi sperie, ce speră și ce îi blochează să cumpere.</span></li>
-              <li><span class="card-list-icon">•</span><span>Design de prețuri, garanții și sisteme de recenzii care respectă psihologia clientului și protejează brandul.</span></li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
+      <!-- Serviciul 5 -->
+      <article class="card">
+        <div class="who-label">Serviciul #5</div>
+        <h3 class="who-title">Deschiderea unui business nou & operațiuni – de la idee la sistem funcțional</h3>
+        <p class="who-tagline">
+          Pentru cei care pornesc o afacere mică și vor mai mult decât motivație –
+          vor pași clari, documente și un sistem care chiar funcționează.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Transform ideea ta într-un plan simplu: ce oferi, cui, la ce prețuri și cum arată un „start bun” în primele 90 de zile.</span></li>
+          <li><span class="card-list-icon">•</span><span>Ajutor cu pașii practici: formulare, înregistrări de bază și ce să pregătești înainte să vorbești cu contabilul sau avocatul.</span></li>
+          <li><span class="card-list-icon">•</span><span>Revizuiesc sau creez documentele de bază: fișe de post, reguli simple de lucru, contracte scurte și reguli interne.</span></li>
+          <li><span class="card-list-icon">•</span><span>Proiectez „fluxul” locului (magazin, birou, mic atelier): cine face ce, unde stau lucrurile și cum evităm haosul.</span></li>
+        </ul>
+      </article>
+
+      <!-- Serviciul 6 -->
+      <article class="card">
+        <div class="who-label">Serviciul #6</div>
+        <h3 class="who-title">IT & psihologia clientului – instrumente + cum se simt oamenii cu adevărat</h3>
+        <p class="who-tagline">
+          Punțe între „oamenii de IT” și clienții reali: alegem instrumente, le setăm
+          și proiectăm oferte care se potrivesc cu felul în care gândește clientul.
+        </p>
+        <ul class="card-list">
+          <li><span class="card-list-icon">•</span><span>Te ajut să alegi și să configurezi IT de bază: domenii, hosting, email, CRM simplu, rezervări și plăți online.</span></li>
+          <li><span class="card-list-icon">•</span><span>Traduc nevoile tale în sarcini clare pentru dezvoltatori/provideri IT – și limba lor înapoi pe înțelesul tuturor.</span></li>
+          <li><span class="card-list-icon">•</span><span>Studiem emoțiile și comportamentul clientului: de ce se teme, la ce speră și ce îl oprește să cumpere.</span></li>
+          <li><span class="card-list-icon">•</span><span>Proiectez prețuri, oferte, garanții și sisteme de recenzii care respectă psihologia clientului și îți protejează brandul.</span></li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
   </main>
 
   <footer>
