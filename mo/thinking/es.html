@@ -700,8 +700,33 @@
     </div>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+<script>
+  // Mobile nav toggle
+  const toggleBtn = document.querySelector('.nav-toggle');
+  const navLinks  = document.querySelector('.nav-links');
+
+  if (toggleBtn && navLinks) {
+    toggleBtn.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+      const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      toggleBtn.setAttribute('aria-expanded', String(!expanded));
+    });
+  }
+
+  // تثبيت توهج كروت other-services عند الضغط
+  const serviceCards = document.querySelectorAll('#other-services .card');
+  if (serviceCards.length) {
+    serviceCards.forEach(card => {
+      card.addEventListener('click', () => {
+        serviceCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+      });
+    });
+  }
+
+  // simple year
+  const yearSpan = document.getElementById("year");
+  if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
