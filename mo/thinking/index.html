@@ -28,7 +28,7 @@
 <header>
   <div class="shell nav-top">
 <div class="brand">
-  <img src="logo.png " class="logo-img" alt="Mo Thinking logo">
+  <img src="logo.png" class="logo-img" alt="Mo Thinking logo">
   <div class="brand-text">
     <div class="brand-name">Mo Thinking</div>
     <div class="brand-sub">High-stakes decisions & conflicts</div>
@@ -438,7 +438,7 @@
             <li><span class="card-list-icon">•</span><span>Help with the practical steps: forms, basic registrations, and what to prepare before talking to an accountant or lawyer.</span></li>
             <li><span class="card-list-icon">•</span><span>Review or design your core documents: job descriptions, basic work rules, simple contracts and house rules.</span></li>
             <li><span class="card-list-icon">•</span><span>Design the “flow” of your place (shop, office, small factory): who does what, where things go, and how to avoid chaos.</span></li>
-            <li><span class="card-list-icon">•</span><span>Design the “flow” of your place (shop, office, small factory): who does what, where things go, and how to avoid chaos.</span></li>
+           
           </ul>
         </article>
 
@@ -803,6 +803,18 @@ document.querySelectorAll('section[data-collapsible]').forEach(section => {
   // simple year
   const yearSpan = document.getElementById("year");
   if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+  // ===== Compact mode on scroll =====
+const headerEl = document.querySelector('header');
+
+let lastCompact = false;
+window.addEventListener('scroll', () => {
+  const compact = window.scrollY > 80; // غير الرقم لو عايزها بدري/متأخر
+  if (compact !== lastCompact) {
+    if (headerEl) headerEl.classList.toggle('compact', compact);
+    document.body.classList.toggle('compact', compact);
+    lastCompact = compact;
+  }
+});
 </script>
 
 </body>

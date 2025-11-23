@@ -1268,7 +1268,7 @@ section[data-collapsible].open .collapsible-content {
 }
 
 .logo-img{
-  height: 70px;
+  height: 90px;
   width: auto;
   object-fit: contain;
   margin-right: 10px;
@@ -1280,3 +1280,40 @@ section[data-collapsible].open .collapsible-content {
     drop-shadow(0 0.6px 0 rgba(255,255,255,0.9))
     drop-shadow(0 -0.6px 0 rgba(255,255,255,0.9));
 }
+
+
+/* ===== Compact header on scroll ===== */
+
+/* سلاسة إخفاء الجزء العلوي */
+.nav-top {
+  transition: opacity .25s ease, transform .25s ease, max-height .25s ease,
+              padding .25s ease, margin .25s ease;
+  max-height: 200px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* لما الهيدر يدخل وضع compact */
+header.compact .nav-top {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-8px);
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* إخفاء شريط اللغة مع نفس الوضع */
+.lang-bar {
+  transition: transform .25s ease, opacity .25s ease;
+}
+
+body.compact .lang-bar {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
