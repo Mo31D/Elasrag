@@ -1226,20 +1226,19 @@ section[data-collapsible].open .collapsible-content {
   margin-top: 0.2rem;
 }
 
-/* rotate arrow when open */
+
 #other-services-toggle:checked + .other-services-header .fake-arrow {
   transform: rotate(180deg);
   opacity: 1;
 }
 
-/* slight "active" state */
+
 #other-services-toggle:checked + .other-services-header {
   border-color: var(--accent);
   box-shadow: 0 18px 55px rgba(34,211,238,0.18);
 }
-/* ✅ Fix: prevent top clipping of other-services cards when opened by checkbox */
 
-/* === Make all arrows / bullets / checks use site blue === */
+
 .collapse-arrow,
 .fake-arrow,
 .card-list-icon,
@@ -1248,7 +1247,6 @@ section[data-collapsible].open .collapsible-content {
   color: var(--accent) !important;
 }
 
-/* لو عندك أي ✓ أو • جوّه عناصر تانية بدون كلاس */
 .price-list li::marker,
 .card-list li::marker,
 .highlight-list li::marker {
@@ -1282,9 +1280,6 @@ section[data-collapsible].open .collapsible-content {
 }
 
 
-/* ===== Compact header on scroll ===== */
-
-/* سلاسة إخفاء الجزء العلوي */
 .nav-top {
   transition: opacity .25s ease, transform .25s ease, max-height .25s ease,
               padding .25s ease, margin .25s ease;
@@ -1293,7 +1288,7 @@ section[data-collapsible].open .collapsible-content {
   transform: translateY(0);
 }
 
-/* لما الهيدر يدخل وضع compact */
+
 header.compact .nav-top {
   max-height: 0;
   opacity: 0;
@@ -1306,7 +1301,7 @@ header.compact .nav-top {
   pointer-events: none;
 }
 
-/* إخفاء شريط اللغة مع نفس الوضع */
+
 .lang-bar {
   transition: transform .25s ease, opacity .25s ease;
 }
@@ -1317,3 +1312,7 @@ body.compact .lang-bar {
   pointer-events: none;
 }
 
+.price-highlight {
+  color: var(--accent-strong); 
+  font-weight: 600;
+}
