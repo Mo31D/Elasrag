@@ -724,6 +724,109 @@
       line-height:1.65;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.82);
     }
+    .commercial-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin:0 0 18px;
+    }
+    .commercial-card{
+      padding:18px;
+      border:1px solid rgba(77,52,64,.09);
+      border-radius:18px;
+      background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(247,235,239,.62));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+    }
+    .commercial-card small{
+      display:block;
+      margin-bottom:6px;
+      color:var(--wine);
+      font-size:9px;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .commercial-card strong{
+      display:block;
+      color:var(--ink);
+      font-size:18px;
+      line-height:1.25;
+      font-family:Georgia,"Times New Roman",serif;
+      font-weight:400;
+    }
+    .commercial-card span{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.55;
+    }
+    .payment-steps{
+      display:grid;
+      gap:9px;
+      margin-top:18px;
+    }
+    .payment-step{
+      display:grid;
+      grid-template-columns:88px 1fr;
+      gap:14px;
+      align-items:start;
+      padding:14px 15px;
+      border:1px solid rgba(77,52,64,.085);
+      border-radius:15px;
+      background:rgba(255,255,255,.66);
+    }
+    .payment-step b{
+      color:var(--wine);
+      font-size:16px;
+      line-height:1.25;
+    }
+    .payment-step strong{
+      display:block;
+      color:var(--ink);
+      font-size:12px;
+    }
+    .payment-step span{
+      display:block;
+      margin-top:3px;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.5;
+    }
+    .support-box{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:18px;
+    }
+    .support-plan{
+      padding:18px;
+      border:1px solid rgba(194,160,120,.18);
+      border-radius:18px;
+      background:linear-gradient(145deg,rgba(255,255,255,.9),rgba(234,216,190,.18));
+    }
+    .support-plan strong{
+      display:block;
+      color:var(--ink);
+      font-size:17px;
+      font-family:Georgia,"Times New Roman",serif;
+      font-weight:400;
+    }
+    .support-plan span{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.55;
+    }
+    html[dir="rtl"] .commercial-card strong,
+    html[dir="rtl"] .support-plan strong{font-family:Tahoma,Arial,"Segoe UI",sans-serif}
+    @media(max-width:820px){
+      .commercial-grid,.support-box{grid-template-columns:1fr}
+    }
+    @media(max-width:560px){
+      .payment-step{grid-template-columns:72px 1fr}
+    }
 
     footer{
       position:relative;
@@ -927,7 +1030,7 @@
       <div class="wrap">
         <div class="section-title">
           <p class="eyebrow">THE REST, IN SHORT</p>
-          <h2>Only what matters before launch.</h2>
+          <h2>Everything needed to move from preview to launch.</h2>
         </div>
 
         <div class="accordion">
@@ -941,7 +1044,7 @@
                 <div><strong>Current catalogue</strong><span>What stays, what is removed, and any new products.</span></div>
                 <div><strong>Product data</strong><span>Final SKUs, prices, lengths, shades, textures and weights.</span></div>
                 <div><strong>Stock & imagery</strong><span>Real availability and which images belong to each product or shade.</span></div>
-                <div><strong>Store rules</strong><span>Shipping, payments, returns, guarantee and final company/legal details.</span></div>
+                <div><strong>Store rules</strong><span>Shipping countries and rates, payment requirements, returns, guarantee and final company/legal details.</span></div>
               </div>
               <div class="note">
                 Also to confirm from the old site: the three dark-wig shades, whether hair pieces should be separate products,
@@ -957,46 +1060,69 @@
               <span>+</span>
             </summary>
             <div class="detail-body">
+              <div class="commercial-grid">
+                <div class="commercial-card"><small>Current scope</small><strong>24 products · up to 423 variants</strong><span>The agreed current catalogue scope. Significant catalogue expansion is treated as additional work.</span></div>
+                <div class="commercial-card"><small>Languages</small><strong>EN · IT · LV · RU</strong><span>Four customer languages across the final BM HAIR experience.</span></div>
+                <div class="commercial-card"><small>Commerce architecture</small><strong>Shopify as the operational source</strong><span>The custom storefront will use Shopify for key commerce data such as product/variant identifiers, pricing and stock where applicable, avoiding two manually maintained catalogues.</span></div>
+                <div class="commercial-card"><small>Production delivery</small><strong>Website + Shopify + launch setup</strong><span>Checkout, payments, agreed shipping, domain/DNS/SSL, Cloudflare production deployment and final QA.</span></div>
+              </div>
               <div class="compact-grid">
-                <div><strong>Custom website</strong><span>Design and development of the BM HAIR customer site.</span></div>
-                <div><strong>Shopify store</strong><span>Catalogue, collections, variants and store implementation.</span></div>
-                <div><strong>Four customer languages</strong><span>English, Italian, Latvian and Russian.</span></div>
-                <div><strong>Catalogue migration</strong><span>Final catalogue rebuilt from owner-confirmed data.</span></div>
-                <div><strong>Search foundation</strong><span>Dedicated pages, metadata, multilingual search structure and sitemap.</span></div>
-                <div><strong>Launch preparation</strong><span>Domain, shipping, checkout, testing and production checks.</span></div>
+                <div><strong>Custom storefront</strong><span>Responsive BM HAIR website, product and collection pages, filters, custom-made and professional journeys.</span></div>
+                <div><strong>Catalogue migration</strong><span>Final catalogue rebuilt and checked against owner-confirmed information.</span></div>
+                <div><strong>Search launch setup</strong><span>Metadata, sitemap, canonical/hreflang structure, old-site redirects where required and Search Console launch setup.</span></div>
+                <div><strong>Testing</strong><span>Checkout, payment, shipping and order-flow testing before final handover.</span></div>
               </div>
             </div>
           </details>
 
           <details>
             <summary>
-              <span>Project proposal</span>
+              <span>Project fee, timeline & payments</span>
               <span>+</span>
             </summary>
             <div class="detail-body">
               <div class="proposal">
                 <div class="price-box">
-                  <small>Proposed project fee</small>
+                  <small>Fixed project fee</small>
                   <div class="price">€3,500</div>
-                  <p>For the website and Shopify scope described here through to launch.</p>
+                  <p>No payment is due for the work completed to date. The first payment is due only when BM HAIR approves the project and asks to proceed with final production.</p>
                 </div>
                 <div class="proposal-copy">
-                  <h3>Included</h3>
-                  <ul class="clean">
-                    <li>Custom website design and development</li>
-                    <li>Shopify implementation</li>
-                    <li>Four-language customer experience</li>
-                    <li>Verified catalogue setup and migration</li>
-                    <li>Search optimisation foundation</li>
-                    <li>Mobile optimisation and final quality checks</li>
-                    <li>Shipping, checkout and launch configuration</li>
-                  </ul>
+                  <h3>Approximately 3 weeks remaining</h3>
+                  <p style="margin:0;color:var(--muted);font-size:12px;line-height:1.65">
+                    Approximately one week of design and development has already been completed for the current previews.
+                    The remaining work is expected to take around three weeks from approval and receipt of the required catalogue, shipping and company information.
+                  </p>
+                  <div class="payment-steps">
+                    <div class="payment-step"><b>€1,500</b><div><strong>Project approval</strong><span>Due when the proposal is approved and final production begins.</span></div></div>
+                    <div class="payment-step"><b>€1,500</b><div><strong>Pre-launch approval</strong><span>Due when the completed staging/pre-launch version is ready for final client review and approval.</span></div></div>
+                    <div class="payment-step"><b>€500</b><div><strong>Launch & handover</strong><span>Due on final production launch and complete project handover.</span></div></div>
+                  </div>
                   <div class="note">
-                    Not included: Shopify subscription, paid third-party apps, professional photography, paid advertising,
-                    legal advice or major new integrations outside the agreed scope.
-                    Final delivery timing, payment stages and final scope will be confirmed in writing after approval.
+                    Delays in receiving required BM HAIR information may move the launch date. Shopify subscription, paid third-party apps,
+                    professional photography, paid advertising, legal advice and major new integrations outside the agreed scope are not included.
                   </div>
                 </div>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary>
+              <span>Launch, handover & ongoing support</span>
+              <span>+</span>
+            </summary>
+            <div class="detail-body">
+              <div class="compact-grid">
+                <div><strong>Launch means</strong><span>The production website is live, the confirmed catalogue is in place, Shopify integration is operational, checkout/order flow is tested, agreed payment and shipping settings are configured, domain/DNS/SSL and technical SEO launch items are complete, and final QA has passed.</span></div>
+                <div><strong>Full handover</strong><span>Relevant project ownership, administrator access, credentials and essential project documentation are handed over at completion.</span></div>
+                <div><strong>30-day bug-fix support</strong><span>Included after launch at no additional cost for issues relating to the agreed functionality delivered as part of the project.</span></div>
+                <div><strong>Not bug-fix support</strong><span>New features, substantial design changes, major catalogue expansion and new integrations are additional work.</span></div>
+              </div>
+
+              <div class="support-box">
+                <div class="support-plan"><strong>Optional maintenance · €150/month</strong><span>Technical maintenance, essential updates, integration checks, minor fixes and small content/design changes, with up to 2 hours of work per month. Additional work: €60/hour.</span></div>
+                <div class="support-plan"><strong>Pay as needed · €65/hour</strong><span>No monthly plan required. Larger features, integrations or substantial changes are quoted separately before work begins.</span></div>
               </div>
             </div>
           </details>
