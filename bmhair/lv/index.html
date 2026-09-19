@@ -106,44 +106,29 @@
       gap:20px;
     }
     .brand{
-      display:flex;
-      align-items:center;
-      gap:13px;
-      min-width:0;
-      line-height:1;
+      position:relative;
+      padding-left:17px;
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.16em;
+      line-height:1.15;
     }
-    .brand-mark{
-      display:inline-flex;
-      align-items:baseline;
-      gap:5px;
-      white-space:nowrap;
-      font-family:Georgia,"Times New Roman",serif;
-      font-size:22px;
-      letter-spacing:-.035em;
-      color:var(--plum);
-      text-shadow:0 1px 0 rgba(255,255,255,.6);
-    }
-    .brand-mo{
-      color:var(--wine);
-      font-size:.82em;
-      font-style:italic;
-      font-weight:400;
-      letter-spacing:-.025em;
-    }
-    .brand-surname{
-      font-weight:600;
+    .brand:before{
+      content:"";
+      position:absolute;
+      left:0;top:2px;bottom:2px;
+      width:3px;
+      border-radius:99px;
+      background:linear-gradient(180deg,var(--champagne),var(--rose));
+      box-shadow:0 0 18px rgba(194,160,120,.22);
     }
     .brand small{
       display:block;
-      margin:0;
-      padding-left:13px;
-      border-left:1px solid rgba(107,62,81,.18);
+      margin-top:5px;
       color:var(--muted);
       font-size:8px;
-      font-weight:800;
-      letter-spacing:.13em;
-      line-height:1.35;
-      white-space:nowrap;
+      font-weight:750;
+      letter-spacing:.15em;
     }
     .top-actions{display:flex;align-items:center;gap:10px}
     .status{
@@ -863,14 +848,7 @@
       background:linear-gradient(90deg,transparent,var(--champagne),transparent);
       opacity:.55;
     }
-    .foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:baseline}
-    .author-mark{
-      font-family:Georgia,"Times New Roman",serif;
-      font-size:13px;
-      font-weight:600;
-      letter-spacing:-.02em;
-      color:var(--ink-2);
-    }
+    .foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
 
     @keyframes shine{
       0%,72%{left:-45%;opacity:0}
@@ -933,7 +911,6 @@
       .wrap{width:min(calc(100% - 24px),var(--max))}
       .topin{min-height:64px}
       .brand small{display:none}
-      .brand-mark{font-size:20px}
       .status{display:none}
       .langnav a{padding:5px 7px;font-size:9px}
       .hero{padding:68px 0 42px}
@@ -970,7 +947,7 @@
 <body>
   <header class="top">
     <div class="wrap topin">
-      <div class="brand"><span class="brand-mark" aria-label="Mo Elasrag"><span class="brand-mo">Mo</span><span class="brand-surname">Elasrag</span></span><small>BM HAIR PROJEKTA PRIEKŠSKATĪJUMS</small></div>
+      <div class="brand">ELASRAG<small>BM HAIR PROJEKTA PRIEKŠSKATĪJUMS</small></div>
       <div class="top-actions">
         <div class="status">Darba priekšskatījums</div>
         <nav class="langnav" aria-label="Valoda">
@@ -1137,7 +1114,7 @@
   <footer>
     <div class="wrap foot">
       <span>BM HAIR · Projekta priekšskatījums</span>
-      <span>Sagatavoja <span class="author-mark">Mo Elasrag</span> · 2026. gada septembris</span>
+      <span>Sagatavoja Mo Elasrag · 2026. gada septembris</span>
     </div>
   </footer>
 
