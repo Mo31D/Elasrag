@@ -204,15 +204,34 @@
     .brand-wrap {
       position: fixed;
       z-index: 30;
-      top: max(36px, calc(env(safe-area-inset-top) + 26px));
-      left: max(38px, calc(env(safe-area-inset-left) + 28px));
+      top: max(34px, calc(env(safe-area-inset-top) + 22px));
+      left: max(30px, calc(env(safe-area-inset-left) + 22px));
       pointer-events: none;
-      perspective: 900px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .brand-kicker {
+      font-family:
+        "SF Pro Text",
+        "Avenir Next",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+      font-size: clamp(10px, .8vw, 12px);
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(20,32,42,.42);
+      line-height: 1;
     }
 
     .brand {
-      position: relative;
-      margin: 0;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
       white-space: nowrap;
       direction: ltr;
       text-align: left;
@@ -222,40 +241,76 @@
         "Helvetica Neue",
         Arial,
         sans-serif;
-      font-size: clamp(24px, 2.575vw, 41px);
-      line-height: .9;
-      font-weight: 650;
-      letter-spacing: -.072em;
-      color: var(--ink);
+      font-size: clamp(26px, 2.8vw, 42px);
+      line-height: .95;
+      font-weight: 600;
+      letter-spacing: -.05em;
+      color: rgba(20,32,42,.96);
       text-shadow:
-        0 1px 0 rgba(255,255,255,.7),
-        0 14px 34px rgba(20,32,42,.075);
-      transform-origin: left center;
-      transition:
-        opacity .7s cubic-bezier(.2,.72,.16,1),
-        transform .9s cubic-bezier(.16,.8,.18,1),
-        filter .76s ease,
-        letter-spacing .9s cubic-bezier(.16,.8,.18,1);
-      will-change: opacity, transform, filter;
+        0 1px 0 rgba(255,255,255,.62),
+        0 10px 24px rgba(20,32,42,.06);
+      position: relative;
     }
 
-    .brand::before {
+    .brand::after {
       content: "";
       position: absolute;
-      left: -.02em;
-      top: -.08em;
-      width: .34em;
-      height: .08em;
-      background: rgba(20,32,42,.92);
-      clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%);
+      left: 0;
+      bottom: -8px;
+      width: min(100%, 170px);
+      height: 1px;
+      background:
+        linear-gradient(
+          90deg,
+          rgba(20,32,42,.75) 0%,
+          rgba(113,131,141,.28) 70%,
+          transparent 100%
+        );
       opacity: .9;
     }
 
-    .brand.switching {
-      opacity: 0;
-      transform: translate3d(-10px, -1px, 26px) rotateY(-4deg) scale(.975);
-      filter: blur(6px);
-      letter-spacing: -.035em;
+    .brand-mo {
+      font-weight: 500;
+      letter-spacing: -.03em;
+      color: rgba(20,32,42,.72);
+    }
+
+    .brand-name {
+      font-weight: 700;
+      letter-spacing: -.06em;
+      color: rgba(20,32,42,.98);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-name::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          110deg,
+          transparent 0%,
+          rgba(255,255,255,.35) 45%,
+          transparent 70%
+        );
+      transform: translateX(-140%);
+      animation: brand-sheen 7s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes brand-sheen {
+      0%, 78%, 100% {
+        transform: translateX(-140%);
+        opacity: 0;
+      }
+      82% {
+        opacity: .45;
+      }
+      92% {
+        transform: translateX(135%);
+        opacity: .22;
+      }
     }
 
     main {
@@ -378,13 +433,24 @@
       .scene { inset: -10%; }
 
       .brand-wrap {
-        top: max(30px, calc(env(safe-area-inset-top) + 20px));
-        left: max(24px, calc(env(safe-area-inset-left) + 20px));
+        top: max(26px, calc(env(safe-area-inset-top) + 18px));
+        left: max(20px, calc(env(safe-area-inset-left) + 18px));
+        gap: 5px;
+      }
+
+      .brand-kicker {
+        font-size: 10px;
+        letter-spacing: .16em;
       }
 
       .brand {
-        font-size: clamp(20px, 5.4vw, 27px);
-        letter-spacing: -.068em;
+        font-size: clamp(22px, 6.4vw, 30px);
+        gap: 7px;
+      }
+
+      .brand::after {
+        bottom: -6px;
+        width: min(100%, 132px);
       }
 
       .hello-wrap {
@@ -444,8 +510,12 @@
     <div class="grain"></div>
   </div>
 
-  <div class="brand-wrap" aria-label="Elasrag">
-    <div id="brand" class="brand">Elasrag</div>
+  <div class="brand-wrap" aria-label="Mo Elasrag">
+    <div class="brand-kicker">Personal</div>
+    <div class="brand">
+      <span class="brand-mo">Mo</span>
+      <span class="brand-name">Elasrag</span>
+    </div>
   </div>
 
   <main aria-label="Welcome">
@@ -496,13 +566,9 @@
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const root = document.documentElement;
-      const brand = document.getElementById("brand");
       const greetingA = document.getElementById("greetingA");
       const greetingB = document.getElementById("greetingB");
       const layers = [greetingA, greetingB];
-      const brandNames = ["Elasrag", "Mo"];
-
-      let brandIndex = 0;
       let greetingIndex = 0;
       let activeLayer = 0;
 
@@ -514,16 +580,6 @@
         if (el.scrollWidth > maxWidth) {
           el.style.fontSize = Math.max(26, computed * (maxWidth / el.scrollWidth)) + "px";
         }
-      }
-
-      function switchBrand() {
-        brand.classList.add("switching");
-
-        window.setTimeout(() => {
-          brandIndex = (brandIndex + 1) % brandNames.length;
-          brand.textContent = brandNames[brandIndex];
-          brand.classList.remove("switching");
-        }, 620);
       }
 
       function switchGreeting() {
@@ -579,7 +635,6 @@
       }, { passive: true });
 
       if (!reduceMotion) {
-        window.setInterval(switchBrand, 3400);
         window.setInterval(switchGreeting, 3200);
       }
     })();
