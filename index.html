@@ -204,23 +204,10 @@
     .brand-wrap {
       position: fixed;
       z-index: 30;
-      top: max(34px, calc(env(safe-area-inset-top) + 25px));
-      left: max(34px, calc(env(safe-area-inset-left) + 26px));
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
+      top: max(36px, calc(env(safe-area-inset-top) + 26px));
+      left: max(38px, calc(env(safe-area-inset-left) + 28px));
       pointer-events: none;
-    }
-
-    .brand-mark {
-      width: 9px;
-      height: 52px;
-      margin-top: 2px;
-      clip-path: polygon(0 0, 100% 0, 58% 100%, 0 100%);
-      background:
-        linear-gradient(180deg, var(--ink), var(--steel));
-      opacity: .95;
-      box-shadow: 0 8px 20px rgba(20,32,42,.12);
+      perspective: 900px;
     }
 
     .brand {
@@ -229,54 +216,46 @@
       white-space: nowrap;
       direction: ltr;
       text-align: left;
-      text-transform: uppercase;
       font-family:
-        "Avenir Next Condensed",
-        "Arial Narrow",
+        "Avenir Next",
+        "SF Pro Display",
         "Helvetica Neue",
         Arial,
         sans-serif;
-      font-size: clamp(46px, 5vw, 78px);
-      line-height: .82;
-      font-weight: 800;
-      letter-spacing: -.065em;
+      font-size: clamp(48px, 5.15vw, 82px);
+      line-height: .9;
+      font-weight: 650;
+      letter-spacing: -.072em;
       color: var(--ink);
+      text-shadow:
+        0 1px 0 rgba(255,255,255,.7),
+        0 14px 34px rgba(20,32,42,.075);
       transform-origin: left center;
       transition:
-        opacity .62s cubic-bezier(.2,.72,.16,1),
-        transform .8s cubic-bezier(.16,.8,.18,1),
-        filter .72s ease,
-        letter-spacing .8s cubic-bezier(.16,.8,.18,1);
+        opacity .7s cubic-bezier(.2,.72,.16,1),
+        transform .9s cubic-bezier(.16,.8,.18,1),
+        filter .76s ease,
+        letter-spacing .9s cubic-bezier(.16,.8,.18,1);
       will-change: opacity, transform, filter;
     }
 
-    .brand::after {
+    .brand::before {
       content: "";
       position: absolute;
-      left: 0;
-      bottom: -13px;
-      width: min(96%, 280px);
-      height: 2px;
-      background:
-        linear-gradient(90deg,
-          var(--ink) 0%,
-          rgba(31,49,64,.76) 44%,
-          rgba(125,132,114,.64) 72%,
-          transparent 100%);
-      transform-origin: left center;
-      transition: transform .8s cubic-bezier(.16,.8,.18,1), opacity .5s ease;
+      left: -.02em;
+      top: -.08em;
+      width: .34em;
+      height: .08em;
+      background: rgba(20,32,42,.92);
+      clip-path: polygon(0 0, 100% 0, 78% 100%, 0 100%);
+      opacity: .9;
     }
 
     .brand.switching {
       opacity: 0;
-      transform: translate3d(-12px, 0, 0) skewX(-4deg) scaleX(.965);
-      filter: blur(7px);
-      letter-spacing: -.015em;
-    }
-
-    .brand.switching::after {
-      transform: scaleX(.2);
-      opacity: .18;
+      transform: translate3d(-10px, -1px, 26px) rotateY(-4deg) scale(.975);
+      filter: blur(6px);
+      letter-spacing: -.035em;
     }
 
     main {
@@ -401,23 +380,13 @@
       .scene { inset: -10%; }
 
       .brand-wrap {
-        top: max(28px, calc(env(safe-area-inset-top) + 18px));
-        left: max(22px, calc(env(safe-area-inset-left) + 18px));
-        gap: 10px;
-      }
-
-      .brand-mark {
-        width: 7px;
-        height: 38px;
+        top: max(30px, calc(env(safe-area-inset-top) + 20px));
+        left: max(24px, calc(env(safe-area-inset-left) + 20px));
       }
 
       .brand {
-        font-size: clamp(36px, 10vw, 50px);
-      }
-
-      .brand::after {
-        bottom: -10px;
-        width: min(92%, 190px);
+        font-size: clamp(40px, 10.8vw, 54px);
+        letter-spacing: -.068em;
       }
 
       .hello-wrap {
@@ -478,7 +447,6 @@
   </div>
 
   <div class="brand-wrap" aria-label="Elasrag">
-    <div class="brand-mark" aria-hidden="true"></div>
     <div id="brand" class="brand">Elasrag</div>
   </div>
 
