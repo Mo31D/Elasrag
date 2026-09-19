@@ -373,8 +373,8 @@
       text-shadow: 0 8px 28px rgba(31,49,64,.08);
       opacity: 0;
       transition:
-        opacity .92s cubic-bezier(.22,.74,.18,1),
-        transform 1.05s cubic-bezier(.2,.76,.16,1);
+        opacity .42s cubic-bezier(.22,.74,.18,1),
+        transform .55s cubic-bezier(.2,.76,.16,1);
       will-change: opacity, transform;
     }
 
@@ -386,22 +386,13 @@
         scale(1);
     }
 
-    .greeting.is-leaving {
+    .greeting.is-changing {
       opacity: 0;
       transform:
         translate(-50%,-50%)
-        translate3d(calc(var(--mx) * -2px), calc(var(--my) * -1px), 26px)
-        translateY(-4px)
-        scale(.992);
-    }
-
-    .greeting.is-entering {
-      opacity: 0;
-      transform:
-        translate(-50%,-50%)
-        translate3d(calc(var(--mx) * 3px), calc(var(--my) * 2px), 62px)
-        translateY(5px)
-        scale(.985);
+        translate3d(calc(var(--mx) * 2px), calc(var(--my) * 1px), 34px)
+        translateY(-3px)
+        scale(.994);
     }
 
     @keyframes wash {
@@ -521,8 +512,7 @@
   <main aria-label="Welcome">
     <div class="hello-wrap">
       <div class="quiet-glow" aria-hidden="true"></div>
-      <div id="greetingA" class="greeting is-active" role="status" aria-live="polite">مرحبًا</div>
-      <div id="greetingB" class="greeting is-entering" aria-hidden="true"></div>
+      <div id="greeting" class="greeting is-active" role="status" aria-live="polite">مرحبًا</div>
     </div>
   </main>
 
@@ -566,11 +556,9 @@
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const root = document.documentElement;
-      const greetingA = document.getElementById("greetingA");
-      const greetingB = document.getElementById("greetingB");
-      const layers = [greetingA, greetingB];
+      const greeting = document.getElementById("greeting");
       let greetingIndex = 0;
-      let activeLayer = 0;
+      let greetingBusy = false;
 
       function fitLayer(el) {
         el.style.fontSize = "";
@@ -578,35 +566,34 @@
         const computed = parseFloat(getComputedStyle(el).fontSize);
 
         if (el.scrollWidth > maxWidth) {
-          el.style.fontSize = Math.max(26, computed * (maxWidth / el.scrollWidth)) + "px";
+          el.style.fontSize = Math.max(12, computed * (maxWidth / el.scrollWidth)) + "px";
         }
       }
 
       function switchGreeting() {
-        const current = layers[activeLayer];
-        const next = layers[1 - activeLayer];
+        if (greetingBusy) return;
+        greetingBusy = true;
 
-        greetingIndex = (greetingIndex + 1) % greetings.length;
-        const item = greetings[greetingIndex];
+        greeting.classList.remove("is-active");
+        greeting.classList.add("is-changing");
 
-        next.textContent = item.text;
-        next.dir = item.dir;
-        next.className = "greeting is-entering";
-        fitLayer(next);
+        window.setTimeout(() => {
+          greetingIndex = (greetingIndex + 1) % greetings.length;
+          const item = greetings[greetingIndex];
 
-        requestAnimationFrame(() => {
+          greeting.textContent = item.text;
+          greeting.dir = item.dir;
+          fitLayer(greeting);
+
           requestAnimationFrame(() => {
-            current.className = "greeting is-leaving";
-            next.className = "greeting is-active";
+            greeting.classList.remove("is-changing");
+            greeting.classList.add("is-active");
 
             window.setTimeout(() => {
-              current.className = "greeting is-entering";
-              current.textContent = "";
-            }, 1050);
-
-            activeLayer = 1 - activeLayer;
+              greetingBusy = false;
+            }, 560);
           });
-        });
+        }, 430);
       }
 
       function setPointer(x, y) {
@@ -616,10 +603,10 @@
         root.style.setProperty("--my", ny.toFixed(3));
       }
 
-      fitLayer(greetingA);
+      fitLayer(greeting);
 
       window.addEventListener("resize", () => {
-        fitLayer(layers[activeLayer]);
+        fitLayer(greeting);
       }, { passive: true });
 
       window.addEventListener("pointermove", e => {
