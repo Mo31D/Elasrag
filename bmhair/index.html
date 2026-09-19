@@ -4,190 +4,156 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow, noarchive">
-  <meta name="theme-color" content="#24171f">
-  <title>BM HAIR — Project Preview & Proposal</title>
-  <meta name="description" content="BM HAIR website and e-commerce project preview.">
+  <meta name="theme-color" content="#f7f2f3">
+  <title>BM HAIR — Website & Store Preview</title>
+  <meta name="description" content="BM HAIR website and e-commerce project preview and proposal.">
   <style>
     :root{
-      --ink:#24171f;
-      --ink-2:#493640;
-      --paper:#fbf8f6;
-      --paper-2:#f4edef;
-      --rose:#eadde2;
-      --line:#ded2d6;
-      --accent:#9d6e7d;
-      --soft:#75656c;
+      --ink:#24181f;
+      --muted:#6e6067;
+      --paper:#fbf8f7;
+      --panel:#f2e9ec;
+      --line:#ddd1d5;
+      --rose:#a97484;
+      --green:#42725b;
       --white:#fff;
-      --success:#3f7258;
-      --shadow:0 24px 80px rgba(36,23,31,.10);
-      --radius:24px;
-      --max:1180px;
+      --dark:#2a1b23;
+      --max:1160px;
+      --r:24px;
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
-    img{display:block;max-width:100%}
     a{color:inherit;text-decoration:none}
-    button{font:inherit}
-    .wrap{width:min(calc(100% - 40px),var(--max));margin:0 auto}
-    .topbar{position:sticky;top:0;z-index:30;background:rgba(251,248,246,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(222,210,214,.7)}
-    .topbar-inner{height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-    .brand{display:flex;align-items:center;gap:13px;font-weight:700;letter-spacing:.02em}
-    .brand-mark{width:34px;height:34px;border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-family:Georgia,serif;font-style:italic}
-    .brand small{display:block;color:var(--soft);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin-top:1px}
-    .nav{display:flex;align-items:center;gap:24px;font-size:14px;color:var(--ink-2)}
-    .nav a:hover{color:var(--ink)}
-    .lang{display:flex;gap:6px;padding:4px;border:1px solid var(--line);border-radius:999px;background:#fff}
-    .lang span{min-width:34px;text-align:center;padding:6px 9px;border-radius:999px;font-size:12px;font-weight:700}
-    .lang .active{background:var(--ink);color:#fff}
-    .lang .soon{color:#a19097;position:relative;cursor:default}
-    .hero{padding:92px 0 68px}
-    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:70px;align-items:center}
-    .eyebrow{margin:0 0 18px;text-transform:uppercase;letter-spacing:.16em;font-weight:800;font-size:12px;color:var(--accent)}
-    h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:400;line-height:1.03;margin:0}
-    h1{font-size:clamp(52px,7vw,88px);letter-spacing:-.035em}
-    h1 em{display:block;color:var(--accent);font-weight:400}
-    .lead{font-size:20px;max-width:690px;color:var(--ink-2);margin:26px 0 0}
-    .preview-note{display:inline-flex;align-items:center;gap:9px;margin-top:26px;padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px;color:var(--soft)}
-    .preview-note i{width:8px;height:8px;border-radius:50%;background:#d2a84f}
-    .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:0 20px;border-radius:999px;border:1px solid var(--ink);font-weight:750;font-size:14px;transition:.2s}
+    img{max-width:100%;display:block}
+    .wrap{width:min(calc(100% - 40px),var(--max));margin:auto}
+    .top{position:sticky;top:0;z-index:20;background:rgba(251,248,247,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(221,209,213,.75)}
+    .topin{height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .logo{font-weight:800;letter-spacing:.08em;font-size:13px}
+    .logo span{display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);font-weight:600;margin-top:2px}
+    .nav{display:flex;gap:22px;font-size:13px;color:var(--muted)}
+    .langs{display:flex;gap:6px;padding:4px;border:1px solid var(--line);border-radius:999px;background:white}
+    .langs span{padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800}
+    .langs .on{background:var(--ink);color:white}
+    .langs .off{color:#a999a0}
+    .hero{padding:82px 0 64px}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
+    .eyebrow{margin:0 0 14px;text-transform:uppercase;letter-spacing:.15em;color:var(--rose);font-size:11px;font-weight:850}
+    h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:400;line-height:1.05;margin:0}
+    h1{font-size:clamp(50px,7vw,86px);letter-spacing:-.035em}
+    h2{font-size:clamp(38px,5vw,62px);letter-spacing:-.025em}
+    h3{font-size:28px}
+    .lead{font-size:20px;color:#4f4148;max-width:700px;margin:24px 0 0}
+    .note{margin-top:22px;color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+    .btn{min-height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:750;font-size:14px}
     .btn.primary{background:var(--ink);color:white}
-    .btn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(36,23,31,.14)}
-    .btn.ghost:hover{background:white}
-    .btn svg{width:17px;height:17px}
-    .hero-visual{position:relative;min-height:610px}
-    .hero-photo{position:absolute;inset:0 54px 42px 0;border-radius:180px 180px 28px 28px;overflow:hidden;background:#ddd;box-shadow:var(--shadow)}
-    .hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center}
-    .browser-card{position:absolute;right:0;bottom:0;width:58%;padding:13px;border-radius:20px;background:rgba(255,255,255,.93);box-shadow:0 20px 60px rgba(36,23,31,.18);backdrop-filter:blur(12px)}
-    .browser-top{display:flex;gap:5px;padding:1px 0 10px}
-    .browser-top span{width:7px;height:7px;border-radius:50%;background:#d5c8cd}
-    .browser-screen{border-radius:13px;overflow:hidden;aspect-ratio:4/3;background:var(--paper-2)}
-    .browser-screen img{width:100%;height:100%;object-fit:cover}
-    .section{padding:92px 0;border-top:1px solid var(--line)}
-    .section-head{display:grid;grid-template-columns:.75fr 1.25fr;gap:40px;margin-bottom:46px;align-items:start}
-    .section-head h2{font-size:clamp(40px,5vw,64px);letter-spacing:-.025em}
-    .section-copy{font-size:18px;color:var(--ink-2);max-width:720px}
-    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:28px}
-    .card .num{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:800;margin-bottom:34px}
-    .card h3{font-size:27px;margin-bottom:12px}
-    .card p{margin:0;color:var(--soft)}
-    .showcase{background:var(--ink);color:#fff}
-    .showcase .section-head{border-color:rgba(255,255,255,.15)}
-    .showcase .eyebrow{color:#d7b7c2}
-    .showcase .section-copy{color:#d9ccd1}
-    .showcase-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}
-    .shot{border:1px solid rgba(255,255,255,.15);background:#2e2029;border-radius:28px;overflow:hidden}
-    .shot-top{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;color:#d9ccd1;font-size:12px}
-    .dots{display:flex;gap:5px}.dots i{width:6px;height:6px;border-radius:50%;background:#755e68}
-    .shot img{width:100%;height:520px;object-fit:cover;object-position:center top}
-    .shot.secondary img{height:244px}
-    .shot.secondary + .shot.secondary{margin-top:18px}
-    .showcase-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
-    .showcase .btn{border-color:#fff;color:#fff}
-    .showcase .btn.primary{background:#fff;color:var(--ink)}
-    .split{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    .compare{border-radius:var(--radius);padding:34px;border:1px solid var(--line)}
-    .compare.old{background:#f2ebed}
-    .compare.new{background:#fff}
-    .compare-label{font-size:12px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--accent);margin-bottom:22px}
-    .compare h3{font-size:34px;margin-bottom:20px}
-    .plain-list{list-style:none;padding:0;margin:0;display:grid;gap:14px}
-    .plain-list li{display:flex;gap:11px;color:var(--ink-2)}
-    .plain-list li:before{content:"";flex:0 0 8px;width:8px;height:8px;border-radius:50%;margin-top:.52em;background:var(--accent)}
-    .new .plain-list li:before{background:var(--success)}
-    .warning{margin-top:24px;border-left:3px solid #c18c4d;background:#fff8eb;border-radius:0 16px 16px 0;padding:18px 20px;color:#6f5635}
-    .built-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-    .metric{padding:26px;border-radius:20px;background:#fff;border:1px solid var(--line)}
-    .metric strong{display:block;font-family:Georgia,serif;font-size:40px;font-weight:400;line-height:1;color:var(--ink)}
-    .metric span{display:block;margin-top:9px;color:var(--soft);font-size:14px}
-    .needs{background:var(--paper-2)}
-    .needs .card{background:rgba(255,255,255,.78)}
-    .needs .card ul{padding-left:18px;margin:18px 0 0;color:var(--soft)}
+    .btn.soft{background:white}
+    .visual{position:relative;min-height:560px}
+    .visual-main{position:absolute;inset:0 54px 42px 0;border-radius:160px 160px 24px 24px;overflow:hidden;background:#ddd}
+    .visual-main img{width:100%;height:100%;object-fit:cover}
+    .visual-card{position:absolute;right:0;bottom:0;width:56%;background:white;border:1px solid var(--line);padding:10px;border-radius:18px;box-shadow:0 20px 60px rgba(36,24,31,.13)}
+    .visual-card img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}
+    .section{padding:84px 0;border-top:1px solid var(--line)}
+    .head{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;margin-bottom:36px}
+    .copy{font-size:18px;color:#51434a;max-width:720px;margin:0}
+    .simple-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{background:white;border:1px solid var(--line);border-radius:var(--r);padding:28px}
+    .card h3{margin-bottom:10px}
+    .card p{margin:0;color:var(--muted)}
+    .ticks{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px}
+    .ticks li{display:flex;gap:10px;color:#4f4148}
+    .ticks li:before{content:"✓";color:var(--green);font-weight:900}
+    .show{background:var(--dark);color:white}
+    .show .copy{color:#d8ccd1}
+    .show .eyebrow{color:#d4b3bf}
+    .show-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .demo{border:1px solid rgba(255,255,255,.16);border-radius:28px;padding:18px;background:#33232b}
+    .demo-frame{border-radius:18px;overflow:hidden;background:#eee;aspect-ratio:16/10}
+    .demo-frame img{width:100%;height:100%;object-fit:cover}
+    .demo h3{font-size:34px;margin-top:22px}
+    .demo p{color:#d7cbd0}
+    .demo .btn{border-color:white;color:white}
+    .demo .btn.primary{background:white;color:var(--ink)}
+    .status{display:inline-flex;margin-top:12px;padding:7px 10px;border:1px solid rgba(255,255,255,.22);border-radius:999px;font-size:11px;color:#ded2d7}
+    .review-box{background:white;border:1px solid var(--line);border-radius:28px;padding:32px}
+    .review-box p{margin:0;color:#4f4148;font-size:19px;max-width:850px}
+    .needs{background:var(--panel)}
+    .needs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .needs .card{background:rgba(255,255,255,.83)}
+    .needs .card ul{margin:16px 0 0;padding-left:18px;color:var(--muted)}
     .needs .card li{margin:8px 0}
-    .investment{background:#fff}
-    .price-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:28px;align-items:stretch}
-    .price-card{border-radius:30px;background:var(--ink);color:#fff;padding:38px;display:flex;flex-direction:column;justify-content:space-between;min-height:460px}
-    .price-card .eyebrow{color:#d7b7c2}
-    .price{font-family:Georgia,serif;font-size:clamp(64px,8vw,96px);letter-spacing:-.05em;line-height:1;margin:16px 0}
-    .price-sub{color:#d9ccd1;max-width:440px;font-size:16px}
-    .fixed{display:inline-flex;width:max-content;margin-top:26px;padding:8px 12px;border:1px solid rgba(255,255,255,.22);border-radius:999px;font-size:12px;color:#e7dbe0}
-    .scope{border:1px solid var(--line);border-radius:30px;padding:34px}
-    .scope h3{font-size:34px;margin-bottom:20px}
-    .scope-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px}
-    .scope-item{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink-2)}
-    .scope-item strong{display:block;color:var(--ink);font-size:14px;margin-bottom:3px}
-    .exclusions{margin-top:24px;padding:18px;border-radius:16px;background:var(--paper-2);font-size:13px;color:var(--soft)}
-    .timeline{display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:20px}
-    .step{position:relative;padding:28px 16px 18px 0;border-top:1px solid var(--line)}
-    .step:before{content:"";position:absolute;top:-5px;left:0;width:9px;height:9px;border-radius:50%;background:var(--line)}
-    .step.done:before{background:var(--success)}
-    .step.current:before{background:#c28c47;box-shadow:0 0 0 5px #f6e7cd}
-    .step b{display:block;font-size:12px;letter-spacing:.1em;color:var(--soft);margin-bottom:10px}
-    .step strong{font-family:Georgia,serif;font-size:21px;font-weight:400}
-    .step span{display:block;font-size:13px;color:var(--soft);margin-top:6px}
-    .cta{padding:80px 0 100px}
-    .cta-box{border-radius:34px;background:linear-gradient(135deg,#eadde2,#f7f0f1);padding:54px;display:flex;align-items:end;justify-content:space-between;gap:30px}
-    .cta h2{font-size:clamp(42px,5vw,66px);max-width:680px}
-    .cta p{color:var(--ink-2);max-width:620px;font-size:17px}
-    footer{border-top:1px solid var(--line);padding:28px 0 50px;color:var(--soft);font-size:12px}
-    .footer-inner{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-    .mini{font-size:12px;color:var(--soft)}
-    @media(max-width:980px){
+    .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .compare>div{border:1px solid var(--line);border-radius:var(--r);padding:30px}
+    .compare .old{background:#f5eff1}
+    .compare .new{background:white}
+    .label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);font-weight:850;margin-bottom:18px}
+    .plain{margin:18px 0 0;padding-left:18px;color:var(--muted)}
+    .plain li{margin:10px 0}
+    .goal{margin-top:18px;padding:30px;border-radius:var(--r);background:var(--ink);color:white}
+    .goal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+    .goal-grid div{padding:18px;border:1px solid rgba(255,255,255,.15);border-radius:16px}
+    .goal-grid strong{display:block;font-family:Georgia,serif;font-size:25px;font-weight:400}
+    .goal-grid span{font-size:12px;color:#d5c9ce}
+    .scope{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .scope div{padding:18px 0;border-bottom:1px solid var(--line)}
+    .scope strong{display:block;margin-bottom:3px}
+    .scope span{font-size:13px;color:var(--muted)}
+    .price-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}
+    .price-card{background:var(--ink);color:white;border-radius:30px;padding:34px;min-height:380px;display:flex;flex-direction:column;justify-content:space-between}
+    .price-card .eyebrow{color:#d5b5c0}
+    .price{font-family:Georgia,serif;font-size:clamp(66px,8vw,98px);line-height:.95;letter-spacing:-.05em}
+    .price-card p{color:#d9cdd2}
+    .why-price{background:white;border:1px solid var(--line);border-radius:30px;padding:34px}
+    .why-price h3{font-size:34px;margin-bottom:18px}
+    .mini-note{margin-top:18px;padding:16px;background:var(--panel);border-radius:14px;color:var(--muted);font-size:13px}
+    .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .step{padding:26px;border:1px solid var(--line);border-radius:22px;background:white}
+    .step b{display:block;color:var(--rose);font-size:12px;letter-spacing:.12em;margin-bottom:24px}
+    .step h3{font-size:28px;margin-bottom:8px}
+    .step p{margin:0;color:var(--muted)}
+    .final{padding:74px 0 96px}
+    .finalbox{background:linear-gradient(135deg,#eadde2,#f7f1f2);border-radius:32px;padding:48px;display:flex;justify-content:space-between;gap:30px;align-items:end}
+    .finalbox p{max-width:650px;color:#4f4148;font-size:17px}
+    footer{border-top:1px solid var(--line);padding:26px 0 42px;color:var(--muted);font-size:12px}
+    .foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+    @media(max-width:900px){
       .nav{display:none}
-      .hero-grid,.section-head,.showcase-grid,.price-grid{grid-template-columns:1fr}
-      .hero-visual{min-height:520px}
-      .section-head{gap:18px}
-      .cards{grid-template-columns:1fr}
-      .built-grid{grid-template-columns:1fr 1fr}
-      .split{grid-template-columns:1fr}
-      .timeline{grid-template-columns:1fr 1fr}
-      .step{border-top:0;border-left:1px solid var(--line);padding:10px 0 28px 24px}
-      .step:before{top:8px;left:-5px}
-      .cta-box{align-items:start;flex-direction:column}
+      .hero-grid,.head,.show-grid,.compare,.price-wrap{grid-template-columns:1fr}
+      .simple-grid,.needs-grid{grid-template-columns:1fr}
+      .goal-grid{grid-template-columns:1fr 1fr}
+      .steps{grid-template-columns:1fr}
+      .visual{min-height:480px}
+      .finalbox{align-items:flex-start;flex-direction:column}
     }
     @media(max-width:620px){
       .wrap{width:min(calc(100% - 28px),var(--max))}
-      .topbar-inner{height:64px}
-      .brand small{display:none}
-      .hero{padding:60px 0 50px}
-      .hero-grid{gap:38px}
-      h1{font-size:50px}
-      .lead{font-size:17px}
-      .hero-visual{min-height:430px}
-      .hero-photo{right:22px;bottom:34px;border-radius:110px 110px 22px 22px}
-      .browser-card{width:62%}
-      .section{padding:68px 0}
-      .section-head h2{font-size:42px}
-      .section-copy{font-size:16px}
-      .built-grid,.scope-grid{grid-template-columns:1fr}
-      .timeline{grid-template-columns:1fr}
-      .shot img{height:390px}
-      .price-card,.scope,.cta-box{padding:28px}
-      .cta{padding:60px 0 76px}
-      .actions,.showcase-actions{width:100%}
-      .btn{width:100%}
+      .hero{padding:58px 0 48px}
+      h1{font-size:48px}
+      .lead,.copy{font-size:16px}
+      .visual{min-height:400px}
+      .visual-main{right:22px;bottom:32px;border-radius:110px 110px 20px 20px}
+      .section{padding:64px 0}
+      .goal-grid,.scope{grid-template-columns:1fr}
+      .finalbox,.card,.review-box,.price-card,.why-price{padding:26px}
+      .actions,.btn{width:100%}
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="wrap topbar-inner">
-      <a class="brand" href="#top">
-        <span class="brand-mark">E</span>
-        <span>ELASRAG <small>Project presentation</small></span>
-      </a>
-      <nav class="nav" aria-label="Proposal navigation">
-        <a href="#work">The work</a>
-        <a href="#why">Why change</a>
+  <header class="top">
+    <div class="wrap topin">
+      <a href="#top" class="logo">ELASRAG<span>BM HAIR project presentation</span></a>
+      <nav class="nav">
+        <a href="#understood">Brief</a>
+        <a href="#preview">Preview</a>
         <a href="#needed">What we need</a>
-        <a href="#investment">Investment</a>
+        <a href="#proposal">Proposal</a>
       </nav>
-      <div class="lang" aria-label="Presentation language">
-        <span class="active">EN</span>
-        <span class="soon" title="Latvian version will be added after the English copy is approved">LV</span>
-        <span class="soon" title="Russian version will be added after the English copy is approved">RU</span>
+      <div class="langs" aria-label="Language">
+        <span class="on">EN</span>
+        <span class="off" title="Latvian translation to be added">LV</span>
+        <span class="off" title="Russian translation to be added">RU</span>
       </div>
     </div>
   </header>
@@ -196,227 +162,246 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div>
-          <p class="eyebrow">BM HAIR · Project preview</p>
-          <h1>A new digital experience <em>for BM HAIR.</em></h1>
-          <p class="lead">Following our first meeting, I developed a new direction for the BM HAIR website and, in parallel, built a separate Shopify store to test the real e-commerce structure.</p>
-          <div class="preview-note"><i></i>Working preview — this is not the final catalogue or launch version.</div>
+          <p class="eyebrow">BM HAIR · Website & online store preview</p>
+          <h1>A first working version of the <em style="color:var(--rose);font-style:normal">new BM HAIR.</em></h1>
+          <p class="lead">Following our meeting, I have prepared the first working version of the new BM HAIR website and online store experience.</p>
+          <p class="note">This version is for review and feedback. It is not yet the final launch version or final product catalogue.</p>
           <div class="actions">
-            <a class="btn primary" href="#website-preview">View website concept
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </a>
-            <a class="btn ghost" href="https://knuap5-wt.myshopify.com" target="_blank" rel="noopener">View Shopify preview
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17L17 7M8 7h9v9"/></svg>
-            </a>
+            <a class="btn primary" href="#preview">View website preview</a>
+            <a class="btn soft" href="https://knuap5-wt.myshopify.com" target="_blank" rel="noopener">View online store preview</a>
           </div>
         </div>
-        <div class="hero-visual" aria-label="BM HAIR visual preview">
-          <div class="hero-photo">
-            <img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1847-01.webp" alt="BM HAIR long dark hair visual">
-          </div>
-          <div class="browser-card">
-            <div class="browser-top"><span></span><span></span><span></span></div>
-            <div class="browser-screen">
-              <img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1848-01.webp" alt="BM HAIR blonde hair visual">
-            </div>
-          </div>
+        <div class="visual">
+          <div class="visual-main"><img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1847-01.webp" alt="BM HAIR dark hair visual"></div>
+          <div class="visual-card"><img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1848-01.webp" alt="BM HAIR blonde hair visual"></div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="work">
+    <section class="section" id="understood">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">From brief to working prototype</p>
-            <h2>More than a visual redesign.</h2>
-          </div>
-          <p class="section-copy">The first brief was to create a modern, premium website direction for BM HAIR. The project has already developed into a complete website concept plus a working e-commerce prototype, built around the real products and information currently available.</p>
+        <div class="head">
+          <div><p class="eyebrow">From our meeting</p><h2>What I understood about BM HAIR.</h2></div>
+          <p class="copy">BM HAIR should be presented as a premium hair brand — not simply as a salon website. Products are the centre of the new experience, supported by custom-made work, professional clients and the company's expertise.</p>
         </div>
-        <div class="cards">
-          <article class="card">
-            <span class="num">01 · Brand & website</span>
-            <h3>A clearer premium identity</h3>
-            <p>A custom digital direction designed around BM HAIR — not a generic salon template. The experience separates products, custom work, professional customers and educational content.</p>
-          </article>
-          <article class="card">
-            <span class="num">02 · E-commerce</span>
-            <h3>A real Shopify structure</h3>
-            <p>A separate development store has been created with products, variants, collections, multilingual content and the structure needed for future checkout, stock and order management.</p>
-          </article>
-          <article class="card">
-            <span class="num">03 · Growth foundation</span>
-            <h3>Built for more than Latvia</h3>
-            <p>The new structure is designed for international growth, multilingual SEO, European delivery, B2C customers and a dedicated professional / salon journey.</p>
-          </article>
+        <div class="simple-grid">
+          <article class="card"><h3>Premium brand</h3><p>A clean, modern beauty/fashion direction that gives the products and photography space to lead.</p></article>
+          <article class="card"><h3>Customers & professionals</h3><p>The website needs to work for individual customers while also giving salons and professionals a clear path.</p></article>
+          <article class="card"><h3>Ready to grow</h3><p>The structure should support Latvia and wider European growth, with English, Latvian and Russian customer journeys.</p></article>
         </div>
-      </div>
-    </section>
-
-    <section class="section showcase" id="website-preview">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Website concept</p>
-            <h2>Product-led, editorial and easy to explore.</h2>
-          </div>
-          <p class="section-copy">The new concept gives each important part of the business its own place: products, collections, custom orders, professionals, the brand story and the Hair Guide. The visual system is designed to feel premium without making the store difficult to use.</p>
-        </div>
-        <div class="showcase-grid">
-          <div class="shot">
-            <div class="shot-top"><span>BM HAIR · Website direction</span><span class="dots"><i></i><i></i><i></i></span></div>
-            <img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/editorial-brunette.webp" alt="BM HAIR website visual direction">
-          </div>
-          <div>
-            <div class="shot secondary">
-              <div class="shot-top"><span>Natural hair collections</span><span class="dots"><i></i><i></i><i></i></span></div>
-              <img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1822-03.webp" alt="BM HAIR natural hair product">
-            </div>
-            <div class="shot secondary">
-              <div class="shot-top"><span>Custom & editorial</span><span class="dots"><i></i><i></i><i></i></span></div>
-              <img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/long-blonde.webp" alt="BM HAIR blonde editorial visual">
-            </div>
-          </div>
-        </div>
-        <div class="showcase-actions">
-          <a class="btn primary" href="https://knuap5-wt.myshopify.com" target="_blank" rel="noopener">Open e-commerce preview
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17L17 7M8 7h9v9"/></svg>
-          </a>
-          <a class="btn" href="https://bmhair.shop" target="_blank" rel="noopener">Open current website
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17L17 7M8 7h9v9"/></svg>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="why">
-      <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Why rebuild</p>
-            <h2>The current website needs more than new colours.</h2>
-          </div>
-          <p class="section-copy">The existing site contains valuable product knowledge, but its structure and technology make it harder to build trust, rank product content clearly in search, and scale the business into a modern multilingual store.</p>
-        </div>
-        <div class="split">
-          <div class="compare old">
-            <div class="compare-label">Current experience</div>
-            <h3>Useful information, but difficult to scale.</h3>
-            <ul class="plain-list">
-              <li>Legacy page structure makes product discovery and SEO less clear.</li>
-              <li>Security / HTTPS configuration can create trust concerns for visitors and should be corrected for launch.</li>
-              <li>Products, articles, policies and company information are mixed into a dense experience.</li>
-              <li>International growth, multilingual SEO and professional customers are not clearly separated.</li>
-            </ul>
-          </div>
-          <div class="compare new">
-            <div class="compare-label">New direction</div>
-            <h3>A clear website and commerce system.</h3>
-            <ul class="plain-list">
-              <li>Dedicated product, collection and guide pages that search engines can understand.</li>
-              <li>Modern responsive experience designed around trust and mobile shopping.</li>
-              <li>Separate B2C, custom-made and professional journeys.</li>
-              <li>Multilingual structure prepared for Latvia and wider European growth.</li>
-            </ul>
-          </div>
-        </div>
-        <div class="warning"><strong>Important:</strong> the existing website was used as a starting source for product and business information. It should not be treated as the final catalogue until BM HAIR confirms what is still current.</div>
       </div>
     </section>
 
     <section class="section">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Already completed</p>
-            <h2>A substantial working foundation is already in place.</h2>
-          </div>
-          <p class="section-copy">The preview is intentionally not a finished launch version, but the project is well beyond a static mock-up. The main design system, website architecture, commerce structure and catalogue migration have already been built.</p>
+        <div class="head">
+          <div><p class="eyebrow">Work completed so far</p><h2>What has already been created.</h2></div>
+          <p class="copy">Two connected pieces of work have been developed: a new BM HAIR website direction and a separate Shopify development store for the e-commerce side of the business.</p>
         </div>
-        <div class="built-grid">
-          <div class="metric"><strong>24</strong><span>product records currently structured</span></div>
-          <div class="metric"><strong>423</strong><span>product variants in the Shopify prototype</span></div>
-          <div class="metric"><strong>4</strong><span>languages already structured in the development work</span></div>
-          <div class="metric"><strong>6</strong><span>Hair Guide articles prepared for the new site</span></div>
+        <div class="simple-grid">
+          <article class="card">
+            <h3>New website</h3>
+            <ul class="ticks">
+              <li>Homepage and brand direction</li>
+              <li>Shop, collections and product pages</li>
+              <li>Custom-made journey</li>
+              <li>For Professionals / B2B section</li>
+              <li>Our Story and Hair Guide</li>
+              <li>Mobile and multilingual structure</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Shopify store</h3>
+            <ul class="ticks">
+              <li>Products and variants</li>
+              <li>Product collections</li>
+              <li>Store navigation</li>
+              <li>Multilingual content structure</li>
+              <li>Cart and future checkout structure</li>
+              <li>Inventory and order foundation</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Content migration</h3>
+            <ul class="ticks">
+              <li>Existing product information reviewed</li>
+              <li>Current catalogue rebuilt as a starting point</li>
+              <li>Product imagery collected and organised</li>
+              <li>Old content reorganised into clearer pages</li>
+              <li>SEO-friendly page structure prepared</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section show" id="preview">
+      <div class="wrap">
+        <div class="head">
+          <div><p class="eyebrow">Explore the work</p><h2>Two previews. Two different purposes.</h2></div>
+          <p class="copy">The website concept shows the new brand, content and customer experience. The Shopify prototype shows how the actual product catalogue and e-commerce system can work behind it.</p>
+        </div>
+
+        <div class="show-grid">
+          <article class="demo">
+            <div class="demo-frame"><img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/editorial-brunette.webp" alt="BM HAIR website concept visual"></div>
+            <span class="status">Website concept · development preview</span>
+            <h3>Website preview</h3>
+            <p>Focused on BM HAIR's brand, customer experience, content, product discovery and international presentation.</p>
+            <div class="actions">
+              <a class="btn primary" href="#website-note">Review website direction</a>
+            </div>
+          </article>
+          <article class="demo">
+            <div class="demo-frame"><img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1821-04.webp" alt="BM HAIR product store visual"></div>
+            <span class="status">Shopify · development store</span>
+            <h3>Online store preview</h3>
+            <p>Focused on real product structure, variants, collections and the future shopping and checkout experience.</p>
+            <div class="actions">
+              <a class="btn primary" href="https://knuap5-wt.myshopify.com" target="_blank" rel="noopener">Open Shopify preview</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="website-note">
+      <div class="wrap">
+        <div class="review-box">
+          <p class="eyebrow">What you are reviewing today</p>
+          <h2 style="font-size:44px;margin-bottom:20px">The direction, not the final catalogue.</h2>
+          <p>The current version has been built using the information available from the existing BM HAIR website and the material discussed in our meeting. The next stage is to confirm the real current catalogue with BM HAIR before the final store is prepared for launch.</p>
         </div>
       </div>
     </section>
 
     <section class="section needs" id="needed">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Before final launch</p>
-            <h2>What I need from BM HAIR.</h2>
-          </div>
-          <p class="section-copy">The final catalogue should be based on current business data, not assumptions from the old website. BM HAIR's confirmation is the next important step before products, shipping and checkout are finalised.</p>
+        <div class="head">
+          <div><p class="eyebrow">Before the final version</p><h2>What I need from BM HAIR.</h2></div>
+          <p class="copy">The old website is useful as a reference, but it should not be the final source of truth. BM HAIR now needs to confirm the products and business information that are actually current.</p>
         </div>
-        <div class="cards">
+
+        <div class="needs-grid">
           <article class="card">
-            <span class="num">Product catalogue</span>
-            <h3>Confirm what is current</h3>
+            <h3>Products</h3>
             <ul>
-              <li>SKU for every product / variant</li>
-              <li>Current products and discontinued products</li>
-              <li>New products not shown on the old website</li>
-              <li>Final prices, sizes, lengths, shades and weights</li>
+              <li>Which products are still sold</li>
+              <li>Which products should be removed</li>
+              <li>Any new products not on the old website</li>
+              <li>SKU for all products and variants</li>
             </ul>
           </article>
           <article class="card">
-            <span class="num">Images & product details</span>
-            <h3>Match each product correctly</h3>
+            <h3>Product information</h3>
             <ul>
-              <li>Final product photography</li>
-              <li>Which image belongs to each colour / variant</li>
-              <li>Wig and hair-piece specifications</li>
-              <li>Confirmation of custom-order pricing</li>
+              <li>Final prices</li>
+              <li>Lengths, shades, textures and weights</li>
+              <li>Which images belong to which product / shade</li>
+              <li>Wig, hair-piece and custom-order details</li>
             </ul>
           </article>
           <article class="card">
-            <span class="num">Store rules</span>
-            <h3>Confirm how the business sells</h3>
+            <h3>Store information</h3>
             <ul>
-              <li>Shipping countries, rates and delivery methods</li>
-              <li>Returns and guarantee policy</li>
+              <li>Shipping countries and current delivery methods</li>
               <li>Payment methods</li>
-              <li>Final company / legal information</li>
+              <li>Returns and guarantee policy</li>
+              <li>Final company / legal details</li>
             </ul>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="section investment" id="investment">
+    <section class="section" id="why">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Project investment</p>
-            <h2>A complete digital rebuild, not a template setup.</h2>
-          </div>
-          <p class="section-copy">The proposed fee covers the full website and store project: design, development, product architecture, Shopify implementation, multilingual structure, technical SEO and launch preparation.</p>
+        <div class="head">
+          <div><p class="eyebrow">Why rebuild</p><h2>Why the current website needs more than a visual update.</h2></div>
+          <p class="copy">The current website contains valuable product knowledge, but its structure and technical setup make it harder to build trust, organise products clearly and grow into a modern multilingual online store.</p>
         </div>
-        <div class="price-grid">
+
+        <div class="compare">
+          <div class="old">
+            <div class="label">Current website</div>
+            <h3>Useful information, but a limited platform.</h3>
+            <ul class="plain">
+              <li>Security / HTTPS configuration needs attention before a modern launch.</li>
+              <li>Product and information content is difficult to organise clearly for search and customers.</li>
+              <li>The shopping journey is less clear than a modern e-commerce experience.</li>
+              <li>Multilingual growth and professional customers are not strongly separated.</li>
+            </ul>
+          </div>
+          <div class="new">
+            <div class="label">New direction</div>
+            <h3>A clear sales and brand platform.</h3>
+            <ul class="plain">
+              <li>Dedicated product and collection pages.</li>
+              <li>Clearer structure for Google and other search engines.</li>
+              <li>Modern mobile-first shopping experience.</li>
+              <li>Separate customer, custom-made and professional journeys.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="goal">
+          <p class="eyebrow">The goal</p>
+          <h2 style="font-size:42px">Not just a website containing products — a complete BM HAIR digital platform.</h2>
+          <div class="goal-grid">
+            <div><strong>Brand</strong><span>A stronger premium identity</span></div>
+            <div><strong>Shop</strong><span>A real e-commerce structure</span></div>
+            <div><strong>Content</strong><span>Product education and SEO</span></div>
+            <div><strong>Professional</strong><span>A clear B2B route</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="proposal">
+      <div class="wrap">
+        <div class="head">
+          <div><p class="eyebrow">Project proposal</p><h2>What the full project includes.</h2></div>
+          <p class="copy">The proposal covers taking the approved direction from this preview through to a complete production-ready BM HAIR website and online store.</p>
+        </div>
+
+        <div class="scope">
+          <div><strong>Website design</strong><span>Custom BM HAIR visual and customer experience</span></div>
+          <div><strong>Website development</strong><span>Responsive production-ready website</span></div>
+          <div><strong>Shopify store setup</strong><span>Products, collections, variants and store structure</span></div>
+          <div><strong>English, Latvian & Russian</strong><span>Three customer-facing languages</span></div>
+          <div><strong>Catalogue migration</strong><span>Verified current product catalogue</span></div>
+          <div><strong>SEO foundation</strong><span>Search-friendly page structure and metadata</span></div>
+          <div><strong>Custom-made & professional sections</strong><span>Separate journeys for these customers</span></div>
+          <div><strong>Launch preparation</strong><span>Final testing, domain setup and production checks</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <div class="price-wrap">
           <div class="price-card">
             <div>
-              <p class="eyebrow">Proposed fixed project fee</p>
+              <p class="eyebrow">Project investment</p>
               <div class="price">€3,500</div>
-              <p class="price-sub">A one-time project investment for the agreed BM HAIR website and e-commerce scope.</p>
-              <span class="fixed">Fixed scope · no hourly billing</span>
+              <p>Fixed project fee for the agreed website and e-commerce scope through to launch.</p>
             </div>
-            <p class="mini" style="color:#d9ccd1;margin:30px 0 0">Final launch depends on BM HAIR supplying and approving the catalogue, operational and legal information listed above.</p>
+            <p style="font-size:13px;margin-bottom:0">The final launch depends on BM HAIR confirming the product, shipping and legal information listed above.</p>
           </div>
-          <div class="scope">
-            <h3>What the project fee includes</h3>
-            <div class="scope-grid">
-              <div class="scope-item"><strong>Custom website design</strong>Premium BM HAIR visual and UX direction</div>
-              <div class="scope-item"><strong>Website development</strong>Responsive pages and reusable product architecture</div>
-              <div class="scope-item"><strong>Shopify implementation</strong>Store structure, collections, products and variants</div>
-              <div class="scope-item"><strong>Three client-facing languages</strong>English, Latvian and Russian final presentation / store structure</div>
-              <div class="scope-item"><strong>Catalogue migration</strong>Rebuilding the agreed current catalogue from verified data</div>
-              <div class="scope-item"><strong>SEO foundation</strong>Search-friendly pages, metadata and multilingual structure</div>
-              <div class="scope-item"><strong>Custom & professional journeys</strong>Dedicated paths for bespoke requests and B2B customers</div>
-              <div class="scope-item"><strong>Launch preparation</strong>Final QA, domain transition and production setup</div>
-            </div>
-            <div class="exclusions"><strong>Not included in the fixed fee:</strong> Shopify subscription or paid app fees, professional photography, paid advertising, complex ERP/POS integrations, legal advice, or major new functionality outside the agreed scope.</div>
+
+          <div class="why-price">
+            <p class="eyebrow">Included in the project</p>
+            <h3>Website + store + multilingual build + launch.</h3>
+            <ul class="ticks">
+              <li>Custom website design and development</li>
+              <li>Shopify e-commerce implementation</li>
+              <li>Product catalogue setup and migration</li>
+              <li>English, Latvian and Russian structure</li>
+              <li>SEO foundation and content organisation</li>
+              <li>Mobile optimisation and final QA</li>
+              <li>Production and launch preparation</li>
+            </ul>
+            <div class="mini-note"><strong>Not included:</strong> Shopify monthly subscription, paid third-party apps, professional photography, paid advertising, legal advice, or major new integrations outside the agreed scope.</div>
           </div>
         </div>
       </div>
@@ -424,35 +409,30 @@
 
     <section class="section">
       <div class="wrap">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Project status</p>
-            <h2>Where we are now.</h2>
-          </div>
-          <p class="section-copy">The next step is not to start again. It is to review the direction, confirm the real catalogue, collect your feedback, and turn the working preview into the final launch version.</p>
+        <div class="head">
+          <div><p class="eyebrow">Next step</p><h2>From preview to final launch.</h2></div>
+          <p class="copy">The main design direction and store structure are already in place. The next phase is review, product confirmation and finalisation — not starting the project again.</p>
         </div>
-        <div class="timeline">
-          <div class="step done"><b>01</b><strong>Discovery</strong><span>Completed</span></div>
-          <div class="step done"><b>02</b><strong>Design direction</strong><span>Completed</span></div>
-          <div class="step done"><b>03</b><strong>Website preview</strong><span>Ready for review</span></div>
-          <div class="step done"><b>04</b><strong>Shopify prototype</strong><span>Ready for review</span></div>
-          <div class="step current"><b>05</b><strong>Client validation</strong><span>Products + feedback</span></div>
-          <div class="step"><b>06</b><strong>Final launch</strong><span>After approval</span></div>
+
+        <div class="steps">
+          <article class="step"><b>01</b><h3>Review</h3><p>Review the website direction and Shopify store prototype.</p></article>
+          <article class="step"><b>02</b><h3>Confirm</h3><p>Send feedback and confirm the current products and store information.</p></article>
+          <article class="step"><b>03</b><h3>Finalise</h3><p>Complete the catalogue, production setup, testing and launch.</p></article>
         </div>
       </div>
     </section>
 
-    <section class="cta">
+    <section class="final">
       <div class="wrap">
-        <div class="cta-box">
+        <div class="finalbox">
           <div>
-            <p class="eyebrow">Next step</p>
-            <h2>Review the direction. Then we finalise BM HAIR together.</h2>
-            <p>Please review the visual direction, store structure and product presentation. The next round will focus on your feedback and confirmation of the live product catalogue.</p>
+            <p class="eyebrow">BM HAIR · Next decision</p>
+            <h2>Review the direction. Then we complete the final version together.</h2>
+            <p>The purpose of this stage is simple: confirm that the website and store are moving in the right direction before the final catalogue and launch work is completed.</p>
           </div>
-          <div class="actions" style="margin-top:0">
-            <a class="btn primary" href="#website-preview">Review website concept</a>
-            <a class="btn ghost" href="https://knuap5-wt.myshopify.com" target="_blank" rel="noopener">Review Shopify store</a>
+          <div class="actions">
+            <a class="btn primary" href="#preview">Review website</a>
+            <a class="btn soft" href="https://knuap5-wt.myshopify.com" target="_blank" rel="noopener">Review store</a>
           </div>
         </div>
       </div>
@@ -460,9 +440,9 @@
   </main>
 
   <footer>
-    <div class="wrap footer-inner">
-      <span>BM HAIR · Project preview & proposal</span>
-      <span>Prepared by Elasrag · Development version · September 2026</span>
+    <div class="wrap foot">
+      <span>BM HAIR · Website & Online Store Proposal</span>
+      <span>Prepared by Elasrag · September 2026</span>
     </div>
   </footer>
 </body>
