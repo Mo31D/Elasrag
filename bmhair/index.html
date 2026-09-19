@@ -1,515 +1,530 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow, noarchive">
-  <meta name="theme-color" content="#f7f2f3">
-  <title>BM HAIR — Website & Store Preview</title>
-  <meta name="description" content="BM HAIR website and e-commerce project preview and proposal.">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#faf7f6">
+  <title>BM HAIR — Project Preview</title>
+  <meta name="description" content="BM HAIR website and online store project preview.">
   <style>
     :root{
-      --ink:#24181f;
-      --muted:#6e6067;
-      --paper:#fbf8f7;
-      --panel:#f2e9ec;
-      --line:#ddd1d5;
-      --rose:#a97484;
-      --green:#42725b;
-      --white:#fff;
-      --dark:#2a1b23;
-      --max:1160px;
-      --r:24px;
+      --ink:#251820;--ink2:#46363e;--muted:#76666d;--paper:#faf7f6;--soft:#f1e8eb;
+      --line:#ddd1d5;--rose:#a86f81;--rose2:#d9b7c2;--dark:#2b1c24;--white:#fff;
+      --green:#3f7258;--max:1160px;--r:26px;--shadow:0 24px 70px rgba(39,24,31,.12);
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
+    body[dir="rtl"],html[dir="rtl"] body{font-family:Tahoma,Arial,"Segoe UI",sans-serif}
     a{color:inherit;text-decoration:none}
-    img{max-width:100%;display:block}
+    img{display:block;max-width:100%}
+    button{font:inherit}
     .wrap{width:min(calc(100% - 40px),var(--max));margin:auto}
-    .top{position:sticky;top:0;z-index:20;background:rgba(251,248,247,.9);backdrop-filter:blur(14px);border-bottom:1px solid rgba(221,209,213,.75)}
-    .topin{height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-    .logo{font-weight:800;letter-spacing:.08em;font-size:13px}
-    .logo span{display:block;font-size:10px;letter-spacing:.14em;color:var(--muted);font-weight:600;margin-top:2px}
+    .top{position:sticky;top:0;z-index:50;background:rgba(250,247,246,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(221,209,213,.75)}
+    .topin{height:68px;display:flex;align-items:center;justify-content:space-between;gap:22px}
+    .brand{font-size:13px;font-weight:850;letter-spacing:.11em}
+    .brand small{display:block;font-size:9px;letter-spacing:.13em;color:var(--muted);margin-top:2px}
     .nav{display:flex;gap:22px;font-size:13px;color:var(--muted)}
-    .langs{display:flex;gap:6px;padding:4px;border:1px solid var(--line);border-radius:999px;background:white}
-    .langs button{appearance:none;border:0;background:transparent;color:#8f7f86;padding:6px 9px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer}
-    .langs button:hover{color:var(--ink)}
-    .langs .on{background:var(--ink);color:white}
-    html[dir="rtl"] body{font-family:Tahoma,Arial,"Segoe UI",sans-serif}
-    html[dir="rtl"] .logo{letter-spacing:0} html[dir="rtl"] .langs button{padding:6px 7px;font-size:10px}
-    html[dir="rtl"] .logo span,html[dir="rtl"] .eyebrow{letter-spacing:.05em}
-    html[dir="rtl"] .needs .card ul,html[dir="rtl"] .plain{padding-left:0;padding-right:18px}
-    html[dir="rtl"] .visual-main{right:0;left:54px}
-    html[dir="rtl"] .visual-card{right:auto;left:0}
-    @media(max-width:620px){html[dir="rtl"] .visual-main{right:0;left:22px}}
-    .hero{padding:82px 0 64px}
-    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center}
-    .eyebrow{margin:0 0 14px;text-transform:uppercase;letter-spacing:.15em;color:var(--rose);font-size:11px;font-weight:850}
-    h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:400;line-height:1.05;margin:0}
-    h1{font-size:clamp(50px,7vw,86px);letter-spacing:-.035em}
-    h2{font-size:clamp(38px,5vw,62px);letter-spacing:-.025em}
+    .langs{display:flex;gap:4px;padding:4px;background:#fff;border:1px solid var(--line);border-radius:999px}
+    .langs button{appearance:none;border:0;background:transparent;padding:6px 9px;border-radius:999px;color:#94838a;font-size:11px;font-weight:850;cursor:pointer}
+    .langs button.active{background:var(--ink);color:white}
+    html[dir="rtl"] .brand{letter-spacing:0}
+    html[dir="rtl"] .brand small{letter-spacing:0}
+    html[dir="rtl"] .langs button{padding:6px 7px;font-size:10px}
+    .hero{padding:88px 0 70px}
+    .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:68px;align-items:center}
+    .eyebrow{margin:0 0 14px;color:var(--rose);text-transform:uppercase;letter-spacing:.15em;font-size:11px;font-weight:850}
+    html[dir="rtl"] .eyebrow{letter-spacing:.03em;text-transform:none}
+    h1,h2,h3{margin:0;font-family:Georgia,"Times New Roman",serif;font-weight:400;line-height:1.05}
+    html[dir="rtl"] h1,html[dir="rtl"] h2,html[dir="rtl"] h3{font-family:Tahoma,Arial,"Segoe UI",sans-serif;font-weight:700}
+    h1{font-size:clamp(48px,6.6vw,82px);letter-spacing:-.035em}
+    html[dir="rtl"] h1{letter-spacing:0}
+    h2{font-size:clamp(38px,4.7vw,58px);letter-spacing:-.025em}
+    html[dir="rtl"] h2{letter-spacing:0}
     h3{font-size:28px}
-    .lead{font-size:20px;color:#4f4148;max-width:700px;margin:24px 0 0}
-    .note{margin-top:22px;color:var(--muted);font-size:13px}
-    .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
-    .btn{min-height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--ink);display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:750;font-size:14px}
+    .lead{font-size:19px;color:var(--ink2);max-width:680px;margin:24px 0 0}
+    .subnote{font-size:13px;color:var(--muted);max-width:680px;margin-top:18px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}
+    .btn{min-height:48px;padding:0 18px;border-radius:999px;border:1px solid var(--ink);display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:800}
     .btn.primary{background:var(--ink);color:white}
-    .btn.soft{background:white}
-    .visual{position:relative;min-height:560px}
-    .visual-main{position:absolute;inset:0 54px 42px 0;border-radius:160px 160px 24px 24px;overflow:hidden;background:#ddd}
-    .visual-main img{width:100%;height:100%;object-fit:cover}
-    .visual-card{position:absolute;right:0;bottom:0;width:56%;background:white;border:1px solid var(--line);padding:10px;border-radius:18px;box-shadow:0 20px 60px rgba(36,24,31,.13)}
-    .visual-card img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px}
-    .section{padding:84px 0;border-top:1px solid var(--line)}
-    .head{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;margin-bottom:36px}
-    .copy{font-size:18px;color:#51434a;max-width:720px;margin:0}
-    .simple-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .btn.secondary{background:white}
+    .btn.disabled{border-color:var(--line);background:#f4eff1;color:#8f8086;cursor:default}
+    .hero-preview{position:relative;min-height:570px}
+    .device{position:absolute;background:white;border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+    .desktop{inset:0 48px 28px 0;border-radius:22px}
+    html[dir="rtl"] .desktop{inset:0 0 28px 48px}
+    .device-bar{height:34px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 12px;background:#fbf9f9}
+    .device-bar i{width:7px;height:7px;border-radius:50%;background:#d3c6cb}
+    .site-mini{display:grid;grid-template-columns:47% 53%;height:calc(100% - 34px)}
+    .mini-copy{padding:46px 34px;display:flex;flex-direction:column;justify-content:center}
+    .mini-brand{font-size:11px;font-weight:900;letter-spacing:.18em;margin-bottom:26px}
+    html[dir="rtl"] .mini-brand{letter-spacing:0}
+    .mini-copy h3{font-size:41px;line-height:1}
+    .mini-copy h3 em{color:var(--rose);font-weight:400}
+    .mini-copy p{font-size:13px;color:var(--muted);margin:18px 0}
+    .mini-pill{width:max-content;padding:8px 12px;border:1px solid var(--ink);border-radius:999px;font-size:10px;font-weight:800}
+    .mini-photo{height:100%;overflow:hidden}
+    .mini-photo img{width:100%;height:100%;object-fit:cover}
+    .phone{right:0;bottom:0;width:190px;height:360px;border-radius:30px;border:7px solid #fff}
+    html[dir="rtl"] .phone{right:auto;left:0}
+    .phone img{width:100%;height:100%;object-fit:cover}
+    .phone-label{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(37,24,32,.82);color:white;border-radius:14px;padding:11px;font-size:10px}
+    .section{padding:82px 0;border-top:1px solid var(--line)}
+    .head{display:grid;grid-template-columns:.82fr 1.18fr;gap:42px;align-items:start;margin-bottom:38px}
+    .copy{margin:0;color:var(--ink2);font-size:17px;max-width:720px}
+    .three{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
     .card{background:white;border:1px solid var(--line);border-radius:var(--r);padding:28px}
+    .card .n{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:var(--rose);font-weight:850;display:block;margin-bottom:26px}
+    html[dir="rtl"] .card .n{letter-spacing:0;text-transform:none}
     .card h3{margin-bottom:10px}
     .card p{margin:0;color:var(--muted)}
-    .ticks{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:10px}
-    .ticks li{display:flex;gap:10px;color:#4f4148}
-    .ticks li:before{content:"✓";color:var(--green);font-weight:900}
-    .show{background:var(--dark);color:white}
-    .show .copy{color:#d8ccd1}
-    .show .eyebrow{color:#d4b3bf}
-    .show-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-    .demo{border:1px solid rgba(255,255,255,.16);border-radius:28px;padding:18px;background:#33232b}
-    .demo-frame{border-radius:18px;overflow:hidden;background:#eee;aspect-ratio:16/10}
-    .demo-frame img{width:100%;height:100%;object-fit:cover}
-    .demo h3{font-size:34px;margin-top:22px}
-    .demo p{color:#d7cbd0}
-    .demo .btn{border-color:white;color:white}
-    .demo .btn.primary{background:white;color:var(--ink)}
-    .status{display:inline-flex;margin-top:12px;padding:7px 10px;border:1px solid rgba(255,255,255,.22);border-radius:999px;font-size:11px;color:#ded2d7}
-    .review-box{background:white;border:1px solid var(--line);border-radius:28px;padding:32px}
-    .review-box p{margin:0;color:#4f4148;font-size:19px;max-width:850px}
-    .needs{background:var(--panel)}
-    .needs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .needs .card{background:rgba(255,255,255,.83)}
-    .needs .card ul{margin:16px 0 0;padding-left:18px;color:var(--muted)}
-    .needs .card li{margin:8px 0}
-    .compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-    .compare>div{border:1px solid var(--line);border-radius:var(--r);padding:30px}
-    .compare .old{background:#f5eff1}
-    .compare .new{background:white}
-    .label{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--rose);font-weight:850;margin-bottom:18px}
-    .plain{margin:18px 0 0;padding-left:18px;color:var(--muted)}
-    .plain li{margin:10px 0}
-    .goal{margin-top:18px;padding:30px;border-radius:var(--r);background:var(--ink);color:white}
-    .goal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
-    .goal-grid div{padding:18px;border:1px solid rgba(255,255,255,.15);border-radius:16px}
-    .goal-grid strong{display:block;font-family:Georgia,serif;font-size:25px;font-weight:400}
-    .goal-grid span{font-size:12px;color:#d5c9ce}
-    .scope{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-    .scope div{padding:18px 0;border-bottom:1px solid var(--line)}
-    .scope strong{display:block;margin-bottom:3px}
+    .work{background:var(--dark);color:white}
+    .work .copy{color:#d9ccd1}
+    .work .eyebrow{color:#d8b6c1}
+    .preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .preview-card{border:1px solid rgba(255,255,255,.16);border-radius:28px;background:#34242c;padding:18px}
+    .browser{border-radius:18px;overflow:hidden;background:#fff;color:var(--ink)}
+    .browser-top{height:36px;border-bottom:1px solid #e7dde0;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:9px;color:#8c7c83}
+    .dots{display:flex;gap:5px}.dots i{width:6px;height:6px;border-radius:50%;background:#d5c9cd}
+    .web-shot{display:grid;grid-template-columns:44% 56%;height:360px}
+    .web-shot-copy{padding:30px 24px;display:flex;flex-direction:column;justify-content:center}
+    .web-shot-copy b{font-size:9px;letter-spacing:.14em;margin-bottom:18px}
+    html[dir="rtl"] .web-shot-copy b{letter-spacing:0}
+    .web-shot-copy h3{font-size:32px}
+    .web-shot-copy p{font-size:11px;color:#75666d}
+    .web-shot img{width:100%;height:100%;object-fit:cover}
+    .shop-shot{padding:18px;background:#fbf8f7;height:360px}
+    .shop-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:10px}
+    .shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .product{background:white;border:1px solid #e5dbde;border-radius:12px;overflow:hidden}
+    .product img{width:100%;aspect-ratio:1/1.12;object-fit:cover;background:#f3edef}
+    .product div{padding:9px}
+    .product strong{display:block;font-size:9px;line-height:1.25}
+    .product span{font-size:9px;color:#8b7981}
+    .preview-card h3{font-size:31px;margin:22px 0 8px}
+    .preview-card>p{color:#d8ccd1;margin:0}
+    .tag{display:inline-flex;margin-top:14px;padding:7px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;color:#d8ccd1;font-size:10px}
+    .review{background:var(--soft)}
+    .review-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .review-item{background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:22px;padding:24px}
+    .review-item strong{display:block;font-size:17px;margin-bottom:7px}
+    .review-item p{margin:0;color:var(--muted)}
+    .need-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .need{padding:22px;border:1px solid var(--line);border-radius:20px;background:white}
+    .need b{display:block;margin-bottom:8px}
+    .need span{font-size:13px;color:var(--muted)}
+    .audit{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .audit-card{padding:26px;border-radius:22px;border:1px solid var(--line)}
+    .audit-card b{display:block;font-size:18px;margin-bottom:8px}
+    .audit-card p{margin:0;color:var(--muted)}
+    .scope{display:grid;grid-template-columns:repeat(2,1fr);gap:0 28px}
+    .scope div{padding:17px 0;border-bottom:1px solid var(--line)}
+    .scope strong{display:block;font-size:15px}
     .scope span{font-size:13px;color:var(--muted)}
-    .price-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}
-    .price-card{background:var(--ink);color:white;border-radius:30px;padding:34px;min-height:380px;display:flex;flex-direction:column;justify-content:space-between}
-    .price-card .eyebrow{color:#d5b5c0}
-    .price{font-family:Georgia,serif;font-size:clamp(66px,8vw,98px);line-height:.95;letter-spacing:-.05em}
-    .price-card p{color:#d9cdd2}
-    .why-price{background:white;border:1px solid var(--line);border-radius:30px;padding:34px}
-    .why-price h3{font-size:34px;margin-bottom:18px}
-    .mini-note{margin-top:18px;padding:16px;background:var(--panel);border-radius:14px;color:var(--muted);font-size:13px}
+    .price-section{background:white}
+    .price-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}
+    .price-card{background:var(--ink);color:white;border-radius:30px;padding:36px;min-height:410px;display:flex;flex-direction:column;justify-content:space-between}
+    .price-card .eyebrow{color:#d8b6c1}
+    .price{font-family:Georgia,"Times New Roman",serif;font-size:clamp(68px,8vw,98px);line-height:.95;letter-spacing:-.05em}
+    html[dir="rtl"] .price{font-family:Tahoma,Arial,sans-serif;letter-spacing:0}
+    .price-card p{color:#d8ccd1}
+    .included{border:1px solid var(--line);border-radius:30px;padding:34px;background:var(--paper)}
+    .included h3{font-size:32px;margin-bottom:18px}
+    .checks{list-style:none;padding:0;margin:0;display:grid;gap:11px}
+    .checks li{display:flex;gap:10px;color:var(--ink2)}
+    .checks li:before{content:"✓";color:var(--green);font-weight:900}
+    .commercial-note{margin-top:22px;padding:16px 18px;background:var(--soft);border-radius:15px;color:var(--muted);font-size:13px}
     .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .step{padding:26px;border:1px solid var(--line);border-radius:22px;background:white}
-    .step b{display:block;color:var(--rose);font-size:12px;letter-spacing:.12em;margin-bottom:24px}
-    .step h3{font-size:28px;margin-bottom:8px}
+    .step{background:white;border:1px solid var(--line);border-radius:22px;padding:26px}
+    .step .num{display:block;color:var(--rose);font-size:11px;font-weight:850;margin-bottom:26px}
+    .step h3{margin-bottom:8px}
     .step p{margin:0;color:var(--muted)}
     .final{padding:74px 0 96px}
-    .finalbox{background:linear-gradient(135deg,#eadde2,#f7f1f2);border-radius:32px;padding:48px;display:flex;justify-content:space-between;gap:30px;align-items:end}
-    .finalbox p{max-width:650px;color:#4f4148;font-size:17px}
-    footer{border-top:1px solid var(--line);padding:26px 0 42px;color:var(--muted);font-size:12px}
+    .finalbox{background:linear-gradient(135deg,#eadde2,#f8f2f3);border-radius:32px;padding:48px;display:flex;align-items:end;justify-content:space-between;gap:30px}
+    .finalbox p{max-width:650px;color:var(--ink2)}
+    footer{border-top:1px solid var(--line);padding:26px 0 42px;font-size:12px;color:var(--muted)}
     .foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-    @media(max-width:900px){
+    @media(max-width:960px){
       .nav{display:none}
-      .hero-grid,.head,.show-grid,.compare,.price-wrap{grid-template-columns:1fr}
-      .simple-grid,.needs-grid{grid-template-columns:1fr}
-      .goal-grid{grid-template-columns:1fr 1fr}
-      .steps{grid-template-columns:1fr}
-      .visual{min-height:480px}
-      .finalbox{align-items:flex-start;flex-direction:column}
+      .hero-grid,.head,.preview-grid,.price-grid{grid-template-columns:1fr}
+      .hero-preview{min-height:510px}
+      .three,.review-grid{grid-template-columns:1fr}
+      .need-grid,.audit{grid-template-columns:1fr 1fr}
+      .finalbox{flex-direction:column;align-items:flex-start}
     }
-    @media(max-width:620px){
+    @media(max-width:640px){
       .wrap{width:min(calc(100% - 28px),var(--max))}
+      .topin{height:62px}
+      .brand small{display:none}
       .hero{padding:58px 0 48px}
       h1{font-size:48px}
       .lead,.copy{font-size:16px}
-      .visual{min-height:400px}
-      .visual-main{right:22px;bottom:32px;border-radius:110px 110px 20px 20px}
-      .section{padding:64px 0}
-      .goal-grid,.scope{grid-template-columns:1fr}
-      .finalbox,.card,.review-box,.price-card,.why-price{padding:26px}
+      .hero-preview{min-height:390px}
+      .desktop{inset:0 28px 22px 0}
+      html[dir="rtl"] .desktop{inset:0 0 22px 28px}
+      .mini-copy{padding:24px 18px}.mini-copy h3{font-size:27px}.mini-copy p{font-size:10px}
+      .phone{width:135px;height:260px}
+      .section{padding:62px 0}
+      .need-grid,.audit,.scope,.steps{grid-template-columns:1fr}
+      .web-shot{height:300px}.shop-shot{height:300px;padding:12px}.shop-grid{gap:6px}
+      .product div{padding:6px}.product strong,.product span{font-size:7px}
+      .price-card,.included,.card,.finalbox{padding:26px}
       .actions,.btn{width:100%}
     }
   </style>
 </head>
 <body>
-  <header class="top">
-    <div class="wrap topin">
-      <a href="#top" class="logo">ELASRAG<span>BM HAIR project presentation</span></a>
-      <nav class="nav">
-        <a href="#understood">Brief</a>
-        <a href="#preview">Preview</a>
-        <a href="#needed">What we need</a>
-        <a href="#proposal">Proposal</a>
-      </nav>
-      <div class="langs" aria-label="Language">
-        <button type="button" class="on" data-lang="en" aria-pressed="true">EN</button>
-        <button type="button" data-lang="lv" aria-pressed="false">LV</button>
-        <button type="button" data-lang="ru" aria-pressed="false">RU</button>
-        <button type="button" data-lang="ar" aria-pressed="false">AR</button>
+<header class="top">
+  <div class="wrap topin">
+    <a href="#top" class="brand"><span data-i18n="elasrag">ELASRAG</span><small data-i18n="projectPresentation">BM HAIR PROJECT PRESENTATION</small></a>
+    <nav class="nav">
+      <a href="#brief" data-i18n="navBrief">Brief</a>
+      <a href="#work" data-i18n="navWork">Preview</a>
+      <a href="#needed" data-i18n="navNeeded">What we need</a>
+      <a href="#price" data-i18n="navProposal">Proposal</a>
+    </nav>
+    <div class="langs" aria-label="Language">
+      <button data-lang="en" class="active">EN</button>
+      <button data-lang="lv">LV</button>
+      <button data-lang="ru">RU</button>
+      <button data-lang="ar">AR</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow" data-i18n="heroEye">BM HAIR · WEBSITE & ONLINE STORE</p>
+      <h1 data-i18n="heroTitle">A first look at the new BM HAIR.</h1>
+      <p class="lead" data-i18n="heroLead">Following our meeting, I developed a working direction for the new BM HAIR website and, separately, a Shopify store prototype for the e-commerce side of the business.</p>
+      <p class="subnote" data-i18n="heroNote">This is a review version. The final catalogue, live checkout and launch setup will be completed after BM HAIR confirms the current product and business information.</p>
+      <div class="actions">
+        <span class="btn disabled" data-i18n="websiteLinkSoon">Website preview link — added before presentation</span>
+        <span class="btn disabled" data-i18n="storeLinkSoon">Store preview link — added before presentation</span>
       </div>
     </div>
-  </header>
+    <div class="hero-preview" aria-label="BM HAIR design preview">
+      <div class="device desktop">
+        <div class="device-bar"><i></i><i></i><i></i></div>
+        <div class="site-mini">
+          <div class="mini-copy">
+            <span class="mini-brand" data-i18n="brandName">BM HAIR</span>
+            <h3><span data-i18n="siteHero1">Beautiful hair.</span><br><em data-i18n="siteHero2">Entirely you.</em></h3>
+            <p data-i18n="siteHeroText">Natural-hair wigs, ponytails and extensions. Chosen with expertise. Made to feel like you.</p>
+            <span class="mini-pill" data-i18n="explore">Explore collection</span>
+          </div>
+          <div class="mini-photo"><img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1847-01.webp" alt=""></div>
+        </div>
+      </div>
+      <div class="device phone">
+        <img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/long-blonde.webp" alt="">
+        <div class="phone-label" data-i18n="mobileLabel">Mobile-first design preview</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <main id="top">
-    <section class="hero">
-      <div class="wrap hero-grid">
+<section class="section" id="brief">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="eyebrow" data-i18n="briefEye">BASED ON OUR MEETING</p><h2 data-i18n="briefTitle">The direction we discussed.</h2></div>
+      <p class="copy" data-i18n="briefCopy">BM HAIR should feel like a premium hair brand, not simply a salon website. Products should lead the experience, supported by custom-made work, professional customers and the team's expertise.</p>
+    </div>
+    <div class="three">
+      <article class="card"><span class="n">01</span><h3 data-i18n="brandCardTitle">Premium brand</h3><p data-i18n="brandCardText">A clean, modern beauty and fashion direction where the products and photography lead.</p></article>
+      <article class="card"><span class="n">02</span><h3 data-i18n="audCardTitle">Customers + professionals</h3><p data-i18n="audCardText">A clear experience for individual customers, salons, stylists and professional partners.</p></article>
+      <article class="card"><span class="n">03</span><h3 data-i18n="growCardTitle">Built to grow</h3><p data-i18n="growCardText">A structure that can support Latvia and wider European growth without rebuilding the site again.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section work" id="work">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="eyebrow" data-i18n="workEye">THE WORK SO FAR</p><h2 data-i18n="workTitle">Website direction + e-commerce prototype.</h2></div>
+      <p class="copy" data-i18n="workCopy">These are two parts of the same project. The website preview shows the brand and customer experience. The Shopify prototype shows how the real product catalogue and store structure can work behind it.</p>
+    </div>
+
+    <div class="preview-grid">
+      <article class="preview-card">
+        <div class="browser">
+          <div class="browser-top"><span class="dots"><i></i><i></i><i></i></span><span data-i18n="websiteDesignPreview">Website design preview</span></div>
+          <div class="web-shot">
+            <div class="web-shot-copy">
+              <b data-i18n="brandName">BM HAIR</b>
+              <h3><span data-i18n="siteHero1">Beautiful hair.</span><br><em data-i18n="siteHero2">Entirely you.</em></h3>
+              <p data-i18n="siteHeroText">Natural-hair wigs, ponytails and extensions. Chosen with expertise. Made to feel like you.</p>
+            </div>
+            <img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1847-01.webp" alt="">
+          </div>
+        </div>
+        <span class="tag" data-i18n="designTag">Actual BM HAIR design assets</span>
+        <h3 data-i18n="websitePreviewTitle">Website preview</h3>
+        <p data-i18n="websitePreviewText">Brand presentation, product discovery, custom-made requests, professionals, Hair Guide and mobile experience.</p>
+      </article>
+
+      <article class="preview-card">
+        <div class="browser">
+          <div class="browser-top"><span class="dots"><i></i><i></i><i></i></span><span data-i18n="shopDataPreview">Shopify product preview</span></div>
+          <div class="shop-shot">
+            <div class="shop-head"><strong data-i18n="brandName">BM HAIR</strong><span data-i18n="developmentStore">Development store</span></div>
+            <div class="shop-grid">
+              <div class="product">
+                <img src="https://cdn.shopify.com/s/files/1/1094/2136/3532/files/cat-1848-02.webp?v=1789639669" alt="">
+                <div><strong data-i18n="prodBlonde">Natural blonde wig</strong><span>€525</span></div>
+              </div>
+              <div class="product">
+                <img src="https://cdn.shopify.com/s/files/1/1094/2136/3532/files/cat-1820-02.webp?v=1789641768" alt="">
+                <div><strong data-i18n="prodPonytail">Natural ponytail</strong><span data-i18n="from319">from €319</span></div>
+              </div>
+              <div class="product">
+                <img src="https://cdn.shopify.com/s/files/1/1094/2136/3532/files/cat-1960-02.webp?v=1789641849" alt="">
+                <div><strong data-i18n="prodMono">Mono clip-in</strong><span data-i18n="from389">from €389</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <span class="tag" data-i18n="shopTag">Live product media from the development store</span>
+        <h3 data-i18n="storePreviewTitle">Online store preview</h3>
+        <p data-i18n="storePreviewText">Products, variants, collections and the structure needed for stock, orders and future checkout.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section review">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="eyebrow" data-i18n="reviewEye">WHAT YOU ARE REVIEWING</p><h2 data-i18n="reviewTitle">The direction first. The final catalogue next.</h2></div>
+      <p class="copy" data-i18n="reviewCopy">The purpose of this stage is to confirm that the look, structure and shopping experience are moving in the right direction before the final data and launch configuration are locked in.</p>
+    </div>
+    <div class="review-grid">
+      <div class="review-item"><strong data-i18n="review1Title">Look & feel</strong><p data-i18n="review1Text">Does the new direction feel right for BM HAIR?</p></div>
+      <div class="review-item"><strong data-i18n="review2Title">Structure</strong><p data-i18n="review2Text">Are the products, custom work and professional sections organised clearly?</p></div>
+      <div class="review-item"><strong data-i18n="review3Title">Shopping experience</strong><p data-i18n="review3Text">Does the product and store journey feel simple enough for customers?</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="needed">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="eyebrow" data-i18n="needEye">BEFORE FINAL LAUNCH</p><h2 data-i18n="needTitle">What we need to confirm together.</h2></div>
+      <p class="copy" data-i18n="needCopy">The old website has been useful as a starting reference, but the final store should use current BM HAIR data. These are the main items still needing confirmation.</p>
+    </div>
+    <div class="need-grid">
+      <div class="need"><b data-i18n="needProducts">Current products</b><span data-i18n="needProductsText">What stays, what is removed, and any new products.</span></div>
+      <div class="need"><b data-i18n="needData">Product data</b><span data-i18n="needDataText">Product codes, prices, lengths, shades, textures, weights and availability.</span></div>
+      <div class="need"><b data-i18n="needImages">Images</b><span data-i18n="needImagesText">Final photos and confirmation of which image belongs to each product or shade.</span></div>
+      <div class="need"><b data-i18n="needStore">Store rules</b><span data-i18n="needStoreText">Shipping, payments, returns, guarantee and final company information.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="eyebrow" data-i18n="auditEye">WHY CHANGE THE CURRENT SITE</p><h2 data-i18n="auditTitle">The problem is not only the design.</h2></div>
+      <p class="copy" data-i18n="auditCopy">The technical review found issues that affect trust, search visibility and the shopping experience. The rebuild addresses these at the same time as the visual redesign.</p>
+    </div>
+    <div class="audit">
+      <div class="audit-card"><b data-i18n="auditTrust">Trust & security</b><p data-i18n="auditTrustText">The current secure-connection setup needs attention. Visitors should not see browser warnings or uncertainty before shopping.</p></div>
+      <div class="audit-card"><b data-i18n="auditSearch">Search visibility</b><p data-i18n="auditSearchText">Important products and content need dedicated, search-friendly pages and stronger technical search structure.</p></div>
+      <div class="audit-card"><b data-i18n="auditShop">Shopping experience</b><p data-i18n="auditShopText">The new structure makes products easier to browse, compare and eventually buy through a modern checkout.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="eyebrow" data-i18n="scopeEye">FINAL PROJECT SCOPE</p><h2 data-i18n="scopeTitle">What the full project covers.</h2></div>
+      <p class="copy" data-i18n="scopeCopy">Once the direction is approved and the catalogue is confirmed, the project moves from preview to the final production version.</p>
+    </div>
+    <div class="scope">
+      <div><strong data-i18n="s1">Custom website design</strong><span data-i18n="s1x">BM HAIR visual identity and customer experience.</span></div>
+      <div><strong data-i18n="s2">Website development</strong><span data-i18n="s2x">Responsive production website.</span></div>
+      <div><strong data-i18n="s3">Shopify store setup</strong><span data-i18n="s3x">Products, variants, collections and store structure.</span></div>
+      <div><strong data-i18n="s4">Three customer languages</strong><span data-i18n="s4x">English, Latvian and Russian for the final customer site.</span></div>
+      <div><strong data-i18n="s5">Catalogue migration</strong><span data-i18n="s5x">Rebuild the verified current catalogue.</span></div>
+      <div><strong data-i18n="s6">Search foundation</strong><span data-i18n="s6x">Search-friendly pages, metadata and content structure.</span></div>
+      <div><strong data-i18n="s7">Custom & professional journeys</strong><span data-i18n="s7x">Clear routes for bespoke work and business customers.</span></div>
+      <div><strong data-i18n="s8">Launch preparation</strong><span data-i18n="s8x">Final testing, domain setup and production checks.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section price-section" id="price">
+  <div class="wrap">
+    <div class="price-grid">
+      <div class="price-card">
         <div>
-          <p class="eyebrow">BM HAIR · Website & online store — working preview</p>
-          <h1>The first working preview of <em style="color:var(--rose);font-style:normal">the new BM HAIR.</em></h1>
-          <p class="lead">Following our meeting, I’ve prepared a working preview of the new BM HAIR website and online store.</p>
-          <p class="note">This preview is for review and feedback. It is not the final launch version, and the product catalogue still needs to be confirmed.</p>
-          <div class="actions">
-            <a class="btn primary" href="#preview">View website preview</a>
-            <a class="btn soft" href="https://knuap5-wt.myshopify.com" target="_blank" rel="noopener">View online store preview</a>
-          </div>
+          <p class="eyebrow" data-i18n="priceEye">PROJECT INVESTMENT</p>
+          <div class="price">€3,500</div>
+          <p data-i18n="priceText">Fixed project fee for the agreed website and online-store scope through to launch.</p>
         </div>
-        <div class="visual">
-          <div class="visual-main"><img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1847-01.webp" alt="BM HAIR dark hair visual"></div>
-          <div class="visual-card"><img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1848-01.webp" alt="BM HAIR blonde hair visual"></div>
+        <p style="font-size:13px;margin:24px 0 0" data-i18n="priceDependency">Final launch depends on BM HAIR confirming the product, shipping and legal information listed above.</p>
+      </div>
+      <div class="included">
+        <p class="eyebrow" data-i18n="includedEye">INCLUDED</p>
+        <h3 data-i18n="includedTitle">Website + store + multilingual build + launch preparation.</h3>
+        <ul class="checks">
+          <li data-i18n="inc1">Custom website design and development</li>
+          <li data-i18n="inc2">Shopify e-commerce implementation</li>
+          <li data-i18n="inc3">Catalogue setup and migration</li>
+          <li data-i18n="inc4">English, Latvian and Russian customer structure</li>
+          <li data-i18n="inc5">Search optimisation foundation and content organisation</li>
+          <li data-i18n="inc6">Mobile optimisation and final quality checks</li>
+          <li data-i18n="inc7">Production and launch preparation</li>
+        </ul>
+        <div class="commercial-note">
+          <strong data-i18n="notIncluded">Not included:</strong>
+          <span data-i18n="notIncludedText"> Shopify subscription, paid third-party apps, professional photography, paid advertising, legal advice or major new integrations outside the agreed scope.</span><br><br>
+          <span data-i18n="commercialNext">Final delivery timing and payment stages can be confirmed in writing once the direction and catalogue scope are approved.</span>
         </div>
       </div>
-    </section>
-
-    <section class="section" id="understood">
-      <div class="wrap">
-        <div class="head">
-          <div><p class="eyebrow">Based on our meeting</p><h2>The direction we discussed for BM HAIR.</h2></div>
-          <p class="copy">BM HAIR should feel like a premium hair brand, not simply a salon website. The products should lead the experience, supported by custom-made work, professional customers and the team’s expertise.</p>
-        </div>
-        <div class="simple-grid">
-          <article class="card"><h3>Premium brand</h3><p>A clean, modern beauty/fashion direction that gives the products and photography space to lead.</p></article>
-          <article class="card"><h3>Customers & professionals</h3><p>The website needs to work for individual customers while also giving salons and professionals a clear path.</p></article>
-          <article class="card"><h3>Built to grow</h3><p>The structure should support Latvia and wider European growth, with English, Latvian and Russian customer journeys.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="wrap">
-        <div class="head">
-          <div><p class="eyebrow">Work completed so far</p><h2>What has already been created.</h2></div>
-          <p class="copy">Two parts of the project are already in place: a new BM HAIR website direction and a separate Shopify development store for the e-commerce side of the business.</p>
-        </div>
-        <div class="simple-grid">
-          <article class="card">
-            <h3>New website</h3>
-            <ul class="ticks">
-              <li>Homepage and brand direction</li>
-              <li>Shop, collections and product pages</li>
-              <li>Custom-made journey</li>
-              <li>For Professionals / B2B section</li>
-              <li>Our Story and Hair Guide</li>
-              <li>Mobile and multilingual structure</li>
-            </ul>
-          </article>
-          <article class="card">
-            <h3>Shopify store</h3>
-            <ul class="ticks">
-              <li>Products and variants</li>
-              <li>Product collections</li>
-              <li>Store navigation</li>
-              <li>Multilingual content structure</li>
-              <li>Cart and future checkout structure</li>
-              <li>Inventory and order foundation</li>
-            </ul>
-          </article>
-          <article class="card">
-            <h3>Content migration</h3>
-            <ul class="ticks">
-              <li>Existing product information reviewed</li>
-              <li>Current catalogue rebuilt as a starting point</li>
-              <li>Product imagery collected and organised</li>
-              <li>Old content reorganised into clearer pages</li>
-              <li>SEO-friendly page structure prepared</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section show" id="preview">
-      <div class="wrap">
-        <div class="head">
-          <div><p class="eyebrow">Explore the work</p><h2>Two previews, each showing a different part of the project.</h2></div>
-          <p class="copy">The website preview shows the new brand, content and customer experience. The Shopify prototype shows how the real product catalogue and e-commerce system can work behind it.</p>
-        </div>
-
-        <div class="show-grid">
-          <article class="demo">
-            <div class="demo-frame"><img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/editorial-brunette.webp" alt="BM HAIR website concept visual"></div>
-            <span class="status">Website concept · development preview</span>
-            <h3>Website preview</h3>
-            <p>Focused on BM HAIR's brand, customer experience, content, product discovery and international presentation.</p>
-            <div class="actions">
-              <a class="btn primary" href="#website-note">Review website direction</a>
-            </div>
-          </article>
-          <article class="demo">
-            <div class="demo-frame"><img src="https://raw.githubusercontent.com/Mo31D/bmhair/main/public/images/cat-1821-04.webp" alt="BM HAIR product store visual"></div>
-            <span class="status">Shopify · development store</span>
-            <h3>Online store preview</h3>
-            <p>Focused on real product structure, variants, collections and the future shopping and checkout experience.</p>
-            <div class="actions">
-              <a class="btn primary" href="https://knuap5-wt.myshopify.com" target="_blank" rel="noopener">Open Shopify preview</a>
-            </div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="website-note">
-      <div class="wrap">
-        <div class="review-box">
-          <p class="eyebrow">What this preview is for</p>
-          <h2 style="font-size:44px;margin-bottom:20px">Review the direction first. Finalise the catalogue next.</h2>
-          <p>This preview uses the information available on the current BM HAIR website together with what we discussed in our meeting. Before launch, the catalogue needs to be checked and confirmed directly with BM HAIR.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section needs" id="needed">
-      <div class="wrap">
-        <div class="head">
-          <div><p class="eyebrow">Before the final version</p><h2>What I need from BM HAIR to finish the project.</h2></div>
-          <p class="copy">The old website is useful as a reference, but it should not be the final source of truth. BM HAIR now needs to confirm the products and business information that are actually current.</p>
-        </div>
-
-        <div class="needs-grid">
-          <article class="card">
-            <h3>Products</h3>
-            <ul>
-              <li>Which products are still sold</li>
-              <li>Which products should be removed</li>
-              <li>Any new products not on the old website</li>
-              <li>SKU for all products and variants</li>
-            </ul>
-          </article>
-          <article class="card">
-            <h3>Product information</h3>
-            <ul>
-              <li>Final prices</li>
-              <li>Lengths, shades, textures and weights</li>
-              <li>Which images belong to which product / shade</li>
-              <li>Wig, hair-piece and custom-order details</li>
-            </ul>
-          </article>
-          <article class="card">
-            <h3>Store information</h3>
-            <ul>
-              <li>Shipping countries and current delivery methods</li>
-              <li>Payment methods</li>
-              <li>Returns and guarantee policy</li>
-              <li>Final company / legal details</li>
-            </ul>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="why">
-      <div class="wrap">
-        <div class="head">
-          <div><p class="eyebrow">Why change the current site</p><h2>Why the current website needs more than a visual update.</h2></div>
-          <p class="copy">The current website contains valuable product knowledge, but its structure and technical setup make it harder to build trust, organise products clearly and grow into a modern multilingual online store.</p>
-        </div>
-
-        <div class="compare">
-          <div class="old">
-            <div class="label">Current website</div>
-            <h3>Useful information, but a limited platform.</h3>
-            <ul class="plain">
-              <li>Security / HTTPS configuration needs attention before a modern launch.</li>
-              <li>Product and information content is difficult to organise clearly for search and customers.</li>
-              <li>The shopping journey is less clear than a modern e-commerce experience.</li>
-              <li>Multilingual growth and professional customers are not strongly separated.</li>
-            </ul>
-          </div>
-          <div class="new">
-            <div class="label">New direction</div>
-            <h3>A clear sales and brand platform.</h3>
-            <ul class="plain">
-              <li>Dedicated product and collection pages.</li>
-              <li>Clearer structure for Google and other search engines.</li>
-              <li>Modern mobile-first shopping experience.</li>
-              <li>Separate customer, custom-made and professional journeys.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="goal">
-          <p class="eyebrow">The goal</p>
-          <h2 style="font-size:42px">Not just a website containing products — a complete BM HAIR digital platform.</h2>
-          <div class="goal-grid">
-            <div><strong>Brand</strong><span>A stronger premium identity</span></div>
-            <div><strong>Shop</strong><span>A real e-commerce structure</span></div>
-            <div><strong>Content</strong><span>Product education and SEO</span></div>
-            <div><strong>Professional</strong><span>A clear B2B route</span></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="proposal">
-      <div class="wrap">
-        <div class="head">
-          <div><p class="eyebrow">Project scope</p><h2>What the full project covers.</h2></div>
-          <p class="copy">The project covers taking the approved direction from this preview through to a complete, production-ready BM HAIR website and online store.</p>
-        </div>
-
-        <div class="scope">
-          <div><strong>Website design</strong><span>Custom BM HAIR visual and customer experience</span></div>
-          <div><strong>Website development</strong><span>Responsive production-ready website</span></div>
-          <div><strong>Shopify store setup</strong><span>Products, collections, variants and store structure</span></div>
-          <div><strong>English, Latvian & Russian</strong><span>Three customer-facing languages</span></div>
-          <div><strong>Catalogue migration</strong><span>Verified current product catalogue</span></div>
-          <div><strong>SEO foundation</strong><span>Search-friendly page structure and metadata</span></div>
-          <div><strong>Custom-made & professional sections</strong><span>Separate journeys for these customers</span></div>
-          <div><strong>Launch preparation</strong><span>Final testing, domain setup and production checks</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="wrap">
-        <div class="price-wrap">
-          <div class="price-card">
-            <div>
-              <p class="eyebrow">Project investment</p>
-              <div class="price">€3,500</div>
-              <p>Fixed project fee for the agreed website and e-commerce scope through to launch.</p>
-            </div>
-            <p style="font-size:13px;margin-bottom:0">The final launch depends on BM HAIR confirming the product, shipping and legal information listed above.</p>
-          </div>
-
-          <div class="why-price">
-            <p class="eyebrow">Included in the project</p>
-            <h3>Everything needed to take the website and store through to launch.</h3>
-            <ul class="ticks">
-              <li>Custom website design and development</li>
-              <li>Shopify e-commerce implementation</li>
-              <li>Product catalogue setup and migration</li>
-              <li>English, Latvian and Russian structure</li>
-              <li>SEO foundation and content organisation</li>
-              <li>Mobile optimisation and final QA</li>
-              <li>Production and launch preparation</li>
-            </ul>
-            <div class="mini-note"><strong>Not included:</strong> Shopify monthly subscription, paid third-party apps, professional photography, paid advertising, legal advice, or major new integrations outside the agreed scope.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="wrap">
-        <div class="head">
-          <div><p class="eyebrow">Next step</p><h2>From preview to final launch.</h2></div>
-          <p class="copy">The main design direction and store structure are already in place. The next phase is review, product confirmation and finalisation — not starting the project again.</p>
-        </div>
-
-        <div class="steps">
-          <article class="step"><b>01</b><h3>Review</h3><p>Review the website direction and Shopify store prototype.</p></article>
-          <article class="step"><b>02</b><h3>Confirm</h3><p>Send feedback and confirm the current products and store information.</p></article>
-          <article class="step"><b>03</b><h3>Finalise</h3><p>Complete the catalogue, production setup, testing and launch.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="final">
-      <div class="wrap">
-        <div class="finalbox">
-          <div>
-            <p class="eyebrow">BM HAIR · Next step</p>
-            <h2>Review the direction, confirm the catalogue, and then we complete the final version.</h2>
-            <p>At this stage, I simply need confirmation that the website and store are moving in the right direction before I complete the final catalogue and launch setup.</p>
-          </div>
-          <div class="actions">
-            <a class="btn primary" href="#preview">Review website</a>
-            <a class="btn soft" href="https://knuap5-wt.myshopify.com" target="_blank" rel="noopener">Review store</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap foot">
-      <span>BM HAIR · Website & Online Store Proposal</span>
-      <span>Prepared by Elasrag · September 2026</span>
     </div>
-  </footer>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="head">
+      <div><p class="eyebrow" data-i18n="nextEye">NEXT STEP</p><h2 data-i18n="nextTitle">From preview to final launch.</h2></div>
+      <p class="copy" data-i18n="nextCopy">The project does not restart after approval. The design and store foundation are already in place; the next phase is confirmation, finalisation and launch preparation.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><span class="num">01</span><h3 data-i18n="step1">Review</h3><p data-i18n="step1x">Review the website direction and store prototype.</p></div>
+      <div class="step"><span class="num">02</span><h3 data-i18n="step2">Confirm</h3><p data-i18n="step2x">Send feedback and confirm the current products and store information.</p></div>
+      <div class="step"><span class="num">03</span><h3 data-i18n="step3">Finalise</h3><p data-i18n="step3x">Complete the catalogue, testing, production setup and launch.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="final">
+  <div class="wrap">
+    <div class="finalbox">
+      <div>
+        <p class="eyebrow" data-i18n="finalEye">BM HAIR · NEXT STEP</p>
+        <h2 data-i18n="finalTitle">Review the direction, confirm the catalogue, then we complete the final version.</h2>
+        <p data-i18n="finalText">The aim of this preview is simply to make sure the website and store are moving in the right direction before the final launch work is completed.</p>
+      </div>
+      <div class="actions">
+        <span class="btn disabled" data-i18n="websiteLinkSoon">Website preview link — added before presentation</span>
+        <span class="btn disabled" data-i18n="storeLinkSoon">Store preview link — added before presentation</span>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span data-i18n="footer1">BM HAIR · Website & Online Store Proposal</span>
+    <span data-i18n="footer2">Prepared by Elasrag · September 2026</span>
+  </div>
+</footer>
 
 <script>
-(function(){
-  const translations = {"lv":{"BM HAIR project presentation":"BM HAIR projekta prezentācija","Brief":"Uzdevums","Preview":"Priekšskatījums","What we need":"Kas mums nepieciešams","Proposal":"Piedāvājums","BM HAIR · Website & online store — working preview":"BM HAIR · Vietnes un interneta veikala darba versija","The first working preview of":"Pirmais jaunās BM HAIR darba priekšskatījums — ","the new BM HAIR.":"jau ir gatavs apskatei.","Following our meeting, I’ve prepared a working preview of the new BM HAIR website and online store.":"Pēc mūsu tikšanās esmu sagatavojis jaunās BM HAIR vietnes un interneta veikala darba priekšskatījumu.","This preview is for review and feedback. It is not the final launch version, and the product catalogue still needs to be confirmed.":"Šis ir darba priekšskatījums, lai jūs varētu novērtēt virzienu un sniegt atsauksmes. Tā vēl nav galīgā palaišanas versija, un produktu katalogs vēl jāapstiprina.","View website preview":"Apskatīt vietnes priekšskatījumu","View online store preview":"Apskatīt veikala priekšskatījumu","Based on our meeting":"Balstoties uz mūsu tikšanos","The direction we discussed for BM HAIR.":"Virziens, par kuru vienojāmies BM HAIR projektam.","BM HAIR should feel like a premium hair brand, not simply a salon website. The products should lead the experience, supported by custom-made work, professional customers and the team’s expertise.":"BM HAIR jāuztver kā premium klases matu zīmols, nevis tikai salona mājaslapa. Galvenā uzmanība jāvelta produktiem, ko papildina individuāli pasūtījumi, profesionālie klienti un komandas pieredze.","Premium brand":"Premium zīmols","A clean, modern beauty/fashion direction that gives the products and photography space to lead.":"Tīrs un mūsdienīgs skaistumkopšanas un modes virziens, kurā galvenā loma ir produktiem un fotogrāfijai.","Customers & professionals":"Klienti un profesionāļi","The website needs to work for individual customers while also giving salons and professionals a clear path.":"Vietnei jābūt ērtai privātajiem klientiem, vienlaikus nodrošinot skaidru ceļu saloniem un profesionāļiem.","Built to grow":"Veidots izaugsmei","The structure should support Latvia and wider European growth, with English, Latvian and Russian customer journeys.":"Struktūrai jāatbalsta izaugsme Latvijā un plašāk Eiropā ar atsevišķu klientu pieredzi angļu, latviešu un krievu valodā.","Work completed so far":"Līdz šim paveiktais","What has already been created.":"Kas jau ir izveidots.","Two parts of the project are already in place: a new BM HAIR website direction and a separate Shopify development store for the e-commerce side of the business.":"Divas projekta daļas jau ir izveidotas: jaunais BM HAIR vietnes virziens un atsevišķs Shopify testa veikals e-komercijas vajadzībām.","New website":"Jaunā vietne","Homepage and brand direction":"Sākumlapa un zīmola virziens","Shop, collections and product pages":"Veikals, kolekcijas un produktu lapas","Custom-made journey":"Individuālo pasūtījumu sadaļa un process","For Professionals / B2B section":"Profesionāļiem / B2B sadaļa","Our Story and Hair Guide":"Mūsu stāsts un matu ceļvedis","Mobile and multilingual structure":"Mobilā un daudzvalodu struktūra","Shopify store":"Shopify veikals","Products and variants":"Produkti un varianti","Product collections":"Produktu kolekcijas","Store navigation":"Veikala navigācija","Multilingual content structure":"Daudzvalodu satura struktūra","Cart and future checkout structure":"Grozs un nākotnes apmaksas struktūra","Inventory and order foundation":"Pamats krājumu un pasūtījumu pārvaldībai","Content migration":"Satura migrācija","Existing product information reviewed":"Pārskatīta esošā produktu informācija","Current catalogue rebuilt as a starting point":"Esošais katalogs pārbūvēts kā sākuma punkts","Product imagery collected and organised":"Produktu attēli savākti un sakārtoti","Old content reorganised into clearer pages":"Vecais saturs pārkārtots skaidrākās lapās","SEO-friendly page structure prepared":"Sagatavota SEO draudzīga lapu struktūra","Explore the work":"Apskatīt paveikto","Two previews, each showing a different part of the project.":"Divi priekšskatījumi, un katrs parāda citu projekta daļu.","The website preview shows the new brand, content and customer experience. The Shopify prototype shows how the real product catalogue and e-commerce system can work behind it.":"Vietnes priekšskatījums parāda jauno zīmola, satura un klienta pieredzes virzienu. Shopify prototips parāda, kā darbosies reālais produktu katalogs un e-komercijas sistēma.","Website concept · development preview":"Vietnes koncepts · izstrādes priekšskatījums","Website preview":"Vietnes priekšskatījums","Focused on BM HAIR's brand, customer experience, content, product discovery and international presentation.":"Fokuss uz BM HAIR zīmolu, klienta pieredzi, saturu, produktu atrašanu un starptautisku prezentāciju.","Review website direction":"Apskatīt vietnes virzienu","Shopify · development store":"Shopify · izstrādes veikals","Online store preview":"Interneta veikala priekšskatījums","Focused on real product structure, variants, collections and the future shopping and checkout experience.":"Fokuss uz reālu produktu struktūru, variantiem, kolekcijām un nākotnes pirkšanas un apmaksas pieredzi.","Open Shopify preview":"Atvērt Shopify priekšskatījumu","What this preview is for":"Kam paredzēts šis priekšskatījums","Review the direction first. Finalise the catalogue next.":"Vispirms novērtējam virzienu. Pēc tam pabeidzam katalogu.","This preview uses the information available on the current BM HAIR website together with what we discussed in our meeting. Before launch, the catalogue needs to be checked and confirmed directly with BM HAIR.":"Šajā priekšskatījumā izmantota informācija no pašreizējās BM HAIR vietnes un mūsu tikšanās laikā pārrunātais. Pirms palaišanas produktu katalogs jāpārbauda un jāapstiprina kopā ar BM HAIR.","Before the final version":"Pirms galīgās versijas","What I need from BM HAIR to finish the project.":"Kas man nepieciešams no BM HAIR, lai pabeigtu projektu.","The old website is useful as a reference, but it should not be the final source of truth. BM HAIR now needs to confirm the products and business information that are actually current.":"Vecā vietne ir noderīgs informācijas avots, taču tai nevajadzētu būt galīgajam patiesības avotam. BM HAIR jāapstiprina produkti un uzņēmuma informācija, kas šobrīd ir aktuāla.","Products":"Produkti","Which products are still sold":"Kuri produkti joprojām tiek pārdoti","Which products should be removed":"Kuri produkti jāizņem","Any new products not on the old website":"Jauni produkti, kas nav vecajā vietnē","SKU for all products and variants":"SKU visiem produktiem un variantiem","Product information":"Produktu informācija","Final prices":"Galīgās cenas","Lengths, shades, textures and weights":"Garumi, toņi, struktūras un svars","Which images belong to which product / shade":"Kuri attēli atbilst konkrētam produktam / tonim","Wig, hair-piece and custom-order details":"Parūku, matu uzliku un individuālo pasūtījumu informācija","Store information":"Veikala informācija","Shipping countries and current delivery methods":"Piegādes valstis un pašreizējās piegādes metodes","Payment methods":"Maksājumu metodes","Returns and guarantee policy":"Atgriešanas un garantijas noteikumi","Final company / legal details":"Galīgā uzņēmuma / juridiskā informācija","Why change the current site":"Kāpēc mainīt pašreizējo vietni","Why the current website needs more than a visual update.":"Kāpēc esošajai vietnei nepieciešams vairāk nekā vizuāls atjauninājums.","The current website contains valuable product knowledge, but its structure and technical setup make it harder to build trust, organise products clearly and grow into a modern multilingual online store.":"Esošajā vietnē ir vērtīga informācija par produktiem, taču tās struktūra un tehniskais risinājums apgrūtina uzticības veidošanu, skaidru produktu organizēšanu un izaugsmi par mūsdienīgu daudzvalodu interneta veikalu.","Current website":"Esošā vietne","Useful information, but a limited platform.":"Noderīga informācija, bet ierobežota platforma.","Security / HTTPS configuration needs attention before a modern launch.":"Pirms mūsdienīgas palaišanas jāsakārto drošības / HTTPS konfigurācija.","Product and information content is difficult to organise clearly for search and customers.":"Produktu un informācijas saturu ir grūti skaidri strukturēt meklētājiem un klientiem.","The shopping journey is less clear than a modern e-commerce experience.":"Pirkuma ceļš nav tik skaidrs kā mūsdienīgā e-komercijas pieredzē.","Multilingual growth and professional customers are not strongly separated.":"Daudzvalodu izaugsme un profesionālo klientu ceļš nav skaidri nodalīti.","New direction":"Jaunais virziens","A clear sales and brand platform.":"Skaidra pārdošanas un zīmola platforma.","Dedicated product and collection pages.":"Atsevišķas produktu un kolekciju lapas.","Clearer structure for Google and other search engines.":"Skaidrāka struktūra Google un citiem meklētājiem.","Modern mobile-first shopping experience.":"Mūsdienīga, mobilajām ierīcēm prioritāra iepirkšanās pieredze.","Separate customer, custom-made and professional journeys.":"Atsevišķi ceļi klientiem, individuāliem pasūtījumiem un profesionāļiem.","The goal":"Mērķis","Not just a website containing products — a complete BM HAIR digital platform.":"Ne tikai vietne ar produktiem — pilnvērtīga BM HAIR digitālā platforma.","Brand":"Zīmols","A stronger premium identity":"Spēcīgāka premium identitāte","Shop":"Veikals","A real e-commerce structure":"Pilnvērtīga e-komercijas struktūra","Content":"Saturs","Product education and SEO":"Produktu skaidrojumi un SEO","Professional":"Profesionāļiem","A clear B2B route":"Skaidrs B2B ceļš","Project scope":"Projekta apjoms","What the full project covers.":"Ko aptver pilnais projekts.","The project covers taking the approved direction from this preview through to a complete, production-ready BM HAIR website and online store.":"Projekts aptver visu ceļu no apstiprinātā virziena šajā priekšskatījumā līdz pilnībā darbam gatavai BM HAIR vietnei un interneta veikalam.","Website design":"Vietnes dizains","Custom BM HAIR visual and customer experience":"Pielāgots BM HAIR vizuālais tēls un klienta pieredze","Website development":"Vietnes izstrāde","Responsive production-ready website":"Responsīva, darbam gatava vietne","Shopify store setup":"Shopify veikala izveide","Products, collections, variants and store structure":"Produkti, kolekcijas, varianti un veikala struktūra","English, Latvian & Russian":"Angļu, latviešu un krievu valoda","Three customer-facing languages":"Trīs klientiem paredzētas valodas","Catalogue migration":"Kataloga migrācija","Verified current product catalogue":"Pārbaudīts aktuālais produktu katalogs","SEO foundation":"SEO pamats","Search-friendly page structure and metadata":"Meklētājiem draudzīga lapu struktūra un metadati","Custom-made & professional sections":"Individuālo pasūtījumu un profesionāļu sadaļas","Separate journeys for these customers":"Atsevišķi ceļi šiem klientiem","Launch preparation":"Palaišanas sagatavošana","Final testing, domain setup and production checks":"Galīgā testēšana, domēna iestatīšana un produkcijas pārbaudes","Project investment":"Ieguldījums projektā","Fixed project fee for the agreed website and e-commerce scope through to launch.":"Fiksēta projekta maksa par saskaņoto vietnes un e-komercijas apjomu līdz palaišanai.","The final launch depends on BM HAIR confirming the product, shipping and legal information listed above.":"Galīgā palaišana ir atkarīga no BM HAIR produktu, piegādes un juridiskās informācijas apstiprināšanas.","Included in the project":"Iekļauts projektā","Everything needed to take the website and store through to launch.":"Viss nepieciešamais, lai vietni un veikalu sagatavotu līdz palaišanai.","Custom website design and development":"Pielāgots vietnes dizains un izstrāde","Shopify e-commerce implementation":"Shopify e-komercijas ieviešana","Product catalogue setup and migration":"Produktu kataloga izveide un migrācija","English, Latvian and Russian structure":"Angļu, latviešu un krievu valodas struktūra","SEO foundation and content organisation":"SEO pamats un satura organizācija","Mobile optimisation and final QA":"Mobilā optimizācija un galīgā kvalitātes pārbaude","Production and launch preparation":"Sagatavošana publicēšanai un palaišanai","Not included:":"Nav iekļauts:","Shopify monthly subscription, paid third-party apps, professional photography, paid advertising, legal advice, or major new integrations outside the agreed scope.":"Shopify ikmēneša abonements, maksas trešo pušu lietotnes, profesionāla fotosesija, apmaksāta reklāma, juridiskas konsultācijas vai būtiskas jaunas integrācijas ārpus saskaņotā apjoma.","Next step":"Nākamais solis","From preview to final launch.":"No priekšskatījuma līdz galīgajai palaišanai.","The main design direction and store structure are already in place. The next phase is review, product confirmation and finalisation — not starting the project again.":"Galvenais dizaina virziens un veikala struktūra jau ir izveidota. Nākamais posms ir pārskatīšana, produktu apstiprināšana un pabeigšana — nevis projekta sākšana no jauna.","Review":"Apskatīt","Review the website direction and Shopify store prototype.":"Apskatīt vietnes virzienu un Shopify veikala prototipu.","Confirm":"Apstiprināt","Send feedback and confirm the current products and store information.":"Nosūtīt atsauksmes un apstiprināt aktuālos produktus un veikala informāciju.","Finalise":"Pabeigt","Complete the catalogue, production setup, testing and launch.":"Pabeigt katalogu, veikala iestatījumus, testēšanu un palaišanu.","BM HAIR · Next step":"BM HAIR · Nākamais solis","Review the direction, confirm the catalogue, and then we complete the final version.":"Apskatiet virzienu, apstipriniet katalogu, un tad pabeigsim galīgo versiju.","At this stage, I simply need confirmation that the website and store are moving in the right direction before I complete the final catalogue and launch setup.":"Šajā posmā man galvenokārt nepieciešams apstiprinājums, ka vietne un veikals virzās pareizajā virzienā. Pēc tam varu pabeigt katalogu un sagatavot visu palaišanai.","Review website":"Apskatīt vietni","Review store":"Apskatīt veikalu","BM HAIR · Website & Online Store Proposal":"BM HAIR · Vietnes un interneta veikala piedāvājums","Prepared by Elasrag · September 2026":"Sagatavoja Elasrag · 2026. gada septembris"},"ru":{"BM HAIR project presentation":"Презентация проекта BM HAIR","Brief":"Задача","Preview":"Предпросмотр","What we need":"Что нам нужно","Proposal":"Предложение","BM HAIR · Website & online store — working preview":"BM HAIR · Рабочая версия сайта и интернет-магазина","The first working preview of":"Первая рабочая версия ","the new BM HAIR.":"обновлённого BM HAIR.","Following our meeting, I’ve prepared a working preview of the new BM HAIR website and online store.":"После нашей встречи я подготовил рабочую версию нового сайта BM HAIR и интернет-магазина, чтобы вы могли оценить направление проекта.","This preview is for review and feedback. It is not the final launch version, and the product catalogue still needs to be confirmed.":"Это рабочая версия для просмотра и обратной связи. Финальная версия для запуска ещё впереди, а каталог товаров нужно подтвердить.","View website preview":"Посмотреть сайт","View online store preview":"Посмотреть интернет-магазин","Based on our meeting":"На основе нашей встречи","The direction we discussed for BM HAIR.":"Направление, которое мы обсудили для BM HAIR.","BM HAIR should feel like a premium hair brand, not simply a salon website. The products should lead the experience, supported by custom-made work, professional customers and the team’s expertise.":"BM HAIR должен восприниматься как премиальный бренд волос, а не просто как сайт салона. В центре внимания — продукты, дополненные индивидуальными заказами, работой с профессионалами и экспертизой команды.","Premium brand":"Премиальный бренд","A clean, modern beauty/fashion direction that gives the products and photography space to lead.":"Чистое современное направление в эстетике beauty и fashion, где главную роль играют продукты и фотографии.","Customers & professionals":"Клиенты и профессионалы","The website needs to work for individual customers while also giving salons and professionals a clear path.":"Сайт должен быть удобен для частных клиентов и одновременно давать понятный путь салонам и профессионалам.","Built to grow":"Создан с расчётом на рост","The structure should support Latvia and wider European growth, with English, Latvian and Russian customer journeys.":"Структура должна поддерживать развитие в Латвии и по Европе с отдельным клиентским опытом на английском, латышском и русском языках.","Work completed so far":"Что уже сделано","What has already been created.":"Что уже создано.","Two parts of the project are already in place: a new BM HAIR website direction and a separate Shopify development store for the e-commerce side of the business.":"Уже готовы две части проекта: новое направление сайта BM HAIR и отдельный тестовый магазин Shopify для интернет-магазина.","New website":"Новый сайт","Homepage and brand direction":"Главная страница и направление бренда","Shop, collections and product pages":"Магазин, коллекции и карточки товаров","Custom-made journey":"Раздел и процесс индивидуального заказа","For Professionals / B2B section":"Раздел для профессионалов / B2B","Our Story and Hair Guide":"История бренда и Hair Guide","Mobile and multilingual structure":"Мобильная и многоязычная структура","Shopify store":"Магазин Shopify","Products and variants":"Товары и варианты","Product collections":"Коллекции товаров","Store navigation":"Навигация магазина","Multilingual content structure":"Многоязычная структура контента","Cart and future checkout structure":"Корзина и будущая структура checkout","Inventory and order foundation":"База для управления остатками и заказами","Content migration":"Перенос контента","Existing product information reviewed":"Проверена существующая информация о товарах","Current catalogue rebuilt as a starting point":"Текущий каталог собран заново как отправная точка","Product imagery collected and organised":"Фотографии товаров собраны и организованы","Old content reorganised into clearer pages":"Старый контент переработан в более понятные страницы","SEO-friendly page structure prepared":"Подготовлена SEO-дружественная структура страниц","Explore the work":"Посмотреть работу","Two previews, each showing a different part of the project.":"Два предпросмотра, и каждый показывает отдельную часть проекта.","The website preview shows the new brand, content and customer experience. The Shopify prototype shows how the real product catalogue and e-commerce system can work behind it.":"Предпросмотр сайта показывает новое направление бренда, контента и клиентского опыта. Прототип Shopify показывает, как будет работать реальный каталог и система интернет-магазина.","Website concept · development preview":"Концепт сайта · рабочая версия","Website preview":"Предпросмотр сайта","Focused on BM HAIR's brand, customer experience, content, product discovery and international presentation.":"Фокус на бренде BM HAIR, клиентском опыте, контенте, поиске товаров и международной презентации.","Review website direction":"Посмотреть направление сайта","Shopify · development store":"Shopify · тестовый магазин","Online store preview":"Предпросмотр интернет-магазина","Focused on real product structure, variants, collections and the future shopping and checkout experience.":"Фокус на реальной структуре товаров, вариантах, коллекциях и будущем процессе покупки и оплаты.","Open Shopify preview":"Открыть Shopify","What this preview is for":"Для чего нужен этот предпросмотр","Review the direction first. Finalise the catalogue next.":"Сначала утверждаем направление. Затем доводим каталог до финальной версии.","This preview uses the information available on the current BM HAIR website together with what we discussed in our meeting. Before launch, the catalogue needs to be checked and confirmed directly with BM HAIR.":"В этой версии использована информация с текущего сайта BM HAIR и материалы нашей встречи. Перед запуском нужно вместе с BM HAIR проверить и подтвердить актуальный каталог.","Before the final version":"Перед финальной версией","What I need from BM HAIR to finish the project.":"Что мне нужно от BM HAIR, чтобы завершить проект.","The old website is useful as a reference, but it should not be the final source of truth. BM HAIR now needs to confirm the products and business information that are actually current.":"Старый сайт полезен как источник информации, но не должен быть окончательным источником данных. BM HAIR необходимо подтвердить действительно актуальные товары и бизнес-информацию.","Products":"Товары","Which products are still sold":"Какие товары всё ещё продаются","Which products should be removed":"Какие товары нужно удалить","Any new products not on the old website":"Новые товары, которых нет на старом сайте","SKU for all products and variants":"SKU для всех товаров и вариантов","Product information":"Информация о товарах","Final prices":"Финальные цены","Lengths, shades, textures and weights":"Длины, оттенки, текстуры и вес","Which images belong to which product / shade":"Какие изображения относятся к какому товару / оттенку","Wig, hair-piece and custom-order details":"Данные по парикам, накладкам и индивидуальным заказам","Store information":"Информация о магазине","Shipping countries and current delivery methods":"Страны доставки и актуальные способы доставки","Payment methods":"Способы оплаты","Returns and guarantee policy":"Правила возврата и гарантии","Final company / legal details":"Финальные данные компании / юридическая информация","Why change the current site":"Почему стоит обновить текущий сайт","Why the current website needs more than a visual update.":"Почему текущему сайту недостаточно только нового дизайна.","The current website contains valuable product knowledge, but its structure and technical setup make it harder to build trust, organise products clearly and grow into a modern multilingual online store.":"На текущем сайте есть ценная информация о продуктах, но его структура и техническая основа мешают укреплять доверие, понятно организовать товары и развиваться как современный многоязычный интернет-магазин.","Current website":"Текущий сайт","Useful information, but a limited platform.":"Полезная информация, но ограниченная платформа.","Security / HTTPS configuration needs attention before a modern launch.":"Перед современным запуском необходимо привести в порядок настройки безопасности / HTTPS.","Product and information content is difficult to organise clearly for search and customers.":"Контент о товарах и компании сложно понятно организовать для поиска и клиентов.","The shopping journey is less clear than a modern e-commerce experience.":"Процесс покупки менее понятен, чем в современном интернет-магазина.","Multilingual growth and professional customers are not strongly separated.":"Многоязычное развитие и путь профессиональных клиентов недостаточно разделены.","New direction":"Новое направление","A clear sales and brand platform.":"Понятная платформа для бренда и продаж.","Dedicated product and collection pages.":"Отдельные страницы товаров и коллекций.","Clearer structure for Google and other search engines.":"Более понятная структура для Google и других поисковых систем.","Modern mobile-first shopping experience.":"Современный процесс покупки с приоритетом мобильных устройств.","Separate customer, custom-made and professional journeys.":"Отдельные пути для клиентов, индивидуальных заказов и профессионалов.","The goal":"Цель","Not just a website containing products — a complete BM HAIR digital platform.":"Не просто сайт с товарами — полноценная цифровая платформа BM HAIR.","Brand":"Бренд","A stronger premium identity":"Более сильный премиальный образ бренда","Shop":"Магазин","A real e-commerce structure":"Полноценная структура интернет-магазина","Content":"Контент","Product education and SEO":"Информация о продуктах и SEO","Professional":"Профессионалы","A clear B2B route":"Понятный B2B путь","Project scope":"Объём проекта","What the full project covers.":"Что охватывает полный проект.","The project covers taking the approved direction from this preview through to a complete, production-ready BM HAIR website and online store.":"Проект включает весь путь от утверждённого направления в этом предпросмотре до полностью готового к работе сайта BM HAIR и интернет-магазина.","Website design":"Дизайн сайта","Custom BM HAIR visual and customer experience":"Индивидуальный визуальный стиль BM HAIR и клиентский опыт","Website development":"Разработка сайта","Responsive production-ready website":"Адаптивный сайт, готовый к запуску","Shopify store setup":"Настройка Shopify","Products, collections, variants and store structure":"Товары, коллекции, варианты и структура магазина","English, Latvian & Russian":"Английский, латышский и русский","Three customer-facing languages":"Три языка для клиентов","Catalogue migration":"Перенос каталога","Verified current product catalogue":"Проверенный актуальный каталог","SEO foundation":"SEO-основа","Search-friendly page structure and metadata":"Структура страниц и метаданные для поисковых систем","Custom-made & professional sections":"Разделы индивидуальных заказов и профессионалов","Separate journeys for these customers":"Отдельные пути для этих клиентов","Launch preparation":"Подготовка к запуску","Final testing, domain setup and production checks":"Финальное тестирование, настройка домена и production-проверки","Project investment":"Стоимость проекта","Fixed project fee for the agreed website and e-commerce scope through to launch.":"Фиксированная стоимость за согласованный объём сайта и интернет-магазина до запуска.","The final launch depends on BM HAIR confirming the product, shipping and legal information listed above.":"Финальный запуск зависит от подтверждения BM HAIR данных о товарах, доставке и юридической информации.","Included in the project":"Входит в проект","Everything needed to take the website and store through to launch.":"Всё необходимое, чтобы довести сайт и магазин до запуска.","Custom website design and development":"Индивидуальный дизайн и разработка сайта","Shopify e-commerce implementation":"Настройка интернет-магазина на Shopify","Product catalogue setup and migration":"Настройка и перенос каталога товаров","English, Latvian and Russian structure":"Структура на английском, латышском и русском","SEO foundation and content organisation":"SEO-основа и организация контента","Mobile optimisation and final QA":"Мобильная оптимизация и финальная QA-проверка","Production and launch preparation":"Подготовка рабочей версии и запуска","Not included:":"Не входит:","Shopify monthly subscription, paid third-party apps, professional photography, paid advertising, legal advice, or major new integrations outside the agreed scope.":"Ежемесячная подписка Shopify, платные сторонние приложения, профессиональная фотосъёмка, платная реклама, юридические консультации и крупные новые интеграции за рамками согласованного объёма.","Next step":"Следующий шаг","From preview to final launch.":"От предпросмотра к финальному запуску.","The main design direction and store structure are already in place. The next phase is review, product confirmation and finalisation — not starting the project again.":"Основное направление дизайна и структура магазина уже готовы. Следующий этап — просмотр, подтверждение товаров и финализация, а не начало проекта заново.","Review":"Просмотр","Review the website direction and Shopify store prototype.":"Посмотреть направление сайта и прототип Shopify.","Confirm":"Подтвердить","Send feedback and confirm the current products and store information.":"Отправить обратную связь и подтвердить актуальные товары и информацию магазина.","Finalise":"Завершить","Complete the catalogue, production setup, testing and launch.":"Завершить каталог, настройку рабочей версии, тестирование и запуск.","BM HAIR · Next step":"BM HAIR · Следующий шаг","Review the direction, confirm the catalogue, and then we complete the final version.":"Посмотрите направление, подтвердите каталог — и после этого мы завершим финальную версию.","At this stage, I simply need confirmation that the website and store are moving in the right direction before I complete the final catalogue and launch setup.":"На этом этапе мне важно получить подтверждение, что сайт и магазин движутся в правильном направлении. После этого я смогу завершить каталог и подготовить всё к запуску.","Review website":"Посмотреть сайт","Review store":"Посмотреть магазин","BM HAIR · Website & Online Store Proposal":"BM HAIR · Предложение по сайту и интернет-магазину","Prepared by Elasrag · September 2026":"Подготовил Elasrag · сентябрь 2026"},"ar":{"BM HAIR project presentation":"عرض مشروع بي إم هير","Brief":"المتطلبات","Preview":"المعاينة","What we need":"ما نحتاجه","Proposal":"العرض","BM HAIR · Website & online store — working preview":"بي إم هير · نسخة العمل للموقع والمتجر الإلكتروني","The first working preview of":"أول معاينة عملية لـ ","the new BM HAIR.":"بي إم هير بشكلها الجديد.","Following our meeting, I’ve prepared a working preview of the new BM HAIR website and online store.":"بعد اجتماعنا، أعددت أول معاينة عملية لموقع بي إم هير الجديد والمتجر الإلكتروني.","This preview is for review and feedback. It is not the final launch version, and the product catalogue still needs to be confirmed.":"هذه نسخة للمراجعة وإبداء الملاحظات. ليست نسخة الإطلاق النهائية بعد، كما أن كتالوج المنتجات ما زال يحتاج إلى التأكيد.","View website preview":"معاينة الموقع","View online store preview":"معاينة المتجر الإلكتروني","Based on our meeting":"بناءً على ما ناقشناه في الاجتماع","The direction we discussed for BM HAIR.":"الاتجاه الذي اتفقنا عليه لبي إم هير.","BM HAIR should feel like a premium hair brand, not simply a salon website. The products should lead the experience, supported by custom-made work, professional customers and the team’s expertise.":"يجب أن تظهر بي إم هير كعلامة راقية ومتخصصة في منتجات الشعر، لا كمجرد موقع لصالون. المنتجات هي العنصر الرئيسي، مع إبراز الطلبات المخصصة والعملاء المحترفين وخبرة الفريق.","Premium brand":"علامة راقية","A clean, modern beauty/fashion direction that gives the products and photography space to lead.":"اتجاه بصري نظيف وحديث مستوحى من عالم الجمال والموضة، يمنح المنتجات والصور المساحة الرئيسية.","Customers & professionals":"العملاء والمحترفون","The website needs to work for individual customers while also giving salons and professionals a clear path.":"يجب أن يخدم الموقع العملاء الأفراد، وفي الوقت نفسه يوفر مسارًا واضحًا للصالونات والمحترفين.","Built to grow":"مصمم للنمو","The structure should support Latvia and wider European growth, with English, Latvian and Russian customer journeys.":"يجب أن تدعم البنية النمو داخل لاتفيا والتوسع أوروبيًا، مع تجارب واضحة للعملاء بالإنجليزية واللاتفية والروسية.","Work completed so far":"ما تم إنجازه حتى الآن","What has already been created.":"ما تم إنشاؤه بالفعل.","Two parts of the project are already in place: a new BM HAIR website direction and a separate Shopify development store for the e-commerce side of the business.":"تم بالفعل تجهيز جزأين من المشروع: اتجاه جديد لموقع بي إم هير، ومتجر شوبيفاي تجريبي منفصل للتجارة الإلكترونية.","New website":"الموقع الجديد","Homepage and brand direction":"الصفحة الرئيسية والاتجاه البصري للعلامة","Shop, collections and product pages":"المتجر والمجموعات وصفحات المنتجات","Custom-made journey":"قسم واضح للطلبات المخصصة","For Professionals / B2B section":"قسم المحترفين والعملاء التجاريين","Our Story and Hair Guide":"قصتنا ودليل الشعر","Mobile and multilingual structure":"تصميم للموبايل وبنية متعددة اللغات","Shopify store":"متجر شوبيفاي","Products and variants":"المنتجات والخيارات","Product collections":"مجموعات المنتجات","Store navigation":"تنقل المتجر","Multilingual content structure":"بنية المحتوى متعدد اللغات","Cart and future checkout structure":"السلة وبنية الدفع المستقبلية","Inventory and order foundation":"أساس لإدارة المخزون والطلبات","Content migration":"نقل المحتوى","Existing product information reviewed":"مراجعة معلومات المنتجات الحالية","Current catalogue rebuilt as a starting point":"إعادة بناء الكتالوج الحالي كنقطة بداية","Product imagery collected and organised":"جمع وتنظيم صور المنتجات","Old content reorganised into clearer pages":"إعادة تنظيم المحتوى القديم في صفحات أوضح","SEO-friendly page structure prepared":"إعداد بنية صفحات مناسبة لمحركات البحث","Explore the work":"استعرض العمل","Two previews, each showing a different part of the project.":"معاينتان، وكل واحدة تعرض جانبًا مختلفًا من المشروع.","The website preview shows the new brand, content and customer experience. The Shopify prototype shows how the real product catalogue and e-commerce system can work behind it.":"معاينة الموقع توضح شكل العلامة والمحتوى وتجربة العميل، بينما يوضح نموذج شوبيفاي كيف سيعمل كتالوج المنتجات ونظام المتجر الفعلي.","Website concept · development preview":"تصور الموقع · نسخة تطوير","Website preview":"معاينة الموقع","Focused on BM HAIR's brand, customer experience, content, product discovery and international presentation.":"يركز على علامة بي إم هير وتجربة العميل والمحتوى وسهولة اكتشاف المنتجات والصورة الدولية للعلامة.","Review website direction":"مراجعة اتجاه الموقع","Shopify · development store":"شوبيفاي · متجر تجريبي","Online store preview":"معاينة المتجر الإلكتروني","Focused on real product structure, variants, collections and the future shopping and checkout experience.":"يركز على بنية المنتجات الفعلية والخيارات والمجموعات وتجربة الشراء والدفع المستقبلية.","Open Shopify preview":"فتح معاينة شوبيفاي","What this preview is for":"ما الهدف من هذه المعاينة","Review the direction first. Finalise the catalogue next.":"نراجع الاتجاه أولًا، ثم نستكمل الكتالوج النهائي.","This preview uses the information available on the current BM HAIR website together with what we discussed in our meeting. Before launch, the catalogue needs to be checked and confirmed directly with BM HAIR.":"تعتمد هذه المعاينة على المعلومات الموجودة حاليًا في موقع بي إم هير وعلى ما ناقشناه في الاجتماع. قبل الإطلاق، نحتاج إلى مراجعة الكتالوج الحالي وتأكيده مباشرة مع فريق بي إم هير.","Before the final version":"قبل النسخة النهائية","What I need from BM HAIR to finish the project.":"ما أحتاجه من بي إم هير لاستكمال المشروع.","The old website is useful as a reference, but it should not be the final source of truth. BM HAIR now needs to confirm the products and business information that are actually current.":"الموقع القديم مفيد كمرجع، لكنه لا ينبغي أن يكون المصدر النهائي للمعلومات. نحتاج الآن إلى تأكيد المنتجات وبيانات النشاط الحالية مباشرة من فريق بي إم هير.","Products":"المنتجات","Which products are still sold":"المنتجات التي ما زالت تُباع","Which products should be removed":"المنتجات التي يجب حذفها","Any new products not on the old website":"أي منتجات جديدة غير موجودة في الموقع القديم","SKU for all products and variants":"رمز تعريف لكل منتج ولكل خيار","Product information":"معلومات المنتجات","Final prices":"الأسعار النهائية","Lengths, shades, textures and weights":"الأطوال والألوان وملمس الشعر والأوزان","Which images belong to which product / shade":"تحديد الصور الخاصة بكل منتج / لون","Wig, hair-piece and custom-order details":"تفاصيل الباروكات وقطع الشعر والطلبات المخصصة","Store information":"معلومات المتجر","Shipping countries and current delivery methods":"دول الشحن وطرق التوصيل الحالية","Payment methods":"طرق الدفع","Returns and guarantee policy":"سياسة الإرجاع والضمان","Final company / legal details":"البيانات النهائية للشركة والمعلومات القانونية","Why change the current site":"لماذا يحتاج الموقع الحالي إلى تغيير","Why the current website needs more than a visual update.":"لماذا يحتاج الموقع الحالي إلى أكثر من مجرد تحديث بصري.","The current website contains valuable product knowledge, but its structure and technical setup make it harder to build trust, organise products clearly and grow into a modern multilingual online store.":"الموقع الحالي يحتوي على معلومات مهمة عن المنتجات، لكن بنيته وإعداده التقني يجعلان بناء الثقة وتنظيم المنتجات بوضوح والتوسع كمتجر حديث متعدد اللغات أكثر صعوبة.","Current website":"الموقع الحالي","Useful information, but a limited platform.":"معلومات مفيدة، لكن منصة محدودة.","Security / HTTPS configuration needs attention before a modern launch.":"إعدادات الأمان وبروتوكول الاتصال الآمن تحتاج إلى معالجة قبل الإطلاق.","Product and information content is difficult to organise clearly for search and customers.":"من الصعب تنظيم محتوى المنتجات والمعلومات بالشكل الأفضل لمحركات البحث والعملاء.","The shopping journey is less clear than a modern e-commerce experience.":"تجربة الشراء أقل وضوحًا من تجربة التجارة الإلكترونية الحديثة.","Multilingual growth and professional customers are not strongly separated.":"التوسع متعدد اللغات ومسار العملاء المحترفين غير منفصلين بوضوح.","New direction":"الاتجاه الجديد","A clear sales and brand platform.":"منصة واضحة للعلامة والمبيعات.","Dedicated product and collection pages.":"صفحات مستقلة للمنتجات والمجموعات.","Clearer structure for Google and other search engines.":"بنية أوضح لجوجل ومحركات البحث الأخرى.","Modern mobile-first shopping experience.":"تجربة شراء حديثة تبدأ من الهاتف المحمول.","Separate customer, custom-made and professional journeys.":"مسارات منفصلة للعملاء والطلبات المخصصة والمحترفين.","The goal":"الهدف","Not just a website containing products — a complete BM HAIR digital platform.":"ليس مجرد موقع يحتوي على منتجات، بل منصة رقمية متكاملة لبي إم هير.","Brand":"العلامة","A stronger premium identity":"هوية راقية وأقوى","Shop":"المتجر","A real e-commerce structure":"بنية متجر إلكتروني متكاملة","Content":"المحتوى","Product education and SEO":"محتوى يشرح المنتجات ويدعم الظهور في محركات البحث","Professional":"المحترفون","A clear B2B route":"مسار واضح للعملاء التجاريين والمحترفين","Project scope":"نطاق المشروع","What the full project covers.":"ما الذي يغطيه المشروع بالكامل.","The project covers taking the approved direction from this preview through to a complete, production-ready BM HAIR website and online store.":"يشمل المشروع الانتقال من الاتجاه المعتمد في هذه المعاينة إلى موقع ومتجر بي إم هير مكتملين وجاهزين للإطلاق الفعلي.","Website design":"تصميم الموقع","Custom BM HAIR visual and customer experience":"هوية بصرية وتجربة عميل مخصصة لبي إم هير","Website development":"تطوير الموقع","Responsive production-ready website":"موقع متجاوب وجاهز للإطلاق","Shopify store setup":"إعداد متجر شوبيفاي","Products, collections, variants and store structure":"المنتجات والمجموعات والخيارات وبنية المتجر","English, Latvian & Russian":"الإنجليزية واللاتفية والروسية","Three customer-facing languages":"ثلاث لغات موجهة للعملاء","Catalogue migration":"نقل الكتالوج","Verified current product catalogue":"كتالوج حالي بعد التحقق منه","SEO foundation":"أساس لتحسين الظهور في محركات البحث","Search-friendly page structure and metadata":"بنية صفحات وبيانات مناسبة لمحركات البحث","Custom-made & professional sections":"أقسام الطلبات المخصصة والمحترفين","Separate journeys for these customers":"مسارات مستقلة لهذه الفئات","Launch preparation":"التحضير للإطلاق","Final testing, domain setup and production checks":"الاختبارات النهائية وإعداد الدومين وفحوصات الإطلاق","Project investment":"قيمة المشروع","Fixed project fee for the agreed website and e-commerce scope through to launch.":"سعر ثابت لنطاق الموقع والتجارة الإلكترونية المتفق عليه حتى مرحلة الإطلاق.","The final launch depends on BM HAIR confirming the product, shipping and legal information listed above.":"الإطلاق النهائي يعتمد على تأكيد فريق بي إم هير لمعلومات المنتجات والشحن والبيانات القانونية المذكورة أعلاه.","Included in the project":"يشمل المشروع","Everything needed to take the website and store through to launch.":"كل ما يلزم للوصول بالموقع والمتجر إلى مرحلة الإطلاق.","Custom website design and development":"تصميم وتطوير موقع مخصص","Shopify e-commerce implementation":"إعداد المتجر الإلكتروني على شوبيفاي","Product catalogue setup and migration":"إعداد ونقل كتالوج المنتجات","English, Latvian and Russian structure":"بنية بالإنجليزية واللاتفية والروسية","SEO foundation and content organisation":"أساس لتحسين الظهور في محركات البحث وتنظيم المحتوى","Mobile optimisation and final QA":"تحسين الموبايل والمراجعة النهائية للجودة","Production and launch preparation":"التحضير للنسخة النهائية والإطلاق","Not included:":"غير مشمول:","Shopify monthly subscription, paid third-party apps, professional photography, paid advertising, legal advice, or major new integrations outside the agreed scope.":"اشتراك شوبيفاي الشهري، والتطبيقات الخارجية المدفوعة، والتصوير الاحترافي، والإعلانات المدفوعة، والاستشارات القانونية، وأي تكاملات كبيرة جديدة خارج النطاق المتفق عليه.","Next step":"الخطوة التالية","From preview to final launch.":"من المعاينة إلى الإطلاق النهائي.","The main design direction and store structure are already in place. The next phase is review, product confirmation and finalisation — not starting the project again.":"الاتجاه الرئيسي للتصميم وبنية المتجر موجودان بالفعل. المرحلة التالية هي المراجعة وتأكيد المنتجات واستكمال النسخة النهائية، وليست بدء المشروع من جديد.","Review":"المراجعة","Review the website direction and Shopify store prototype.":"مراجعة اتجاه الموقع ونموذج متجر شوبيفاي.","Confirm":"التأكيد","Send feedback and confirm the current products and store information.":"إرسال الملاحظات وتأكيد المنتجات الحالية ومعلومات المتجر.","Finalise":"الاستكمال","Complete the catalogue, production setup, testing and launch.":"استكمال الكتالوج، وتجهيز النسخة النهائية، ثم الاختبارات والإطلاق.","BM HAIR · Next step":"بي إم هير · الخطوة التالية","Review the direction, confirm the catalogue, and then we complete the final version.":"راجعوا الاتجاه وأكدوا الكتالوج، وبعدها نستكمل النسخة النهائية.","At this stage, I simply need confirmation that the website and store are moving in the right direction before I complete the final catalogue and launch setup.":"في هذه المرحلة أحتاج فقط إلى التأكد من أن الموقع والمتجر يسيران في الاتجاه الصحيح. بعد ذلك أستكمل الكتالوج النهائي وتجهيزات الإطلاق.","Review website":"مراجعة الموقع","Review store":"مراجعة المتجر","BM HAIR · Website & Online Store Proposal":"بي إم هير · عرض الموقع والمتجر الإلكتروني","Prepared by Elasrag · September 2026":"إعداد الأسرج · سبتمبر 2026","ELASRAG":"الأسرج","EN":"إنجليزي","LV":"لاتفي","RU":"روسي","AR":"عربي"}};
-  const titles = {"en":["BM HAIR — Website & Store Preview","BM HAIR website and e-commerce project preview and proposal."],"lv":["BM HAIR — Vietnes un veikala priekšskatījums","BM HAIR vietnes un e-komercijas projekta priekšskatījums un piedāvājums."],"ru":["BM HAIR — Предпросмотр сайта и магазина","Предпросмотр и предложение по сайту и e-commerce проекту BM HAIR."],"ar":["بي إم هير — معاينة الموقع والمتجر","معاينة وعرض مشروع موقع بي إم هير والمتجر الإلكتروني."]};
-  const textNodes = [];
-  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
-    acceptNode(node){
-      const tag = node.parentElement && node.parentElement.tagName;
-      if(!node.nodeValue.trim() || tag === 'SCRIPT' || tag === 'STYLE') return NodeFilter.FILTER_REJECT;
-      return NodeFilter.FILTER_ACCEPT;
-    }
+const copy={
+en:{
+elasrag:"ELASRAG",projectPresentation:"BM HAIR PROJECT PRESENTATION",navBrief:"Brief",navWork:"Preview",navNeeded:"What we need",navProposal:"Proposal",
+heroEye:"BM HAIR · WEBSITE & ONLINE STORE",heroTitle:"A first look at the new BM HAIR.",heroLead:"Following our meeting, I developed a working direction for the new BM HAIR website and, separately, a Shopify store prototype for the e-commerce side of the business.",heroNote:"This is a review version. The final catalogue, live checkout and launch setup will be completed after BM HAIR confirms the current product and business information.",websiteLinkSoon:"Website preview link — added before presentation",storeLinkSoon:"Store preview link — added before presentation",
+brandName:"BM HAIR",siteHero1:"Beautiful hair.",siteHero2:"Entirely you.",siteHeroText:"Natural-hair wigs, ponytails and extensions. Chosen with expertise. Made to feel like you.",explore:"Explore collection",mobileLabel:"Mobile-first design preview",
+briefEye:"BASED ON OUR MEETING",briefTitle:"The direction we discussed.",briefCopy:"BM HAIR should feel like a premium hair brand, not simply a salon website. Products should lead the experience, supported by custom-made work, professional customers and the team's expertise.",brandCardTitle:"Premium brand",brandCardText:"A clean, modern beauty and fashion direction where the products and photography lead.",audCardTitle:"Customers + professionals",audCardText:"A clear experience for individual customers, salons, stylists and professional partners.",growCardTitle:"Built to grow",growCardText:"A structure that can support Latvia and wider European growth without rebuilding the site again.",
+workEye:"THE WORK SO FAR",workTitle:"Website direction + e-commerce prototype.",workCopy:"These are two parts of the same project. The website preview shows the brand and customer experience. The Shopify prototype shows how the real product catalogue and store structure can work behind it.",websiteDesignPreview:"Website design preview",designTag:"Actual BM HAIR design assets",websitePreviewTitle:"Website preview",websitePreviewText:"Brand presentation, product discovery, custom-made requests, professionals, Hair Guide and mobile experience.",shopDataPreview:"Shopify product preview",developmentStore:"Development store",prodBlonde:"Natural blonde wig",prodPonytail:"Natural ponytail",prodMono:"Mono clip-in",from319:"from €319",from389:"from €389",shopTag:"Live product media from the development store",storePreviewTitle:"Online store preview",storePreviewText:"Products, variants, collections and the structure needed for stock, orders and future checkout.",
+reviewEye:"WHAT YOU ARE REVIEWING",reviewTitle:"The direction first. The final catalogue next.",reviewCopy:"The purpose of this stage is to confirm that the look, structure and shopping experience are moving in the right direction before the final data and launch configuration are locked in.",review1Title:"Look & feel",review1Text:"Does the new direction feel right for BM HAIR?",review2Title:"Structure",review2Text:"Are the products, custom work and professional sections organised clearly?",review3Title:"Shopping experience",review3Text:"Does the product and store journey feel simple enough for customers?",
+needEye:"BEFORE FINAL LAUNCH",needTitle:"What we need to confirm together.",needCopy:"The old website has been useful as a starting reference, but the final store should use current BM HAIR data. These are the main items still needing confirmation.",needProducts:"Current products",needProductsText:"What stays, what is removed, and any new products.",needData:"Product data",needDataText:"Product codes, prices, lengths, shades, textures, weights and availability.",needImages:"Images",needImagesText:"Final photos and confirmation of which image belongs to each product or shade.",needStore:"Store rules",needStoreText:"Shipping, payments, returns, guarantee and final company information.",
+auditEye:"WHY CHANGE THE CURRENT SITE",auditTitle:"The problem is not only the design.",auditCopy:"The technical review found issues that affect trust, search visibility and the shopping experience. The rebuild addresses these at the same time as the visual redesign.",auditTrust:"Trust & security",auditTrustText:"The current secure-connection setup needs attention. Visitors should not see browser warnings or uncertainty before shopping.",auditSearch:"Search visibility",auditSearchText:"Important products and content need dedicated, search-friendly pages and stronger technical search structure.",auditShop:"Shopping experience",auditShopText:"The new structure makes products easier to browse, compare and eventually buy through a modern checkout.",
+scopeEye:"FINAL PROJECT SCOPE",scopeTitle:"What the full project covers.",scopeCopy:"Once the direction is approved and the catalogue is confirmed, the project moves from preview to the final production version.",s1:"Custom website design",s1x:"BM HAIR visual identity and customer experience.",s2:"Website development",s2x:"Responsive production website.",s3:"Shopify store setup",s3x:"Products, variants, collections and store structure.",s4:"Three customer languages",s4x:"English, Latvian and Russian for the final customer site.",s5:"Catalogue migration",s5x:"Rebuild the verified current catalogue.",s6:"Search foundation",s6x:"Search-friendly pages, metadata and content structure.",s7:"Custom & professional journeys",s7x:"Clear routes for bespoke work and business customers.",s8:"Launch preparation",s8x:"Final testing, domain setup and production checks.",
+priceEye:"PROJECT INVESTMENT",priceText:"Fixed project fee for the agreed website and online-store scope through to launch.",priceDependency:"Final launch depends on BM HAIR confirming the product, shipping and legal information listed above.",includedEye:"INCLUDED",includedTitle:"Website + store + multilingual build + launch preparation.",inc1:"Custom website design and development",inc2:"Shopify e-commerce implementation",inc3:"Catalogue setup and migration",inc4:"English, Latvian and Russian customer structure",inc5:"Search optimisation foundation and content organisation",inc6:"Mobile optimisation and final quality checks",inc7:"Production and launch preparation",notIncluded:"Not included:",notIncludedText:"Shopify subscription, paid third-party apps, professional photography, paid advertising, legal advice or major new integrations outside the agreed scope.",commercialNext:"Final delivery timing and payment stages can be confirmed in writing once the direction and catalogue scope are approved.",
+nextEye:"NEXT STEP",nextTitle:"From preview to final launch.",nextCopy:"The project does not restart after approval. The design and store foundation are already in place; the next phase is confirmation, finalisation and launch preparation.",step1:"Review",step1x:"Review the website direction and store prototype.",step2:"Confirm",step2x:"Send feedback and confirm the current products and store information.",step3:"Finalise",step3x:"Complete the catalogue, testing, production setup and launch.",finalEye:"BM HAIR · NEXT STEP",finalTitle:"Review the direction, confirm the catalogue, then we complete the final version.",finalText:"The aim of this preview is simply to make sure the website and store are moving in the right direction before the final launch work is completed.",footer1:"BM HAIR · Website & Online Store Proposal",footer2:"Prepared by Elasrag · September 2026"
+},
+lv:{
+elasrag:"ELASRAG",projectPresentation:"BM HAIR PROJEKTA PREZENTĀCIJA",navBrief:"Uzdevums",navWork:"Priekšskatījums",navNeeded:"Kas jāapstiprina",navProposal:"Piedāvājums",
+heroEye:"BM HAIR · VIETNE UN INTERNETA VEIKALS",heroTitle:"Pirmais ieskats jaunajā BM HAIR.",heroLead:"Pēc mūsu tikšanās esmu izstrādājis jaunās BM HAIR vietnes darba virzienu un atsevišķi arī Shopify testa veikalu e-komercijas daļai.",heroNote:"Šī ir versija apskatei un atsauksmēm. Galīgais katalogs, reālā apmaksa un palaišanas iestatījumi tiks pabeigti pēc tam, kad BM HAIR apstiprinās aktuālo produktu un uzņēmuma informāciju.",websiteLinkSoon:"Vietnes priekšskatījuma saite — tiks pievienota pirms prezentācijas",storeLinkSoon:"Veikala priekšskatījuma saite — tiks pievienota pirms prezentācijas",
+brandName:"BM HAIR",siteHero1:"Skaisti mati.",siteHero2:"Patiesi tavi.",siteHeroText:"Dabīgo matu parūkas, zirgastes un pieaudzējamie mati. Izvēlēti ar pieredzi. Radīti tavam tēlam.",explore:"Apskatīt kolekciju",mobileLabel:"Mobilās versijas dizaina priekšskatījums",
+briefEye:"BALSTOTIES UZ MŪSU TIKŠANOS",briefTitle:"Virziens, par kuru runājām.",briefCopy:"BM HAIR jāuztver kā premium klases matu zīmols, nevis tikai salona mājaslapa. Galvenā uzmanība jāvelta produktiem, ko papildina individuāli pasūtījumi, profesionālie klienti un komandas pieredze.",brandCardTitle:"Premium zīmols",brandCardText:"Tīrs, mūsdienīgs skaistumkopšanas un modes virziens, kur galvenā loma ir produktiem un fotogrāfijai.",audCardTitle:"Klienti + profesionāļi",audCardText:"Skaidra pieredze privātajiem klientiem, saloniem, stilistiem un profesionālajiem partneriem.",growCardTitle:"Veidots izaugsmei",growCardText:"Struktūra, kas var atbalstīt izaugsmi Latvijā un Eiropā, nepārbūvējot vietni no jauna.",
+workEye:"LĪDZ ŠIM PAVEIKTAIS",workTitle:"Vietnes virziens + e-komercijas prototips.",workCopy:"Tās ir divas viena projekta daļas. Vietnes priekšskatījums parāda zīmolu un klienta pieredzi. Shopify prototips parāda, kā aiz tā var darboties reālais produktu katalogs un veikala struktūra.",websiteDesignPreview:"Vietnes dizaina priekšskatījums",designTag:"Reāli BM HAIR dizaina materiāli",websitePreviewTitle:"Vietnes priekšskatījums",websitePreviewText:"Zīmola prezentācija, produktu atrašana, individuālie pasūtījumi, profesionāļu sadaļa, matu ceļvedis un mobilā pieredze.",shopDataPreview:"Shopify produktu priekšskatījums",developmentStore:"Testa veikals",prodBlonde:"Dabīgo blondo matu parūka",prodPonytail:"Dabīgo matu zirgaste",prodMono:"Mono piespraužamie mati",from319:"no €319",from389:"no €389",shopTag:"Reāli produktu attēli no testa veikala",storePreviewTitle:"Interneta veikala priekšskatījums",storePreviewText:"Produkti, varianti, kolekcijas un struktūra krājumiem, pasūtījumiem un nākotnes apmaksai.",
+reviewEye:"KO JŪS ŠOBRĪD VĒRTĒJAT",reviewTitle:"Vispirms virziens. Pēc tam galīgais katalogs.",reviewCopy:"Šī posma mērķis ir apstiprināt, ka izskats, struktūra un iepirkšanās pieredze virzās pareizajā virzienā, pirms tiek nostiprināti galīgie dati un palaišanas iestatījumi.",review1Title:"Izskats un sajūta",review1Text:"Vai jaunais virziens atbilst BM HAIR?",review2Title:"Struktūra",review2Text:"Vai produkti, individuālie pasūtījumi un profesionāļu sadaļas ir sakārtotas skaidri?",review3Title:"Iepirkšanās pieredze",review3Text:"Vai produktu un veikala ceļš klientam šķiet pietiekami vienkāršs?",
+needEye:"PIRMS GALĪGĀS PALAIŠANAS",needTitle:"Kas mums jāapstiprina kopā.",needCopy:"Vecā vietne ir bijusi noderīgs sākuma avots, taču galīgajam veikalam jābalstās uz aktuālajiem BM HAIR datiem. Šie ir galvenie punkti, kas vēl jāapstiprina.",needProducts:"Aktuālie produkti",needProductsText:"Kas paliek, kas jāizņem un kādi jauni produkti jāpievieno.",needData:"Produktu dati",needDataText:"Produktu kodi, cenas, garumi, toņi, struktūras, svars un pieejamība.",needImages:"Attēli",needImagesText:"Galīgie foto un apstiprinājums, kurš attēls atbilst katram produktam vai tonim.",needStore:"Veikala noteikumi",needStoreText:"Piegāde, maksājumi, atgriešana, garantija un galīgā uzņēmuma informācija.",
+auditEye:"KĀPĒC MAINĪT PAŠREIZĒJO VIETNI",auditTitle:"Problēma nav tikai dizainā.",auditCopy:"Tehniskajā pārskatā tika konstatēti trūkumi, kas ietekmē uzticību, redzamību meklētājos un iepirkšanās pieredzi. Jaunā versija tos risina vienlaikus ar vizuālo pārbūvi.",auditTrust:"Uzticība un drošība",auditTrustText:"Pašreizējais drošā savienojuma iestatījums ir jāsakārto. Apmeklētājiem pirms pirkuma nevajadzētu redzēt pārlūka brīdinājumus vai neskaidrību.",auditSearch:"Redzamība meklētājos",auditSearchText:"Svarīgiem produktiem un saturam nepieciešamas atsevišķas, meklētājiem draudzīgas lapas un stiprāka tehniskā struktūra.",auditShop:"Iepirkšanās pieredze",auditShopText:"Jaunā struktūra ļauj produktus vieglāk apskatīt, salīdzināt un vēlāk iegādāties ar mūsdienīgu apmaksu.",
+scopeEye:"GALĪGAIS PROJEKTA APJOMS",scopeTitle:"Ko aptver pilnais projekts.",scopeCopy:"Kad virziens ir apstiprināts un katalogs pārbaudīts, projekts pāriet no priekšskatījuma uz galīgo darba versiju.",s1:"Pielāgots vietnes dizains",s1x:"BM HAIR vizuālā identitāte un klienta pieredze.",s2:"Vietnes izstrāde",s2x:"Responsīva, darbam gatava vietne.",s3:"Shopify veikala izveide",s3x:"Produkti, varianti, kolekcijas un veikala struktūra.",s4:"Trīs klientu valodas",s4x:"Angļu, latviešu un krievu valoda galīgajā klientu vietnē.",s5:"Kataloga migrācija",s5x:"Pārbaudītā aktuālā kataloga pārbūve.",s6:"Meklēšanas pamats",s6x:"Meklētājiem draudzīgas lapas, metadati un satura struktūra.",s7:"Individuālo pasūtījumu un profesionāļu ceļi",s7x:"Skaidras sadaļas individuālajiem pasūtījumiem un biznesa klientiem.",s8:"Sagatavošana palaišanai",s8x:"Galīgā testēšana, domēna iestatīšana un darba versijas pārbaudes.",
+priceEye:"IEGULDĪJUMS PROJEKTĀ",priceText:"Fiksēta projekta maksa par saskaņoto vietnes un interneta veikala apjomu līdz palaišanai.",priceDependency:"Galīgā palaišana ir atkarīga no BM HAIR produktu, piegādes un juridiskās informācijas apstiprināšanas.",includedEye:"IEKĻAUTS",includedTitle:"Vietne + veikals + daudzvalodu izstrāde + sagatavošana palaišanai.",inc1:"Pielāgots vietnes dizains un izstrāde",inc2:"Shopify e-komercijas ieviešana",inc3:"Kataloga izveide un migrācija",inc4:"Angļu, latviešu un krievu klientu struktūra",inc5:"Meklēšanas optimizācijas pamats un satura organizācija",inc6:"Mobilā optimizācija un galīgā kvalitātes pārbaude",inc7:"Darba versijas un palaišanas sagatavošana",notIncluded:"Nav iekļauts:",notIncludedText:"Shopify abonements, maksas trešo pušu lietotnes, profesionāla fotosesija, apmaksāta reklāma, juridiskas konsultācijas vai būtiskas jaunas integrācijas ārpus saskaņotā apjoma.",commercialNext:"Galīgo izpildes termiņu un maksājumu posmus var rakstiski apstiprināt pēc virziena un kataloga apjoma apstiprināšanas.",
+nextEye:"NĀKAMAIS SOLIS",nextTitle:"No priekšskatījuma līdz galīgajai palaišanai.",nextCopy:"Pēc apstiprināšanas projekts nesākas no jauna. Dizaina un veikala pamats jau ir izveidots; nākamais posms ir apstiprināšana, pabeigšana un sagatavošana palaišanai.",step1:"Apskatīt",step1x:"Apskatīt vietnes virzienu un veikala prototipu.",step2:"Apstiprināt",step2x:"Nosūtīt atsauksmes un apstiprināt aktuālos produktus un veikala informāciju.",step3:"Pabeigt",step3x:"Pabeigt katalogu, testēšanu, darba iestatījumus un palaišanu.",finalEye:"BM HAIR · NĀKAMAIS SOLIS",finalTitle:"Apskatiet virzienu, apstipriniet katalogu, un tad pabeigsim galīgo versiju.",finalText:"Šī priekšskatījuma mērķis ir vienkārši pārliecināties, ka vietne un veikals virzās pareizajā virzienā pirms galīgajiem palaišanas darbiem.",footer1:"BM HAIR · Vietnes un interneta veikala piedāvājums",footer2:"Sagatavoja Elasrag · 2026. gada septembris"
+},
+ru:{
+elasrag:"ELASRAG",projectPresentation:"ПРЕЗЕНТАЦИЯ ПРОЕКТА BM HAIR",navBrief:"Задача",navWork:"Предпросмотр",navNeeded:"Что нужно подтвердить",navProposal:"Предложение",
+heroEye:"BM HAIR · САЙТ И ИНТЕРНЕТ-МАГАЗИН",heroTitle:"Первый взгляд на новый BM HAIR.",heroLead:"После нашей встречи я разработал рабочее направление нового сайта BM HAIR и отдельно создал тестовый магазин Shopify для e-commerce части проекта.",heroNote:"Это версия для просмотра и обратной связи. Финальный каталог, рабочая оплата и настройки запуска будут завершены после подтверждения BM HAIR актуальной информации о товарах и бизнесе.",websiteLinkSoon:"Ссылка на сайт — будет добавлена перед презентацией",storeLinkSoon:"Ссылка на магазин — будет добавлена перед презентацией",
+brandName:"BM HAIR",siteHero1:"Красивые волосы.",siteHero2:"Ваш характер.",siteHeroText:"Парики, хвосты и пряди из натуральных волос. Профессиональный выбор. Ваш неповторимый образ.",explore:"Смотреть коллекцию",mobileLabel:"Предпросмотр мобильного дизайна",
+briefEye:"НА ОСНОВЕ НАШЕЙ ВСТРЕЧИ",briefTitle:"Направление, которое мы обсудили.",briefCopy:"BM HAIR должен восприниматься как премиальный бренд волос, а не просто как сайт салона. В центре внимания — продукты, дополненные индивидуальными заказами, профессиональными клиентами и опытом команды.",brandCardTitle:"Премиальный бренд",brandCardText:"Чистое современное направление в эстетике beauty и fashion, где главную роль играют продукты и фотографии.",audCardTitle:"Клиенты + профессионалы",audCardText:"Понятный опыт для частных клиентов, салонов, стилистов и профессиональных партнёров.",growCardTitle:"Создан с расчётом на рост",growCardText:"Структура, которая поддерживает развитие в Латвии и Европе без необходимости снова перестраивать сайт.",
+workEye:"ЧТО УЖЕ СДЕЛАНО",workTitle:"Направление сайта + прототип интернет-магазина.",workCopy:"Это две части одного проекта. Предпросмотр сайта показывает бренд и клиентский опыт. Прототип Shopify показывает, как за ним может работать реальный каталог и структура магазина.",websiteDesignPreview:"Предпросмотр дизайна сайта",designTag:"Реальные материалы дизайна BM HAIR",websitePreviewTitle:"Предпросмотр сайта",websitePreviewText:"Презентация бренда, поиск товаров, индивидуальные заказы, профессиональная секция, Hair Guide и мобильная версия.",shopDataPreview:"Предпросмотр товаров Shopify",developmentStore:"Тестовый магазин",prodBlonde:"Парик из натуральных светлых волос",prodPonytail:"Хвост из натуральных волос",prodMono:"Моно-накладка на клипсах",from319:"от €319",from389:"от €389",shopTag:"Реальные изображения товаров из тестового магазина",storePreviewTitle:"Предпросмотр интернет-магазина",storePreviewText:"Товары, варианты, коллекции и структура для остатков, заказов и будущей оплаты.",
+reviewEye:"ЧТО ВЫ ОЦЕНИВАЕТЕ СЕЙЧАС",reviewTitle:"Сначала направление. Затем финальный каталог.",reviewCopy:"Цель этого этапа — подтвердить, что дизайн, структура и процесс покупки движутся в правильном направлении, прежде чем фиксировать финальные данные и настройки запуска.",review1Title:"Визуальное направление",review1Text:"Подходит ли новое направление бренду BM HAIR?",review2Title:"Структура",review2Text:"Понятно ли организованы товары, индивидуальные заказы и профессиональные разделы?",review3Title:"Процесс покупки",review3Text:"Достаточно ли просто клиенту пройти путь от товара к магазину?",
+needEye:"ПЕРЕД ФИНАЛЬНЫМ ЗАПУСКОМ",needTitle:"Что нам нужно подтвердить вместе.",needCopy:"Старый сайт был полезен как отправная точка, но финальный магазин должен использовать актуальные данные BM HAIR. Вот основные пункты, которые ещё нужно подтвердить.",needProducts:"Актуальные товары",needProductsText:"Что остаётся, что убираем и какие новые товары добавляем.",needData:"Данные о товарах",needDataText:"Коды товаров, цены, длины, оттенки, текстуры, вес и наличие.",needImages:"Изображения",needImagesText:"Финальные фотографии и подтверждение, какое изображение относится к каждому товару или оттенку.",needStore:"Правила магазина",needStoreText:"Доставка, оплата, возвраты, гарантия и финальная информация о компании.",
+auditEye:"ПОЧЕМУ НУЖНО ОБНОВИТЬ ТЕКУЩИЙ САЙТ",auditTitle:"Проблема не только в дизайне.",auditCopy:"Технический обзор выявил вопросы, которые влияют на доверие, видимость в поиске и процесс покупки. Новая версия решает их одновременно с визуальной переработкой.",auditTrust:"Доверие и безопасность",auditTrustText:"Текущие настройки защищённого соединения требуют внимания. Покупатель не должен видеть предупреждения браузера или сомневаться в безопасности сайта.",auditSearch:"Видимость в поиске",auditSearchText:"Важным товарам и материалам нужны отдельные страницы и более сильная техническая структура для поисковых систем.",auditShop:"Процесс покупки",auditShopText:"Новая структура упрощает просмотр и сравнение товаров и готовит магазин к современной оплате.",
+scopeEye:"ФИНАЛЬНЫЙ ОБЪЁМ ПРОЕКТА",scopeTitle:"Что охватывает полный проект.",scopeCopy:"После утверждения направления и каталога проект переходит от предпросмотра к финальной рабочей версии.",s1:"Индивидуальный дизайн сайта",s1x:"Визуальная идентичность BM HAIR и клиентский опыт.",s2:"Разработка сайта",s2x:"Адаптивный сайт, готовый к работе.",s3:"Настройка Shopify",s3x:"Товары, варианты, коллекции и структура магазина.",s4:"Три языка для клиентов",s4x:"Английский, латышский и русский для финального сайта.",s5:"Перенос каталога",s5x:"Сборка проверенного актуального каталога.",s6:"Основа для поиска",s6x:"Страницы, метаданные и контент, понятные поисковым системам.",s7:"Индивидуальные заказы и профессионалы",s7x:"Понятные пути для заказов на заказ и бизнес-клиентов.",s8:"Подготовка к запуску",s8x:"Финальное тестирование, настройка домена и проверки рабочей версии.",
+priceEye:"СТОИМОСТЬ ПРОЕКТА",priceText:"Фиксированная стоимость за согласованный объём сайта и интернет-магазина до запуска.",priceDependency:"Финальный запуск зависит от подтверждения BM HAIR данных о товарах, доставке и юридической информации.",includedEye:"ВКЛЮЧЕНО",includedTitle:"Сайт + магазин + многоязычная версия + подготовка к запуску.",inc1:"Индивидуальный дизайн и разработка сайта",inc2:"Настройка интернет-магазина на Shopify",inc3:"Настройка и перенос каталога",inc4:"Структура на английском, латышском и русском",inc5:"Основа поисковой оптимизации и организация контента",inc6:"Мобильная оптимизация и финальная проверка качества",inc7:"Подготовка рабочей версии и запуска",notIncluded:"Не входит:",notIncludedText:"Подписка Shopify, платные сторонние приложения, профессиональная фотосъёмка, платная реклама, юридические консультации и крупные новые интеграции за рамками согласованного объёма.",commercialNext:"Финальный срок выполнения и этапы оплаты можно письменно согласовать после утверждения направления и объёма каталога.",
+nextEye:"СЛЕДУЮЩИЙ ШАГ",nextTitle:"От предпросмотра к финальному запуску.",nextCopy:"После утверждения проект не начинается заново. Основа дизайна и магазина уже готова; следующий этап — подтверждение, финализация и подготовка к запуску.",step1:"Просмотр",step1x:"Посмотреть направление сайта и прототип магазина.",step2:"Подтверждение",step2x:"Отправить обратную связь и подтвердить актуальные товары и данные магазина.",step3:"Завершение",step3x:"Завершить каталог, тестирование, настройку рабочей версии и запуск.",finalEye:"BM HAIR · СЛЕДУЮЩИЙ ШАГ",finalTitle:"Посмотрите направление, подтвердите каталог — и после этого мы завершим финальную версию.",finalText:"Цель этого предпросмотра проста: убедиться, что сайт и магазин движутся в правильном направлении до завершения финальных работ по запуску.",footer1:"BM HAIR · Предложение по сайту и интернет-магазину",footer2:"Подготовил Elasrag · сентябрь 2026"
+},
+ar:{
+elasrag:"الأسرج",projectPresentation:"عرض مشروع بي إم هير",navBrief:"المتطلبات",navWork:"المعاينة",navNeeded:"ما نحتاج تأكيده",navProposal:"العرض",
+heroEye:"بي إم هير · الموقع والمتجر الإلكتروني",heroTitle:"نظرة أولى على بي إم هير بشكلها الجديد.",heroLead:"بعد اجتماعنا، طورت اتجاهًا عمليًا للموقع الجديد، وبشكل منفصل أنشأت نموذجًا تجريبيًا للمتجر الإلكتروني على شوبيفاي لاختبار جانب البيع عبر الإنترنت.",heroNote:"هذه نسخة للمراجعة وإبداء الملاحظات. سيتم استكمال الكتالوج النهائي والدفع الفعلي وتجهيزات الإطلاق بعد تأكيد فريق بي إم هير لمعلومات المنتجات والنشاط الحالية.",websiteLinkSoon:"رابط معاينة الموقع — سيُضاف قبل تقديم العرض",storeLinkSoon:"رابط معاينة المتجر — سيُضاف قبل تقديم العرض",
+brandName:"بي إم هير",siteHero1:"شعر جميل.",siteHero2:"يعبر عنك بالكامل.",siteHeroText:"باروكات وذيل حصان ووصلات من الشعر الطبيعي. مختارة بخبرة. ومصممة لتناسبك.",explore:"استعرضي المجموعة",mobileLabel:"معاينة تصميم الهاتف المحمول",
+briefEye:"بناءً على ما ناقشناه في الاجتماع",briefTitle:"الاتجاه الذي اتفقنا عليه.",briefCopy:"يجب أن تظهر بي إم هير كعلامة راقية ومتخصصة في منتجات الشعر، لا كمجرد موقع لصالون. المنتجات هي العنصر الرئيسي، مع إبراز الطلبات المخصصة والعملاء المحترفين وخبرة الفريق.",brandCardTitle:"علامة راقية",brandCardText:"اتجاه بصري نظيف وحديث مستوحى من الجمال والموضة، تكون فيه المنتجات والصور هي العنصر الرئيسي.",audCardTitle:"العملاء والمحترفون",audCardText:"تجربة واضحة للعملاء الأفراد والصالونات ومصففي الشعر والشركاء المحترفين.",growCardTitle:"مصمم للنمو",growCardText:"بنية تسمح بالنمو داخل لاتفيا والتوسع أوروبيًا دون الحاجة إلى إعادة بناء الموقع من البداية.",
+workEye:"ما تم إنجازه حتى الآن",workTitle:"اتجاه الموقع + نموذج المتجر الإلكتروني.",workCopy:"هما جزآن من مشروع واحد. معاينة الموقع توضح العلامة وتجربة العميل، بينما يوضح نموذج شوبيفاي كيف سيعمل كتالوج المنتجات وبنية المتجر الفعلية.",websiteDesignPreview:"معاينة تصميم الموقع",designTag:"مواد فعلية من تصميم بي إم هير",websitePreviewTitle:"معاينة الموقع",websitePreviewText:"عرض العلامة، واكتشاف المنتجات، والطلبات المخصصة، وقسم المحترفين، ودليل الشعر، وتجربة الهاتف المحمول.",shopDataPreview:"معاينة منتجات شوبيفاي",developmentStore:"متجر تجريبي",prodBlonde:"باروكة من الشعر الطبيعي الأشقر",prodPonytail:"ذيل حصان من الشعر الطبيعي",prodMono:"قطعة شعر أحادية التثبيت",from319:"ابتداءً من ٣١٩ يورو",from389:"ابتداءً من ٣٨٩ يورو",shopTag:"صور منتجات فعلية من المتجر التجريبي",storePreviewTitle:"معاينة المتجر الإلكتروني",storePreviewText:"المنتجات والخيارات والمجموعات والبنية اللازمة للمخزون والطلبات والدفع مستقبلًا.",
+reviewEye:"ما الذي تتم مراجعته الآن",reviewTitle:"نراجع الاتجاه أولًا، ثم نستكمل الكتالوج النهائي.",reviewCopy:"هدف هذه المرحلة هو التأكد من أن الشكل والبنية وتجربة الشراء تسير في الاتجاه الصحيح قبل اعتماد البيانات النهائية وتجهيزات الإطلاق.",review1Title:"الشكل والانطباع",review1Text:"هل يعبر الاتجاه الجديد عن بي إم هير بالشكل المناسب؟",review2Title:"البنية",review2Text:"هل المنتجات والطلبات المخصصة وأقسام المحترفين منظمة بوضوح؟",review3Title:"تجربة الشراء",review3Text:"هل الانتقال من المنتج إلى المتجر بسيط وواضح للعميل؟",
+needEye:"قبل الإطلاق النهائي",needTitle:"ما نحتاج إلى تأكيده معًا.",needCopy:"استخدمنا الموقع القديم كنقطة بداية، لكن المتجر النهائي يجب أن يعتمد على بيانات بي إم هير الحالية. هذه أهم المعلومات التي ما زالت تحتاج إلى تأكيد.",needProducts:"المنتجات الحالية",needProductsText:"ما الذي سيبقى، وما الذي سيُحذف، وأي منتجات جديدة.",needData:"بيانات المنتجات",needDataText:"رموز المنتجات والأسعار والأطوال والألوان وملمس الشعر والأوزان والتوفر.",needImages:"الصور",needImagesText:"الصور النهائية وتحديد الصورة الخاصة بكل منتج أو لون.",needStore:"قواعد المتجر",needStoreText:"الشحن والدفع والإرجاع والضمان والبيانات النهائية للشركة.",
+auditEye:"لماذا يحتاج الموقع الحالي إلى تغيير",auditTitle:"المشكلة ليست في التصميم فقط.",auditCopy:"أظهرت المراجعة التقنية مشكلات تؤثر على الثقة والظهور في محركات البحث وتجربة الشراء. النسخة الجديدة تعالج هذه الجوانب بالتوازي مع إعادة التصميم.",auditTrust:"الثقة والأمان",auditTrustText:"إعداد الاتصال الآمن الحالي يحتاج إلى معالجة. لا ينبغي للعميل أن يرى تحذيرات من المتصفح أو يشعر بالقلق قبل الشراء.",auditSearch:"الظهور في محركات البحث",auditSearchText:"المنتجات والمحتوى المهم يحتاجان إلى صفحات مستقلة وبنية تقنية أوضح لمحركات البحث.",auditShop:"تجربة الشراء",auditShopText:"البنية الجديدة تجعل استعراض المنتجات ومقارنتها أسهل، وتجهز المتجر للدفع الحديث لاحقًا.",
+scopeEye:"النطاق النهائي للمشروع",scopeTitle:"ما الذي يغطيه المشروع بالكامل.",scopeCopy:"بعد اعتماد الاتجاه وتأكيد الكتالوج، ينتقل المشروع من مرحلة المعاينة إلى النسخة النهائية الجاهزة للعمل.",s1:"تصميم مخصص للموقع",s1x:"الهوية البصرية وتجربة العميل الخاصة ببي إم هير.",s2:"تطوير الموقع",s2x:"موقع متجاوب وجاهز للعمل.",s3:"إعداد متجر شوبيفاي",s3x:"المنتجات والخيارات والمجموعات وبنية المتجر.",s4:"ثلاث لغات للعملاء",s4x:"الإنجليزية واللاتفية والروسية في الموقع النهائي الموجه للعملاء.",s5:"نقل الكتالوج",s5x:"إعادة بناء الكتالوج الحالي بعد التحقق منه.",s6:"أساس الظهور في البحث",s6x:"صفحات وبيانات ومحتوى منظم لمحركات البحث.",s7:"الطلبات المخصصة والعملاء المحترفون",s7x:"مسارات واضحة للطلبات الخاصة والعملاء التجاريين.",s8:"التحضير للإطلاق",s8x:"الاختبارات النهائية وإعداد النطاق وفحوصات النسخة النهائية.",
+priceEye:"قيمة المشروع",priceText:"سعر ثابت لنطاق الموقع والمتجر الإلكتروني المتفق عليه حتى مرحلة الإطلاق.",priceDependency:"الإطلاق النهائي يعتمد على تأكيد فريق بي إم هير لمعلومات المنتجات والشحن والبيانات القانونية المذكورة أعلاه.",includedEye:"يشمل المشروع",includedTitle:"الموقع + المتجر + تعدد اللغات + التحضير للإطلاق.",inc1:"تصميم وتطوير موقع مخصص",inc2:"إعداد المتجر الإلكتروني على شوبيفاي",inc3:"إعداد الكتالوج ونقله",inc4:"بنية للعملاء بالإنجليزية واللاتفية والروسية",inc5:"تحسين الظهور في محركات البحث وتنظيم المحتوى",inc6:"تحسين الهاتف المحمول والمراجعة النهائية للجودة",inc7:"تجهيز النسخة النهائية والإطلاق",notIncluded:"غير مشمول:",notIncludedText:"اشتراك شوبيفاي، والتطبيقات الخارجية المدفوعة، والتصوير الاحترافي، والإعلانات المدفوعة، والاستشارات القانونية، وأي تكاملات كبيرة جديدة خارج النطاق المتفق عليه.",commercialNext:"سيتم الاتفاق كتابيًا على مدة التنفيذ النهائية ومراحل الدفع بعد اعتماد الاتجاه وتأكيد نطاق الكتالوج.",
+nextEye:"الخطوة التالية",nextTitle:"من المعاينة إلى الإطلاق النهائي.",nextCopy:"بعد الاعتماد لن نبدأ المشروع من جديد. أساس التصميم والمتجر موجود بالفعل؛ المرحلة التالية هي التأكيد والاستكمال والتحضير للإطلاق.",step1:"المراجعة",step1x:"مراجعة اتجاه الموقع ونموذج المتجر.",step2:"التأكيد",step2x:"إرسال الملاحظات وتأكيد المنتجات الحالية ومعلومات المتجر.",step3:"الاستكمال",step3x:"استكمال الكتالوج والاختبارات وتجهيز النسخة النهائية والإطلاق.",finalEye:"بي إم هير · الخطوة التالية",finalTitle:"راجعوا الاتجاه وأكدوا الكتالوج، وبعدها نستكمل النسخة النهائية.",finalText:"هدف هذه المعاينة هو التأكد ببساطة من أن الموقع والمتجر يسيران في الاتجاه الصحيح قبل استكمال أعمال الإطلاق النهائية.",footer1:"بي إم هير · عرض الموقع والمتجر الإلكتروني",footer2:"إعداد الأسرج · سبتمبر ٢٠٢٦"
+}
+};
+
+const titles={
+en:["BM HAIR — Project Preview","BM HAIR website and online store project preview."],
+lv:["BM HAIR — Projekta priekšskatījums","BM HAIR vietnes un interneta veikala projekta priekšskatījums."],
+ru:["BM HAIR — Предпросмотр проекта","Предпросмотр проекта сайта и интернет-магазина BM HAIR."],
+ar:["بي إم هير — معاينة المشروع","معاينة مشروع موقع ومتجر بي إم هير الإلكتروني."]
+};
+
+function setLang(lang){
+  if(!copy[lang])lang="en";
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const key=el.dataset.i18n;
+    if(copy[lang][key]!=null)el.textContent=copy[lang][key];
   });
-  while(walker.nextNode()){
-    const node = walker.currentNode;
-    textNodes.push({node, en: node.nodeValue.trim(), raw: node.nodeValue});
-  }
-
-  function applyLanguage(lang){
-    if(!['en','lv','ru','ar'].includes(lang)) lang='en';
-    const dict = translations[lang] || {};
-    textNodes.forEach(item=>{
-      const before = item.raw.match(/^\s*/)[0];
-      const after = item.raw.match(/\s*$/)[0];
-      const value = lang === 'en' ? item.en : (dict[item.en] || item.en);
-      item.node.nodeValue = before + value + after;
-    });
-
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-    document.title = titles[lang][0];
-    const meta = document.querySelector('meta[name="description"]');
-    if(meta) meta.setAttribute('content', titles[lang][1]);
-
-    document.querySelectorAll('[data-lang]').forEach(btn=>{
-      const active = btn.dataset.lang === lang;
-      btn.classList.toggle('on', active);
-      btn.setAttribute('aria-pressed', String(active));
-    });
-
-    try{ localStorage.setItem('bmhair-proposal-lang',lang); }catch(e){}
-    const url = new URL(window.location.href);
-    if(lang === 'en') url.searchParams.delete('lang'); else url.searchParams.set('lang',lang);
-    history.replaceState(null,'',url.pathname + url.search + url.hash);
-  }
-
-  document.querySelectorAll('[data-lang]').forEach(btn=>{
-    btn.addEventListener('click',()=>applyLanguage(btn.dataset.lang));
+  document.querySelectorAll("[data-lang]").forEach(b=>{
+    const active=b.dataset.lang===lang;
+    b.classList.toggle("active",active);
+    b.setAttribute("aria-pressed",active?"true":"false");
   });
-
-  const params = new URLSearchParams(location.search);
-  let initial = params.get('lang');
-  if(!initial){
-    try{ initial = localStorage.getItem('bmhair-proposal-lang'); }catch(e){}
+  if(lang==="ar"){
+    document.querySelector('[data-lang="en"]').textContent="إنجليزي";
+    document.querySelector('[data-lang="lv"]').textContent="لاتفي";
+    document.querySelector('[data-lang="ru"]').textContent="روسي";
+    document.querySelector('[data-lang="ar"]').textContent="عربي";
+  }else{
+    document.querySelector('[data-lang="en"]').textContent="EN";
+    document.querySelector('[data-lang="lv"]').textContent="LV";
+    document.querySelector('[data-lang="ru"]').textContent="RU";
+    document.querySelector('[data-lang="ar"]').textContent="AR";
   }
-  applyLanguage(initial || 'en');
-})();
+  document.title=titles[lang][0];
+  document.querySelector('meta[name="description"]').content=titles[lang][1];
+  try{localStorage.setItem("bmhair-proposal-lang",lang)}catch(e){}
+  const u=new URL(location.href); if(lang==="en")u.searchParams.delete("lang");else u.searchParams.set("lang",lang);
+  history.replaceState(null,"",u.pathname+u.search+u.hash);
+}
+document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>setLang(b.dataset.lang)));
+let initial=new URLSearchParams(location.search).get("lang");
+if(!initial){try{initial=localStorage.getItem("bmhair-proposal-lang")}catch(e){}}
+setLang(initial||"en");
 </script>
 </body>
 </html>
