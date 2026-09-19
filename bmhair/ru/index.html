@@ -724,6 +724,109 @@
       line-height:1.65;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.82);
     }
+    .commercial-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:12px;
+      margin:0 0 18px;
+    }
+    .commercial-card{
+      padding:18px;
+      border:1px solid rgba(77,52,64,.09);
+      border-radius:18px;
+      background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(247,235,239,.62));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.85);
+    }
+    .commercial-card small{
+      display:block;
+      margin-bottom:6px;
+      color:var(--wine);
+      font-size:9px;
+      font-weight:900;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .commercial-card strong{
+      display:block;
+      color:var(--ink);
+      font-size:18px;
+      line-height:1.25;
+      font-family:Georgia,"Times New Roman",serif;
+      font-weight:400;
+    }
+    .commercial-card span{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.55;
+    }
+    .payment-steps{
+      display:grid;
+      gap:9px;
+      margin-top:18px;
+    }
+    .payment-step{
+      display:grid;
+      grid-template-columns:88px 1fr;
+      gap:14px;
+      align-items:start;
+      padding:14px 15px;
+      border:1px solid rgba(77,52,64,.085);
+      border-radius:15px;
+      background:rgba(255,255,255,.66);
+    }
+    .payment-step b{
+      color:var(--wine);
+      font-size:16px;
+      line-height:1.25;
+    }
+    .payment-step strong{
+      display:block;
+      color:var(--ink);
+      font-size:12px;
+    }
+    .payment-step span{
+      display:block;
+      margin-top:3px;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.5;
+    }
+    .support-box{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:18px;
+    }
+    .support-plan{
+      padding:18px;
+      border:1px solid rgba(194,160,120,.18);
+      border-radius:18px;
+      background:linear-gradient(145deg,rgba(255,255,255,.9),rgba(234,216,190,.18));
+    }
+    .support-plan strong{
+      display:block;
+      color:var(--ink);
+      font-size:17px;
+      font-family:Georgia,"Times New Roman",serif;
+      font-weight:400;
+    }
+    .support-plan span{
+      display:block;
+      margin-top:6px;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.55;
+    }
+    html[dir="rtl"] .commercial-card strong,
+    html[dir="rtl"] .support-plan strong{font-family:Tahoma,Arial,"Segoe UI",sans-serif}
+    @media(max-width:820px){
+      .commercial-grid,.support-box{grid-template-columns:1fr}
+    }
+    @media(max-width:560px){
+      .payment-step{grid-template-columns:72px 1fr}
+    }
 
     footer{
       position:relative;
@@ -926,72 +1029,76 @@
       <div class="wrap">
         <div class="section-title">
           <p class="eyebrow">ОСТАЛЬНОЕ — КРАТКО</p>
-          <h2>Только то, что важно перед запуском.</h2>
+          <h2>Всё необходимое, чтобы перейти от предпросмотра к запуску.</h2>
         </div>
 
         <div class="accordion">
           <details>
-            <summary>
-              <span>Что BM HAIR ещё нужно подтвердить</span>
-              <span>+</span>
-            </summary>
+            <summary><span>Что BM HAIR ещё нужно подтвердить</span><span>+</span></summary>
             <div class="detail-body">
               <div class="compact-grid">
                 <div><strong>Актуальный каталог</strong><span>Что остаётся, что нужно убрать и какие новые товары добавить.</span></div>
                 <div><strong>Данные товаров</strong><span>Финальные SKU, цены, длины, оттенки, текстуры и вес.</span></div>
                 <div><strong>Остатки и изображения</strong><span>Реальное наличие и соответствие изображений каждому товару или оттенку.</span></div>
-                <div><strong>Правила магазина</strong><span>Доставка, оплата, возвраты, гарантия и финальные данные компании.</span></div>
+                <div><strong>Правила магазина</strong><span>Страны и стоимость доставки, требования к оплате, возвраты, гарантия и финальные данные компании.</span></div>
               </div>
-              <div class="note">
-                Также нужно подтвердить по старому сайту: три оттенка тёмных париков, должны ли накладки продаваться как отдельные товары, актуальна ли прежняя доплата €95 за индивидуальную работу, проводится ли ещё профессиональное обучение наращиванию и действуют ли старые акционные цены.
-              </div>
+              <div class="note">Также нужно подтвердить по старому сайту: три оттенка тёмных париков, должны ли накладки продаваться как отдельные товары, актуальна ли прежняя доплата €95 за индивидуальную работу, проводится ли ещё профессиональное обучение наращиванию и действуют ли старые акционные цены.</div>
             </div>
           </details>
 
           <details>
-            <summary>
-              <span>Что входит в финальный проект</span>
-              <span>+</span>
-            </summary>
+            <summary><span>Что входит в финальный проект</span><span>+</span></summary>
             <div class="detail-body">
+              <div class="commercial-grid">
+                <div class="commercial-card"><small>Текущий объём</small><strong>24 товара · до 423 вариантов</strong><span>Согласованный текущий объём каталога. Существенное расширение каталога считается дополнительной работой.</span></div>
+                <div class="commercial-card"><small>Языки</small><strong>EN · IT · LV · RU</strong><span>Четыре языка для клиентов во всём финальном опыте BM HAIR.</span></div>
+                <div class="commercial-card"><small>Архитектура магазина</small><strong>Shopify как операционный источник</strong><span>Индивидуальный storefront будет использовать Shopify для ключевых коммерческих данных: идентификаторов товаров/вариантов, цен и остатков, где это применимо, чтобы не поддерживать два каталога вручную.</span></div>
+                <div class="commercial-card"><small>Production delivery</small><strong>Сайт + Shopify + настройка запуска</strong><span>Checkout, оплата, согласованная доставка, домен/DNS/SSL, production deployment через Cloudflare и финальный контроль качества.</span></div>
+              </div>
               <div class="compact-grid">
-                <div><strong>Индивидуальный сайт</strong><span>Дизайн и разработка клиентского сайта BM HAIR.</span></div>
-                <div><strong>Магазин Shopify</strong><span>Каталог, коллекции, варианты и реализация магазина.</span></div>
-                <div><strong>Четыре языка для клиентов</strong><span>Английский, итальянский, латышский и русский.</span></div>
-                <div><strong>Перенос каталога</strong><span>Финальный каталог собирается из данных, подтверждённых владельцем.</span></div>
-                <div><strong>Основа для поиска</strong><span>Отдельные страницы, метаданные, многоязычная поисковая структура и карта сайта.</span></div>
-                <div><strong>Подготовка к запуску</strong><span>Домен, доставка, оформление заказа, тестирование и проверки рабочей версии.</span></div>
+                <div><strong>Индивидуальный storefront</strong><span>Адаптивный сайт BM HAIR, страницы товаров и коллекций, фильтры, индивидуальные заказы и разделы для профессионалов.</span></div>
+                <div><strong>Перенос каталога</strong><span>Финальный каталог собирается и проверяется по данным, подтверждённым владельцем.</span></div>
+                <div><strong>Поисковая настройка перед запуском</strong><span>Метаданные, sitemap, canonical/hreflang, перенаправления со старого сайта при необходимости и настройка Search Console при запуске.</span></div>
+                <div><strong>Тестирование</strong><span>Проверка checkout, оплаты, доставки и создания заказа до финальной передачи.</span></div>
               </div>
             </div>
           </details>
 
           <details>
-            <summary>
-              <span>Предложение по проекту</span>
-              <span>+</span>
-            </summary>
+            <summary><span>Стоимость, срок и график платежей</span><span>+</span></summary>
             <div class="detail-body">
               <div class="proposal">
                 <div class="price-box">
-                  <small>Предлагаемая стоимость проекта</small>
+                  <small>Фиксированная стоимость проекта</small>
                   <div class="price">€3,500</div>
-                  <p>За описанный здесь объём сайта и Shopify до запуска.</p>
+                  <p>За уже выполненную работу оплата не требуется. Первый платёж возникает только после одобрения проекта BM HAIR и решения перейти к финальной production-фазе.</p>
                 </div>
                 <div class="proposal-copy">
-                  <h3>Включено</h3>
-                  <ul class="clean">
-                    <li>Индивидуальный дизайн и разработка сайта</li>
-                    <li>Реализация Shopify</li>
-                    <li>Клиентский опыт на четырёх языках</li>
-                    <li>Настройка и перенос проверенного каталога</li>
-                    <li>Основа поисковой оптимизации</li>
-                    <li>Мобильная оптимизация и финальная проверка качества</li>
-                    <li>Настройка доставки, оформления заказа и запуска</li>
-                  </ul>
-                  <div class="note">
-                    Не входит: подписка Shopify, платные сторонние приложения, профессиональная фотосъёмка, платная реклама, юридические консультации и крупные новые интеграции вне согласованного объёма. Финальный срок, этапы оплаты и объём проекта будут письменно подтверждены после согласования.
+                  <h3>Осталось примерно 3 недели</h3>
+                  <p style="margin:0;color:var(--muted);font-size:12px;line-height:1.65">На подготовку текущих предпросмотров уже затрачена примерно одна неделя дизайна и разработки. Оставшаяся работа ожидается примерно в течение трёх недель после одобрения и получения необходимых данных каталога, доставки и компании.</p>
+                  <div class="payment-steps">
+                    <div class="payment-step"><b>€1,500</b><div><strong>Одобрение проекта</strong><span>Оплачивается после одобрения предложения и начала финальной production-разработки.</span></div></div>
+                    <div class="payment-step"><b>€1,500</b><div><strong>Одобрение pre-launch версии</strong><span>Оплачивается, когда завершённая staging/pre-launch версия готова к финальной проверке и одобрению клиентом.</span></div></div>
+                    <div class="payment-step"><b>€500</b><div><strong>Запуск и передача</strong><span>Оплачивается при финальном production-запуске и полной передаче проекта.</span></div></div>
                   </div>
+                  <div class="note">Задержки с предоставлением необходимой информации BM HAIR могут сдвинуть дату запуска. В стоимость не входят подписка Shopify, платные сторонние приложения, профессиональная фотосъёмка, платная реклама, юридические консультации и крупные новые интеграции вне согласованного объёма.</div>
                 </div>
+              </div>
+            </div>
+          </details>
+
+          <details>
+            <summary><span>Запуск, передача и дальнейшая поддержка</span><span>+</span></summary>
+            <div class="detail-body">
+              <div class="compact-grid">
+                <div><strong>Что означает запуск</strong><span>Production-сайт опубликован, подтверждённый каталог размещён, Shopify-интеграция работает, checkout и создание заказа протестированы, согласованные платежи и доставка настроены, домен/DNS/SSL и технические поисковые работы завершены, а финальный контроль качества пройден.</span></div>
+                <div><strong>Полная передача</strong><span>После завершения передаются соответствующие права на проект, административные доступы, учётные данные и необходимая документация.</span></div>
+                <div><strong>30 дней bug-fix поддержки</strong><span>Включены после запуска без дополнительной оплаты для проблем, относящихся к согласованной функциональности, поставленной в рамках проекта.</span></div>
+                <div><strong>Что не относится к bug-fix</strong><span>Новые функции, существенные изменения дизайна, крупное расширение каталога и новые интеграции считаются дополнительной работой.</span></div>
+              </div>
+              <div class="support-box">
+                <div class="support-plan"><strong>Опциональное обслуживание · €150/месяц</strong><span>Техническое обслуживание, необходимые обновления, проверка интеграций, мелкие исправления и небольшие изменения контента/дизайна — до 2 часов работы в месяц. Дополнительная работа: €60/час.</span></div>
+                <div class="support-plan"><strong>По запросу · €65/час</strong><span>Ежемесячный план не обязателен. Крупные функции, интеграции или существенные изменения оцениваются отдельно до начала работы.</span></div>
               </div>
             </div>
           </details>
