@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#05070b" />
   <meta name="color-scheme" content="dark" />
-  <title>الأسرج</title>
-  <meta name="description" content="الأسرج" />
+  <title>Elasrag</title>
+  <meta name="description" content="Elasrag" />
 
   <style>
     :root {
@@ -157,6 +157,20 @@
         0 0 18px rgba(121, 172, 255, 0.14),
         0 0 36px rgba(87, 112, 255, 0.08);
       user-select: none;
+      direction: ltr;
+      transition:
+        opacity 0.42s cubic-bezier(.2,.75,.2,1),
+        transform 0.55s cubic-bezier(.2,.75,.2,1),
+        filter 0.42s ease,
+        letter-spacing 0.55s cubic-bezier(.2,.75,.2,1);
+      will-change: opacity, transform, filter;
+    }
+
+    .brand.switching {
+      opacity: 0;
+      transform: translate(-50%, -7px) scale(0.97);
+      filter: blur(7px);
+      letter-spacing: 0.11em;
     }
 
     .brand::after {
@@ -350,6 +364,7 @@
         animation: none !important;
       }
 
+      .brand,
       .hello,
       .language {
         transition-duration: 0.01ms !important;
@@ -371,7 +386,7 @@
     <div class="edge-glow"></div>
   </div>
 
-  <div class="brand">الأسرج</div>
+  <div id="brand" class="brand">Elasrag</div>
 
   <main aria-label="Welcome">
     <div class="hello-wrap">
@@ -421,10 +436,33 @@
         { text: "Բարև", lang: "Հայերեն", dir: "ltr" }
       ];
 
+      const brand = document.getElementById("brand");
       const hello = document.getElementById("hello");
       const language = document.getElementById("language");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const brandNames = ["Elasrag", "Mo"];
+      let brandIndex = 0;
       let index = 0;
+
+      function switchBrand() {
+        if (reduceMotion) {
+          brandIndex = (brandIndex + 1) % brandNames.length;
+          brand.textContent = brandNames[brandIndex];
+          return;
+        }
+
+        brand.classList.add("switching");
+
+        window.setTimeout(() => {
+          brandIndex = (brandIndex + 1) % brandNames.length;
+          brand.textContent = brandNames[brandIndex];
+          brand.classList.remove("switching");
+        }, 420);
+      }
+
+      if (!reduceMotion) {
+        window.setInterval(switchBrand, 2600);
+      }
 
       function fitGreeting() {
         const available = Math.min(window.innerWidth * 0.9, 1160);
