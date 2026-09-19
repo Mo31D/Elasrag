@@ -318,10 +318,9 @@
       text-shadow: 0 8px 28px rgba(31,49,64,.08);
       opacity: 0;
       transition:
-        opacity 1.18s cubic-bezier(.22,.74,.18,1),
-        transform 1.3s cubic-bezier(.2,.76,.16,1),
-        filter 1.18s ease;
-      will-change: opacity, transform, filter;
+        opacity .92s cubic-bezier(.22,.74,.18,1),
+        transform 1.05s cubic-bezier(.2,.76,.16,1);
+      will-change: opacity, transform;
     }
 
     .greeting.is-active {
@@ -330,25 +329,24 @@
         translate(-50%,-50%)
         translate3d(calc(var(--mx) * 3px), calc(var(--my) * 2px), 42px)
         scale(1);
-      filter: blur(0);
     }
 
     .greeting.is-leaving {
       opacity: 0;
       transform:
         translate(-50%,-50%)
-        translate3d(calc(var(--mx) * -3px), calc(var(--my) * -2px), 8px)
-        scale(1.018);
-      filter: blur(11px);
+        translate3d(calc(var(--mx) * -2px), calc(var(--my) * -1px), 26px)
+        translateY(-4px)
+        scale(.992);
     }
 
     .greeting.is-entering {
       opacity: 0;
       transform:
         translate(-50%,-50%)
-        translate3d(calc(var(--mx) * 5px), calc(var(--my) * 4px), 88px)
-        scale(.975);
-      filter: blur(11px);
+        translate3d(calc(var(--mx) * 3px), calc(var(--my) * 2px), 62px)
+        translateY(5px)
+        scale(.985);
     }
 
     @keyframes wash {
@@ -548,7 +546,7 @@
             window.setTimeout(() => {
               current.className = "greeting is-entering";
               current.textContent = "";
-            }, 1350);
+            }, 1050);
 
             activeLayer = 1 - activeLayer;
           });
@@ -582,7 +580,7 @@
 
       if (!reduceMotion) {
         window.setInterval(switchBrand, 3400);
-        window.setInterval(switchGreeting, 3000);
+        window.setInterval(switchGreeting, 3200);
       }
     })();
   </script>
