@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#05070b" />
+  <meta name="color-scheme" content="dark" />
+  <title>الأسرج</title>
+  <meta name="description" content="الأسرج" />
+
+  <style>
+    :root {
+      --bg: #05070b;
+      --text: rgba(255, 255, 255, 0.96);
+      --muted: rgba(255, 255, 255, 0.46);
+      --line: rgba(255, 255, 255, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    body {
+      position: relative;
+      min-height: 100svh;
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Segoe UI",
+        "Noto Sans Arabic",
+        "Noto Sans",
+        Arial,
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+      isolation: isolate;
+    }
+
+    .scene {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 48%, rgba(43, 91, 168, 0.12), transparent 24%),
+        radial-gradient(circle at 22% 18%, rgba(89, 75, 255, 0.08), transparent 32%),
+        radial-gradient(circle at 82% 78%, rgba(0, 215, 255, 0.055), transparent 34%),
+        linear-gradient(145deg, #020306 0%, #060913 48%, #020306 100%);
+    }
+
+    .scene::before,
+    .scene::after {
+      content: "";
+      position: absolute;
+      width: 58vmax;
+      height: 58vmax;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: 0.28;
+      mix-blend-mode: screen;
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .scene::before {
+      left: -20vmax;
+      top: -24vmax;
+      background:
+        radial-gradient(circle at 40% 40%, rgba(101, 82, 255, 0.68), rgba(30, 111, 255, 0.11) 46%, transparent 70%);
+      animation: drift-a 15s ease-in-out infinite alternate;
+    }
+
+    .scene::after {
+      right: -24vmax;
+      bottom: -30vmax;
+      background:
+        radial-gradient(circle at 45% 45%, rgba(0, 198, 255, 0.45), rgba(31, 59, 255, 0.10) 48%, transparent 72%);
+      animation: drift-b 18s ease-in-out infinite alternate;
+    }
+
+    .grid {
+      position: absolute;
+      inset: -30%;
+      opacity: 0.13;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+      background-size: 64px 64px;
+      transform: perspective(700px) rotateX(62deg) translateY(27%);
+      transform-origin: center;
+      mask-image: radial-gradient(ellipse at center, black 5%, transparent 69%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 5%, transparent 69%);
+      animation: grid-float 16s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    .scan {
+      position: absolute;
+      inset: 0;
+      opacity: 0.18;
+      background:
+        linear-gradient(
+          to bottom,
+          transparent 0%,
+          rgba(255, 255, 255, 0.018) 48%,
+          rgba(130, 190, 255, 0.08) 50%,
+          rgba(255, 255, 255, 0.018) 52%,
+          transparent 100%
+        );
+      background-size: 100% 240%;
+      animation: scan 9s linear infinite;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .vignette {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, 0.24) 65%, rgba(0, 0, 0, 0.72) 100%);
+      pointer-events: none;
+    }
+
+    #network {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.62;
+      pointer-events: none;
+    }
+
+    .brand {
+      position: fixed;
+      z-index: 5;
+      top: max(30px, calc(env(safe-area-inset-top) + 22px));
+      left: 50%;
+      transform: translateX(-50%);
+      margin: 0;
+      white-space: nowrap;
+      font-size: clamp(17px, 1.45vw, 24px);
+      font-weight: 560;
+      letter-spacing: 0.02em;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow:
+        0 0 18px rgba(121, 172, 255, 0.14),
+        0 0 36px rgba(87, 112, 255, 0.08);
+      user-select: none;
+    }
+
+    .brand::after {
+      content: "";
+      display: block;
+      width: 26px;
+      height: 1px;
+      margin: 10px auto 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.48), transparent);
+      box-shadow: 0 0 12px rgba(132, 181, 255, 0.28);
+    }
+
+    main {
+      position: relative;
+      z-index: 4;
+      width: 100%;
+      height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .hello-wrap {
+      position: relative;
+      width: min(92vw, 1200px);
+      min-height: 220px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      perspective: 900px;
+    }
+
+    .aura {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(68vw, 740px);
+      aspect-ratio: 1.9 / 1;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background:
+        radial-gradient(ellipse at center, rgba(120, 178, 255, 0.13), rgba(88, 92, 255, 0.05) 38%, transparent 70%);
+      filter: blur(28px);
+      animation: breathe 5.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .hello {
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+      min-width: 1px;
+      max-width: 100%;
+      padding: 0.08em 0.16em 0.17em;
+      font-size: clamp(58px, 11vw, 154px);
+      line-height: 0.96;
+      font-weight: 610;
+      letter-spacing: -0.055em;
+      color: transparent;
+      background:
+        linear-gradient(
+          108deg,
+          rgba(255,255,255,0.82) 4%,
+          rgba(255,255,255,1) 30%,
+          rgba(169,214,255,1) 47%,
+          rgba(255,255,255,1) 62%,
+          rgba(255,255,255,0.82) 92%
+        );
+      background-size: 260% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      filter:
+        drop-shadow(0 0 16px rgba(148, 201, 255, 0.13))
+        drop-shadow(0 0 42px rgba(74, 113, 255, 0.09));
+      animation:
+        sheen 6.5s linear infinite,
+        float-text 5.4s ease-in-out infinite;
+      transform-style: preserve-3d;
+      white-space: nowrap;
+      transition:
+        opacity 0.5s cubic-bezier(.2,.75,.2,1),
+        transform 0.7s cubic-bezier(.2,.75,.2,1),
+        filter 0.55s ease;
+      will-change: transform, opacity, filter;
+    }
+
+    .hello.enter {
+      opacity: 0;
+      transform: translateY(22px) scale(0.985) rotateX(-4deg);
+      filter: blur(13px) drop-shadow(0 0 22px rgba(90,150,255,.12));
+    }
+
+    .hello.exit {
+      opacity: 0;
+      transform: translateY(-22px) scale(1.018) rotateX(4deg);
+      filter: blur(13px) drop-shadow(0 0 22px rgba(90,150,255,.12));
+    }
+
+    .language {
+      position: absolute;
+      z-index: 3;
+      top: calc(50% + clamp(58px, 7vw, 90px));
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(10px, 0.9vw, 13px);
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      transition: opacity 0.42s ease, transform 0.55s ease;
+      user-select: none;
+    }
+
+    .language.fade {
+      opacity: 0;
+      transform: translate(-50%, 7px);
+    }
+
+    .edge-glow {
+      position: absolute;
+      inset: 0;
+      box-shadow:
+        inset 0 0 120px rgba(69, 108, 255, 0.025),
+        inset 0 0 240px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+    }
+
+    @keyframes drift-a {
+      0%   { transform: translate3d(0,0,0) scale(1); }
+      100% { transform: translate3d(12vmax,8vmax,0) scale(1.14); }
+    }
+
+    @keyframes drift-b {
+      0%   { transform: translate3d(0,0,0) scale(1.06); }
+      100% { transform: translate3d(-11vmax,-7vmax,0) scale(1.2); }
+    }
+
+    @keyframes grid-float {
+      from { transform: perspective(700px) rotateX(62deg) translateY(27%) translateX(-1%); }
+      to   { transform: perspective(700px) rotateX(62deg) translateY(24%) translateX(1%); }
+    }
+
+    @keyframes scan {
+      from { background-position: 0 -110%; }
+      to   { background-position: 0 110%; }
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.58; transform: translate(-50%, -50%) scale(0.94); }
+      50%      { opacity: 0.94; transform: translate(-50%, -50%) scale(1.08); }
+    }
+
+    @keyframes sheen {
+      from { background-position: 120% 0; }
+      to   { background-position: -120% 0; }
+    }
+
+    @keyframes float-text {
+      0%, 100% { translate: 0 0; }
+      50%      { translate: 0 -4px; }
+    }
+
+    @media (max-width: 720px) {
+      .hello-wrap {
+        min-height: 170px;
+      }
+
+      .hello {
+        font-size: clamp(54px, 17vw, 104px);
+        letter-spacing: -0.06em;
+      }
+
+      .language {
+        top: calc(50% + 58px);
+      }
+
+      .grid {
+        background-size: 48px 48px;
+        opacity: 0.1;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .scene::before,
+      .scene::after,
+      .grid,
+      .scan,
+      .aura,
+      .hello {
+        animation: none !important;
+      }
+
+      .hello,
+      .language {
+        transition-duration: 0.01ms !important;
+      }
+
+      #network {
+        opacity: 0.28;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="scene" aria-hidden="true">
+    <canvas id="network"></canvas>
+    <div class="grid"></div>
+    <div class="scan"></div>
+    <div class="vignette"></div>
+    <div class="edge-glow"></div>
+  </div>
+
+  <div class="brand">الأسرج</div>
+
+  <main aria-label="Welcome">
+    <div class="hello-wrap">
+      <div class="aura" aria-hidden="true"></div>
+      <div id="hello" class="hello" role="status" aria-live="polite">مرحبًا</div>
+      <div id="language" class="language">العربية</div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const greetings = [
+        { text: "مرحبًا", lang: "العربية", dir: "rtl" },
+        { text: "Hello", lang: "English", dir: "ltr" },
+        { text: "Bonjour", lang: "Français", dir: "ltr" },
+        { text: "Hola", lang: "Español", dir: "ltr" },
+        { text: "Ciao", lang: "Italiano", dir: "ltr" },
+        { text: "Hallo", lang: "Deutsch", dir: "ltr" },
+        { text: "Cześć", lang: "Polski", dir: "ltr" },
+        { text: "Olá", lang: "Português", dir: "ltr" },
+        { text: "Привет", lang: "Русский", dir: "ltr" },
+        { text: "Вітаю", lang: "Українська", dir: "ltr" },
+        { text: "Merhaba", lang: "Türkçe", dir: "ltr" },
+        { text: "Γεια σου", lang: "Ελληνικά", dir: "ltr" },
+        { text: "שלום", lang: "עברית", dir: "rtl" },
+        { text: "سلام", lang: "فارسی", dir: "rtl" },
+        { text: "नमस्ते", lang: "हिन्दी", dir: "ltr" },
+        { text: "নমস্কার", lang: "বাংলা", dir: "ltr" },
+        { text: "你好", lang: "中文", dir: "ltr" },
+        { text: "こんにちは", lang: "日本語", dir: "ltr" },
+        { text: "안녕하세요", lang: "한국어", dir: "ltr" },
+        { text: "สวัสดี", lang: "ไทย", dir: "ltr" },
+        { text: "Xin chào", lang: "Tiếng Việt", dir: "ltr" },
+        { text: "Halo", lang: "Bahasa Indonesia", dir: "ltr" },
+        { text: "Hai", lang: "Bahasa Melayu", dir: "ltr" },
+        { text: "Kumusta", lang: "Filipino", dir: "ltr" },
+        { text: "Jambo", lang: "Kiswahili", dir: "ltr" },
+        { text: "Salut", lang: "Română", dir: "ltr" },
+        { text: "Ahoj", lang: "Čeština", dir: "ltr" },
+        { text: "Helló", lang: "Magyar", dir: "ltr" },
+        { text: "Hej", lang: "Svenska", dir: "ltr" },
+        { text: "Hei", lang: "Norsk", dir: "ltr" },
+        { text: "Hej", lang: "Dansk", dir: "ltr" },
+        { text: "Hei", lang: "Suomi", dir: "ltr" },
+        { text: "Hallo", lang: "Nederlands", dir: "ltr" },
+        { text: "გამარჯობა", lang: "ქართული", dir: "ltr" },
+        { text: "Բարև", lang: "Հայերեն", dir: "ltr" }
+      ];
+
+      const hello = document.getElementById("hello");
+      const language = document.getElementById("language");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let index = 0;
+
+      function fitGreeting() {
+        const available = Math.min(window.innerWidth * 0.9, 1160);
+        hello.style.fontSize = "";
+        const computed = parseFloat(getComputedStyle(hello).fontSize);
+
+        if (hello.scrollWidth > available) {
+          const nextSize = Math.max(38, computed * (available / hello.scrollWidth));
+          hello.style.fontSize = nextSize + "px";
+        }
+      }
+
+      function showGreeting(nextIndex) {
+        if (reduceMotion) {
+          index = nextIndex;
+          const item = greetings[index];
+          hello.textContent = item.text;
+          hello.dir = item.dir;
+          language.textContent = item.lang;
+          fitGreeting();
+          return;
+        }
+
+        hello.classList.add("exit");
+        language.classList.add("fade");
+
+        window.setTimeout(() => {
+          index = nextIndex;
+          const item = greetings[index];
+
+          hello.textContent = item.text;
+          hello.dir = item.dir;
+          language.textContent = item.lang;
+          fitGreeting();
+
+          hello.classList.remove("exit");
+          hello.classList.add("enter");
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              hello.classList.remove("enter");
+              language.classList.remove("fade");
+            });
+          });
+        }, 500);
+      }
+
+      fitGreeting();
+      window.addEventListener("resize", fitGreeting, { passive: true });
+
+      if (!reduceMotion) {
+        window.setInterval(() => {
+          showGreeting((index + 1) % greetings.length);
+        }, 2200);
+      }
+
+      const canvas = document.getElementById("network");
+      const ctx = canvas.getContext("2d", { alpha: true });
+      let width = 0;
+      let height = 0;
+      let dpr = 1;
+      let particles = [];
+      let mouse = { x: 0, y: 0, active: false };
+
+      function resizeCanvas() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const count = Math.max(24, Math.min(58, Math.floor((width * height) / 26000)));
+        particles = Array.from({ length: count }, () => ({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.15,
+          vy: (Math.random() - 0.5) * 0.15,
+          r: Math.random() * 1.15 + 0.35,
+          pulse: Math.random() * Math.PI * 2
+        }));
+      }
+
+      function drawNetwork(time) {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+
+          p.x += p.vx;
+          p.y += p.vy;
+          p.pulse += 0.012;
+
+          if (p.x < -20) p.x = width + 20;
+          if (p.x > width + 20) p.x = -20;
+          if (p.y < -20) p.y = height + 20;
+          if (p.y > height + 20) p.y = -20;
+
+          if (mouse.active) {
+            const dx = p.x - mouse.x;
+            const dy = p.y - mouse.y;
+            const dist = Math.hypot(dx, dy);
+
+            if (dist < 180 && dist > 0.1) {
+              const force = (180 - dist) / 18000;
+              p.x += dx * force;
+              p.y += dy * force;
+            }
+          }
+
+          for (let j = i + 1; j < particles.length; j++) {
+            const q = particles[j];
+            const dx = p.x - q.x;
+            const dy = p.y - q.y;
+            const dist2 = dx * dx + dy * dy;
+            const max = width < 700 ? 115 : 145;
+
+            if (dist2 < max * max) {
+              const dist = Math.sqrt(dist2);
+              const alpha = (1 - dist / max) * 0.105;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.strokeStyle = "rgba(128, 177, 255, " + alpha.toFixed(3) + ")";
+              ctx.lineWidth = 0.65;
+              ctx.stroke();
+            }
+          }
+
+          const glow = 0.38 + Math.sin(p.pulse + time * 0.0004) * 0.15;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(187, 216, 255, " + glow.toFixed(3) + ")";
+          ctx.fill();
+        }
+
+        if (!reduceMotion) requestAnimationFrame(drawNetwork);
+      }
+
+      resizeCanvas();
+
+      if (reduceMotion) {
+        drawNetwork(0);
+      } else {
+        requestAnimationFrame(drawNetwork);
+      }
+
+      window.addEventListener("resize", resizeCanvas, { passive: true });
+
+      window.addEventListener("pointermove", (event) => {
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
+        mouse.active = true;
+      }, { passive: true });
+
+      window.addEventListener("pointerleave", () => {
+        mouse.active = false;
+      }, { passive: true });
+    })();
+  </script>
+</body>
+</html>
