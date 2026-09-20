@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" role="img" aria-labelledby="t d">
+<title id="t">شجرة ترمز لاستمرارية عائلة الأسرج</title>
+<desc id="d">منظر طبيعي هادئ بخطوط بسيطة وشجرة وحيدة.</desc>
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#eef3f4"/>
+    <stop offset="1" stop-color="#faf8f3"/>
+  </linearGradient>
+  <linearGradient id="land" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#d8ddd8"/>
+    <stop offset=".55" stop-color="#c4cec7"/>
+    <stop offset="1" stop-color="#aab8ad"/>
+  </linearGradient>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="3"/>
+  </filter>
+  <filter id="grain" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="9" result="n"/>
+    <feColorMatrix in="n" type="saturate" values="0" result="g"/>
+    <feComponentTransfer in="g"><feFuncA type="table" tableValues="0 .07"/></feComponentTransfer>
+  </filter>
+</defs>
+<rect width="1200" height="560" fill="url(#sky)"/>
+<path d="M0 370 C170 326 307 335 449 365 C604 397 732 363 873 337 C1010 311 1104 321 1200 350 L1200 560 L0 560Z" fill="#e2e5de"/>
+<path d="M0 423 C211 388 375 419 566 436 C752 452 954 400 1200 393 L1200 560 L0 560Z" fill="url(#land)"/>
+<path d="M0 480 C263 440 438 490 642 493 C814 495 998 451 1200 448 L1200 560 L0 560Z" fill="#96a694" opacity=".52"/>
+<g transform="translate(720 66)">
+  <path d="M169 365 C156 314 171 265 165 212 C162 184 164 157 176 133 C185 116 199 104 213 99 C217 124 211 148 212 171 C214 214 225 257 218 300 C214 325 210 346 217 365Z" fill="#5e665e"/>
+  <path d="M186 204 C154 171 127 151 97 126 M195 189 C227 155 254 134 292 118 M180 236 C140 218 109 213 76 217 M204 229 C247 207 282 198 323 201" fill="none" stroke="#646e65" stroke-width="7" stroke-linecap="round"/>
+  <g fill="#6d756a">
+    <ellipse cx="80" cy="119" rx="68" ry="48"/>
+    <ellipse cx="130" cy="86" rx="76" ry="56"/>
+    <ellipse cx="190" cy="83" rx="85" ry="60"/>
+    <ellipse cx="254" cy="92" rx="78" ry="55"/>
+    <ellipse cx="310" cy="127" rx="70" ry="50"/>
+    <ellipse cx="113" cy="151" rx="78" ry="48"/>
+    <ellipse cx="205" cy="141" rx="102" ry="66"/>
+    <ellipse cx="282" cy="159" rx="79" ry="49"/>
+  </g>
+  <g fill="#879082" opacity=".68" filter="url(#soft)">
+    <ellipse cx="124" cy="91" rx="48" ry="28"/>
+    <ellipse cx="232" cy="91" rx="50" ry="30"/>
+    <ellipse cx="177" cy="146" rx="58" ry="30"/>
+    <ellipse cx="287" cy="142" rx="43" ry="25"/>
+  </g>
+</g>
+<rect width="1200" height="560" filter="url(#grain)" opacity=".4"/>
+</svg>
