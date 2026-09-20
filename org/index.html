@@ -51,7 +51,10 @@
     .shell{width:min(1240px,calc(100% - 32px));margin:0 auto;padding:28px 0 64px}
     .topbar{
       display:flex;align-items:center;justify-content:space-between;gap:18px;
-      margin-bottom:54px;
+      margin-bottom:54px;position:sticky;top:10px;z-index:30;padding:8px 10px;
+      border:1px solid rgba(31,49,64,.08);border-radius:18px;
+      background:rgba(239,237,230,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+      box-shadow:0 10px 32px rgba(31,49,64,.05);
     }
     .brand{display:flex;align-items:baseline;gap:12px;direction:ltr}
     .brand strong{
@@ -182,16 +185,25 @@
       .topbar{margin-bottom:40px}
     }
     @media (max-width:620px){
-      .shell{width:min(100% - 20px,1240px);padding-top:16px}
-      .brand span{display:none}
-      .hero{margin-bottom:32px}
-      .lede{font-size:15px}
-      .map{padding:10px;border-radius:22px}
-      .grid{grid-template-columns:1fr;gap:9px}
-      .chapter{min-height:126px;padding:15px}
-      .chapter h2{margin-top:18px}
+      .shell{width:min(100% - 18px,1240px);padding-top:8px;padding-bottom:42px}
+      .topbar{top:6px;margin-bottom:24px;padding:6px 7px;border-radius:16px}
+      .brand{min-height:40px;align-items:center}.brand strong{font-size:18px;letter-spacing:.13em}.brand span{display:none}
+      .controls{gap:5px}.lang{padding:2px}.lang button{min-width:38px;min-height:34px;padding:6px 8px}
+      .hero{margin-bottom:25px}.eyebrow{font-size:10px;margin-bottom:11px}
+      h1{font-size:clamp(38px,13vw,56px);line-height:1.01;letter-spacing:-.045em}
+      .lede{font-size:14px;line-height:1.65;margin-top:17px}
+      .principle{margin-top:18px;padding:10px 12px;font-size:11px}
+      .legend{gap:6px;margin-bottom:12px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;padding-bottom:2px}
+      .legend::-webkit-scrollbar{display:none}.legend button{flex:0 0 auto;padding:8px 10px;font-size:11px}
+      .map{padding:8px;border-radius:18px}
+      .grid{grid-template-columns:1fr;gap:7px}
+      .chapter{min-height:108px;padding:14px;border-radius:16px;position:relative}
+      .chapter:after{content:"›";position:absolute;inset-inline-end:14px;bottom:13px;color:var(--steel);font-size:20px;line-height:1}
+      [dir="rtl"] .chapter:after{content:"‹"}
+      .chapter h2{margin-top:14px;font-size:19px;padding-inline-end:20px}.chapter p{font-size:12px;padding-inline-end:18px}
+      .chapter .group{font-size:9px}.num{font-size:10px}
       #web{display:none}
-      .foot{flex-direction:column;align-items:flex-start}
+      .foot{flex-direction:column;align-items:flex-start;margin-top:16px;gap:6px;font-size:10px}
     }
     @media (prefers-reduced-motion:reduce){
       *{scroll-behavior:auto!important;transition:none!important}
@@ -201,7 +213,7 @@
 <body>
   <main class="shell">
     <header class="topbar">
-      <a class="brand" href="/" aria-label="Elasrag home">
+      <a class="brand" href="/org/" aria-label="Elasrag family institution index">
         <strong>ELASRAG</strong><span id="brandSub">Family Institution</span>
       </a>
       <div class="controls">
