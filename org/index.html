@@ -475,7 +475,7 @@
         card.addEventListener("mouseleave",clearHighlight);
         card.addEventListener("focus",()=>highlight(ch.id));
         card.addEventListener("blur",clearHighlight);
-        const livePages={purpose:"purpose/",structure:"structure/",ownership:"ownership/"};
+        const livePages={purpose:"purpose/",structure:"structure/",ownership:"ownership/",control:"control/"};
         card.addEventListener("click",()=>{ if(livePages[ch.id]) location.href=livePages[ch.id]; else openChapter(ch.id); });
         card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault(); if(livePages[ch.id]) location.href=livePages[ch.id]; else openChapter(ch.id);}});
         grid.appendChild(card);
