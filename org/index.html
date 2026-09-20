@@ -217,7 +217,7 @@
         <strong>ELASRAG</strong><span id="brandSub">Family Institution</span>
       </a>
       <div class="controls">
-        <input id="search" class="search" type="search" placeholder="ابحث في الفهرس" aria-label="Search index" />
+        <input id="search" class="search" type="search" placeholder="دوّر في الفهرس" aria-label="Search index" />
         <div class="lang" aria-label="Language">
           <button id="arBtn" class="active" type="button">AR</button>
           <button id="enBtn" type="button">EN</button>
@@ -226,10 +226,10 @@
     </header>
 
     <section class="hero">
-      <div class="eyebrow" id="eyebrow">دستور حي · خريطة المؤسسة</div>
+      <div class="eyebrow" id="eyebrow">دستور العائلة · خريطة المؤسسة</div>
       <h1 id="heroTitle">مؤسسة عائلة <span class="family">الأسرج</span></h1>
-      <p class="lede" id="heroLede">خريطة مختصرة لما يجب أن نفهمه ونحسمه لنَبني مؤسسة عائلية تنمو، تحمي رأس المال، وتستمر عبر الأجيال.</p>
-      <div class="principle" id="principle">العائلة تستفيد · المؤسسة تستمر</div>
+      <p class="lede" id="heroLede">خريطة بسيطة للحاجات اللي لازم نفهمها ونتفق عليها عشان نبني مؤسسة عائلية تكبر، تحافظ على أصل الثروة، وتكمل مع الأجيال.</p>
+      <div class="principle" id="principle">العيلة تستفيد · المؤسسة تكمل</div>
     </section>
 
     <div class="legend" id="legend"></div>
@@ -240,8 +240,8 @@
     </section>
 
     <footer class="foot">
-      <div id="footCopy">14 بابًا · كل باب يرتبط بما يؤثر فيه مباشرة</div>
-      <div class="status" id="status">Living Document · وثيقة حيّة</div>
+      <div id="footCopy">١٤ باب · كل باب مربوط بالمواضيع اللي بتأثر فيه</div>
+      <div class="status" id="status">وثيقة بتتطور مع المؤسسة</div>
     </footer>
   </main>
 
@@ -266,127 +266,127 @@
     const chapters = [
       {
         id:"purpose", n:"01", group:"foundation",
-        ar:"الغاية والاستمرارية", en:"Purpose & Permanence",
-        arShort:"لماذا توجد المؤسسة؟ وما الذي يجب أن يبقى بعدنا؟",
+        ar:"الغاية واستمرار المؤسسة", en:"Purpose & Permanence",
+        arShort:"ليه المؤسسة موجودة؟ وإيه اللي لازم يفضل ثابت بعدنا؟",
         enShort:"Why does the institution exist, and what must outlive us?",
-        arBody:"نحدد الهدف الطويل للمؤسسة، معنى النجاح، وما الذي نحميه عبر الأجيال دون تجميد قدرتها على التطور.",
+        arBody:"بنحدد المؤسسة معمولة ليه، وإيه معنى النجاح بالنسبة لنا، وإيه اللي لازم نحافظ عليه من غير ما نربط إيد الأجيال الجاية.",
         enBody:"Define the institution’s long-term purpose, what success means, and what must be protected across generations without freezing its ability to evolve.",
         related:["structure","ownership","control","amend"]
       },
       {
         id:"structure", n:"02", group:"foundation",
-        ar:"هيكل المجموعة", en:"Group Architecture",
-        arShort:"الشركة الأم، الشركات التابعة، وفصل الأصول والمخاطر.",
+        ar:"شكل المؤسسة والشركات", en:"Group Architecture",
+        arShort:"شركة أم في القمة، وتحتها شركات منفصلة حسب نوع الشغل والأصول والمخاطر.",
         enShort:"Parent company, subsidiaries, and separation of assets and risks.",
-        arBody:"نقرر ما الذي تملكه الشركة الأم، وما الذي يوضع في شركات مستقلة: تجارة، عقارات، استثمار، أرض أو أنشطة مستقبلية.",
+        arBody:"بنحدد إيه يفضل في الشركة الأم وإيه يتحط في شركة لوحده: تجارة، عقارات، استثمارات، أراضي أو أي نشاط جديد.",
         enBody:"Decide what the parent owns and what belongs in separate subsidiaries: trading, property, investment, land, or future activities.",
         related:["purpose","ownership","capital","tax"]
       },
       {
         id:"ownership", n:"03", group:"ownership",
-        ar:"الملكية وفئات الأسهم", en:"Ownership & Share Classes",
-        arShort:"من يملك القيمة؟ ومن يملك الدخل؟ ومن يملك الصوت؟",
+        ar:"الملكية وأنواع الأسهم", en:"Ownership & Share Classes",
+        arShort:"مين يملك القيمة؟ مين ياخد أرباح؟ ومين له حق القرار؟",
         enShort:"Who owns value, income, and voting power?",
-        arBody:"نفصل عند الحاجة بين حقوق التصويت، الأرباح، ونمو رأس المال بدل أن يحمل كل سهم كل الحقوق نفسها.",
+        arBody:"نفصل عند الحاجة بين حقوق التصويت، الأرباح، ونمو الفلوس والاستثمار بدل أن يحمل كل سهم كل الحقوق نفسها.",
         enBody:"Separate voting, income, and capital-growth rights where useful instead of giving every share identical rights.",
         related:["structure","control","succession","exit","tax"]
       },
       {
         id:"control", n:"04", group:"ownership",
-        ar:"السيطرة والقرارات المحمية", en:"Control & Protected Decisions",
-        arShort:"من يقرر؟ وما القرارات التي تحتاج حماية إضافية؟",
+        ar:"مين يقرر وإيه اللي لازم يتحمى", en:"Control & Protected Decisions",
+        arShort:"مين من حقه يقرر؟ وإيه القرارات الكبيرة اللي لازم يبقى عليها حماية زيادة؟",
         enShort:"Who decides, and which decisions need extra protection?",
-        arBody:"نحدد صلاحيات المؤسس، المساهمين، المجلس، وأي قرارات مصيرية تحتاج أغلبية خاصة أو موافقة مستقلة.",
+        arBody:"بنحدد صلاحيات المؤسس والمساهمين ومجلس الإدارة، وإيه القرارات المصيرية اللي محتاجة موافقة أقوى من القرار العادي.",
         enBody:"Set the powers of the founder, shareholders and board, and identify major decisions requiring special approval.",
         related:["ownership","governance","board","amend","succession"]
       },
       {
         id:"capital", n:"05", group:"capital",
-        ar:"الأرباح وتخصيص رأس المال", en:"Profit & Capital Allocation",
-        arShort:"كم نوزع؟ كم نعيد استثماره؟ ومتى نحتفظ بالنقد؟",
+        ar:"الأرباح وتخصيص الفلوس والاستثمار", en:"Profit & Capital Allocation",
+        arShort:"نوزع قد إيه؟ نعيد استثمار قد إيه؟ ونحتفظ بسيولة قد إيه؟",
         enShort:"How much do we distribute, reinvest, or keep in reserve?",
-        arBody:"نضع فلسفة واضحة لتوزيع الأرباح، إعادة الاستثمار، الاحتياطيات، وتمويل النمو قبل أن تصبح السيولة سببًا للخلاف.",
+        arBody:"بنحط قاعدة واضحة لاستخدام الأرباح: جزء للنمو، جزء للاحتياطي، وجزء ممكن يتوزع من غير ما نضعف المؤسسة.",
         enBody:"Set a clear philosophy for distributions, reinvestment, reserves and growth funding before cash becomes a source of conflict.",
         related:["structure","risk","exit","tax"]
       },
       {
         id:"risk", n:"06", group:"capital",
         ar:"الاستثمار والديون والمخاطر", en:"Investment, Debt & Risk",
-        arShort:"أين نستثمر؟ وما حدود الاقتراض والمخاطرة؟",
+        arShort:"نستثمر في إيه؟ ونستدين لحد فين؟ وإيه مستوى المخاطرة المقبول؟",
         enShort:"Where do we invest, and how much risk or debt is acceptable?",
-        arBody:"نحدد حدود الاستثمار، التنويع، الاقتراض، الضمانات، والسيولة بحيث تنمو المؤسسة دون تعريض أصلها للخطر.",
+        arBody:"بنحدد حدود واضحة للاستثمار والدين والضمانات والسيولة عشان نكبر من غير ما نحط أصل المؤسسة كله في خطر.",
         enBody:"Define investment limits, diversification, borrowing, security and liquidity so growth does not endanger the institution itself.",
         related:["capital","structure","tax","control"]
       },
       {
         id:"governance", n:"07", group:"governance",
-        ar:"حوكمة العائلة", en:"Family Governance",
-        arShort:"كيف تتكلم العائلة بصوت منظم بدل قرارات فردية؟",
+        ar:"إدارة شؤون العيلة", en:"Family Governance",
+        arShort:"إزاي العيلة تتكلم وتختلف وتتفق بنظام بدل ما كل واحد يتحرك لوحده؟",
         enShort:"How does the family act through a system, not personalities?",
-        arBody:"نحدد Family Council، تمثيل الفروع، الاجتماعات، تدفق المعلومات، وما هو شأن عائلي وما هو شأن شركة.",
+        arBody:"بنحدد مجلس للعيلة، وتمثيل كل فرع، ومواعيد الكلام والمعلومات، ونفصل بين مشاكل العيلة وقرارات الشركة.",
         enBody:"Define the Family Council, branch representation, meetings, information flow, and the boundary between family matters and company matters.",
         related:["control","board","familywork","conflict"]
       },
       {
         id:"board", n:"08", group:"governance",
-        ar:"مجلس الإدارة والإدارة التنفيذية", en:"Board & Management",
-        arShort:"من يراقب؟ من يدير؟ ومن يُحاسب من؟",
+        ar:"مجلس الإدارة وإدارة الشغل", en:"Board & Management",
+        arShort:"مين يراقب؟ مين يدير الشغل؟ ومين يحاسب مين؟",
         enShort:"Who oversees, who runs, and who is accountable to whom?",
-        arBody:"نفصل بين المالك، عضو مجلس الإدارة، والرئيس التنفيذي، ونحدد دور الأعضاء المستقلين عند نمو المجموعة.",
+        arBody:"بنفرق بين المالك وعضو مجلس الإدارة والمدير التنفيذي، ونضيف ناس مستقلة لما حجم المؤسسة يحتاج كده.",
         enBody:"Separate owner, director and executive roles, and define when independent directors become part of the system.",
         related:["governance","control","familywork","succession"]
       },
       {
         id:"familywork", n:"09", group:"governance",
-        ar:"عمل أفراد العائلة", en:"Family Employment",
-        arShort:"الملكية بالوراثة ممكنة؛ الوظيفة بالكفاءة.",
+        ar:"شغل أفراد العيلة", en:"Family Employment",
+        arShort:"الملكية ممكن تتورث، لكن الوظيفة لازم تتاخد بالكفاءة.",
         enShort:"Ownership may be inherited; a job must be earned.",
-        arBody:"نحدد شروط دخول أفراد العائلة للعمل، الرواتب، التقييم، الترقية، ومتى يكون المدير من خارج الأسرة أفضل.",
+        arBody:"بنحدد إمتى فرد من العيلة يشتغل، ياخد كام، يتقيّم إزاي، يترقى إمتى، وإمتى يكون الأفضل نجيب مدير من بره.",
         enBody:"Set rules for family employment, pay, evaluation, promotion, and when an external executive is the better choice.",
         related:["governance","board","succession"]
       },
       {
         id:"succession", n:"10", group:"continuity",
-        ar:"الخلافة والقيادة", en:"Succession & Leadership",
-        arShort:"كيف تنتقل المسؤولية دون أن تنتقل الفوضى؟",
+        ar:"مين يكمل القيادة بعد المؤسس", en:"Succession & Leadership",
+        arShort:"إزاي المسؤولية تنتقل من جيل لجيل من غير ما المؤسسة تدخل في فوضى؟",
         enShort:"How does responsibility pass without passing chaos?",
-        arBody:"نخطط مبكرًا لانتقال القيادة والسيطرة، مع بدائل إذا لم يكن الجيل التالي جاهزًا أو راغبًا في الإدارة.",
+        arBody:"بنجهز من بدري لنقل القيادة والسيطرة، ولو الجيل اللي بعدنا مش جاهز أو مش عايز يدير يبقى عندنا بديل.",
         enBody:"Plan leadership and control transitions early, including what happens if the next generation is not ready or does not want to manage.",
         related:["ownership","control","board","inheritance","familywork"]
       },
       {
         id:"inheritance", n:"11", group:"continuity",
         ar:"الوفاة والعجز والميراث", en:"Death, Incapacity & Inheritance",
-        arShort:"ماذا يحدث للأسهم والسلطة إذا غاب أحد فجأة؟",
+        arShort:"إيه اللي يحصل للأسهم والقرارات لو شخص أساسي مات أو فقد القدرة فجأة؟",
         enShort:"What happens to shares and authority if someone suddenly cannot act?",
-        arBody:"نربط الأسهم بالوصايا والخطط القانونية بحيث لا تعطل الوفاة أو فقد الأهلية إدارة المجموعة أو ملكيتها.",
+        arBody:"بنخلي الوصية والنظام الأساسي وخطة الطوارئ متوافقين عشان وفاة شخص أو عجزه ما توقفش المؤسسة.",
         enBody:"Align shares with wills and legal planning so death or incapacity does not destabilise ownership or management.",
         related:["succession","ownership","marriage","tax"]
       },
       {
         id:"marriage", n:"12", group:"continuity",
-        ar:"الزواج والطلاق وحدود العائلة", en:"Marriage, Divorce & Family Boundaries",
-        arShort:"كيف نحمي استمرارية الملكية دون ظلم الأسرة؟",
+        ar:"الزواج والطلاق وحدود العيلة", en:"Marriage, Divorce & Family Boundaries",
+        arShort:"إزاي نحافظ على ملكية المؤسسة من غير ما نظلم زوج أو زوجة أو أولاد؟",
         enShort:"How do we protect continuity without treating family unfairly?",
-        arBody:"نحدد من يعد مالكًا عائليًا، انتقال الأسهم، وسياسات الزواج والطلاق بما يقلل انتقال السيطرة خارج النظام.",
+        arBody:"بنحدد مين يملك أسهم العيلة، وإزاي الأسهم تنتقل، وإزاي نحافظ على السيطرة داخل النظام لو حصل زواج أو طلاق.",
         enBody:"Define who qualifies as a family owner, transfer rules, and marriage/divorce policies that reduce unintended loss of control.",
         related:["inheritance","ownership","exit","conflict"]
       },
       {
         id:"exit", n:"13", group:"continuity",
-        ar:"الخروج والسيولة والتقييم", en:"Exit, Liquidity & Valuation",
-        arShort:"كيف يحصل من يريد الخروج على قيمة عادلة دون كسر المؤسسة؟",
+        ar:"لو حد عايز يخرج: البيع والسيولة والتقييم", en:"Exit, Liquidity & Valuation",
+        arShort:"لو حد عايز يبيع حصته، ياخد حقه إزاي من غير ما نضطر نكسر المؤسسة؟",
         enShort:"How can someone leave fairly without breaking the institution?",
-        arBody:"نصمم آلية شراء أو نقل الحصص، طريقة التقييم، ومصادر السيولة حتى لا نُجبر على بيع أصول جيدة لتمويل خروج فرد.",
+        arBody:"بنحط طريقة واضحة للبيع والتقييم وتوفير الفلوس عشان خروج شخص ما يجبرناش نبيع أصل كويس بسرعة.",
         enBody:"Design transfer, valuation and liquidity mechanisms so one person’s exit does not force the sale of strong long-term assets.",
         related:["ownership","capital","marriage","tax","conflict"]
       },
       {
         id:"tax", n:"14", group:"continuity",
-        ar:"القانون والضرائب والتعديل", en:"Legal, Tax & Amendment",
-        arShort:"كيف تتحول الفكرة إلى نظام قانوني قابل للحياة والتطور؟",
+        ar:"القانون والضرائب وتغيير القواعد", en:"Legal, Tax & Amendment",
+        arShort:"إزاي نحول الفكرة لنظام قانوني يعيش ويتغير لما نحتاج؟",
         enShort:"How does the idea become a lawful system that can still evolve?",
-        arBody:"نراجع Articles، اتفاقات المساهمين، الوصايا، الـTrusts، الضرائب، وآلية تعديل القواعد دون هدم المبادئ الأساسية.",
+        arBody:"بنخلي النظام الأساسي واتفاق المساهمين والوصايا والترتيبات الائتمانية والضرائب كلها ماشية في نفس الاتجاه، ونحدد إزاي نغير القواعد من غير ما نهدم الأساس.",
         enBody:"Align Articles, shareholder agreements, wills, trusts, tax planning and amendment rules without losing the core principles.",
         related:["purpose","structure","ownership","control","inheritance","exit"]
       }
@@ -395,21 +395,21 @@
     const groups = {
       foundation:{ar:"الأساس",en:"Foundation"},
       ownership:{ar:"الملكية",en:"Ownership"},
-      capital:{ar:"رأس المال",en:"Capital"},
-      governance:{ar:"الحوكمة",en:"Governance"},
-      continuity:{ar:"الاستمرارية",en:"Continuity"}
+      capital:{ar:"الفلوس والاستثمار",en:"Capital"},
+      governance:{ar:"الإدارة والرقابة",en:"Governance"},
+      continuity:{ar:"استمرار المؤسسة",en:"Continuity"}
     };
 
     const ui = {
       ar:{
         brandSub:"Family Institution",
-        eyebrow:"دستور حي · خريطة المؤسسة",
+        eyebrow:"دستور العائلة · خريطة المؤسسة",
         heroTitle:'مؤسسة عائلة <span class="family">الأسرج</span>',
-        lede:"خريطة مختصرة لما يجب أن نفهمه ونحسمه لنَبني مؤسسة عائلية تنمو، تحمي رأس المال، وتستمر عبر الأجيال.",
-        principle:"العائلة تستفيد · المؤسسة تستمر",
-        search:"ابحث في الفهرس",
-        foot:"14 بابًا · كل باب يرتبط بما يؤثر فيه مباشرة",
-        status:"Living Document · وثيقة حيّة",
+        lede:"خريطة بسيطة للحاجات اللي لازم نفهمها ونتفق عليها عشان نبني مؤسسة عائلية تكبر، تحافظ على أصل الثروة، وتكمل مع الأجيال.",
+        principle:"العيلة تستفيد · المؤسسة تكمل",
+        search:"دوّر في الفهرس",
+        foot:"١٤ باب · كل باب مربوط بالمواضيع اللي بتأثر فيه",
+        status:"وثيقة بتتطور مع المؤسسة",
         related:"مرتبط مباشرة بـ"
       },
       en:{
