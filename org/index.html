@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#ece9e1" />
+  <title>Elasrag Family Institution · مؤسسة عائلة الأسرج</title>
+  <meta name="description" content="The living handbook and governance map of the Elasrag Family Institution." />
+  <style>
+    :root{
+      --paper:#ece9e1;
+      --paper-2:#e3e3dc;
+      --ink:#14202a;
+      --navy:#1f3140;
+      --steel:#71838d;
+      --olive:#7d8472;
+      --line:rgba(31,49,64,.14);
+      --line-strong:rgba(31,49,64,.42);
+      --card:rgba(255,255,255,.48);
+      --card-strong:rgba(255,255,255,.78);
+      --shadow:0 18px 60px rgba(30,48,59,.08);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255,255,255,.92), transparent 28%),
+        radial-gradient(circle at 82% 18%, rgba(201,210,213,.55), transparent 30%),
+        radial-gradient(circle at 72% 82%, rgba(125,132,114,.16), transparent 34%),
+        linear-gradient(135deg,#f1eee7 0%,#e5e4dd 52%,#dce1e1 100%);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","Noto Sans Arabic","Noto Sans",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    body:before{
+      content:"";
+      position:fixed; inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(31,49,64,.028) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(31,49,64,.028) 1px,transparent 1px);
+      background-size:44px 44px;
+      mask-image:radial-gradient(circle at 50% 30%,#000 0,transparent 78%);
+    }
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+
+    .shell{width:min(1240px,calc(100% - 32px));margin:0 auto;padding:28px 0 64px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:18px;
+      margin-bottom:54px;
+    }
+    .brand{display:flex;align-items:baseline;gap:12px;direction:ltr}
+    .brand strong{
+      font-size:clamp(22px,2.3vw,32px);letter-spacing:.17em;font-weight:760;
+    }
+    .brand span{
+      font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--steel);
+    }
+    .controls{display:flex;align-items:center;gap:10px}
+    .lang{
+      display:inline-flex;padding:4px;border:1px solid rgba(31,49,64,.12);
+      border-radius:999px;background:rgba(255,255,255,.42);backdrop-filter:blur(10px)
+    }
+    .lang button{
+      border:0;background:transparent;color:var(--steel);cursor:pointer;
+      min-width:44px;padding:8px 11px;border-radius:999px;font-weight:700;font-size:12px
+    }
+    .lang button.active{background:var(--navy);color:white}
+    .search{
+      width:min(220px,32vw);border:1px solid rgba(31,49,64,.12);outline:0;
+      border-radius:999px;background:rgba(255,255,255,.46);padding:11px 15px;color:var(--ink);
+    }
+
+    .hero{position:relative;margin-bottom:48px}
+    .eyebrow{
+      color:var(--olive);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+      margin-bottom:16px
+    }
+    h1{
+      margin:0;max-width:980px;font-size:clamp(42px,7vw,92px);line-height:.96;
+      letter-spacing:-.055em;font-weight:760
+    }
+    h1 .family{display:block;color:var(--navy)}
+    .lede{
+      max-width:720px;margin:24px 0 0;color:#4e606a;font-size:clamp(16px,1.7vw,21px);line-height:1.7
+    }
+    .principle{
+      margin-top:28px;display:inline-flex;gap:10px;align-items:center;padding:12px 15px;
+      border-radius:999px;background:rgba(255,255,255,.52);border:1px solid rgba(31,49,64,.1);
+      color:var(--navy);font-size:13px;font-weight:720
+    }
+    .principle:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--olive)}
+
+    .legend{
+      display:flex;flex-wrap:wrap;gap:9px;margin:0 0 18px
+    }
+    .legend button{
+      border:1px solid rgba(31,49,64,.1);background:rgba(255,255,255,.4);
+      padding:9px 12px;border-radius:999px;color:var(--steel);cursor:pointer;font-size:12px;font-weight:700
+    }
+    .legend button:hover,.legend button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+    .map{
+      position:relative;border:1px solid rgba(31,49,64,.08);border-radius:30px;
+      background:rgba(255,255,255,.22);box-shadow:var(--shadow);padding:22px;overflow:hidden;
+      backdrop-filter:blur(10px)
+    }
+    #web{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+    #web line{stroke:var(--line);stroke-width:1.2;transition:.25s ease}
+    #web line.hot{stroke:var(--line-strong);stroke-width:2.3}
+
+    .grid{
+      position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:14px
+    }
+    .chapter{
+      min-height:158px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;
+      border:1px solid rgba(31,49,64,.1);border-radius:var(--radius);
+      background:var(--card);cursor:pointer;transition:.22s ease;backdrop-filter:blur(10px)
+    }
+    .chapter:hover,.chapter.focused{
+      transform:translateY(-3px);background:var(--card-strong);border-color:rgba(31,49,64,.24);
+      box-shadow:0 15px 35px rgba(31,49,64,.08)
+    }
+    .chapter.dim{opacity:.28;filter:saturate(.5)}
+    .chapter .meta{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .num{
+      font-size:11px;letter-spacing:.14em;color:var(--steel);font-weight:800;direction:ltr
+    }
+    .group{
+      font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--olive);font-weight:800
+    }
+    .chapter h2{
+      margin:26px 0 0;font-size:clamp(18px,1.7vw,23px);line-height:1.2;letter-spacing:-.02em
+    }
+    .chapter p{
+      margin:9px 0 0;color:#61717a;font-size:13px;line-height:1.55
+    }
+
+    .foot{
+      display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-top:22px;
+      color:var(--steel);font-size:12px
+    }
+    .foot .status{font-weight:800;color:var(--navy)}
+
+    .sheet{
+      position:fixed;inset:0;z-index:40;display:none;align-items:flex-end;justify-content:center;
+      background:rgba(20,32,42,.18);backdrop-filter:blur(9px);padding:18px
+    }
+    .sheet.open{display:flex}
+    .panel{
+      width:min(760px,100%);background:#f4f2ec;border:1px solid rgba(31,49,64,.12);
+      border-radius:26px;padding:24px;box-shadow:0 30px 90px rgba(20,32,42,.22)
+    }
+    .panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+    .panel .kicker{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--olive);text-transform:uppercase}
+    .panel h3{font-size:clamp(26px,4vw,42px);margin:8px 0 12px;letter-spacing:-.035em}
+    .panel p{margin:0;color:#566771;line-height:1.7;font-size:15px}
+    .close{
+      width:38px;height:38px;border-radius:50%;border:1px solid rgba(31,49,64,.12);
+      background:white;cursor:pointer;font-size:20px;color:var(--navy)
+    }
+    .related{margin-top:22px;padding-top:18px;border-top:1px solid rgba(31,49,64,.1)}
+    .related-label{font-size:11px;font-weight:800;color:var(--steel);letter-spacing:.12em;text-transform:uppercase}
+    .related-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .related-links button{
+      border:1px solid rgba(31,49,64,.1);background:rgba(255,255,255,.72);
+      border-radius:999px;padding:8px 11px;cursor:pointer;color:var(--navy);font-size:12px;font-weight:700
+    }
+
+    [dir="rtl"] .brand{direction:ltr}
+    [dir="rtl"] h1,[dir="rtl"] .lede,[dir="rtl"] .chapter,[dir="rtl"] .panel{text-align:right}
+    [dir="ltr"] h1,[dir="ltr"] .lede,[dir="ltr"] .chapter,[dir="ltr"] .panel{text-align:left}
+
+    @media (max-width:980px){
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .search{display:none}
+      .topbar{margin-bottom:40px}
+    }
+    @media (max-width:620px){
+      .shell{width:min(100% - 20px,1240px);padding-top:16px}
+      .brand span{display:none}
+      .hero{margin-bottom:32px}
+      .lede{font-size:15px}
+      .map{padding:10px;border-radius:22px}
+      .grid{grid-template-columns:1fr;gap:9px}
+      .chapter{min-height:126px;padding:15px}
+      .chapter h2{margin-top:18px}
+      #web{display:none}
+      .foot{flex-direction:column;align-items:flex-start}
+    }
+    @media (prefers-reduced-motion:reduce){
+      *{scroll-behavior:auto!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Elasrag home">
+        <strong>ELASRAG</strong><span id="brandSub">Family Institution</span>
+      </a>
+      <div class="controls">
+        <input id="search" class="search" type="search" placeholder="ابحث في الفهرس" aria-label="Search index" />
+        <div class="lang" aria-label="Language">
+          <button id="arBtn" class="active" type="button">AR</button>
+          <button id="enBtn" type="button">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow" id="eyebrow">دستور حي · خريطة المؤسسة</div>
+      <h1 id="heroTitle">مؤسسة عائلة <span class="family">الأسرج</span></h1>
+      <p class="lede" id="heroLede">خريطة مختصرة لما يجب أن نفهمه ونحسمه لنَبني مؤسسة عائلية تنمو، تحمي رأس المال، وتستمر عبر الأجيال.</p>
+      <div class="principle" id="principle">العائلة تستفيد · المؤسسة تستمر</div>
+    </section>
+
+    <div class="legend" id="legend"></div>
+
+    <section class="map" aria-label="Institution handbook index">
+      <svg id="web" aria-hidden="true"></svg>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <footer class="foot">
+      <div id="footCopy">14 بابًا · كل باب يرتبط بما يؤثر فيه مباشرة</div>
+      <div class="status" id="status">Living Document · وثيقة حيّة</div>
+    </footer>
+  </main>
+
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <div class="kicker" id="sheetKicker"></div>
+          <h3 id="sheetTitle"></h3>
+        </div>
+        <button class="close" id="closeSheet" aria-label="Close">×</button>
+      </div>
+      <p id="sheetBody"></p>
+      <div class="related">
+        <div class="related-label" id="relatedLabel">مرتبط مباشرة بـ</div>
+        <div class="related-links" id="relatedLinks"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const chapters = [
+      {
+        id:"purpose", n:"01", group:"foundation",
+        ar:"الغاية والاستمرارية", en:"Purpose & Permanence",
+        arShort:"لماذا توجد المؤسسة؟ وما الذي يجب أن يبقى بعدنا؟",
+        enShort:"Why does the institution exist, and what must outlive us?",
+        arBody:"نحدد الهدف الطويل للمؤسسة، معنى النجاح، وما الذي نحميه عبر الأجيال دون تجميد قدرتها على التطور.",
+        enBody:"Define the institution’s long-term purpose, what success means, and what must be protected across generations without freezing its ability to evolve.",
+        related:["structure","ownership","control","amend"]
+      },
+      {
+        id:"structure", n:"02", group:"foundation",
+        ar:"هيكل المجموعة", en:"Group Architecture",
+        arShort:"الشركة الأم، الشركات التابعة، وفصل الأصول والمخاطر.",
+        enShort:"Parent company, subsidiaries, and separation of assets and risks.",
+        arBody:"نقرر ما الذي تملكه الشركة الأم، وما الذي يوضع في شركات مستقلة: تجارة، عقارات، استثمار، أرض أو أنشطة مستقبلية.",
+        enBody:"Decide what the parent owns and what belongs in separate subsidiaries: trading, property, investment, land, or future activities.",
+        related:["purpose","ownership","capital","tax"]
+      },
+      {
+        id:"ownership", n:"03", group:"ownership",
+        ar:"الملكية وفئات الأسهم", en:"Ownership & Share Classes",
+        arShort:"من يملك القيمة؟ ومن يملك الدخل؟ ومن يملك الصوت؟",
+        enShort:"Who owns value, income, and voting power?",
+        arBody:"نفصل عند الحاجة بين حقوق التصويت، الأرباح، ونمو رأس المال بدل أن يحمل كل سهم كل الحقوق نفسها.",
+        enBody:"Separate voting, income, and capital-growth rights where useful instead of giving every share identical rights.",
+        related:["structure","control","succession","exit","tax"]
+      },
+      {
+        id:"control", n:"04", group:"ownership",
+        ar:"السيطرة والقرارات المحمية", en:"Control & Protected Decisions",
+        arShort:"من يقرر؟ وما القرارات التي تحتاج حماية إضافية؟",
+        enShort:"Who decides, and which decisions need extra protection?",
+        arBody:"نحدد صلاحيات المؤسس، المساهمين، المجلس، وأي قرارات مصيرية تحتاج أغلبية خاصة أو موافقة مستقلة.",
+        enBody:"Set the powers of the founder, shareholders and board, and identify major decisions requiring special approval.",
+        related:["ownership","governance","board","amend","succession"]
+      },
+      {
+        id:"capital", n:"05", group:"capital",
+        ar:"الأرباح وتخصيص رأس المال", en:"Profit & Capital Allocation",
+        arShort:"كم نوزع؟ كم نعيد استثماره؟ ومتى نحتفظ بالنقد؟",
+        enShort:"How much do we distribute, reinvest, or keep in reserve?",
+        arBody:"نضع فلسفة واضحة لتوزيع الأرباح، إعادة الاستثمار، الاحتياطيات، وتمويل النمو قبل أن تصبح السيولة سببًا للخلاف.",
+        enBody:"Set a clear philosophy for distributions, reinvestment, reserves and growth funding before cash becomes a source of conflict.",
+        related:["structure","risk","exit","tax"]
+      },
+      {
+        id:"risk", n:"06", group:"capital",
+        ar:"الاستثمار والديون والمخاطر", en:"Investment, Debt & Risk",
+        arShort:"أين نستثمر؟ وما حدود الاقتراض والمخاطرة؟",
+        enShort:"Where do we invest, and how much risk or debt is acceptable?",
+        arBody:"نحدد حدود الاستثمار، التنويع، الاقتراض، الضمانات، والسيولة بحيث تنمو المؤسسة دون تعريض أصلها للخطر.",
+        enBody:"Define investment limits, diversification, borrowing, security and liquidity so growth does not endanger the institution itself.",
+        related:["capital","structure","tax","control"]
+      },
+      {
+        id:"governance", n:"07", group:"governance",
+        ar:"حوكمة العائلة", en:"Family Governance",
+        arShort:"كيف تتكلم العائلة بصوت منظم بدل قرارات فردية؟",
+        enShort:"How does the family act through a system, not personalities?",
+        arBody:"نحدد Family Council، تمثيل الفروع، الاجتماعات، تدفق المعلومات، وما هو شأن عائلي وما هو شأن شركة.",
+        enBody:"Define the Family Council, branch representation, meetings, information flow, and the boundary between family matters and company matters.",
+        related:["control","board","familywork","conflict"]
+      },
+      {
+        id:"board", n:"08", group:"governance",
+        ar:"مجلس الإدارة والإدارة التنفيذية", en:"Board & Management",
+        arShort:"من يراقب؟ من يدير؟ ومن يُحاسب من؟",
+        enShort:"Who oversees, who runs, and who is accountable to whom?",
+        arBody:"نفصل بين المالك، عضو مجلس الإدارة، والرئيس التنفيذي، ونحدد دور الأعضاء المستقلين عند نمو المجموعة.",
+        enBody:"Separate owner, director and executive roles, and define when independent directors become part of the system.",
+        related:["governance","control","familywork","succession"]
+      },
+      {
+        id:"familywork", n:"09", group:"governance",
+        ar:"عمل أفراد العائلة", en:"Family Employment",
+        arShort:"الملكية بالوراثة ممكنة؛ الوظيفة بالكفاءة.",
+        enShort:"Ownership may be inherited; a job must be earned.",
+        arBody:"نحدد شروط دخول أفراد العائلة للعمل، الرواتب، التقييم، الترقية، ومتى يكون المدير من خارج الأسرة أفضل.",
+        enBody:"Set rules for family employment, pay, evaluation, promotion, and when an external executive is the better choice.",
+        related:["governance","board","succession"]
+      },
+      {
+        id:"succession", n:"10", group:"continuity",
+        ar:"الخلافة والقيادة", en:"Succession & Leadership",
+        arShort:"كيف تنتقل المسؤولية دون أن تنتقل الفوضى؟",
+        enShort:"How does responsibility pass without passing chaos?",
+        arBody:"نخطط مبكرًا لانتقال القيادة والسيطرة، مع بدائل إذا لم يكن الجيل التالي جاهزًا أو راغبًا في الإدارة.",
+        enBody:"Plan leadership and control transitions early, including what happens if the next generation is not ready or does not want to manage.",
+        related:["ownership","control","board","inheritance","familywork"]
+      },
+      {
+        id:"inheritance", n:"11", group:"continuity",
+        ar:"الوفاة والعجز والميراث", en:"Death, Incapacity & Inheritance",
+        arShort:"ماذا يحدث للأسهم والسلطة إذا غاب أحد فجأة؟",
+        enShort:"What happens to shares and authority if someone suddenly cannot act?",
+        arBody:"نربط الأسهم بالوصايا والخطط القانونية بحيث لا تعطل الوفاة أو فقد الأهلية إدارة المجموعة أو ملكيتها.",
+        enBody:"Align shares with wills and legal planning so death or incapacity does not destabilise ownership or management.",
+        related:["succession","ownership","marriage","tax"]
+      },
+      {
+        id:"marriage", n:"12", group:"continuity",
+        ar:"الزواج والطلاق وحدود العائلة", en:"Marriage, Divorce & Family Boundaries",
+        arShort:"كيف نحمي استمرارية الملكية دون ظلم الأسرة؟",
+        enShort:"How do we protect continuity without treating family unfairly?",
+        arBody:"نحدد من يعد مالكًا عائليًا، انتقال الأسهم، وسياسات الزواج والطلاق بما يقلل انتقال السيطرة خارج النظام.",
+        enBody:"Define who qualifies as a family owner, transfer rules, and marriage/divorce policies that reduce unintended loss of control.",
+        related:["inheritance","ownership","exit","conflict"]
+      },
+      {
+        id:"exit", n:"13", group:"continuity",
+        ar:"الخروج والسيولة والتقييم", en:"Exit, Liquidity & Valuation",
+        arShort:"كيف يحصل من يريد الخروج على قيمة عادلة دون كسر المؤسسة؟",
+        enShort:"How can someone leave fairly without breaking the institution?",
+        arBody:"نصمم آلية شراء أو نقل الحصص، طريقة التقييم، ومصادر السيولة حتى لا نُجبر على بيع أصول جيدة لتمويل خروج فرد.",
+        enBody:"Design transfer, valuation and liquidity mechanisms so one person’s exit does not force the sale of strong long-term assets.",
+        related:["ownership","capital","marriage","tax","conflict"]
+      },
+      {
+        id:"tax", n:"14", group:"continuity",
+        ar:"القانون والضرائب والتعديل", en:"Legal, Tax & Amendment",
+        arShort:"كيف تتحول الفكرة إلى نظام قانوني قابل للحياة والتطور؟",
+        enShort:"How does the idea become a lawful system that can still evolve?",
+        arBody:"نراجع Articles، اتفاقات المساهمين، الوصايا، الـTrusts، الضرائب، وآلية تعديل القواعد دون هدم المبادئ الأساسية.",
+        enBody:"Align Articles, shareholder agreements, wills, trusts, tax planning and amendment rules without losing the core principles.",
+        related:["purpose","structure","ownership","control","inheritance","exit"]
+      }
+    ];
+
+    const groups = {
+      foundation:{ar:"الأساس",en:"Foundation"},
+      ownership:{ar:"الملكية",en:"Ownership"},
+      capital:{ar:"رأس المال",en:"Capital"},
+      governance:{ar:"الحوكمة",en:"Governance"},
+      continuity:{ar:"الاستمرارية",en:"Continuity"}
+    };
+
+    const ui = {
+      ar:{
+        brandSub:"Family Institution",
+        eyebrow:"دستور حي · خريطة المؤسسة",
+        heroTitle:'مؤسسة عائلة <span class="family">الأسرج</span>',
+        lede:"خريطة مختصرة لما يجب أن نفهمه ونحسمه لنَبني مؤسسة عائلية تنمو، تحمي رأس المال، وتستمر عبر الأجيال.",
+        principle:"العائلة تستفيد · المؤسسة تستمر",
+        search:"ابحث في الفهرس",
+        foot:"14 بابًا · كل باب يرتبط بما يؤثر فيه مباشرة",
+        status:"Living Document · وثيقة حيّة",
+        related:"مرتبط مباشرة بـ"
+      },
+      en:{
+        brandSub:"Family Institution",
+        eyebrow:"Living Constitution · Institutional Map",
+        heroTitle:'The <span class="family">Elasrag</span> Family Institution',
+        lede:"A concise map of what we must understand and decide to build a family institution that grows, protects capital, and endures across generations.",
+        principle:"The family benefits · The institution endures",
+        search:"Search the index",
+        foot:"14 chapters · each linked to what directly affects it",
+        status:"Living Document",
+        related:"Directly connected to"
+      }
+    };
+
+    let lang = localStorage.getItem("orgLang") || "ar";
+    let currentFilter = "all";
+
+    const grid = document.getElementById("grid");
+    const legend = document.getElementById("legend");
+    const sheet = document.getElementById("sheet");
+    const svg = document.getElementById("web");
+
+    function t(ch,key){ return ch[lang === "ar" ? key : "en"+key.slice(2)]; }
+
+    function render(){
+      document.documentElement.lang = lang;
+      document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+      document.getElementById("arBtn").classList.toggle("active",lang==="ar");
+      document.getElementById("enBtn").classList.toggle("active",lang==="en");
+      const x = ui[lang];
+      document.getElementById("brandSub").textContent=x.brandSub;
+      document.getElementById("eyebrow").textContent=x.eyebrow;
+      document.getElementById("heroTitle").innerHTML=x.heroTitle;
+      document.getElementById("heroLede").textContent=x.lede;
+      document.getElementById("principle").textContent=x.principle;
+      document.getElementById("search").placeholder=x.search;
+      document.getElementById("footCopy").textContent=x.foot;
+      document.getElementById("status").textContent=x.status;
+      document.getElementById("relatedLabel").textContent=x.related;
+
+      legend.innerHTML="";
+      const all = document.createElement("button");
+      all.type="button"; all.dataset.group="all";
+      all.textContent=lang==="ar"?"الكل":"All";
+      legend.appendChild(all);
+      Object.entries(groups).forEach(([key,val])=>{
+        const b=document.createElement("button");
+        b.type="button"; b.dataset.group=key; b.textContent=val[lang];
+        legend.appendChild(b);
+      });
+      legend.querySelectorAll("button").forEach(b=>{
+        b.classList.toggle("active",b.dataset.group===currentFilter);
+        b.addEventListener("click",()=>{currentFilter=b.dataset.group;applyFilter();});
+      });
+
+      grid.innerHTML="";
+      chapters.forEach(ch=>{
+        const card=document.createElement("article");
+        card.className="chapter";
+        card.id="chapter-"+ch.id;
+        card.dataset.id=ch.id;
+        card.dataset.group=ch.group;
+        card.tabIndex=0;
+        card.innerHTML=`
+          <div class="meta">
+            <span class="num">${ch.n}</span>
+            <span class="group">${groups[ch.group][lang]}</span>
+          </div>
+          <div>
+            <h2>${ch[lang]}</h2>
+            <p>${ch[lang+"Short"]}</p>
+          </div>`;
+        card.addEventListener("mouseenter",()=>highlight(ch.id));
+        card.addEventListener("mouseleave",clearHighlight);
+        card.addEventListener("focus",()=>highlight(ch.id));
+        card.addEventListener("blur",clearHighlight);
+        card.addEventListener("click",()=>openChapter(ch.id));
+        card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openChapter(ch.id)}});
+        grid.appendChild(card);
+      });
+      applyFilter();
+      requestAnimationFrame(drawWeb);
+    }
+
+    function applyFilter(){
+      const q=document.getElementById("search").value.trim().toLowerCase();
+      document.querySelectorAll(".chapter").forEach(card=>{
+        const ch=chapters.find(c=>c.id===card.dataset.id);
+        const text=(ch.ar+" "+ch.en+" "+ch.arShort+" "+ch.enShort).toLowerCase();
+        const okGroup=currentFilter==="all"||ch.group===currentFilter;
+        const okSearch=!q||text.includes(q);
+        card.style.display=(okGroup&&okSearch)?"flex":"none";
+      });
+      legend.querySelectorAll("button").forEach(b=>b.classList.toggle("active",b.dataset.group===currentFilter));
+      requestAnimationFrame(drawWeb);
+    }
+
+    function drawWeb(){
+      if(innerWidth<621){svg.innerHTML="";return}
+      const map=document.querySelector(".map").getBoundingClientRect();
+      svg.setAttribute("viewBox",`0 0 ${map.width} ${map.height}`);
+      svg.innerHTML="";
+      const seen=new Set();
+      chapters.forEach(ch=>{
+        ch.related.forEach(r=>{
+          const key=[ch.id,r].sort().join("|");
+          if(seen.has(key)) return; seen.add(key);
+          const a=document.getElementById("chapter-"+ch.id);
+          const b=document.getElementById("chapter-"+r);
+          if(!a||!b||a.style.display==="none"||b.style.display==="none") return;
+          const ra=a.getBoundingClientRect(), rb=b.getBoundingClientRect();
+          const line=document.createElementNS("http://www.w3.org/2000/svg","line");
+          line.dataset.a=ch.id;line.dataset.b=r;
+          line.setAttribute("x1",ra.left-map.left+ra.width/2);
+          line.setAttribute("y1",ra.top-map.top+ra.height/2);
+          line.setAttribute("x2",rb.left-map.left+rb.width/2);
+          line.setAttribute("y2",rb.top-map.top+rb.height/2);
+          svg.appendChild(line);
+        })
+      })
+    }
+
+    function highlight(id){
+      const ch=chapters.find(c=>c.id===id);
+      const related=new Set([id,...ch.related]);
+      document.querySelectorAll(".chapter").forEach(card=>{
+        card.classList.toggle("focused",card.dataset.id===id);
+        card.classList.toggle("dim",!related.has(card.dataset.id));
+      });
+      svg.querySelectorAll("line").forEach(l=>{
+        l.classList.toggle("hot",l.dataset.a===id||l.dataset.b===id);
+      })
+    }
+    function clearHighlight(){
+      document.querySelectorAll(".chapter").forEach(c=>c.classList.remove("focused","dim"));
+      svg.querySelectorAll("line").forEach(l=>l.classList.remove("hot"));
+    }
+
+    function openChapter(id){
+      const ch=chapters.find(c=>c.id===id);
+      document.getElementById("sheetKicker").textContent=ch.n+" · "+groups[ch.group][lang];
+      document.getElementById("sheetTitle").textContent=ch[lang];
+      document.getElementById("sheetBody").textContent=ch[lang+"Body"];
+      const box=document.getElementById("relatedLinks"); box.innerHTML="";
+      ch.related.forEach(r=>{
+        const rel=chapters.find(c=>c.id===r);
+        const b=document.createElement("button"); b.type="button"; b.textContent=rel[lang];
+        b.addEventListener("click",()=>openChapter(r)); box.appendChild(b);
+      });
+      sheet.classList.add("open");
+      document.body.style.overflow="hidden";
+    }
+    function closeSheet(){
+      sheet.classList.remove("open"); document.body.style.overflow="";
+    }
+
+    document.getElementById("arBtn").addEventListener("click",()=>{lang="ar";localStorage.setItem("orgLang",lang);render()});
+    document.getElementById("enBtn").addEventListener("click",()=>{lang="en";localStorage.setItem("orgLang",lang);render()});
+    document.getElementById("search").addEventListener("input",applyFilter);
+    document.getElementById("closeSheet").addEventListener("click",closeSheet);
+    sheet.addEventListener("click",e=>{if(e.target===sheet)closeSheet()});
+    document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
+    addEventListener("resize",()=>requestAnimationFrame(drawWeb));
+
+    render();
+  </script>
+</body>
+</html>
