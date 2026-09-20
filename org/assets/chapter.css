@@ -44,3 +44,11 @@ h1{font-size:clamp(44px,6vw,74px);line-height:1.01;letter-spacing:-.052em;margin
 .grid,.grid.two,.grid.four,.split{grid-template-columns:1fr;gap:8px}.card{min-height:0;padding:14px}.card .num{margin-bottom:15px}.card strong{font-size:15px}.card p{font-size:11px;line-height:1.65}.listbox{padding:15px}.clean li{font-size:11px}.diagram{padding:11px}.flow{gap:6px}.flow .step{min-height:82px;padding:13px}.table-wrap{margin-inline:-1px}th,td{padding:10px 11px;font-size:10px}th{font-size:8px}.quote{padding:16px}.quote blockquote{font-size:16px}.callout{padding:13px;gap:9px}.callout p{font-size:11px}.network{padding-top:23px}.network h2{font-size:16px}.nodes{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}.nodes a{flex:0 0 auto;padding:7px 9px}.sources{margin-top:23px;padding:14px}.sources li{font-size:9px}.nextprev{gap:6px;margin-top:18px}.nextprev a{padding:11px}.nextprev strong{font-size:11px}.nextprev small{font-size:8px}.note{font-size:9px}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+.chapter-nav{display:flex;align-items:center;justify-content:center;gap:34px;font-size:11px;font-weight:700}
+.chapter-nav a{position:relative;padding:28px 0 22px}
+.chapter-nav a.active:after{content:"";position:absolute;left:0;right:0;bottom:14px;height:2px;background:var(--navy)}
+.mobile-index{display:none}
+@media(max-width:900px){.chapter-nav{gap:18px;font-size:10px}}
+@media(max-width:720px){.chapter-nav{display:none}.mobile-index{display:inline-flex}}
+@media(min-width:721px){.topbar{display:grid;grid-template-columns:1fr auto 1fr}.tools{justify-self:end}.brand{justify-self:start}}
+.tier,.waterfall .step,.riskbar article,.hat,.boardbox,.pipeline article,.track article,.layer{border-radius:2px!important}
