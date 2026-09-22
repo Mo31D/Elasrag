@@ -59,88 +59,152 @@ svg{
     <stop offset=".75" stop-color="white"/>
     <stop offset="1" stop-color="black"/>
   </linearGradient>
+
+  <pattern id="diamondWeave" width="28" height="28" patternUnits="userSpaceOnUse">
+    <path d="M14 1L27 14 14 27 1 14Z" fill="none" stroke="#eadfd5" stroke-width="2"/>
+    <path d="M14 7L21 14 14 21 7 14Z" fill="none" stroke="#eadfd5" stroke-width="1"/>
+  </pattern>
+  <pattern id="microDot" width="10" height="10" patternUnits="userSpaceOnUse">
+    <circle cx="5" cy="5" r="1.2" fill="#eadfd5" opacity=".7"/>
+  </pattern>
+  <pattern id="chevronFine" width="18" height="12" patternUnits="userSpaceOnUse">
+    <path d="M0 2l4 4 4-4 4 4 4-4 4 4" fill="none" stroke="#111" stroke-width="1.6"/>
+    <path d="M0 8l4 4 4-4 4 4 4-4 4 4" fill="none" stroke="#111" stroke-width="1.6"/>
+  </pattern>
 </defs>
 
 <rect width="1120" height="1440" fill="url(#bg)"/>
 <rect width="1120" height="980" fill="url(#dots)" opacity=".72" mask="url(#dotFade)"/>
-<g id="central-art" transform="translate(560 650) scale(.82) translate(-560 -650)">
-<circle cx="560" cy="588" r="443" fill="none" stroke="#eadfd5" stroke-width="5" stroke-dasharray="2 18" stroke-linecap="round" opacity=".9"/>
-<circle cx="560" cy="588" r="391" fill="none" stroke="#e7d9cf" stroke-width="2.1" opacity=".8"/>
-<circle cx="560" cy="588" r="359" fill="url(#tinyDots)" stroke="#eadfd5" stroke-width="4"/>
-<circle cx="560" cy="588" r="319" fill="#8f9193" opacity=".14"/>
 
-<path d="M53 184C201 311 228 438 132 631S159 1030 396 1185" fill="none" stroke="#eadfd5" stroke-width="2" stroke-dasharray="3 9" opacity=".4"/>
-<path d="M972 148C839 306 842 445 970 601s61 397-141 579" fill="none" stroke="#eadfd5" stroke-width="2" stroke-dasharray="3 10" opacity=".33"/>
-<path d="M0 648C226 683 335 823 385 1065" fill="none" stroke="#eadfd5" stroke-width="2" stroke-dasharray="4 9" opacity=".35"/>
-<path d="M1120 808C915 791 823 896 777 1112" fill="none" stroke="#eadfd5" stroke-width="2" stroke-dasharray="4 10" opacity=".34"/>
+<g id="central-art" transform="translate(560 640) scale(.84) translate(-560 -640)">
+  <!-- ceremonial halo -->
+  <circle cx="560" cy="570" r="447" fill="none" stroke="#eadfd5" stroke-width="5" stroke-dasharray="2 18" stroke-linecap="round" opacity=".92"/>
+  <circle cx="560" cy="570" r="395" fill="none" stroke="#e9ddd2" stroke-width="2.2" opacity=".86"/>
+  <circle cx="560" cy="570" r="363" fill="url(#tinyDots)" stroke="#eadfd5" stroke-width="4.5"/>
+  <circle cx="560" cy="570" r="326" fill="#8f9193" opacity=".12"/>
 
-<g stroke="#eadfd5" fill="none" stroke-width="2" opacity=".86">
-  <g transform="translate(558 190)"><path d="M0 40V-8M0-8l-16 24L0 42l16-26Z"/><path d="M0-8l-30 50M0-8l30 50" opacity=".6"/></g>
-  <g transform="translate(739 241) rotate(28)"><path d="M0 38V-6M0-6l-14 22L0 40l14-24Z"/></g>
-  <g transform="translate(858 375) rotate(58)"><path d="M0 38V-6M0-6l-14 22L0 40l14-24Z"/></g>
-  <g transform="translate(875 649) rotate(91)"><path d="M0 38V-6M0-6l-14 22L0 40l14-24Z"/></g>
-  <g transform="translate(251 241) rotate(-28)"><path d="M0 38V-6M0-6l-14 22L0 40l14-24Z"/></g>
-  <g transform="translate(136 392) rotate(-58)"><path d="M0 38V-6M0-6l-14 22L0 40l14-24Z"/></g>
-  <g transform="translate(124 686) rotate(-91)"><path d="M0 38V-6M0-6l-14 22L0 40l14-24Z"/></g>
-</g>
+  <!-- ring lattice and spear ornaments -->
+  <g fill="none" stroke="#eadfd5" opacity=".74">
+    <path d="M266 374A365 365 0 0 1 854 374" stroke-width="24"/>
+    <path d="M266 374A365 365 0 0 1 854 374" stroke="#77797b" stroke-width="18" stroke-dasharray="2 15" opacity=".42"/>
+    <path d="M237 514A360 360 0 0 0 212 620M883 514A360 360 0 0 1 908 620" stroke-width="2"/>
+  </g>
+  <g stroke="#eadfd5" fill="none" stroke-width="2.2" opacity=".9">
+    <g transform="translate(560 181)"><path d="M0 44V-14M0-14l-17 26L0 45l17-33Z"/><path d="M0-14l-31 57M0-14l31 57" opacity=".55"/></g>
+    <g transform="translate(725 225) rotate(26)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
+    <g transform="translate(844 350) rotate(55)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
+    <g transform="translate(891 560) rotate(88)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
+    <g transform="translate(395 225) rotate(-26)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
+    <g transform="translate(276 350) rotate(-55)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
+    <g transform="translate(229 560) rotate(-88)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
+  </g>
 
-<path d="M325 574C303 573 292 588 292 611v69c0 23 15 35 38 31l161-29 8-86Z" fill="#efdfcd"/>
-<path d="M628 596l184-25c26-4 43 9 43 34v66c0 22-17 35-40 31l-176-26Z" fill="#efdfcd"/>
+  <!-- subtle orbital guides -->
+  <path d="M60 162C213 310 239 445 154 626S176 1010 399 1162" fill="none" stroke="#eadfd5" stroke-width="2" stroke-dasharray="3 9" opacity=".38"/>
+  <path d="M1030 155C892 312 879 446 978 615s54 376-137 557" fill="none" stroke="#eadfd5" stroke-width="2" stroke-dasharray="3 10" opacity=".34"/>
 
-<path d="M239 805C286 764 337 762 381 785l65 39c35 21 71 16 114-7l70-38c57-31 124-37 184-18l34 10 53-5-25 42-28 11-6 167c-1 47-29 60-54 24l-34-49-27 77c-17 49-42 86-78 113l-20-29 25-47-100 23-91-31-58 57-28-17 22-72-58-63-72-19Z" fill="#050505"/>
-<path d="M758 775C804 750 850 755 900 778l26 12-17 55-37 24-43-14-21-38Z" fill="#050505"/>
-<path d="M895 788l75 8-48 45-13-19 18-20-32-4Z" fill="#050505"/>
-<path d="M940 782l30-7 27 26-34 8-19-13Z" fill="#eadfd5" stroke="#111" stroke-width="4"/>
-<path d="M996 801l35 13-36 17Z" fill="#111"/>
-<path d="M847 874l48-13-14 82-35 69-11-12 4-84Z" fill="#090909"/>
-<path d="M819 878l36 2-29 117-23 50-17-12 19-69Z" fill="#0a0a0a"/>
+  <!-- flowing cream sleeves -->
+  <path d="M463 535C420 548 376 567 323 602c-33 22-67 29-99 23-17-3-24-18-22-39 3-39 23-73 54-95 48-33 96-38 147-20l74 25Z" fill="#efdfcd"/>
+  <path d="M647 529c53 8 99 21 145 43 38 18 77 19 113 2 20-9 34-1 36 20 4 41-15 79-49 104-30 22-65 20-101 4l-151-68Z" fill="#efdfcd"/>
+  <path d="M250 544c42 9 80 28 111 56" fill="none" stroke="#c6b6aa" stroke-width="2" stroke-dasharray="2 7" opacity=".72"/>
+  <path d="M765 583c42 5 82 20 122 44" fill="none" stroke="#c6b6aa" stroke-width="2" stroke-dasharray="2 7" opacity=".72"/>
 
-<path d="M622 813C681 780 743 772 819 797l-23 182-157 16-84-88Z" fill="#0a0a0a" stroke="#e7d9cf" stroke-width="3"/>
-<path d="M632 827C687 798 744 794 799 809l-15 113-127 12-62-65Z" fill="url(#saddle)" opacity=".94"/>
-<path d="M794 799l18 8-9 169-17 3Z" fill="#efdfcd"/>
-<path d="M815 820l9-9 10 8-7 170-12 20-9-14Z" fill="#d74232"/>
-<circle cx="832" cy="826" r="5" fill="#d74232"/>
-<path d="M836 826c22 8 23 24 23 24" fill="none" stroke="#d74232" stroke-width="3"/>
+  <!-- horse tail -->
+  <path d="M366 787C319 750 263 747 206 768c-42 15-79 40-111 77 55-8 97 4 127 36-42 5-79 22-111 51 66 6 121 28 168 68-11-46-1-89 28-126 25-30 48-58 59-87Z" fill="#050505"/>
+  <path d="M361 806c-58-3-107 11-148 42 54 1 101 18 140 50" fill="none" stroke="#e9ddd2" stroke-width="3" opacity=".82"/>
+  <path d="M366 840c-50 17-91 45-124 85" fill="none" stroke="#e9ddd2" stroke-width="2.4" opacity=".68"/>
 
-<path d="M449 745h183l-11 188-84 20-93-56Z" fill="#d94332" stroke="#111" stroke-width="5"/>
-<path d="M458 760h161v64H458Z" fill="url(#saddle)" opacity=".34"/>
-<path d="M446 914l-45 40 53 8-20 49 102-54Z" fill="#e8dacf" stroke="#111" stroke-width="4"/>
-<path d="M428 949l22 53-48-12Z" fill="#050505"/>
-<path d="M535 933l-70 87 76-31 39 51 27-114Z" fill="#252728" stroke="#e6d9cf" stroke-width="3"/>
-<path d="M527 956l29 71 30-103Z" fill="#d94232" stroke="#e6d9cf" stroke-width="2"/>
+  <!-- horse main body -->
+  <path d="M337 790C411 742 496 739 586 774c55 21 111 23 167 1 73-29 144-27 213 10l41 22-33 30-23 10c-8 78-36 137-84 181-54 49-122 72-204 71-92-1-181-28-267-82l-99-63-35-73 75-91Z" fill="#050505"/>
+  <!-- horse neck/head -->
+  <path d="M783 777c67-32 127-26 189 11l48 28 50-6-24 34-31 15-18 80-30 56-28-8 13-79-27-10-36 72-33-14 36-85-60-36Z" fill="#050505"/>
+  <path d="M1007 811l49-13 39 28-42 18-39-10Z" fill="#efdfcd" stroke="#111" stroke-width="4"/>
+  <path d="M1088 824l31 12-32 20Z" fill="#111"/>
 
-<path d="M466 496C506 466 567 468 610 497l26 71-8 185-176 1-15-194Z" fill="#8f9192" stroke="#111" stroke-width="5"/>
-<path d="M563 521h61l15 71-12 163h-66Z" fill="#d94332"/>
-<path d="M493 537h74v84h-74Z" fill="url(#zig)" stroke="#111" stroke-width="3"/>
-<path d="M488 626h78v110h-90Z" fill="#3e4142" stroke="#111" stroke-width="3"/>
-<path d="M489 638l65 88M518 629l52 69M480 677l43 58" stroke="#e5d8cf" stroke-width="4"/>
-<path d="M480 742h151v28H480Z" fill="#0a0a0a"/>
-<path d="M487 747h137" stroke="#efdfcd" stroke-width="4" stroke-dasharray="12 6"/>
+  <!-- horse barding -->
+  <path d="M621 804c72-39 145-45 224-18l-24 196-164 12-98-102Z" fill="#090909" stroke="#eadfd5" stroke-width="3.5"/>
+  <path d="M642 823c57-25 116-29 174-12l-17 116-130 10-68-69Z" fill="url(#diamondWeave)" opacity=".95"/>
+  <path d="M824 800l18 8-11 177-20 20-10-14 10-92Z" fill="#efdfcd"/>
+  <path d="M845 814l11-10 10 10-9 175-14 22-10-16Z" fill="#d94332"/>
+  <path d="M659 944l157-13" stroke="#eadfd5" stroke-width="2.5" stroke-dasharray="1 8"/>
+  <g stroke="#eadfd5" stroke-width="2">
+    <path d="M666 943v44M680 942v49M694 941v50M708 940v51M722 939v52M736 938v52M750 937v50M764 936v47M778 935v44"/>
+  </g>
 
-<path d="M486 501C470 472 474 425 500 404 535 376 587 388 606 425 620 453 609 482 586 503Z" fill="#efdfcd" stroke="#111" stroke-width="5"/>
-<path d="M493 440c4-28 25-47 54-49 27-2 48 12 61 36-33-12-71-10-115 13Z" fill="#0a0a0a"/>
-<path d="M492 409c-22-59-5-105 13-130-6 54 54 61 58 113-17-7-41 0-71 17Z" fill="#050505"/>
-<path d="M498 289c-12-25-8-48 5-67-4 27 6 47 27 61Z" fill="#efdfcd" stroke="#111" stroke-width="3"/>
-<path d="M604 426c31-20 54-16 75 5-28-4-43 8-58 28Z" fill="#d94232" stroke="#111" stroke-width="3"/>
-<path d="M542 443c15-9 28-8 41 2" stroke="#111" stroke-width="3" fill="none"/>
-<path d="M560 446c-7 2-9 7-6 13 4 5 11 6 18 3" stroke="#111" stroke-width="2.6" fill="none"/>
+  <!-- horse tack -->
+  <path d="M850 838c39 1 72 15 101 42l-4 43-28 11-34-25-28 13-22-26Z" fill="none" stroke="#eadfd5" stroke-width="3.3"/>
+  <path d="M946 878l33 2 10 55-25 32-16-8Z" fill="#050505" stroke="#eadfd5" stroke-width="3"/>
+  <path d="M973 880v54" stroke="#d94332" stroke-width="5"/>
+  <circle cx="858" cy="842" r="6" fill="#d94332"/>
+  <path d="M863 842c22 2 34 10 43 24" fill="none" stroke="#d94332" stroke-width="3"/>
+  <path d="M849 842l17-17 17 17-17 17Z" fill="none" stroke="#d94332" stroke-width="3"/>
 
-<path d="M462 560C425 566 386 579 341 611l28 44 119-39Z" fill="#8f9192" stroke="#111" stroke-width="4"/>
-<path d="M633 569l143 30-5 52-143-26Z" fill="#8f9192" stroke="#111" stroke-width="4"/>
-<path d="M326 605l38-16 28 55-42 14Z" fill="#050505"/>
-<path d="M765 591l41 4 1 59-42-7Z" fill="#050505"/>
-<g stroke="#efdfcd" stroke-width="3"><path d="M340 600l31 51M350 596l30 51M360 593l28 48"/><path d="M779 595l4 54M789 596l4 54M799 597l3 50"/></g>
-<path d="M383 607l22-11 22 20-23 21Z" fill="#d94332" stroke="#111" stroke-width="3"/>
-<path d="M796 608l27 0 10 26-12 24-25-11Z" fill="#d94332" stroke="#111" stroke-width="3"/>
+  <!-- horse legs -->
+  <path d="M477 989l-20 98 43 88-25 57-20-13-7-102-49-96Z" fill="#050505"/>
+  <path d="M559 1001l22 101 76 61-21 36-69-43-38-113Z" fill="#050505"/>
+  <path d="M712 991l12 94-58 105 31 9 73-87 8-112Z" fill="#050505"/>
+  <path d="M790 976l62 62-31 100 29 4 53-105-54-93Z" fill="#050505"/>
+  <path d="M452 1219l31 14-29 45-22-23Z" fill="#efdfcd"/>
+  <path d="M630 1191l29 14-32 38-24-18Z" fill="#efdfcd"/>
+  <path d="M688 1187l31 13-36 38-24-18Z" fill="#efdfcd"/>
+  <path d="M821 1136l31 13-26 39-25-14Z" fill="#efdfcd"/>
 
-<path d="M384 621H1006" stroke="#111" stroke-width="7"/>
-<path d="M386 621H1006" stroke="#e4d8cf" stroke-width="2"/>
-<path d="M1001 606l45 15-45 16 11-16Z" fill="#111" stroke="#e4d8cf" stroke-width="2"/>
-<path d="M1020 621l-8 0" stroke="#d94332" stroke-width="4"/>
+  <!-- rider skirt / saddle -->
+  <path d="M438 721h192l-13 179-75 48-107-61Z" fill="#d94332" stroke="#111" stroke-width="4.5"/>
+  <path d="M447 736h172v67H447Z" fill="url(#diamondWeave)" opacity=".38"/>
+  <path d="M447 884l-53 45 64 5-28 55 116-67Z" fill="#efdfcd" stroke="#111" stroke-width="3.2"/>
+  <path d="M418 932l24 55-52-15Z" fill="#050505"/>
+  <path d="M542 905l-77 98 83-38 38 61 32-132Z" fill="#333536" stroke="#eadfd5" stroke-width="3"/>
+  <path d="M530 943l31 73 33-108Z" fill="#d94332" stroke="#eadfd5" stroke-width="2.2"/>
+  <path d="M433 910c31 20 62 22 95 7" fill="none" stroke="#111" stroke-width="4"/>
 
-<path d="M451 522c-29 23-35 58-31 100" fill="none" stroke="#111" stroke-width="5" stroke-dasharray="3 9" stroke-linecap="round"/>
-<circle cx="432" cy="659" r="7" fill="#111"/><circle cx="444" cy="677" r="6" fill="#d94332"/><circle cx="454" cy="694" r="5" fill="#111"/>
+  <!-- rider torso -->
+  <path d="M463 471C504 445 561 445 606 470l40 88-15 174-191 0-17-178Z" fill="#8d8f90" stroke="#111" stroke-width="5"/>
+  <path d="M566 492h65l14 70-13 171h-68Z" fill="#d94332"/>
+  <path d="M492 513h78v98h-78Z" fill="url(#chevronFine)" stroke="#111" stroke-width="3"/>
+  <path d="M480 617h88v105h-93Z" fill="#3b3d3e" stroke="#111" stroke-width="3"/>
+  <path d="M487 626l72 87M519 618l58 72M478 665l46 55" stroke="#e7d9cf" stroke-width="4"/>
+  <path d="M469 724h171v27H469Z" fill="#090909"/>
+  <path d="M478 730h151" stroke="#efdfcd" stroke-width="4" stroke-dasharray="13 6"/>
+  <path d="M471 753h165" stroke="#eadfd5" stroke-width="4"/>
+  <path d="M478 753l8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10" fill="none" stroke="#111" stroke-width="2.2"/>
 
+  <!-- helmet, face, plume -->
+  <path d="M489 476c-20-33-12-78 15-103 35-31 87-24 111 12 19 28 13 65-14 93Z" fill="#efdfcd" stroke="#111" stroke-width="4.7"/>
+  <path d="M496 419c8-29 31-48 60-49 30 0 51 14 66 39-36-10-77-6-126 10Z" fill="#050505"/>
+  <path d="M501 370c-26-61-7-119 18-153-8 59 57 72 61 133-23-8-49 0-79 20Z" fill="#050505"/>
+  <path d="M516 218c-14-28-7-57 9-82-2 35 12 61 40 77Z" fill="#efdfcd" stroke="#111" stroke-width="3.2"/>
+  <path d="M605 405c33-20 62-14 87 9-32-2-54 11-71 33Z" fill="#d94332" stroke="#111" stroke-width="3"/>
+  <path d="M552 426c15-8 31-8 45 1" fill="none" stroke="#111" stroke-width="3"/>
+  <path d="M569 431c-7 3-8 9-4 14 5 5 12 5 20 2" fill="none" stroke="#111" stroke-width="2.6"/>
+  <path d="M596 466l18-24 17 14-16 24Z" fill="#111"/>
+
+  <!-- arms -->
+  <path d="M458 535C417 544 379 557 334 584l23 55 136-34Z" fill="#8d8f90" stroke="#111" stroke-width="4"/>
+  <path d="M637 542l160 30-5 58-164-23Z" fill="#8d8f90" stroke="#111" stroke-width="4"/>
+  <path d="M317 580l41-18 31 67-46 16Z" fill="#050505"/>
+  <path d="M785 565l46 4 2 65-47-7Z" fill="#050505"/>
+  <g stroke="#efdfcd" stroke-width="3.3">
+    <path d="M333 574l33 62M344 570l31 62M356 566l30 59"/>
+    <path d="M800 569l4 59M812 570l4 59M824 571l3 55"/>
+  </g>
+  <path d="M374 587l25-13 25 24-26 24Z" fill="#d94332" stroke="#111" stroke-width="3"/>
+  <path d="M820 583l30 0 12 30-14 27-28-13Z" fill="#d94332" stroke="#111" stroke-width="3"/>
+
+  <!-- bow, arrow, string -->
+  <path d="M394 604H1020" stroke="#111" stroke-width="7"/>
+  <path d="M396 604H1020" stroke="#e7d9cf" stroke-width="2"/>
+  <path d="M1015 588l48 16-48 17 12-17Z" fill="#111" stroke="#eadfd5" stroke-width="2"/>
+  <path d="M1038 604h-10" stroke="#d94332" stroke-width="4"/>
+  <path d="M421 600C519 543 654 442 787 330" fill="none" stroke="#111" stroke-width="2.2"/>
+  <path d="M420 600C514 640 674 666 833 650" fill="none" stroke="#111" stroke-width="2.2" opacity=".72"/>
+
+  <!-- beads and fine costume details -->
+  <path d="M449 496c-32 28-39 66-33 112" fill="none" stroke="#111" stroke-width="5" stroke-dasharray="3 9" stroke-linecap="round"/>
+  <circle cx="421" cy="641" r="7" fill="#111"/>
+  <circle cx="432" cy="661" r="6" fill="#d94332"/>
+  <circle cx="442" cy="682" r="5.5" fill="#111"/>
+  <circle cx="451" cy="700" r="4.5" fill="#eadfd5"/>
 </g>
 
 <g transform="translate(97 163)" stroke="#eadfd5" stroke-width="8" fill="none"><path d="M-46 0h92M0-46v92"/><path d="M-28-28L28 28M28-28L-28 28" stroke="#111" stroke-width="5"/><path d="M0-28L28 0 0 28-28 0Z"/><path d="M0-15L15 0 0 15-15 0Z" fill="#d94332" stroke="#111" stroke-width="4"/></g>
