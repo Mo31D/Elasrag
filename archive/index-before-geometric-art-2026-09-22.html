@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#e8e6df" />
+  <meta name="color-scheme" content="light" />
+  <title>Elasrag</title>
+  <meta name="description" content="Elasrag" />
+
+  <style>
+    :root {
+      --mx: 0;
+      --my: 0;
+      --paper: #ece9e1;
+      --stone: #d8d9d5;
+      --mist: #c9d0d1;
+      --ink: #14202a;
+      --navy: #1f3140;
+      --steel: #71838d;
+      --olive: #7d8472;
+      --white: rgba(255,255,255,.82);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    body {
+      min-height: 100svh;
+      color: var(--ink);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Segoe UI",
+        "Noto Sans Arabic",
+        "Noto Sans",
+        Arial,
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+      isolation: isolate;
+    }
+
+    .scene {
+      position: fixed;
+      inset: -6%;
+      overflow: hidden;
+      perspective: 1400px;
+      transform-style: preserve-3d;
+      background:
+        radial-gradient(circle at 17% 16%, rgba(255,255,255,.96), transparent 28%),
+        radial-gradient(circle at 77% 18%, rgba(201,210,213,.68), transparent 32%),
+        radial-gradient(circle at 73% 80%, rgba(134,148,130,.24), transparent 34%),
+        radial-gradient(circle at 18% 82%, rgba(106,130,145,.16), transparent 30%),
+        linear-gradient(135deg, #f1eee7 0%, #e3e2dc 46%, #d9dedf 100%);
+    }
+
+    .wash {
+      position: absolute;
+      inset: -12%;
+      background:
+        linear-gradient(116deg,
+          transparent 0 20%,
+          rgba(255,255,255,.34) 31%,
+          transparent 42% 57%,
+          rgba(111,132,142,.08) 70%,
+          transparent 82%);
+      filter: blur(42px);
+      opacity: .72;
+      transform:
+        translate3d(calc(var(--mx) * -10px), calc(var(--my) * -8px), -160px)
+        scale(1.12);
+      animation: wash 16s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    .glass-field {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      pointer-events: none;
+    }
+
+    .plane {
+      position: absolute;
+      border: 1px solid rgba(255,255,255,.58);
+      background:
+        linear-gradient(135deg,
+          rgba(255,255,255,.31),
+          rgba(255,255,255,.08) 42%,
+          rgba(95,118,129,.055) 100%);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.68),
+        0 25px 90px rgba(46,63,73,.055);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .plane.one {
+      width: 74vw;
+      height: 34vh;
+      left: -15vw;
+      top: 18vh;
+      clip-path: polygon(0 10%, 93% 0, 100% 79%, 8% 100%);
+      transform:
+        translate3d(calc(var(--mx) * -12px), calc(var(--my) * -9px), -120px)
+        rotate(-8deg) rotateY(16deg);
+      animation: drift-one 15s ease-in-out infinite alternate;
+      opacity: .68;
+    }
+
+    .plane.two {
+      width: 60vw;
+      height: 42vh;
+      right: -13vw;
+      top: 36vh;
+      clip-path: polygon(12% 0, 100% 13%, 87% 100%, 0 82%);
+      transform:
+        translate3d(calc(var(--mx) * -25px), calc(var(--my) * -19px), 20px)
+        rotate(10deg) rotateY(-13deg);
+      animation: drift-two 17s ease-in-out infinite alternate;
+      opacity: .62;
+    }
+
+    .plane.three {
+      width: 44vw;
+      height: 18vh;
+      left: 28vw;
+      bottom: -3vh;
+      clip-path: polygon(0 22%, 94% 0, 100% 74%, 8% 100%);
+      transform:
+        translate3d(calc(var(--mx) * -38px), calc(var(--my) * -28px), 110px)
+        rotate(-4deg);
+      animation: drift-three 12s ease-in-out infinite alternate;
+      opacity: .4;
+    }
+
+    .caustic {
+      position: absolute;
+      width: 54vw;
+      height: 54vw;
+      border-radius: 50%;
+      filter: blur(50px);
+      background:
+        conic-gradient(
+          from 210deg,
+          transparent 0 18%,
+          rgba(255,255,255,.34) 23%,
+          transparent 31% 56%,
+          rgba(112,132,140,.11) 64%,
+          transparent 72% 100%);
+      mix-blend-mode: soft-light;
+      right: -14vw;
+      top: -12vw;
+      transform:
+        translate3d(calc(var(--mx) * -16px), calc(var(--my) * -13px), -60px);
+      animation: caustic 20s linear infinite;
+      opacity: .8;
+      pointer-events: none;
+    }
+
+    .linework {
+      position: absolute;
+      inset: -24%;
+      opacity: .16;
+      background-image:
+        linear-gradient(rgba(30,48,59,.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(30,48,59,.12) 1px, transparent 1px);
+      background-size: 88px 88px;
+      transform:
+        perspective(800px)
+        rotateX(70deg)
+        translateY(34%)
+        translateX(calc(var(--mx) * -5px));
+      transform-origin: center;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 69%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 69%);
+      pointer-events: none;
+    }
+
+    .grain {
+      position: absolute;
+      inset: 0;
+      opacity: .03;
+      mix-blend-mode: multiply;
+      background-image:
+        repeating-radial-gradient(circle at 0 0, rgba(15,30,38,.7) 0 1px, transparent 1px 5px);
+      background-size: 8px 8px;
+      pointer-events: none;
+    }
+
+    .brand-wrap {
+      position: fixed;
+      z-index: 30;
+      top: max(34px, calc(env(safe-area-inset-top) + 22px));
+      left: max(30px, calc(env(safe-area-inset-left) + 22px));
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .brand-kicker {
+      font-family:
+        "SF Pro Text",
+        "Avenir Next",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+      font-size: clamp(10px, .8vw, 12px);
+      font-weight: 600;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(20,32,42,.42);
+      line-height: 1;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 10px;
+      white-space: nowrap;
+      direction: ltr;
+      text-align: left;
+      font-family:
+        "Avenir Next",
+        "SF Pro Display",
+        "Helvetica Neue",
+        Arial,
+        sans-serif;
+      font-size: clamp(26px, 2.8vw, 42px);
+      line-height: .95;
+      font-weight: 600;
+      letter-spacing: -.05em;
+      color: rgba(20,32,42,.96);
+      text-shadow:
+        0 1px 0 rgba(255,255,255,.62),
+        0 10px 24px rgba(20,32,42,.06);
+      position: relative;
+    }
+
+    .brand::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: min(100%, 170px);
+      height: 1px;
+      background:
+        linear-gradient(
+          90deg,
+          rgba(20,32,42,.75) 0%,
+          rgba(113,131,141,.28) 70%,
+          transparent 100%
+        );
+      opacity: .9;
+    }
+
+    .brand-mo {
+      font-weight: 500;
+      letter-spacing: -.03em;
+      color: rgba(20,32,42,.72);
+    }
+
+    .brand-name {
+      font-weight: 700;
+      letter-spacing: -.06em;
+      color: rgba(20,32,42,.98);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-name::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          110deg,
+          transparent 0%,
+          rgba(255,255,255,.35) 45%,
+          transparent 70%
+        );
+      transform: translateX(-140%);
+      animation: brand-sheen 7s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes brand-sheen {
+      0%, 78%, 100% {
+        transform: translateX(-140%);
+        opacity: 0;
+      }
+      82% {
+        opacity: .45;
+      }
+      92% {
+        transform: translateX(135%);
+        opacity: .22;
+      }
+    }
+
+    main {
+      position: relative;
+      z-index: 12;
+      width: 100%;
+      height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      perspective: 1100px;
+    }
+
+    .hello-wrap {
+      position: relative;
+      width: min(90vw, 980px);
+      min-height: 180px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      transform-style: preserve-3d;
+    }
+
+    .quiet-glow {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(54vw, 560px);
+      aspect-ratio: 1.9 / 1;
+      transform:
+        translate(-50%,-50%)
+        translate3d(calc(var(--mx) * 5px), calc(var(--my) * 4px), -50px);
+      border-radius: 50%;
+      background:
+        radial-gradient(ellipse at center,
+          rgba(255,255,255,.72) 0%,
+          rgba(206,214,213,.34) 35%,
+          transparent 72%);
+      filter: blur(30px);
+      opacity: .72;
+      pointer-events: none;
+    }
+
+    .greeting {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      max-width: 88vw;
+      padding: .08em .18em .18em;
+      transform:
+        translate(-50%,-50%)
+        translateZ(42px);
+      transform-origin: center;
+      font-size: clamp(15px, 2.2vw, 29px);
+      line-height: 1.08;
+      font-weight: 450;
+      letter-spacing: -.025em;
+      white-space: nowrap;
+      color: rgba(20,32,42,.88);
+      text-shadow: 0 8px 28px rgba(31,49,64,.08);
+      opacity: 0;
+      transition:
+        opacity .42s cubic-bezier(.22,.74,.18,1),
+        transform .55s cubic-bezier(.2,.76,.16,1);
+      will-change: opacity, transform;
+    }
+
+    .greeting.is-active {
+      opacity: .88;
+      transform:
+        translate(-50%,-50%)
+        translate3d(calc(var(--mx) * 3px), calc(var(--my) * 2px), 42px)
+        scale(1);
+    }
+
+    .greeting.is-changing {
+      opacity: 0;
+      transform:
+        translate(-50%,-50%)
+        translate3d(calc(var(--mx) * 2px), calc(var(--my) * 1px), 34px)
+        translateY(-3px)
+        scale(.994);
+    }
+
+    @keyframes wash {
+      from { transform: translate3d(-2%,-1%,-160px) scale(1.08); }
+      to   { transform: translate3d(3%,2%,-160px) scale(1.15); }
+    }
+
+    @keyframes drift-one {
+      from { translate: -1% -1%; }
+      to   { translate: 4% 3%; }
+    }
+
+    @keyframes drift-two {
+      from { translate: 2% 1%; }
+      to   { translate: -4% -2%; }
+    }
+
+    @keyframes drift-three {
+      from { translate: -2% 0; }
+      to   { translate: 4% -3%; }
+    }
+
+    @keyframes caustic {
+      from { rotate: 0deg; }
+      to   { rotate: 360deg; }
+    }
+
+    @media (max-width: 720px) {
+      .scene { inset: -10%; }
+
+      .brand-wrap {
+        top: max(26px, calc(env(safe-area-inset-top) + 18px));
+        left: max(20px, calc(env(safe-area-inset-left) + 18px));
+        gap: 5px;
+      }
+
+      .brand-kicker {
+        font-size: 10px;
+        letter-spacing: .16em;
+      }
+
+      .brand {
+        font-size: clamp(22px, 6.4vw, 30px);
+        gap: 7px;
+      }
+
+      .brand::after {
+        bottom: -6px;
+        width: min(100%, 132px);
+      }
+
+      .hello-wrap {
+        min-height: 150px;
+      }
+
+      .greeting {
+        font-size: clamp(14.5px, 4.5vw, 24px);
+      }
+
+      .plane.one {
+        width: 108vw;
+        left: -38vw;
+      }
+
+      .plane.two {
+        width: 88vw;
+        right: -31vw;
+      }
+
+      .plane.three {
+        width: 72vw;
+        left: 16vw;
+      }
+
+      .linework {
+        background-size: 64px 64px;
+        opacity: .11;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .wash,
+      .plane,
+      .caustic {
+        animation: none !important;
+      }
+
+      .brand,
+      .greeting {
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="scene" aria-hidden="true">
+    <div class="wash"></div>
+    <div class="glass-field">
+      <div class="plane one"></div>
+      <div class="plane two"></div>
+      <div class="plane three"></div>
+    </div>
+    <div class="caustic"></div>
+    <div class="linework"></div>
+    <div class="grain"></div>
+  </div>
+
+  <div class="brand-wrap" aria-label="Mo Elasrag">
+    <div class="brand-kicker">Personal</div>
+    <div class="brand">
+      <span class="brand-mo">Mo</span>
+      <span class="brand-name">Elasrag</span>
+    </div>
+  </div>
+
+  <main aria-label="Welcome">
+    <div class="hello-wrap">
+      <div class="quiet-glow" aria-hidden="true"></div>
+      <div id="greeting" class="greeting is-active" role="status" aria-live="polite">مرحبًا</div>
+    </div>
+  </main>
+
+  <script>
+    (() => {
+      const greetings = [
+        { text: "مرحبًا", dir: "rtl" },
+        { text: "Hello", dir: "ltr" },
+        { text: "Bonjour", dir: "ltr" },
+        { text: "Hola", dir: "ltr" },
+        { text: "Ciao", dir: "ltr" },
+        { text: "Hallo", dir: "ltr" },
+        { text: "Cześć", dir: "ltr" },
+        { text: "Olá", dir: "ltr" },
+        { text: "Привет", dir: "ltr" },
+        { text: "Вітаю", dir: "ltr" },
+        { text: "Merhaba", dir: "ltr" },
+        { text: "Γεια σου", dir: "ltr" },
+        { text: "שלום", dir: "rtl" },
+        { text: "سلام", dir: "rtl" },
+        { text: "नमस्ते", dir: "ltr" },
+        { text: "নমস্কার", dir: "ltr" },
+        { text: "你好", dir: "ltr" },
+        { text: "こんにちは", dir: "ltr" },
+        { text: "안녕하세요", dir: "ltr" },
+        { text: "สวัสดี", dir: "ltr" },
+        { text: "Xin chào", dir: "ltr" },
+        { text: "Halo", dir: "ltr" },
+        { text: "Hai", dir: "ltr" },
+        { text: "Kumusta", dir: "ltr" },
+        { text: "Jambo", dir: "ltr" },
+        { text: "Salut", dir: "ltr" },
+        { text: "Ahoj", dir: "ltr" },
+        { text: "Helló", dir: "ltr" },
+        { text: "Hej", dir: "ltr" },
+        { text: "Hei", dir: "ltr" },
+        { text: "Hallo", dir: "ltr" },
+        { text: "გამარჯობა", dir: "ltr" },
+        { text: "Բարև", dir: "ltr" }
+      ];
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const root = document.documentElement;
+      const greeting = document.getElementById("greeting");
+      let greetingIndex = 0;
+      let greetingBusy = false;
+
+      function fitLayer(el) {
+        el.style.fontSize = "";
+        const maxWidth = Math.min(window.innerWidth * .86, 900);
+        const computed = parseFloat(getComputedStyle(el).fontSize);
+
+        if (el.scrollWidth > maxWidth) {
+          el.style.fontSize = Math.max(12, computed * (maxWidth / el.scrollWidth)) + "px";
+        }
+      }
+
+      function switchGreeting() {
+        if (greetingBusy) return;
+        greetingBusy = true;
+
+        greeting.classList.remove("is-active");
+        greeting.classList.add("is-changing");
+
+        window.setTimeout(() => {
+          greetingIndex = (greetingIndex + 1) % greetings.length;
+          const item = greetings[greetingIndex];
+
+          greeting.textContent = item.text;
+          greeting.dir = item.dir;
+          fitLayer(greeting);
+
+          requestAnimationFrame(() => {
+            greeting.classList.remove("is-changing");
+            greeting.classList.add("is-active");
+
+            window.setTimeout(() => {
+              greetingBusy = false;
+            }, 560);
+          });
+        }, 430);
+      }
+
+      function setPointer(x, y) {
+        const nx = (x / window.innerWidth - .5) * 2;
+        const ny = (y / window.innerHeight - .5) * 2;
+        root.style.setProperty("--mx", nx.toFixed(3));
+        root.style.setProperty("--my", ny.toFixed(3));
+      }
+
+      fitLayer(greeting);
+
+      window.addEventListener("resize", () => {
+        fitLayer(greeting);
+      }, { passive: true });
+
+      window.addEventListener("pointermove", e => {
+        setPointer(e.clientX, e.clientY);
+      }, { passive: true });
+
+      window.addEventListener("deviceorientation", e => {
+        if (e.gamma == null || e.beta == null) return;
+        const x = Math.max(-1, Math.min(1, e.gamma / 38));
+        const y = Math.max(-1, Math.min(1, (e.beta - 45) / 48));
+        root.style.setProperty("--mx", x.toFixed(3));
+        root.style.setProperty("--my", y.toFixed(3));
+      }, { passive: true });
+
+      if (!reduceMotion) {
+        window.setInterval(switchGreeting, 3200);
+      }
+    })();
+  </script>
+</body>
+</html>
