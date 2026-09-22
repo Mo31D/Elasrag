@@ -6,87 +6,22 @@
 <meta name="theme-color" content="#aaa7a8">
 <title>Elasrag</title>
 <style>
-*{box-sizing:border-box}
 html,body{
   margin:0;
   width:100%;
-  min-height:100%;
+  height:100%;
   overflow:hidden;
-  background:#cec9c1;
+  background:#aaa7a8;
 }
 body{
-  position:relative;
-  min-height:100svh;
   display:grid;
   place-items:center;
-  isolation:isolate;
-  background:
-    radial-gradient(ellipse at 50% 43%,rgba(255,255,255,.96) 0%,rgba(246,243,237,.82) 19%,rgba(226,221,213,.55) 39%,rgba(206,201,193,.12) 62%,transparent 76%),
-    linear-gradient(180deg,#d7d3cc 0%,#cec9c1 56%,#c7c1b8 100%);
-}
-body::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:-2;
-  pointer-events:none;
-  opacity:.28;
-  background-image:radial-gradient(circle,rgba(58,50,45,.20) .65px,transparent .75px);
-  background-size:13px 13px;
-  -webkit-mask-image:radial-gradient(ellipse at 50% 46%,#000 0 28%,transparent 72%);
-  mask-image:radial-gradient(ellipse at 50% 46%,#000 0 28%,transparent 72%);
-}
-body::after{
-  content:"";
-  position:absolute;
-  left:50%;
-  top:50%;
-  width:min(58vw,620px);
-  height:min(62vw,650px);
-  transform:translate(-50%,-47%);
-  z-index:-1;
-  border-radius:50%;
-  background:radial-gradient(ellipse,rgba(255,255,255,.52),rgba(255,255,255,0) 69%);
-  filter:blur(24px);
-  pointer-events:none;
+  background:linear-gradient(180deg,#adacad 0%,#aaa9a9 46%,#aa9293 84%,#e44132 100%);
 }
 svg{
-  position:relative;
-  z-index:1;
+  width:100%;
+  height:100%;
   display:block;
-  width:min(42vw,430px);
-  height:auto;
-  max-height:54svh;
-  aspect-ratio:1120/1440;
-  padding:clamp(7px,1vw,12px);
-  background:#eee7dc;
-  border:1px solid rgba(43,36,31,.36);
-  outline:1px solid rgba(255,255,255,.62);
-  outline-offset:-5px;
-  box-shadow:
-    0 1px 0 rgba(255,255,255,.85) inset,
-    0 14px 30px rgba(45,37,32,.12),
-    0 38px 80px rgba(45,37,32,.16);
-  transform:translateY(-2svh);
-  filter:saturate(.96) contrast(1.015);
-}
-@media (max-width:700px){
-  svg{
-    width:42vw;
-    max-height:48svh;
-    padding:7px;
-    box-shadow:
-      0 1px 0 rgba(255,255,255,.82) inset,
-      0 12px 24px rgba(45,37,32,.11),
-      0 28px 56px rgba(45,37,32,.15);
-  }
-}
-@media (orientation:landscape) and (max-height:650px){
-  svg{
-    width:auto;
-    height:46svh;
-    max-width:42vw;
-  }
 }
 </style>
 </head>
@@ -128,6 +63,7 @@ svg{
 
 <rect width="1120" height="1440" fill="url(#bg)"/>
 <rect width="1120" height="980" fill="url(#dots)" opacity=".72" mask="url(#dotFade)"/>
+<g id="central-art" transform="translate(560 650) scale(.82) translate(-560 -650)">
 <circle cx="560" cy="588" r="443" fill="none" stroke="#eadfd5" stroke-width="5" stroke-dasharray="2 18" stroke-linecap="round" opacity=".9"/>
 <circle cx="560" cy="588" r="391" fill="none" stroke="#e7d9cf" stroke-width="2.1" opacity=".8"/>
 <circle cx="560" cy="588" r="359" fill="url(#tinyDots)" stroke="#eadfd5" stroke-width="4"/>
@@ -204,6 +140,8 @@ svg{
 
 <path d="M451 522c-29 23-35 58-31 100" fill="none" stroke="#111" stroke-width="5" stroke-dasharray="3 9" stroke-linecap="round"/>
 <circle cx="432" cy="659" r="7" fill="#111"/><circle cx="444" cy="677" r="6" fill="#d94332"/><circle cx="454" cy="694" r="5" fill="#111"/>
+
+</g>
 
 <g transform="translate(97 163)" stroke="#eadfd5" stroke-width="8" fill="none"><path d="M-46 0h92M0-46v92"/><path d="M-28-28L28 28M28-28L-28 28" stroke="#111" stroke-width="5"/><path d="M0-28L28 0 0 28-28 0Z"/><path d="M0-15L15 0 0 15-15 0Z" fill="#d94332" stroke="#111" stroke-width="4"/></g>
 <g transform="translate(1004 163)" stroke="#eadfd5" stroke-width="8" fill="none"><path d="M-46 0h92M0-46v92"/><path d="M-28-28L28 28M28-28L-28 28" stroke="#111" stroke-width="5"/><path d="M0-28L28 0 0 28-28 0Z"/><path d="M0-15L15 0 0 15-15 0Z" fill="#d94332" stroke="#111" stroke-width="4"/></g>
