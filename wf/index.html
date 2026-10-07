@@ -52,6 +52,7 @@
     }
     .quick.fire{background:var(--red);color:#fff}
     .quick.details{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .quick.training{background:#fff;color:var(--ink);border:1px solid var(--line)}
     .quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
     .icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:21px}
     .quick:not(.fire) .icon{background:#f2f4f7}
@@ -84,7 +85,7 @@
       position:fixed;z-index:45;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);
       padding:8px 10px calc(8px + env(safe-area-inset-bottom))
     }
-    .nav-inner{max-width:780px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .nav-inner{max-width:780px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
     .nav-btn{border:0;background:transparent;border-radius:12px;padding:9px 6px;color:#667085;font-size:12px;font-weight:800}
     .nav-btn.active{background:#f2f4f7;color:var(--ink)}
     .nav-btn span{display:block;font-size:19px;margin-bottom:3px}
@@ -153,6 +154,7 @@
         <div class="section-title">Reference</div>
         <div class="grid">
           <button class="quick details" data-page="details"><span class="icon">ID</span><span>Work details</span></button>
+          <button class="quick training" data-page="training"><span class="icon">✓</span><span>Training</span></button>
           <button class="quick vault" data-page="vault"><span class="icon">▣</span><span>Private vault</span></button>
         </div>
         <div class="status" id="offlineStatus">Ready</div>
@@ -177,28 +179,86 @@
 
         <div class="card warning">
           <strong>Night shift:</strong>
-          <p>The official document says there is a separate document for <b>Night Shift Fire responsibilities</b>. It has not been added here yet.</p>
+          <p>The supplied fire procedure explicitly refers to a separate <b>Night Shift Fire responsibilities</b> document. That document has not been supplied yet, so no night-specific steps have been invented here.</p>
         </div>
+
+        <details class="card">
+          <summary style="font-weight:850;cursor:pointer">Fire Warden — only if you are assigned this role</summary>
+          <ul class="checklist">
+            <li><span class="num">1</span><span>Investigate the fire scene <b>only if safe</b>.</span></li>
+            <li><span class="num">2</span><span>Activate the nearest break-glass point if not already done.</span></li>
+            <li><span class="num">3</span><span>Tackle only an early-stage fire, only if safe and within company training.</span></li>
+            <li><span class="num">4</span><span>Assist evacuation and liaise with managers/supervisors at the Assembly Point.</span></li>
+            <li><span class="num">5</span><span>Prevent re-entry until the Fire Service says it is safe.</span></li>
+            <li><span class="num">6</span><span>Brief the Fire Service on fire location/nature, anyone unaccounted for and hazards.</span></li>
+          </ul>
+        </details>
       </section>
 
       <section id="details" class="page">
         <button class="back" data-page="home">← Home</button>
-        <div class="card safe">
-          <h2>Personal work details</h2>
-          <p>Keep colleague numbers, PINs and other personal work data in <b>Private Vault</b>. They are not written into the public GitHub repository.</p>
-          <button class="primary" data-page="vault">Open Private Vault</button>
+
+        <div class="card">
+          <h2>My job</h2>
+          <div class="row"><div><div class="key">Role</div><div class="value">Team Member – Filling Station (Nights)</div></div></div>
+          <div class="row"><div><div class="key">Site</div><div class="value">Tebay Services</div></div></div>
+          <div class="row"><div><div class="key">Line manager</div><div class="value">Emma Cash · Filling Station Manager</div></div></div>
+          <div class="row"><div><div class="key">Manager email</div><div class="value">emma.cash@tebayservices.com</div></div><button class="copy" data-copy="emma.cash@tebayservices.com">Copy</button></div>
+          <div class="row"><div><div class="key">Colleague number</div><div class="value">012636</div></div><button class="copy" data-copy="012636">Copy</button></div>
+          <div class="row"><div><div class="key">Start date</div><div class="value">7 Oct 2026</div></div></div>
         </div>
 
         <div class="card">
-          <h2>My Westmorland People</h2>
+          <h2>Shift & pay</h2>
+          <div class="row"><div><div class="key">Regular shifts</div><div class="value">Friday & Saturday</div></div></div>
+          <div class="row"><div><div class="key">Shift time</div><div class="value">10:45pm – 7:15am</div></div></div>
+          <div class="row"><div><div class="key">Contracted hours</div><div class="value">17 hours/week</div></div></div>
+          <div class="row"><div><div class="key">Hourly rate</div><div class="value">£14.25/hour</div></div></div>
+          <div class="row"><div><div class="key">Pay frequency</div><div class="value">Weekly</div></div></div>
+          <div class="row"><div><div class="key">Break</div><div class="value">Paid — confirmed by manager</div></div></div>
+        </div>
+
+        <div class="card">
+          <h2>My Westmorland People / PeopleXD</h2>
           <div class="row"><div><div class="key">Company ID</div><div class="value">weslp</div></div><button class="copy" data-copy="weslp">Copy</button></div>
+          <div class="row"><div><div class="key">Username</div><div class="value">012636</div></div><button class="copy" data-copy="012636">Copy</button></div>
           <a class="action" href="https://mywestmorland.com" target="_blank" rel="noopener">Open PeopleXD</a>
         </div>
 
         <div class="card">
           <h2>My Westmorland Learn / THRIVE</h2>
           <div class="row"><div><div class="key">Workspace</div><div class="value">westmorland</div></div><button class="copy" data-copy="westmorland">Copy</button></div>
+          <div class="row"><div><div class="key">Username</div><div class="value">012636</div></div><button class="copy" data-copy="012636">Copy</button></div>
           <a class="action" href="https://westmorland.learn.link" target="_blank" rel="noopener">Open THRIVE</a>
+        </div>
+
+        <div class="card">
+          <h2>First day / induction</h2>
+          <div class="row"><div><div class="key">Date</div><div class="value">7 Oct 2026</div></div></div>
+          <div class="row"><div><div class="key">Time</div><div class="value">9:30am – 3:30pm</div></div></div>
+          <div class="row"><div><div class="key">Location</div><div class="value">Westmorland Hotel, Northbound</div></div></div>
+          <div class="row"><div><div class="key">Postcode</div><div class="value">CA10 3SB</div></div><button class="copy" data-copy="CA10 3SB">Copy</button></div>
+        </div>
+
+        <div class="card safe">
+          <h2>Private codes</h2>
+          <p>Actual passwords/PINs were not provided in this chat. Add them to the encrypted Private Vault if needed.</p>
+          <button class="primary" data-page="vault">Open Private Vault</button>
+        </div>
+      </section>
+
+      <section id="training" class="page">
+        <button class="back" data-page="home">← Home</button>
+        <div class="card">
+          <h2>Online training</h2>
+          <div class="row"><div><div class="key">Due 16 Oct 2026</div><div class="value">Welcome Antlers – Colleague Induction</div></div></div>
+          <div class="row"><div><div class="key">Due 16 Oct 2026</div><div class="value">Food Safety Training</div></div></div>
+          <div class="row"><div><div class="key">Due 16 Oct 2026</div><div class="value">Health & Safety Training</div></div></div>
+          <div class="row"><div><div class="key">Due 18 Oct 2026</div><div class="value">Allergy Awareness Recap</div></div></div>
+          <div class="row"><div><div class="key">Due 1 Nov 2026</div><div class="value">Customer Experience – The Westmorland Way</div></div></div>
+          <div class="row"><div><div class="key">Due 1 Nov 2026</div><div class="value">CBE Procedures – Filling Station Colleagues</div></div></div>
+          <div class="row"><div><div class="key">Due 1 Nov 2026</div><div class="value">Prevention of Sexual Harassment</div></div></div>
+          <a class="action" href="https://westmorland.learn.link" target="_blank" rel="noopener">Open training</a>
         </div>
       </section>
 
@@ -218,6 +278,7 @@
         <button class="nav-btn active" data-page="home"><span>⌂</span>Home</button>
         <button class="nav-btn" data-page="fire"><span>!</span>Fire</button>
         <button class="nav-btn" data-page="details"><span>ID</span>Details</button>
+        <button class="nav-btn" data-page="training"><span>✓</span>Training</button>
       </div>
     </nav>
   </div>
