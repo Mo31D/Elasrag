@@ -26,7 +26,7 @@ try {
     await page.goto('https://mo.elasrag.com/');
     await page.locator('#home.active').waitFor();
     await page.waitForTimeout(50);
-    assert.ok(await page.evaluate(() => scrollY <= 5));
+    assert.ok(await page.evaluate(() => scrollY <= 5),JSON.stringify(await page.evaluate(()=>({scroll:scrollY,focus:document.activeElement.id,hero:document.querySelector('#shiftHero').getBoundingClientRect().toJSON()}))));
     const noOverflow = async () => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Overflow at ${width}px`);
     await noOverflow();
     await page.locator('header [data-lang="en"]').click();
@@ -39,7 +39,14 @@ try {
     await noOverflow();
     await page.locator('[data-edit-profile]').click();
     assert.ok(await page.locator('#profileDialog').evaluate(el => el.getBoundingClientRect().width <= innerWidth));
-    await page.locator('#cancelProfile').click();
+    assert.equal(await page.locator('[data-shift-day]').count(),7);
+    await page.locator('[data-shift-day="1"]').check();
+    await noOverflow();
+    await page.locator('#saveProfile').click();
+    await page.locator('#profileDialog').waitFor({state:'hidden'});
+    await page.locator('nav [data-page="home"]').click();
+    assert.ok((await page.locator('#shiftHeadline').textContent()).length>0);
+    await noOverflow();
     await page.locator('nav [data-page="training"]').click();
     await page.locator('#courseList .course-row').first().waitFor();
     await noOverflow();

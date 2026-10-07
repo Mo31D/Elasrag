@@ -650,3 +650,6 @@ export const TRANSLATIONS = {
     "retryIntro": "Try opening your information again."
   }
 };
+
+Object.assign(TRANSLATIONS.en, {nextShift:'Next shift',setShift:'Your schedule',onShift:'On shift',workingToday:'Working today',dayOff:'Day off today',endsAt:'Finishes at {time}',setSchedule:'Choose your work days',signInShift:'Sign in to see your next shift',timeRemaining:'{time} left',startsIn:'Starts in {time}',durationDays:'d',durationHours:'h',durationMinutes:'min'});
+Object.assign(TRANSLATIONS.ar, {nextShift:'الشيف الجاي',setShift:'مواعيد شغلك',onShift:'إنت في الشيف دلوقتي',workingToday:'عندك شيف النهارده',dayOff:'النهارده إجازة',endsAt:'بتخلص الساعة {time}',setSchedule:'اختار أيام شغلك',signInShift:'ادخل حسابك علشان تشوف الشيف الجاي',timeRemaining:'فاضل {time}',startsIn:'بيبدأ كمان {time}',durationDays:'يوم',durationHours:'ساعة',durationMinutes:'دقيقة'});

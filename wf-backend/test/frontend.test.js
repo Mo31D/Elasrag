@@ -231,3 +231,18 @@ test('an accepted password followed by unavailable data offers a retry without a
   f.kv.set('private-data',JSON.stringify({version:1,profile:{},items:[]}));click(d,'#unlockBtn');await until(()=>active(d,'details'));
   assert.equal(logins,1);assert.deepEqual(d.errors,[]);
 });
+
+test('weekday ticks save centrally, survive translation and replace the generic hero with the live shift',async t=>{
+ const {env,kv}=fixture();const a=device(env,'#details');t.after(()=>a.window.close());await signIn(a);
+ click(a,'[data-edit-profile]');
+ assert.equal(a.document.querySelectorAll('[data-shift-day]').length,7);
+ assert.deepEqual([...a.document.querySelectorAll('[data-shift-day]:checked')].map(x=>x.value),['5','6']);
+ click(a,'[data-shift-day="1"]');click(a,'.lang-btn[data-lang="en"]');
+ assert.equal(a.document.querySelector('[data-weekday="1"]').textContent,'Monday');assert.ok(a.document.querySelector('[data-shift-day="1"]').checked);
+ click(a,'#saveProfile');await until(()=>!a.document.getElementById('profileDialog').open);
+ assert.equal(JSON.parse(kv.get('private-data')).profile.shiftDays,'1,5,6');
+ assert.ok(!a.document.getElementById('shiftHeadline').textContent.includes('at a glance'));
+ assert.match(a.document.querySelector('[data-job="shiftDays"]').textContent,/Monday/);
+ assert.ok(a.document.getElementById('shiftMeta').textContent.includes('22:45'));
+ assert.deepEqual(a.errors,[]);
+});

@@ -367,7 +367,7 @@ export default {
         const headers = new Headers(response.headers);
         headers.set("cache-control", "no-store");
         headers.set("strict-transport-security", "max-age=31536000");
-        headers.set("x-wf-build", "23");
+        headers.set("x-wf-build", "24");
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");

@@ -11,13 +11,13 @@ test('service worker never intercepts private API, unrelated paths or mutations 
   const context = {
     URL, Response,
     self: { registration: { scope: 'https://mo.elasrag.com/' }, clients: { claim() {} }, skipWaiting() {}, addEventListener(type, listener) { listeners[type] = listener; } },
-    caches: { async open() { return cache; }, async keys() { return ['wf-quick-reference-v19','wf-quick-reference-v20','wf-quick-reference-v21','wf-quick-reference-v22','wf-quick-reference-v23','other-app']; }, async delete(key) { deleted.push(key); } },
+    caches: { async open() { return cache; }, async keys() { return ['wf-quick-reference-v19','wf-quick-reference-v20','wf-quick-reference-v21','wf-quick-reference-v22','wf-quick-reference-v23','wf-quick-reference-v24','other-app']; }, async delete(key) { deleted.push(key); } },
     fetch: async () => ({ ok:true, type:'basic', headers:new Headers({'content-type':'text/html'}), clone: () => new Response('shell') }),
   };
   vm.runInNewContext(readFileSync(new URL('../../wf/sw.js', import.meta.url),'utf8'),context);
   let activation;
   listeners.activate({ waitUntil(value) { activation = value; } }); await activation;
-  assert.deepEqual(deleted,['wf-quick-reference-v19','wf-quick-reference-v20','wf-quick-reference-v21','wf-quick-reference-v22']);
+  assert.deepEqual(deleted,['wf-quick-reference-v19','wf-quick-reference-v20','wf-quick-reference-v21','wf-quick-reference-v22','wf-quick-reference-v23']);
   for (const [url, method] of [
     ['https://mo.elasrag.com/private','GET'],['https://mo.elasrag.com/session','GET'],['https://mo.elasrag.com/api/session','GET'],
     ['https://mo.elasrag.com/login','POST'],['https://mo.elasrag.com/unrelated','GET'],

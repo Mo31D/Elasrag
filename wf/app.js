@@ -1,5 +1,5 @@
 import { TRANSLATIONS } from "./content.js";
-import { REQUIRED_COURSES, initialCompanion } from "./model.js";
+import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } from "./model.js";
 (() => {
   if(location.protocol!=="https:")return;
   const META_KEY = "wf-vault-meta-v1";
@@ -56,6 +56,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     document.querySelectorAll(".official").forEach(el => {
       el.style.display = "none";
     });
+    document.querySelectorAll('[data-weekday]').forEach(el=>el.textContent=WEEKDAYS[Number(el.dataset.weekday)][lang==='ar'?1:0]);
     updateOnline();
     updateTrainingDeadlines();
     renderVault();
@@ -279,8 +280,8 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     displayPage(id);
     if(routeTab)selectTab($(id),routeTab);
     renderCompanion();
-    const tab=$(id).querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;const hash="#"+id+(tab?"/"+tab:"");
-    if(location.hash!==hash)history[historyMode === "replace" ? "replaceState" : "pushState"](null,"",hash);
+    const tab=$(id).querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;const hash=id==="home"?"":"#"+id+(tab?"/"+tab:"");
+    if(location.hash!==hash)history[historyMode === "replace" ? "replaceState" : "pushState"](null,"",hash || location.pathname+location.search);
   }
 
   async function persistVault(nextItems, nextProfile = privateData?.profile, nextCompanion = privateData?.companion) {
@@ -586,13 +587,22 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     if (!authenticated) return openPrivateGate("details");
     if (saving) return;
     $("profileFields").replaceChildren();
-    const groups = [{ title:"myProfile", keys:["displayName","role","site","manager","managerEmail","startDate","shiftDays","shiftStart","shiftEnd","hours","hourlyRate","paidBreak","annualHoliday","minibusNote"] },{title:"accountHelp",keys:["colleagueNumber","kioskId","kioskPin","workPin","thriveUsername"]},{title:"firstDay",keys:["firstDayTime","firstDayLocation","firstDayPostcode"]}];
+    const groups = [{title:"shiftDays",keys:["shiftDays","shiftStart","shiftEnd"]},{ title:"myProfile", keys:["displayName","role","site","manager","managerEmail","startDate","hours","hourlyRate","paidBreak","annualHoliday","minibusNote"] },{title:"accountHelp",keys:["colleagueNumber","kioskId","kioskPin","workPin","thriveUsername"]},{title:"firstDay",keys:["firstDayTime","firstDayLocation","firstDayPostcode"]}];
     groups.forEach((group,index) => {
       const box = document.createElement("details"); box.className="profile-group"; box.open=index===0;
       const heading=document.createElement("summary");heading.dataset.i18n=group.title;heading.textContent=t(group.title);box.append(heading);
       group.keys.forEach(key => {
         const field=document.createElement("div");field.className="field";
         const label=document.createElement("label");label.textContent=t(key);label.dataset.i18n=key;label.htmlFor="profile-"+key;
+        if(key==='shiftDays') {
+          const days=document.createElement('fieldset');days.className='weekday-picker';
+          const legend=document.createElement('legend');legend.dataset.i18n=key;legend.textContent=t(key);days.append(legend);
+          const selected=shiftDays(privateData.profile.shiftDays);
+          [1,2,3,4,5,6,0].forEach(day=>{
+            const option=document.createElement('label');const check=document.createElement('input');check.type='checkbox';check.value=day;check.dataset.shiftDay=day;check.checked=selected.includes(day);
+            const name=document.createElement('span');name.dataset.weekday=day;name.textContent=WEEKDAYS[day][lang==='ar'?1:0];option.append(check,name);days.append(option);
+          });box.append(days);return;
+        }
         const input=document.createElement("input");input.id="profile-"+key;input.dataset.profile=key;input.maxLength=256;input.autocomplete="off";
         input.value=privateData.profile[key] || "";
         if (key.toLowerCase().includes("pin")) {input.type="password";input.dir="ltr";}
@@ -613,6 +623,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   $("saveProfile").addEventListener("click",async()=>{
     if(saving || !authenticated)return;
     const profile={...privateData.profile};
+    profile.shiftDays=[...document.querySelectorAll('[data-shift-day]:checked')].map(input=>input.value).join(',');
     const inputs=[...document.querySelectorAll("[data-profile]")];
     if(inputs.some(input=>!input.reportValidity()))return;
     inputs.forEach(input=>{if(input.value.trim())profile[input.dataset.profile]=input.value.trim();else delete profile[input.dataset.profile];});
@@ -725,6 +736,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     const profile=privateData.profile;
     if(key==='weeklyGross'){if(!profile.hours || !profile.hourlyRate)return '';const amount=Number(profile.hours)*Number(profile.hourlyRate);return Number.isFinite(amount)?new Intl.NumberFormat(lang==='ar'?'ar-EG':'en-GB',{style:'currency',currency:'GBP'}).format(amount):'';}
     if(key==='shiftTime')return [profile.shiftStart,profile.shiftEnd].filter(Boolean).join(' – ');
+    if(key==='shiftDays'){const days=shiftDays(profile.shiftDays);if(days.length)return days.map(day=>WEEKDAYS[day][lang==='ar'?1:0]).join(lang==='ar'?'، ':', ');}
     const value=profile[key] || '';
     if(!value)return '';
     const translated={role:'roleValue',shiftDays:'regularShiftsValue',paidBreak:'breakValue',minibusNote:'nightMinibusNote',firstDayLocation:'inductionLocation'};
@@ -733,6 +745,24 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     if(key==='hourlyRate' && Number.isFinite(Number(value)))return new Intl.NumberFormat(lang==='ar'?'ar-EG':'en-GB',{style:'currency',currency:'GBP'}).format(Number(value));
     if(key==='hours')return value+' '+t('hoursUnit');
     return value;
+  }
+  function renderShift() {
+    const time=date=>new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'}).format(date);
+    const date=date=>new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{timeZone:'Europe/London',weekday:'long',day:'numeric',month:'short'}).format(date);
+    const interval=shift=>time(shift.start)+' – '+time(shift.end);
+    const state=authenticated && privateData?shiftState(privateData.profile):{status:'locked'};
+    $('shiftHero').dataset.shiftStatus=state.status;
+    $('shiftStatus').textContent=t({locked:'myShift',unset:'setShift',active:'onShift',today:'workingToday',off:'dayOff'}[state.status]);
+    $('shiftHeadline').textContent=state.current?t('endsAt').replace('{time}',time(state.current.end)):state.next?date(state.next.start):t(state.status==='locked'?'signInShift':'setSchedule');
+    $('shiftDetail').textContent=state.current?date(state.current.start):state.next?interval(state.next):'';
+    $('shiftCountdown').textContent=state.current?t('timeRemaining').replace('{time}',duration(state.current.end-new Date())):state.next?t('startsIn').replace('{time}',duration(state.next.start-new Date())):'';
+    $('shiftCardLabel').textContent=t(state.current?'nextShift':'shiftDays');
+    $('shiftSummary').textContent=state.current && state.next?date(state.next.start):authenticated?jobValue('shiftDays') || t('setSchedule'):t('workDetails');
+    $('shiftMeta').textContent=state.current && state.next?interval(state.next):authenticated?jobValue('shiftTime'):'';
+  }
+  function duration(ms) {
+    const total=Math.max(0,Math.ceil(ms/60000));const days=Math.floor(total/1440),hours=Math.floor(total%1440/60),minutes=total%60;
+    const parts=[];if(days)parts.push(days+' '+t('durationDays'));if(hours)parts.push(hours+' '+t('durationHours'));if(!days && (minutes || !parts.length))parts.push(minutes+' '+t('durationMinutes'));return parts.join(lang==='ar'?' و ':' ');
   }
   function courseTitle(course){return lang==='ar'?(course.titleAR || course.titleEN):course.titleEN;}
   function companionData(){return privateData?.companion || initialCompanion(false);}
@@ -778,8 +808,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     $('nextCourseTitle').textContent=next?courseTitle(next):t('learningClear');
     $('nextCourseMeta').textContent=next?.due?deadlineText(next.due):t(authenticated?'myProgress':'requiredTraining');
     $('greeting').textContent=authenticated?(privateData.profile.displayName || account.username):'';
-    $('shiftSummary').textContent=authenticated?(jobValue('shiftDays') || jobValue('role') || t('myShift')):t('workDetails');
-    $('shiftMeta').textContent=authenticated?jobValue('shiftTime'):t('myProfile');
+    renderShift();
     $('accountBtn').textContent=authenticated?(privateData.profile.displayName || t('myProfile')):t('myProfile');
     $('personalTasks').replaceChildren();
     data.tasks.forEach(task=>{
@@ -851,13 +880,16 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   $("recoveryDialog").addEventListener("close",()=>{$("newRecoveryCode").value="";$("copyRecovery").textContent=t("copy");});
   addEventListener("online", updateOnline);
   addEventListener("offline", updateOnline);
+  addEventListener("focus", renderShift);
+  const tickShift=()=>{renderShift();setTimeout(tickShift,60000-Date.now()%60000);};
+  setTimeout(tickShift,60000-Date.now()%60000);
   addEventListener("focus", refreshTrainingDateIfNeeded);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshTrainingDateIfNeeded(); });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) {refreshTrainingDateIfNeeded();renderShift();} });
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=23").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "23";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=24").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "24";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
