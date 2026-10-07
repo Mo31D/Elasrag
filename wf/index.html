@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>WF Quick Reference</title>
+  <style>
+    :root{
+      --bg:#f4f5f7;--card:#fff;--ink:#111827;--muted:#667085;--line:#e4e7ec;
+      --nav:#17212b;--nav2:#22303c;--red:#b42318;--red-bg:#fff1f0;
+      --amber:#b54708;--amber-bg:#fffaeb;--green:#067647;--green-bg:#ecfdf3;
+      --shadow:0 8px 28px rgba(16,24,40,.08);--radius:18px
+    }
+    *{box-sizing:border-box}
+    html{background:var(--bg);-webkit-text-size-adjust:100%}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    .hidden{display:none!important}
+    .lock{
+      position:fixed;inset:0;z-index:1000;background:var(--nav);color:#fff;
+      display:grid;place-items:center;padding:24px
+    }
+    .lock-card{width:min(440px,100%);background:#fff;color:var(--ink);border-radius:24px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+    .lock-mark{width:54px;height:54px;border-radius:16px;background:var(--nav);color:#fff;display:grid;place-items:center;font-size:26px;margin-bottom:18px}
+    .lock h1{margin:0 0 6px;font-size:27px;letter-spacing:-.02em}
+    .lock p{margin:0 0 20px;color:var(--muted);line-height:1.45}
+    .field{display:grid;gap:7px;margin:13px 0}
+    .field label{font-size:13px;font-weight:700;color:#344054}
+    .field input,.field textarea{width:100%;border:1px solid #d0d5dd;border-radius:12px;padding:13px 14px;background:#fff;color:var(--ink);outline:none}
+    .field input:focus,.field textarea:focus{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.12)}
+    .primary{width:100%;border:0;border-radius:12px;padding:13px 16px;background:var(--nav);color:#fff;font-weight:800}
+    .error{min-height:20px;color:var(--red);font-size:13px;margin-top:9px}
+    .tiny{font-size:12px;color:var(--muted);line-height:1.45}
+    #app{min-height:100vh}
+    header{position:sticky;top:0;z-index:50;background:rgba(23,33,43,.98);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 12px}
+    .topbar{max-width:780px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{font-size:17px;font-weight:850;letter-spacing:.01em}
+    .lock-btn{border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:8px 11px;font-weight:700}
+    main{max-width:780px;margin:0 auto;padding:16px 14px calc(86px + env(safe-area-inset-bottom))}
+    .hero{background:var(--nav);color:#fff;border-radius:var(--radius);padding:20px;margin:4px 0 16px}
+    .hero .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:#cbd5e1;font-weight:800}
+    .hero h1{font-size:27px;margin:5px 0 6px;letter-spacing:-.03em}
+    .hero p{margin:0;color:#d0d5dd;line-height:1.4}
+    .section-title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#667085;font-weight:850;margin:22px 4px 9px}
+    .grid{display:grid;grid-template-columns:1fr;gap:10px}
+    .quick{
+      border:0;border-radius:var(--radius);padding:18px;text-align:left;box-shadow:var(--shadow);
+      display:flex;align-items:center;gap:14px;font-weight:850;font-size:20px
+    }
+    .quick.fire{background:var(--red);color:#fff}
+    .quick.details{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:21px}
+    .quick:not(.fire) .icon{background:#f2f4f7}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:17px;margin-bottom:11px}
+    .card h2{font-size:21px;margin:0 0 8px;letter-spacing:-.02em}
+    .card h3{font-size:16px;margin:0 0 8px}
+    .card p{margin:7px 0;line-height:1.45}
+    .critical{background:var(--red-bg);border-color:#fecdca}
+    .critical .big{font-size:25px;font-weight:900;color:var(--red);line-height:1.15}
+    .warning{background:var(--amber-bg);border-color:#fedf89}
+    .warning strong{color:var(--amber)}
+    .safe{background:var(--green-bg);border-color:#abefc6}
+    .checklist{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:9px}
+    .checklist li{display:grid;grid-template-columns:35px 1fr;gap:10px;align-items:start;border-top:1px solid var(--line);padding-top:11px;font-size:17px;line-height:1.35}
+    .checklist li:first-child{border-top:0;padding-top:0}
+    .num{width:31px;height:31px;border-radius:50%;background:var(--nav);color:#fff;display:grid;place-items:center;font-weight:850;font-size:14px}
+    .fire-card .num{background:var(--red)}
+    .sub{font-size:13px;color:var(--muted);display:block;margin-top:2px}
+    .row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+    .row:first-of-type{border-top:0}
+    .key{color:var(--muted);font-size:13px}
+    .value{font-weight:800;text-align:right;word-break:break-word}
+    .copy{border:1px solid #d0d5dd;background:#fff;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:800;color:#344054}
+    .row-actions{display:flex;gap:7px;align-items:center}
+    a.action{display:block;text-decoration:none;background:var(--nav);color:#fff;border-radius:11px;padding:11px 13px;margin-top:9px;text-align:center;font-weight:800}
+    .page{display:none}
+    .page.active{display:block}
+    .back{border:0;background:transparent;color:#344054;padding:7px 2px 12px;font-weight:800}
+    nav{
+      position:fixed;z-index:45;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);
+      padding:8px 10px calc(8px + env(safe-area-inset-bottom))
+    }
+    .nav-inner{max-width:780px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .nav-btn{border:0;background:transparent;border-radius:12px;padding:9px 6px;color:#667085;font-size:12px;font-weight:800}
+    .nav-btn.active{background:#f2f4f7;color:var(--ink)}
+    .nav-btn span{display:block;font-size:19px;margin-bottom:3px}
+    .vault-list{display:grid;gap:9px;margin-top:12px}
+    .vault-item{border:1px solid var(--line);border-radius:13px;padding:12px}
+    .vault-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .vault-label{font-weight:850}
+    .secret{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;letter-spacing:.03em;margin-top:7px;word-break:break-all}
+    .secret.masked{filter:blur(5px);user-select:none}
+    .mini-actions{display:flex;gap:7px;margin-top:9px}
+    .mini-actions button{border:1px solid #d0d5dd;background:#fff;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:800}
+    .danger-text{color:var(--red)!important}
+    dialog{border:0;border-radius:20px;width:min(460px,calc(100% - 28px));padding:20px;box-shadow:0 24px 80px rgba(0,0,0,.3)}
+    dialog::backdrop{background:rgba(0,0,0,.45)}
+    .dialog-actions{display:flex;gap:8px;margin-top:14px}
+    .dialog-actions button{flex:1;border:0;border-radius:11px;padding:11px;font-weight:800}
+    .secondary{background:#f2f4f7;color:var(--ink)}
+    .status{font-size:12px;color:var(--muted);margin-top:9px;text-align:center}
+    @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}.quick{display:block}.quick .icon{margin-bottom:15px}}
+  </style>
+</head>
+<body>
+  <section id="lockScreen" class="lock" aria-label="Access">
+    <div class="lock-card">
+      <div class="lock-mark">WF</div>
+      <div id="setupMode" class="hidden">
+        <h1>Secure this device</h1>
+        <p>Create a passphrase for this browser. Private vault entries are encrypted and stay on this device.</p>
+        <div class="field"><label for="newPass">New passphrase</label><input id="newPass" type="password" autocomplete="new-password" minlength="6"></div>
+        <div class="field"><label for="confirmPass">Confirm passphrase</label><input id="confirmPass" type="password" autocomplete="new-password" minlength="6"></div>
+        <button id="setupBtn" class="primary">Create access</button>
+        <div id="setupError" class="error"></div>
+        <div class="tiny">The GitHub-hosted reference page itself is not a secure place for real passwords. Sensitive values added in Private Vault are encrypted locally and are not committed to GitHub.</div>
+      </div>
+      <div id="unlockMode" class="hidden">
+        <h1>WF Quick Reference</h1>
+        <p>Enter your passphrase.</p>
+        <div class="field"><label for="passInput">Passphrase</label><input id="passInput" type="password" autocomplete="current-password"></div>
+        <button id="unlockBtn" class="primary">Unlock</button>
+        <div id="unlockError" class="error"></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="app" class="hidden">
+    <header>
+      <div class="topbar">
+        <div class="brand">WF Quick Reference</div>
+        <button id="lockBtn" class="lock-btn">Lock</button>
+      </div>
+    </header>
+
+    <main>
+      <section id="home" class="page active">
+        <div class="hero">
+          <div class="eyebrow">Fast reference</div>
+          <h1>Find it in seconds.</h1>
+          <p>Only confirmed work information is added here.</p>
+        </div>
+
+        <div class="section-title">Emergency</div>
+        <div class="grid">
+          <button class="quick fire" data-page="fire"><span class="icon">!</span><span>Fire / حريق</span></button>
+        </div>
+
+        <div class="section-title">Reference</div>
+        <div class="grid">
+          <button class="quick details" data-page="details"><span class="icon">ID</span><span>Work details</span></button>
+          <button class="quick vault" data-page="vault"><span class="icon">▣</span><span>Private vault</span></button>
+        </div>
+        <div class="status" id="offlineStatus">Ready</div>
+      </section>
+
+      <section id="fire" class="page">
+        <button class="back" data-page="home">← Home</button>
+        <div class="card critical">
+          <div class="big">FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT</div>
+          <p>Full evacuation is signalled by the fire alarm. Staff and visitors make their way to the nearest fire exit. Staff continue to the Assembly Point.</p>
+        </div>
+
+        <div class="card fire-card">
+          <h2>Forecourt — if safe to do so</h2>
+          <ul class="checklist">
+            <li><span class="num">1</span><span><b>Check Forecourt shop floor</b></span></li>
+            <li><span class="num">2</span><span><b>Check storeroom</b></span></li>
+            <li><span class="num">3</span><span><b>Check toilets</b></span></li>
+            <li><span class="num">4</span><span><b>Delegated team member takes the rota to the Assembly Point</b><span class="sub">Only if safe to do so.</span></span></li>
+          </ul>
+        </div>
+
+        <div class="card warning">
+          <strong>Night shift:</strong>
+          <p>The official document says there is a separate document for <b>Night Shift Fire responsibilities</b>. It has not been added here yet.</p>
+        </div>
+      </section>
+
+      <section id="details" class="page">
+        <button class="back" data-page="home">← Home</button>
+        <div class="card">
+          <h2>Work details</h2>
+          <div class="row"><div><div class="key">Role</div><div class="value">Team Member – Filling Station (Nights)</div></div></div>
+          <div class="row"><div><div class="key">Colleague number</div><div class="value">012636</div></div><button class="copy" data-copy="012636">Copy</button></div>
+          <div class="row"><div><div class="key">Regular shift</div><div class="value">Friday & Saturday · 10:45pm–7:15am</div></div></div>
+        </div>
+
+        <div class="card">
+          <h2>My Westmorland People</h2>
+          <div class="row"><div><div class="key">Company ID</div><div class="value">weslp</div></div><button class="copy" data-copy="weslp">Copy</button></div>
+          <a class="action" href="https://mywestmorland.com" target="_blank" rel="noopener">Open PeopleXD</a>
+        </div>
+
+        <div class="card">
+          <h2>My Westmorland Learn / THRIVE</h2>
+          <div class="row"><div><div class="key">Workspace</div><div class="value">westmorland</div></div><button class="copy" data-copy="westmorland">Copy</button></div>
+          <a class="action" href="https://westmorland.learn.link" target="_blank" rel="noopener">Open THRIVE</a>
+        </div>
+      </section>
+
+      <section id="vault" class="page">
+        <button class="back" data-page="home">← Home</button>
+        <div class="card">
+          <h2>Private vault</h2>
+          <p class="tiny">For sensitive numbers or notes you choose to add later. Entries are encrypted in this browser and are not stored in GitHub.</p>
+          <button id="addSecretBtn" class="primary">Add private entry</button>
+          <div id="vaultList" class="vault-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <nav>
+      <div class="nav-inner">
+        <button class="nav-btn active" data-page="home"><span>⌂</span>Home</button>
+        <button class="nav-btn" data-page="fire"><span>!</span>Fire</button>
+        <button class="nav-btn" data-page="details"><span>ID</span>Details</button>
+      </div>
+    </nav>
+  </div>
+
+  <dialog id="secretDialog">
+    <h3 style="margin:0 0 10px">Private entry</h3>
+    <div class="field"><label for="secretLabel">Label</label><input id="secretLabel" autocomplete="off"></div>
+    <div class="field"><label for="secretValue">Value</label><input id="secretValue" autocomplete="off"></div>
+    <div class="field"><label for="secretNote">Note (optional)</label><textarea id="secretNote" rows="3"></textarea></div>
+    <div class="dialog-actions">
+      <button id="cancelSecret" class="secondary">Cancel</button>
+      <button id="saveSecret" class="primary">Save</button>
+    </div>
+  </dialog>
+
+<script>
+(() => {
+  const META_KEY = "wf-vault-meta-v1";
+  const DATA_KEY = "wf-vault-data-v1";
+  const enc = new TextEncoder();
+  const dec = new TextDecoder();
+  let cryptoKey = null;
+  let vaultItems = [];
+
+  const $ = id => document.getElementById(id);
+  const toB64 = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));
+  const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
+
+  async function deriveKey(passphrase, salt) {
+    const base = await crypto.subtle.importKey("raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+    return crypto.subtle.deriveKey(
+      {name:"PBKDF2", salt, iterations:250000, hash:"SHA-256"},
+      base,
+      {name:"AES-GCM", length:256},
+      false,
+      ["encrypt","decrypt"]
+    );
+  }
+
+  async function encryptText(text, key) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const cipher = await crypto.subtle.encrypt({name:"AES-GCM", iv}, key, enc.encode(text));
+    return {iv:toB64(iv), data:toB64(cipher)};
+  }
+
+  async function decryptText(payload, key) {
+    const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:fromB64(payload.iv)}, key, fromB64(payload.data));
+    return dec.decode(plain);
+  }
+
+  function initLock() {
+    const meta = localStorage.getItem(META_KEY);
+    $("setupMode").classList.toggle("hidden", !!meta);
+    $("unlockMode").classList.toggle("hidden", !meta);
+    $("lockScreen").classList.remove("hidden");
+    $("app").classList.add("hidden");
+    setTimeout(() => (meta ? $("passInput") : $("newPass")).focus(), 40);
+  }
+
+  async function setup() {
+    $("setupError").textContent = "";
+    const p1 = $("newPass").value;
+    const p2 = $("confirmPass").value;
+    if (p1.length < 6) return $("setupError").textContent = "Use at least 6 characters.";
+    if (p1 !== p2) return $("setupError").textContent = "Passphrases do not match.";
+    try {
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const key = await deriveKey(p1, salt);
+      const verifier = await encryptText("wf-ok-v1", key);
+      localStorage.setItem(META_KEY, JSON.stringify({salt:toB64(salt), verifier}));
+      localStorage.setItem(DATA_KEY, JSON.stringify(await encryptText("[]", key)));
+      cryptoKey = key;
+      vaultItems = [];
+      openApp();
+    } catch {
+      $("setupError").textContent = "Could not secure this device.";
+    }
+  }
+
+  async function unlock() {
+    $("unlockError").textContent = "";
+    try {
+      const meta = JSON.parse(localStorage.getItem(META_KEY));
+      const key = await deriveKey($("passInput").value, fromB64(meta.salt));
+      const check = await decryptText(meta.verifier, key);
+      if (check !== "wf-ok-v1") throw new Error("bad");
+      cryptoKey = key;
+      const stored = localStorage.getItem(DATA_KEY);
+      vaultItems = stored ? JSON.parse(await decryptText(JSON.parse(stored), key)) : [];
+      openApp();
+    } catch {
+      $("unlockError").textContent = "Incorrect passphrase.";
+    }
+  }
+
+  function openApp() {
+    $("lockScreen").classList.add("hidden");
+    $("app").classList.remove("hidden");
+    $("passInput").value = "";
+    $("newPass").value = "";
+    $("confirmPass").value = "";
+    renderVault();
+    showPage("home");
+  }
+
+  function lock() {
+    cryptoKey = null;
+    vaultItems = [];
+    initLock();
+  }
+
+  function showPage(id) {
+    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === id));
+    window.scrollTo({top:0, behavior:"instant"});
+  }
+
+  async function persistVault() {
+    if (!cryptoKey) return;
+    localStorage.setItem(DATA_KEY, JSON.stringify(await encryptText(JSON.stringify(vaultItems), cryptoKey)));
+  }
+
+  function renderVault() {
+    const host = $("vaultList");
+    host.innerHTML = "";
+    if (!vaultItems.length) {
+      const p = document.createElement("p");
+      p.className = "tiny";
+      p.textContent = "No private entries yet.";
+      host.appendChild(p);
+      return;
+    }
+    vaultItems.forEach((item, index) => {
+      const wrap = document.createElement("div");
+      wrap.className = "vault-item";
+      const top = document.createElement("div");
+      top.className = "vault-top";
+      const label = document.createElement("div");
+      label.className = "vault-label";
+      label.textContent = item.label;
+      top.appendChild(label);
+      wrap.appendChild(top);
+
+      const secret = document.createElement("div");
+      secret.className = "secret masked";
+      secret.textContent = item.value;
+      wrap.appendChild(secret);
+
+      if (item.note) {
+        const note = document.createElement("div");
+        note.className = "tiny";
+        note.style.marginTop = "7px";
+        note.textContent = item.note;
+        wrap.appendChild(note);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "mini-actions";
+      const reveal = document.createElement("button");
+      reveal.textContent = "Reveal";
+      reveal.addEventListener("click", () => {
+        const masked = secret.classList.toggle("masked");
+        reveal.textContent = masked ? "Reveal" : "Hide";
+      });
+      const copy = document.createElement("button");
+      copy.textContent = "Copy";
+      copy.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(item.value);
+        copy.textContent = "Copied";
+        setTimeout(() => copy.textContent = "Copy", 1000);
+      });
+      const del = document.createElement("button");
+      del.textContent = "Delete";
+      del.className = "danger-text";
+      del.addEventListener("click", async () => {
+        if (!confirm("Delete this private entry?")) return;
+        vaultItems.splice(index,1);
+        await persistVault();
+        renderVault();
+      });
+      actions.append(reveal, copy, del);
+      wrap.appendChild(actions);
+      host.appendChild(wrap);
+    });
+  }
+
+  $("setupBtn").addEventListener("click", setup);
+  $("unlockBtn").addEventListener("click", unlock);
+  $("newPass").addEventListener("keydown", e => { if (e.key === "Enter") $("confirmPass").focus(); });
+  $("confirmPass").addEventListener("keydown", e => { if (e.key === "Enter") setup(); });
+  $("passInput").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
+  $("lockBtn").addEventListener("click", lock);
+
+  document.addEventListener("click", e => {
+    const target = e.target.closest("[data-page]");
+    if (target) showPage(target.dataset.page);
+    const copy = e.target.closest("[data-copy]");
+    if (copy) {
+      navigator.clipboard.writeText(copy.dataset.copy).then(() => {
+        const old = copy.textContent;
+        copy.textContent = "Copied";
+        setTimeout(() => copy.textContent = old, 900);
+      });
+    }
+  });
+
+  $("addSecretBtn").addEventListener("click", () => {
+    $("secretLabel").value = "";
+    $("secretValue").value = "";
+    $("secretNote").value = "";
+    $("secretDialog").showModal();
+    setTimeout(() => $("secretLabel").focus(), 50);
+  });
+  $("cancelSecret").addEventListener("click", () => $("secretDialog").close());
+  $("saveSecret").addEventListener("click", async () => {
+    const label = $("secretLabel").value.trim();
+    const value = $("secretValue").value.trim();
+    const note = $("secretNote").value.trim();
+    if (!label || !value) return;
+    vaultItems.push({label,value,note});
+    await persistVault();
+    $("secretDialog").close();
+    renderVault();
+  });
+
+  function updateOnline() {
+    $("offlineStatus").textContent = navigator.onLine ? "Online · offline copy available after first load" : "Offline · cached reference";
+  }
+  addEventListener("online", updateOnline);
+  addEventListener("offline", updateOnline);
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  }
+  updateOnline();
+  initLock();
+})();
+</script>
+</body>
+</html>
