@@ -1,4 +1,4 @@
-const CACHE = "wf-quick-reference-v22";
+const CACHE = "wf-quick-reference-v23";
 const CORE = ["./", "./index.html", "./styles.css", "./app.js", "./content.js", "./model.js"];
 
 self.addEventListener("install", event => {
@@ -23,7 +23,7 @@ self.addEventListener("fetch", event => {
     const cache = await caches.open(CACHE);
     const html = key === "./" || key === "./index.html";
     try {
-      const response = await fetch(event.request);
+      const response = await fetch(event.request, {cache:"no-store"});
       const type = response.headers.get("content-type") || "";
       if (response.ok && response.type === "basic" && (html ? type.includes("text/html") : key.endsWith(".js") ? /javascript/.test(type) : type.includes("text/css"))) {
         await cache.put(key, response.clone());

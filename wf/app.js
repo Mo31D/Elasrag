@@ -1,6 +1,7 @@
 import { TRANSLATIONS } from "./content.js";
 import { REQUIRED_COURSES, initialCompanion } from "./model.js";
 (() => {
+  if(location.protocol!=="https:")return;
   const META_KEY = "wf-vault-meta-v1";
   const DATA_KEY = "wf-vault-data-v1";
   const LANG_KEY = "wf-language-v1";
@@ -14,6 +15,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   const PROFILE_KEYS = ["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername", "displayName", "role", "site", "manager", "managerEmail", "startDate", "shiftDays", "shiftStart", "shiftEnd", "hours", "hourlyRate", "paidBreak", "annualHoliday", "minibusNote"];
   let safeWorkerReady = Promise.resolve(true);
   let authenticated = false;
+  let serverSessionKnown = false;
   let account = null;
   let authMode = localStorage.getItem("wf-account-hint") ? "login" : "owner";
   let editingCourseId = null;
@@ -84,6 +86,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   }
 
   function errorKey(error) {
+    if(error.stage==="data")return "privateDataError";if(error.stage==="session")return "sessionError";
     return error.status === 400 ? 'invalidEntry' : error.status === 401 ? "wrongPass" : error.status === 429 ? "tooMany" : error.status === 409 ? "conflict" : "apiError";
   }
 
@@ -175,13 +178,15 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   function setAuthMode(mode) {
     authMode = mode;
     const owner = mode === "owner";
-    $("usernameField").classList.toggle("hidden", owner);
+    $("usernameField").classList.toggle("hidden", owner || serverSessionKnown);
+    $("passwordField").hidden=serverSessionKnown;
+    $("unlockIntro").dataset.i18n=serverSessionKnown?"retryIntro":"enterPass";$("unlockIntro").textContent=t($("unlockIntro").dataset.i18n);
     $("recoveryField").classList.toggle("hidden", mode !== "recover");
     $("passwordHint").classList.toggle("hidden", mode !== "register" && mode !== "recover");
     $("recoverBtn").classList.toggle("hidden", owner);
     $("usernameInput").value = owner ? "" : $("usernameInput").value || localStorage.getItem("wf-account-hint") || "";
     $("passInput").autocomplete = mode === "register" || mode === "recover" ? "new-password" : "current-password";
-    $("unlockBtn").dataset.i18n = mode === "register" ? "createAccount" : mode === "recover" ? "recoverAccount" : "unlock";
+    $("unlockBtn").dataset.i18n = serverSessionKnown ? "retry" : mode === "register" ? "createAccount" : mode === "recover" ? "recoverAccount" : "unlock";
     $("unlockBtn").textContent = t($("unlockBtn").dataset.i18n);
     $("otherAccountBtn").textContent = t(owner ? "otherAccount" : "ownerAccount");
     $("passInput").value = "";
@@ -192,8 +197,9 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   async function loadPrivateSession(version = navigationVersion) {
     const session = await api("/session");
     if (version !== navigationVersion) return false;
-    if (!session.body.authenticated) return false;
-    const loaded = await api("/private");
+    serverSessionKnown=Boolean(session.body.authenticated);
+    if (!serverSessionKnown) return false;
+    let loaded;try{loaded=await api("/private");}catch(error){error.stage="data";throw error;}
     if (version !== navigationVersion) return false;
     if (!loaded.body.data?.companion || !loaded.revision || !session.body.account) throw new Error();
     privateData = loaded.body.data;
@@ -215,23 +221,24 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     const version = navigationVersion;
     const password = $("passInput").value;
     const name = $("usernameInput").value.trim().toLowerCase();
-    if (authMode !== "owner" && !/^[a-z0-9][a-z0-9._-]{2,39}$/.test(name)) return message("unlockError", "accountNameHint");
-    if (["register","recover"].includes(authMode) && password.length < 12) return message("unlockError", "newPasswordHint");
+    if (!serverSessionKnown && authMode !== "owner" && !/^[a-z0-9][a-z0-9._-]{2,39}$/.test(name)) return message("unlockError", "accountNameHint");
+    if (!serverSessionKnown && ["register","recover"].includes(authMode) && password.length < 12) return message("unlockError", "newPasswordHint");
     message("unlockError", ""); $("unlockBtn").disabled = true;
     try {
       const path = authMode === "register" ? "/register" : authMode === "recover" ? "/recover" : "/login";
-      const result = await api(path, { method:"POST", body:JSON.stringify({ password, ...(authMode !== "owner" ? {username:name} : {}), ...(authMode === "recover" ? {recoveryCode:$("recoveryInput").value.trim()} : {}) }) });
+      const retrying=serverSessionKnown;
+      const result = retrying ? {body:{}} : await api(path, { method:"POST", body:JSON.stringify({ password, ...(authMode !== "owner" ? {username:name} : {}), ...(authMode === "recover" ? {recoveryCode:$("recoveryInput").value.trim()} : {}) }) });
       if (version !== navigationVersion) return;
-      if (authMode === "owner") localStorage.removeItem("wf-account-hint"); else localStorage.setItem("wf-account-hint", name);
+      if(!retrying){if (authMode === "owner") localStorage.removeItem("wf-account-hint"); else localStorage.setItem("wf-account-hint", name);}
       $("passInput").value = ""; $("recoveryInput").value = "";
-      if (!(await loadPrivateSession(version))) throw Object.assign(new Error(), {status:401});
+      if (!(await loadPrivateSession(version))) throw Object.assign(new Error(), {stage:"session"});
       await showPage(destination);
       if (result.body.recoveryCode && authenticated) {
         $("newRecoveryCode").value = result.body.recoveryCode;
         $("recoveryDialog").showModal();
       }
     } catch (error) {
-      if (version === navigationVersion || !authenticated) message("unlockError", authMode === "register" && error.status === 409 ? "accountUnavailable" : errorKey(error));
+      if (version === navigationVersion || !authenticated){setAuthMode(authMode);message("unlockError", authMode === "register" && error.status === 409 ? "accountUnavailable" : errorKey(error));}
     } finally { $("unlockBtn").disabled = false; }
   }
 
@@ -242,7 +249,15 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     window.scrollTo({top:0, behavior:"auto"});
   }
 
+  function selectTab(page,name,updateHistory=false){
+    if(!page?.querySelector(`[data-tab="${name}"]`))return;
+    page.querySelectorAll("[data-tab]").forEach(button=>{const selected=button.dataset.tab===name;button.setAttribute("aria-selected",String(selected));button.tabIndex=selected?0:-1;});
+    page.querySelectorAll("[data-tab-panel]").forEach(panel=>panel.hidden=panel.dataset.tabPanel!==name);
+    if(updateHistory)history.replaceState(null,"","#"+page.id+"/"+name);
+  }
+  document.addEventListener("keydown",event=>{const tab=event.target.closest?.("[data-tab]");if(!tab || !["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;event.preventDefault();const tabs=[...tab.parentElement.querySelectorAll("[data-tab]")].filter(button=>!button.hidden && !button.disabled);let index=tabs.indexOf(tab);if(event.key==="Home")index=0;else if(event.key==="End")index=tabs.length-1;else index=(index+(event.key==="ArrowRight"?(lang==="ar"?-1:1):(lang==="ar"?1:-1))+tabs.length)%tabs.length;tabs[index].click();tabs[index].focus();});
   async function showPage(id, historyMode = "push") {
+    const [routePage,routeTab]=String(id).split("/");id=routePage;
     if (!$(id)?.classList.contains("page")) id = "home";
     const version = ++navigationVersion;
     resumePrivatePage = null;
@@ -262,8 +277,10 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
       }
     } else { $("lockScreen").classList.add("hidden"); pendingPrivatePage = null; }
     displayPage(id);
+    if(routeTab)selectTab($(id),routeTab);
     renderCompanion();
-    if (location.hash !== "#" + id) history[historyMode === "replace" ? "replaceState" : "pushState"](null, "", "#" + id);
+    const tab=$(id).querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;const hash="#"+id+(tab?"/"+tab:"");
+    if(location.hash!==hash)history[historyMode === "replace" ? "replaceState" : "pushState"](null,"",hash);
   }
 
   async function persistVault(nextItems, nextProfile = privateData?.profile, nextCompanion = privateData?.companion) {
@@ -302,6 +319,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   }
 
   async function logout() {
+    serverSessionKnown=false;
     navigationVersion++;
     clearPrivateData();
     $("lockScreen").classList.add("hidden");
@@ -509,6 +527,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
       return;
     }
     if(e.target.closest("[data-back-fire]")){showPage(backFromFire).then(()=>restoreReadingPosition(fireReadingPosition));return;}
+    const tab=e.target.closest("[data-tab]");if(tab){selectTab(tab.closest(".page"),tab.dataset.tab,true);return;}
     const target = e.target.closest("[data-page]");
     if (target) {
       if(target.dataset.page==="fire" && activePage!=="fire"){backFromFire=activePage;fireReadingPosition=captureReadingPosition();}
@@ -651,6 +670,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     const version = navigationVersion;
     try {
       const result = await api("/session");
+      if(!result.body.authenticated)serverSessionKnown=false;
       if (version === navigationVersion && !result.body.authenticated) { navigationVersion++; if(PROTECTED_PAGES.has(page))openPrivateGate(page);else{clearPrivateData();renderPrivateProfile();} }
     } catch {
       if (version === navigationVersion) { navigationVersion++; if(PROTECTED_PAGES.has(page)){openPrivateGate(page);message("unlockError", "apiError");}else{clearPrivateData();renderPrivateProfile();} }
@@ -673,10 +693,11 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   addEventListener("pagehide", () => { navigationVersion++; clearPrivateData(); displayPage("home"); });
   setInterval(checkActiveSession, 60000);
 
+  function readingLine(){const header=document.querySelector("header")?.getBoundingClientRect().bottom || 0;const tabs=$(activePage)?.querySelector(".section-tabs")?.getBoundingClientRect();return (tabs && tabs.top<=header+4 && tabs.bottom>header ? tabs.bottom : header)+12;}
   function captureReadingPosition() {
     const page=document.querySelector('.page.active');
     if(!page)return null;
-    const line=(document.querySelector('header')?.getBoundingClientRect().bottom || 0)+12;
+    const line=readingLine();
     let index=0;
     page.querySelectorAll('h1,h2,p,summary,.value,.task-text,.course-copy,.reference-row,.focus-card').forEach(el=>{if(!el.dataset.readAnchor)el.dataset.readAnchor=page.id+'-read-'+index;index++;});
     const blocks=[...page.querySelectorAll('[data-read-anchor]')];
@@ -692,7 +713,7 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
       const el=[...document.querySelectorAll('[data-read-anchor]')].find(block=>block.dataset.readAnchor===reading.key);
       if(!el){window.scrollTo({top:reading.scroll,behavior:'auto'});return;}
       const r=el.getBoundingClientRect();
-      const line=(document.querySelector('header')?.getBoundingClientRect().bottom || 0)+12;
+      const line=readingLine();
       const delta=reading.fraction==null?r.top-line-reading.offset:r.top+reading.fraction*r.height-line;
       window.scrollBy({top:delta,behavior:'auto'});
     };
@@ -744,14 +765,14 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
         const title=document.createElement('label');check.id='course-check-'+course.id;title.htmlFor=check.id;title.className='course-copy';title.textContent=courseTitle(course);title.dataset.readAnchor='course-'+course.id;copy.append(title);
         const meta=document.createElement('div');meta.className='course-meta';
         if(course.due){const due=document.createElement('span');due.textContent=new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{day:'numeric',month:'short'}).format(new Date(course.due+'T12:00:00'))+' · '+deadlineText(course.due);due.className=new Date(course.due+'T23:59:59')<new Date()?'overdue':'urgent';meta.append(due);}
-        const state=document.createElement('span');state.textContent=t(course.status==='completed'?'completed':course.status==='in-progress'?'inProgress':'notStarted');if(authenticated)meta.append(state);
-        if(!course.required){const optional=document.createElement('span');optional.textContent=t('optionalLearning');meta.append(optional);}
+        const state=document.createElement('span');state.textContent=t(course.status==='completed'?'completed':course.status==='in-progress'?'inProgress':'notStarted');if(authenticated && course.status==='in-progress')meta.append(state);
+        if(!course.required && course.status!=='completed'){const optional=document.createElement('span');optional.textContent=t('optionalLearning');meta.append(optional);}
         copy.append(meta);
         const edit=document.createElement('button');edit.className='course-edit';edit.textContent='⋯';edit.setAttribute('aria-label',t('edit')+' — '+courseTitle(course));edit.addEventListener('click',()=>openCourse(course.id));
         row.append(check,copy,edit);host.append(row);
       });
     }
-    $('completedCount').textContent=String(completed.length);$('completedLearning').hidden=!completed.length;
+    $('completedCount').textContent=String(completed.length);$('training-tab-completed').hidden=!completed.length;if(!completed.length && $('training-tab-completed').getAttribute('aria-selected')==='true')selectTab($('training'),'pending');
     $('learningProgress').textContent=authenticated?completed.length+' / '+data.courses.length:t('courseCount').replace('{n}',data.courses.length);
     const next=remaining.find(course=>course.required) || remaining[0];
     $('nextCourseTitle').textContent=next?courseTitle(next):t('learningClear');
@@ -821,9 +842,9 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
     document.querySelectorAll('[data-search]').forEach(button=>{const key=button.querySelector('[data-i18n]')?.dataset.i18n;const text=button.dataset.search+' '+(T.en[key]||'')+' '+(T.ar[key]||'')+' '+$(button.dataset.page)?.textContent;button.hidden=!normalize(text).includes(query);});
   });
 
-  $("otherAccountBtn").addEventListener("click",()=>setAuthMode(authMode==="owner"?"login":"owner"));
-  $("registerBtn").addEventListener("click",()=>setAuthMode("register"));
-  $("recoverBtn").addEventListener("click",()=>setAuthMode("recover"));
+  $("otherAccountBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode(authMode==="owner"?"login":"owner" );});
+  $("registerBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode("register" );});
+  $("recoverBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode("recover" );});
   $("usernameInput").addEventListener("keydown",event=>{if(event.key==="Enter")$("passInput").focus();});
   $("copyRecovery").addEventListener("click",async()=>{await navigator.clipboard.writeText($("newRecoveryCode").value);$("copyRecovery").textContent=t("copied");});
   $("closeRecovery").addEventListener("click",()=>$("recoveryDialog").close());
@@ -835,19 +856,22 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=22").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "22";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=23").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "23";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
         const changed = () => { if (safeController()) finish(true); };
-        const timer = setTimeout(() => finish(false), 15000);
+        const timer = setTimeout(() => finish(!navigator.serviceWorker.controller), 15000);
         navigator.serviceWorker.addEventListener("controllerchange", changed);
         changed();
       });
-    }).catch(() => false);
+    }).catch(() => !navigator.serviceWorker.controller);
   }
 
+  const sizeHeader=()=>document.documentElement.style.setProperty("--header-height",document.querySelector("header").offsetHeight+"px");
+  if(window.ResizeObserver)new ResizeObserver(sizeHeader).observe(document.querySelector("header"));
+  sizeHeader();
   applyLanguage(lang,false);
   refreshTrainingDateIfNeeded();
   document.querySelectorAll('[data-check]').forEach(check=>{check.id=check.dataset.check;const text=check.closest('.task').querySelector('.task-text');const label=document.createElement('label');label.className=text.className;if(text.dataset.i18n)label.dataset.i18n=text.dataset.i18n;label.htmlFor=check.id;while(text.firstChild)label.append(text.firstChild);text.replaceWith(label);});
@@ -855,5 +879,5 @@ import { REQUIRED_COURSES, initialCompanion } from "./model.js";
   $("lockScreen").classList.add("hidden");
   const initialPage=location.hash.slice(1)||"home";
   showPage(initialPage,"replace");
-  if(!PROTECTED_PAGES.has(initialPage))loadPrivateSession().catch(()=>{});
+  if(!PROTECTED_PAGES.has(initialPage.split("/")[0]))loadPrivateSession().catch(()=>{});
 })();

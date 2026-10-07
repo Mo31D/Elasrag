@@ -15,16 +15,16 @@ test('canonical origin serves native app assets publicly, independent of authent
   const home = await worker.fetch(req('/'), env);
   assert.equal(home.status, 200);
   assert.match(home.headers.get('content-type'), /text\/html/);
-  assert.equal(home.headers.get('cache-control'), 'no-cache');
+  assert.equal(home.headers.get('cache-control'), 'no-store');
   assert.equal(home.headers.get('x-frame-options'), 'DENY');
   const html = await home.text();
   assert.match(html, /data-staff-profile="personal"/);
   assert.match(html, /src=".\/app.js"/);
   assert.match(await (await worker.fetch(req("/app.js"),env)).text(), /const API_BASE = .*"\/api"/);
-  const sw = await worker.fetch(req('/sw.js?v=22'), env);
+  const sw = await worker.fetch(req('/sw.js?v=23'), env);
   assert.equal(sw.status, 200);
   assert.match(sw.headers.get('content-type'), /javascript/);
-  assert.match(await sw.text(), /wf-quick-reference-v22/);
+  assert.match(await sw.text(), /wf-quick-reference-v23/);
   assert.equal((await worker.fetch(req('/index.html', 'HEAD'), env)).body, null);
   assert.equal((await worker.fetch(req('/unknown'), env)).status, 404);
   const redirected = await worker.fetch(req('/wf/'), env);
@@ -63,4 +63,15 @@ test('same-origin API and legacy migration share the existing session and privat
   assert.equal((await worker.fetch(req('/api/login','POST',{password:env.WF_PASSWORD},null,'https://other.example'),env)).status,403);
   assert.equal((await worker.fetch(req('/api/logout','POST',null,cookie),env)).status,200);
   assert.equal((await worker.fetch(req('/api/private','GET',null,cookie),env)).status,401);
+});
+
+test('HTTP routes redirect to HTTPS and public assets identify the current build',async()=>{
+  const {env}=fixture();
+  for(const path of ['/','#fire','/api/login']){
+    const response=await worker.fetch(new Request('http://mo.elasrag.com'+path),env);
+    assert.equal(response.status,308);assert.ok(response.headers.get('location').startsWith('https://mo.elasrag.com'));
+  }
+  const response=await worker.fetch(req('/'),env);
+  assert.equal(response.headers.get('x-wf-build'),'23');
+  assert.equal(response.headers.get('strict-transport-security'),'max-age=31536000');
 });

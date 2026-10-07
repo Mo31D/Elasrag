@@ -9,7 +9,7 @@ const source = name => readFileSync(new URL('../../wf/' + name, import.meta.url)
 const bundled = ['content.js','model.js','app.js'].map(name=>source(name).replace(/^import .*;$/gm,'').replace(/export (const|function) /g,'$1 ')).join('\n');
 const html = source('index.html').replace('<script type="module" src="./app.js"></script>',()=>'<script>'+bundled+'</script>');
 
-function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false) {
+function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false, serviceWorker = null) {
   let cookie = '';
   let unavailable = initiallyOffline;
   const errors = [];
@@ -25,6 +25,7 @@ function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', 
       window.structuredClone = structuredClone; window.scrollBy = () => {}; window.scrollTo = () => {}; window.confirm = () => true;
       Object.defineProperty(window.navigator, 'onLine', {value:!initiallyOffline,configurable:true});
       window.navigator.clipboard = { writeText: async () => {} };
+      if(serviceWorker)Object.defineProperty(window.navigator,'serviceWorker',{value:serviceWorker});
       window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };
       window.HTMLDialogElement.prototype.close = function () { this.open = false; this.dispatchEvent(new window.Event('close')); };
       if (legacy) Object.entries(legacy).forEach(([key, value]) => window.localStorage.setItem(key, value));
@@ -205,4 +206,28 @@ test('language switch keeps page, open sections, checklist state and the same re
   click(a,'[data-lang="ar"]');assert.equal(scroll,1200);assert.equal(a.document.documentElement.dir,'rtl');
   assert.ok(active(a,'fire'));assert.ok(warden.open);assert.ok(warden.querySelector('input').checked);
   assert.deepEqual(a.errors,[]);
+});
+
+test('Safari can sign in when offline registration is unavailable and no unsafe controller exists',async t=>{
+  const {env}=fixture();const d=device(env,'#details',null,'https://mo.elasrag.com/',false,{controller:null,register:async()=>{throw new Error('private mode');}});t.after(()=>d.window.close());
+  await signIn(d);assert.ok(active(d,'details'));assert.deepEqual(d.errors,[]);
+});
+
+test('section tabs retain their selection when translated and direct tab links work',async t=>{
+  const {env}=fixture();const d=device(env,'#benefits/discounts');t.after(()=>d.window.close());
+  assert.ok(active(d,'benefits'));assert.equal(d.document.getElementById('benefits-panel-meals').hidden,true);assert.equal(d.document.getElementById('benefits-panel-discounts').hidden,false);
+  click(d,'[data-lang="en"]');assert.equal(d.document.getElementById('benefits-tab-discounts').getAttribute('aria-selected'),'true');
+  click(d,'#benefits-tab-leisure');assert.equal(d.window.location.hash,'#benefits/leisure');
+  click(d,'[data-lang="ar"]');assert.equal(d.document.getElementById('benefits-panel-leisure').hidden,false);assert.equal(d.document.getElementById('benefits-panel-meals').hidden,true);
+  assert.deepEqual(d.errors,[]);
+});
+
+test('an accepted password followed by unavailable data offers a retry without another login',async t=>{
+  const f=fixture();f.kv.set('private-data',JSON.stringify({unknownFormat:'preserve'}));const d=device(f.env,'#details');t.after(()=>d.window.close());
+  let logins=0;const fetch=d.window.fetch;d.window.fetch=(url,options)=>{if(url.endsWith('/login'))logins++;return fetch(url,options);};
+  await until(()=>!d.document.getElementById('lockScreen').classList.contains('hidden'));fill(d,'passInput','fixture-password-only');click(d,'#unlockBtn');
+  await until(()=>d.document.getElementById('passwordField').hidden);
+  assert.match(d.document.getElementById('unlockError').textContent,/بياناتك/);assert.equal(logins,1);
+  f.kv.set('private-data',JSON.stringify({version:1,profile:{},items:[]}));click(d,'#unlockBtn');await until(()=>active(d,'details'));
+  assert.equal(logins,1);assert.deepEqual(d.errors,[]);
 });

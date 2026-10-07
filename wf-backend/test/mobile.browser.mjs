@@ -68,6 +68,19 @@ try {
     await noOverflow();
     await page.locator('[data-back-fire]').click();
     await page.locator('#training.active').waitFor();
+    await page.locator('#training-tab-completed').click();
+    assert.equal(await page.locator('#completedLearning').isVisible(),true);
+    for(const section of ['benefits','uniform','access']){
+      await page.goto('https://mo.elasrag.com/#'+section);
+      await page.locator('#'+section+'.active').waitFor();
+      for(const tab of await page.locator('#'+section+' [data-tab]').all()){
+        await tab.click();const name=await tab.getAttribute('data-tab');
+        assert.equal(await page.locator('#'+section+' [data-tab-panel="'+name+'"]').isVisible(),true);
+        await page.locator('header [data-lang="en"]').click();await noOverflow();
+        await page.locator('header [data-lang="ar"]').click();await noOverflow();
+        assert.equal(await tab.getAttribute('aria-selected'),'true');
+      }
+    }
     await page.locator('#logoutBtn').click();
     await page.locator('#home.active').waitFor();
     assert.deepEqual(errors, []);

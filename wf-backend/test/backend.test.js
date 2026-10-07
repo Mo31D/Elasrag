@@ -86,3 +86,11 @@ test('expiry, signing-secret rotation, alarm cleanup and legacy data preservatio
   assert.equal((await worker.fetch(request('/private', 'GET', null, otherCookie), another.env)).status, 503);
   assert.equal(JSON.parse(another.kv.get('private-data')).importantUnknownFormat, 'preserve');
 });
+
+test('older unversioned secret data migrates without blocking owner access or deleting original values',async()=>{
+  const {env}=fixture();const original={colleagueNumber:'fixture-colleague',profile:{kioskId:'fixture-kiosk'},savedNote:'fixture legacy note'};
+  env.WF_PRIVATE_DATA=JSON.stringify(original);const cookie=await login(env);
+  const response=await worker.fetch(request('/private','GET',null,cookie),env);assert.equal(response.status,200);
+  const data=(await response.json()).data;assert.equal(data.profile.colleagueNumber,original.colleagueNumber);assert.equal(data.profile.kioskId,original.profile.kioskId);
+  assert.ok(data.items.some(item=>item.value===original.savedNote));assert.equal(env.WF_PRIVATE_DATA,JSON.stringify(original));
+});

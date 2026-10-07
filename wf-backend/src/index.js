@@ -182,6 +182,23 @@ function normalizeData(raw) {
   return raw;
 }
 
+function normalizeLegacySecret(encoded) {
+  let source;try{source=JSON.parse(encoded);}catch{source={information:encoded};}
+  try{return normalizeData(source);}catch{}
+  if(!source || Array.isArray(source) || typeof source!=="object" || source.version!==undefined)throw new Error("Unsupported stored data");
+  const profile={};const items=[];
+  const add=(label,value)=>{const text=typeof value==="string"?value:JSON.stringify(value);if(!text?.trim())return;for(let start=0;start<text.length;start+=4096)items.push({label:(label+(text.length>4096?" ("+(Math.floor(start/4096)+1)+")":"")).slice(0,200),value:text.slice(start,start+4096),note:""});};
+  for(const [key,value] of Object.entries(source)){
+    if(key==="profile" && value && typeof value==="object" && !Array.isArray(value)){
+      for(const [field,entry] of Object.entries(value)){if(PROFILE_FIELDS.has(field) && ["string","number"].includes(typeof entry) && String(entry).length<=256)profile[field]=String(entry);else add("profile."+field,entry);}continue;
+    }
+    if(PROFILE_FIELDS.has(key) && ["string","number"].includes(typeof value) && String(value).length<=256){profile[key]=String(value);continue;}
+    if(key==="items" && Array.isArray(value)){try{const normalized=normalizeData(value);items.push(...normalized.items);continue;}catch{}}
+    add(key,value);
+  }
+  const data={version:1,profile,items};if(!validData(data))throw new Error("Unsupported stored data");return data;
+}
+
 async function readJson(request, limit = MAX_BYTES) {
   if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) {
     throw Object.assign(new Error(), { status: 415 });
@@ -288,7 +305,7 @@ export class WFAuthGuard {
       if (!this.currentData.has(userId)) {
         const raw = await this.env.WF_DATA.get(dataKey, "json");
         // An existing record always takes priority over the legacy secret.
-        let data = normalizeData(raw ?? (userId === "owner" && this.env.WF_PRIVATE_DATA ? JSON.parse(this.env.WF_PRIVATE_DATA) : null));
+        let data = raw == null && userId === "owner" && this.env.WF_PRIVATE_DATA ? normalizeLegacySecret(this.env.WF_PRIVATE_DATA) : normalizeData(raw);
         const expected = await store.get(revisionKey);
         if (expected && expected !== await revision(data)) return json({ error: "Unavailable" }, 503);
         if (!data.companion) {
@@ -339,6 +356,7 @@ async function guard(env, body) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if(url.protocol==="http:"){url.protocol="https:";return Response.redirect(url.href,308);}
     const origin = request.headers.get("origin");
     if (["GET", "HEAD"].includes(request.method) && ["/", "/index.html", "/sw.js", "/content.js", "/app.js", "/model.js", "/styles.css"].includes(url.pathname)) {
       if (!env.ASSETS) return new Response("Service unavailable", { status: 503, headers: { "cache-control": "no-store" } });
@@ -347,7 +365,9 @@ export default {
         if (assetUrl.pathname === "/") assetUrl.pathname = "/index.html";
         const response = await env.ASSETS.fetch(new Request(assetUrl, request));
         const headers = new Headers(response.headers);
-        headers.set("cache-control", "no-cache");
+        headers.set("cache-control", "no-store");
+        headers.set("strict-transport-security", "max-age=31536000");
+        headers.set("x-wf-build", "23");
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");
