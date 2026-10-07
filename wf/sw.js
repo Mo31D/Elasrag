@@ -1,4 +1,4 @@
-const CACHE = "wf-quick-reference-v1";
+const CACHE = "wf-quick-reference-v2";
 const CORE = ["./", "./index.html"];
 
 self.addEventListener("install", event => {
