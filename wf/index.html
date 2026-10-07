@@ -59,7 +59,7 @@
       display:flex;align-items:center;gap:14px;font-weight:850;font-size:20px
     }
     .quick.fire{background:var(--red);color:#fff}
-    .quick.details,.quick.training,.quick.benefits,.quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .quick.details,.quick.training,.quick.access,.quick.benefits,.quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
     .icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:21px}
     .quick:not(.fire) .icon{background:#f2f4f7}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:17px;margin-bottom:11px}
@@ -288,6 +288,7 @@
         <div class="grid">
           <button class="quick details" data-page="details"><span class="icon">ID</span><span data-i18n="workDetails"></span></button>
           <button class="quick training" data-page="training"><span class="icon">✓</span><span data-i18n="training"></span></button>
+          <button class="quick access" data-page="access"><span class="icon">↗</span><span data-i18n="accountHelp"></span></button>
           <button class="quick benefits" data-page="benefits"><span class="icon">★</span><span data-i18n="benefits"></span></button>
         </div>
         <div class="status" id="offlineStatus"></div>
@@ -397,6 +398,42 @@
         </div>
       </section>
 
+      <section id="access" class="page">
+        <button class="back" data-page="home" data-i18n="backHome"></button>
+
+        <div class="card">
+          <h2 data-i18n="peopleAccessTitle"></h2>
+          <div class="row"><div><div class="key" data-i18n="usernameRule"></div><div class="value" data-i18n="usernameRuleValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="usernameUnknown"></div><div class="value" data-i18n="usernameUnknownValue"></div></div></div>
+        </div>
+
+        <div class="card" data-checklist="peoplexd-reset">
+          <div class="check-head">
+            <h2 data-i18n="forgotPassword"></h2>
+            <span class="progress-pill" data-check-progress="peoplexd-reset">0 / 4</span>
+          </div>
+          <ul class="task-list">
+            <li class="task"><input class="task-check" type="checkbox" data-check="peoplexd-reset-1"><span class="task-text" data-i18n="resetStep1"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="peoplexd-reset-2"><span class="task-text" data-i18n="resetStep2"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="peoplexd-reset-3"><span class="task-text" data-i18n="resetStep3"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="peoplexd-reset-4"><span class="task-text" data-i18n="resetStep4"></span></li>
+          </ul>
+          <button class="reset-checklist" data-reset-checklist="peoplexd-reset" data-i18n="resetChecklist"></button>
+          <a class="action" href="https://mywestmorland.com" target="_blank" rel="noopener" data-i18n="openResetSite"></a>
+        </div>
+
+        <div class="card warning">
+          <h2 data-i18n="bothForgotten"></h2>
+          <p data-i18n="bothForgottenValue"></p>
+          <a class="action" href="mailto:help@mywestmorland.com" data-i18n="emailPeopleTeam"></a>
+        </div>
+
+        <div class="card">
+          <h2 data-i18n="passwordRules"></h2>
+          <p data-i18n="passwordRulesValue"></p>
+        </div>
+      </section>
+
       <section id="benefits" class="page">
         <button class="back" data-page="home" data-i18n="backHome"></button>
 
@@ -485,7 +522,7 @@
       setupNote:"الخزنة الخاصة معمولة للأرقام السرية والملاحظات الحساسة. البيانات دي ما بتترفعش على GitHub.",
       appTitle:"WF Staff Companion", enterPass:"اكتب كلمة المرور علشان تفتح بياناتك الشخصية.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
       fastReference:"مساعد الموظف", findSeconds:"هات المعلومة في ثواني.", confirmedOnly:"بياناتي، تدريبي، المزايا، والتصرف السريع في المواقف المهمة.",
-      emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", benefits:"المزايا", privateVault:"الخزنة الخاصة",
+      emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", accountHelp:"مساعدة الدخول", benefits:"المزايا", privateVault:"الخزنة الخاصة",
       backHome:"→ الرئيسية", fireHeadline:"إنذار الحريق ← أقرب مخرج حريق ← نقطة التجمع",
       fireIntro:"الإخلاء الكامل بيتعلن بإنذار الحريق. الموظفين والزوار يروحوا لأقرب مخرج حريق، والموظفين يكملوا لنقطة التجمع.",
       forecourtSafe:"محطة الوقود — لو آمن تعمل كده",
@@ -514,6 +551,20 @@
       due16:"آخر موعد 16 أكتوبر 2026", due18:"آخر موعد 18 أكتوبر 2026", due1Nov:"آخر موعد 1 نوفمبر 2026",
       course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
       course5:"تجربة العميل – طريقة Westmorland", course6:"إجراءات CBE – موظفي محطة الوقود", course7:"منع التحرش الجنسي",
+      peopleAccessTitle:"دخول PeopleXD",
+      usernameRule:"اسم المستخدم", usernameRuleValue:"هو رقم الموظف — 6 أرقام وبيبدأ بـ 0",
+      usernameUnknown:"لو مش فاكره", usernameUnknownValue:"اسأل مديرك المباشر أو ابعت لـ help@mywestmorland.com باسمك الكامل",
+      forgotPassword:"نسيت الباسورد",
+      resetStep1:"افتح mywestmorland.com من المتصفح.",
+      resetStep2:"ادخل My Westmorland People واضغط Forgot Password.",
+      resetStep3:"اكتب رقم الموظف وتاريخ الميلاد واضغط Reset Password.",
+      resetStep4:"افتح الإيميل من peoplexd@accessacloud.com — راجع Spam/Junk — واتبع اللينك، ثم أكد تاريخ الميلاد وسؤال الأمان واعمل باسورد جديد.",
+      openResetSite:"افتح صفحة استرجاع PeopleXD",
+      bothForgotten:"نسيت الباسورد وأسئلة الأمان؟",
+      bothForgottenValue:"ابعت لـ help@mywestmorland.com باسمك الكامل. فريق People هيعمل Reset يدوي.",
+      emailPeopleTeam:"راسل People Team",
+      passwordRules:"شروط الباسورد",
+      passwordRulesValue:"12 خانة على الأقل: حرف كبير + حرف صغير + رقم + علامة خاصة.",
       benefitsTitle:"مزايا الموظف",
       cinema:"السينما", cinemaValue:"تذاكر مجانية لسينما الشركة",
       hotelDiscount:"خصم الفندق", hotelDiscountValue:"حوالي £60 للغرفة أو خصم 33% من قيمة الغرفة",
@@ -538,7 +589,7 @@
       setupNote:"Use the Private Vault for sensitive codes and notes. Those entries are not uploaded to GitHub.",
       appTitle:"WF Quick Reference", enterPass:"Enter your passphrase to open your personal information.", passphrase:"Passphrase", unlock:"Unlock", lock:"Lock",
       fastReference:"Staff companion", findSeconds:"Find it in seconds.", confirmedOnly:"My details, training, benefits and fast actions for important situations.",
-      emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", benefits:"Benefits", privateVault:"Private vault",
+      emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", accountHelp:"Account help", benefits:"Benefits", privateVault:"Private vault",
       backHome:"← Home", fireHeadline:"FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT",
       fireIntro:"Full evacuation is signalled by the fire alarm. Staff and visitors make their way to the nearest fire exit. Staff continue to the Assembly Point.",
       forecourtSafe:"Forecourt — if safe to do so",
@@ -567,6 +618,20 @@
       due16:"Due 16 Oct 2026", due18:"Due 18 Oct 2026", due1Nov:"Due 1 Nov 2026",
       course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
       course5:"Customer Experience – The Westmorland Way", course6:"CBE Procedures – Filling Station Colleagues", course7:"Prevention of Sexual Harassment",
+      peopleAccessTitle:"PeopleXD access",
+      usernameRule:"Username", usernameRuleValue:"Your colleague number — 6 digits and starts with 0",
+      usernameUnknown:"If you do not know it", usernameUnknownValue:"Ask your line manager or email help@mywestmorland.com with your full name",
+      forgotPassword:"Forgot password",
+      resetStep1:"Open mywestmorland.com in a browser.",
+      resetStep2:"Open My Westmorland People and select Forgot Password.",
+      resetStep3:"Enter your colleague number and date of birth, then choose Reset Password.",
+      resetStep4:"Open the email from peoplexd@accessacloud.com — check Spam/Junk — follow the link, confirm your date of birth and security question, then set a new password.",
+      openResetSite:"Open PeopleXD reset page",
+      bothForgotten:"Forgot password and security questions?",
+      bothForgottenValue:"Email help@mywestmorland.com with your full name. The People Team will manually reset access.",
+      emailPeopleTeam:"Email People Team",
+      passwordRules:"Password rules",
+      passwordRulesValue:"At least 12 characters: 1 uppercase + 1 lowercase + 1 number + 1 special character.",
       benefitsTitle:"Staff benefits",
       cinema:"Cinema", cinemaValue:"Free tickets for the company cinema room",
       hotelDiscount:"Hotel discount", hotelDiscountValue:"About £60 per room or 33% off the room value",
