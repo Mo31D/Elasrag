@@ -31,7 +31,9 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   let pendingDraft = null;
   const conflictedEditors = new Set();
   const PROTECTED_PAGES = new Set(["details","vault","tasks"]);
-  let lang = new URLSearchParams(location.search).get("lang") || localStorage.getItem(LANG_KEY) || "ar";
+  const savedLanguage = localStorage.getItem(LANG_KEY);
+  const linkedLanguage = new URLSearchParams(location.search).get("lang");
+  let lang = savedLanguage === "ar" || savedLanguage === "en" ? savedLanguage : linkedLanguage === "ar" ? "ar" : "en";
 
   const T = TRANSLATIONS;
   const $ = id => document.getElementById(id);
@@ -50,7 +52,12 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
       const key = el.dataset.i18n;
       el.textContent = t(key);
     });
-    document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.lang === lang));
+    document.querySelectorAll(".language-toggle").forEach(btn => {
+      btn.textContent = lang === "en" ? "ع" : "EN";
+      btn.lang = lang === "en" ? "ar" : "en";
+      btn.setAttribute("aria-label", lang === "en" ? "Switch to Arabic" : "التحويل للإنجليزية");
+      btn.title = btn.getAttribute("aria-label");
+    });
     document.querySelectorAll(".official").forEach(el => {
       el.style.display = "none";
     });
@@ -627,9 +634,9 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   document.querySelectorAll(".private-cancel").forEach(btn => btn.addEventListener("click", closePrivateGate));
 
   document.addEventListener("click", e => {
-    const langBtn = e.target.closest("[data-lang]");
+    const langBtn = e.target.closest(".language-toggle");
     if (langBtn) {
-      applyLanguage(langBtn.dataset.lang);
+      applyLanguage(lang === "en" ? "ar" : "en");
       return;
     }
     const reset = e.target.closest("[data-reset-checklist]");
@@ -1007,8 +1014,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=33").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "33";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=34").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "34";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

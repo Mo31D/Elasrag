@@ -9,7 +9,7 @@ const source = name => readFileSync(new URL('../../wf/' + name, import.meta.url)
 const bundled = ['content.js','model.js','app.js'].map(name=>source(name).replace(/^import .*;$/gm,'').replace(/export (const|function) /g,'$1 ')).join('\n');
 const html = source('index.html').replace('<script type="module" src="./app.js"></script>',()=>'<script>'+bundled+'</script>');
 
-function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false, serviceWorker = null) {
+function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false, serviceWorker = null, language = 'ar') {
   let cookie = '';
   let unavailable = initiallyOffline;
   const errors = [];
@@ -28,6 +28,7 @@ function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', 
       if(serviceWorker)Object.defineProperty(window.navigator,'serviceWorker',{value:serviceWorker});
       window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };
       window.HTMLDialogElement.prototype.close = function () { this.open = false; this.dispatchEvent(new window.Event('close')); };
+      if (language) window.localStorage.setItem('wf-language-v1', language);
       if (legacy) Object.entries(legacy).forEach(([key, value]) => window.localStorage.setItem(key, value));
       window.fetch = async (url, options) => {
         assert.equal(options.credentials, 'include'); assert.equal(options.cache, 'no-store');
@@ -55,6 +56,20 @@ async function signIn(d) {
   await until(() => d.document.getElementById('lockScreen').classList.contains('hidden'));
 }
 
+test('first visit opens in English and one compact control shows the other language',t=>{
+  const {env}=fixture();const fresh=device(env,'',null,'https://mo.elasrag.com/',false,null,null);t.after(()=>fresh.window.close());
+  assert.equal(fresh.document.documentElement.lang,'en');assert.equal(fresh.document.documentElement.dir,'ltr');
+  assert.equal(fresh.document.title,'WF Staff Companion');
+  assert.equal(fresh.document.getElementById('languageToggle').textContent,'ع');
+  assert.equal(fresh.document.querySelectorAll('dialog .language-toggle').length,0);
+  click(fresh,'#languageToggle');
+  assert.equal(fresh.document.documentElement.lang,'ar');assert.equal(fresh.document.getElementById('languageToggle').textContent,'EN');
+  assert.equal(fresh.window.localStorage.getItem('wf-language-v1'),'ar');
+  const saved=device(env,'',null,'https://mo.elasrag.com/?lang=ar',false,null,'en');t.after(()=>saved.window.close());
+  assert.equal(saved.document.documentElement.lang,'en');
+  assert.deepEqual(fresh.errors,[]);assert.deepEqual(saved.errors,[]);
+});
+
 test('public access, protected direct routes, translated auth, vault CRUD, another device, XSS and offline failure', async t => {
   const { env, records } = fixture();
   const a = device(env); const b = device(env, '#vault');
@@ -71,7 +86,7 @@ test('public access, protected direct routes, translated auth, vault CRUD, anoth
   fill(a, 'passInput', 'wrong'); click(a, '#unlockBtn');
   await until(() => a.document.getElementById('unlockError').textContent.length > 0);
   assert.match(a.document.getElementById('unlockError').textContent, /الدخول/);
-  click(a, '[data-lang="en"]');
+  click(a, '#lockLanguageToggle');
   assert.equal(a.document.documentElement.dir, 'ltr');
   assert.equal(a.document.getElementById('unlockError').textContent, 'Check your sign-in details.');
   await signIn(a);
@@ -204,8 +219,8 @@ test('language switch keeps page, open sections, checklist state and the same re
   a.document.querySelector('header').getBoundingClientRect=()=>({top:0,bottom:100,height:100});
   const anchor=warden.querySelector('.task-text');
   anchor.getBoundingClientRect=()=>{const height=a.document.documentElement.lang==='ar'?200:100;const top=1250-scroll;return {top,bottom:top+height,height};};
-  click(a,'[data-lang="en"]');assert.equal(scroll,1169);assert.equal(a.document.documentElement.dir,'ltr');
-  click(a,'[data-lang="ar"]');assert.equal(scroll,1200);assert.equal(a.document.documentElement.dir,'rtl');
+  click(a,'#languageToggle');assert.equal(scroll,1169);assert.equal(a.document.documentElement.dir,'ltr');
+  click(a,'#languageToggle');assert.equal(scroll,1200);assert.equal(a.document.documentElement.dir,'rtl');
   assert.ok(active(a,'fire'));assert.ok(warden.open);assert.ok(warden.querySelector('input').checked);
   assert.deepEqual(a.errors,[]);
 });
@@ -218,9 +233,9 @@ test('Safari can sign in when offline registration is unavailable and no unsafe 
 test('section tabs retain their selection when translated and direct tab links work',async t=>{
   const {env}=fixture();const d=device(env,'#benefits/discounts');t.after(()=>d.window.close());
   assert.ok(active(d,'benefits'));assert.equal(d.document.getElementById('benefits-panel-meals').hidden,true);assert.equal(d.document.getElementById('benefits-panel-discounts').hidden,false);
-  click(d,'[data-lang="en"]');assert.equal(d.document.getElementById('benefits-tab-discounts').getAttribute('aria-selected'),'true');
+  click(d,'#languageToggle');assert.equal(d.document.getElementById('benefits-tab-discounts').getAttribute('aria-selected'),'true');
   click(d,'#benefits-tab-leisure');assert.equal(d.window.location.hash,'#benefits/leisure');
-  click(d,'[data-lang="ar"]');assert.equal(d.document.getElementById('benefits-panel-leisure').hidden,false);assert.equal(d.document.getElementById('benefits-panel-meals').hidden,true);
+  click(d,'#languageToggle');assert.equal(d.document.getElementById('benefits-panel-leisure').hidden,false);assert.equal(d.document.getElementById('benefits-panel-meals').hidden,true);
   assert.deepEqual(d.errors,[]);
 });
 
@@ -233,7 +248,8 @@ test('the alert bell follows saved training dates and keeps its place through tr
   assert.equal(d.document.getElementById('alertsCount').hidden,false);
   click(d,'#alertsBtn');assert.ok(d.document.getElementById('alertsDialog').open);
   assert.match(d.document.getElementById('alertsList').textContent,/Safety reminder/);
-  click(d,'#alertsDialog [data-lang="en"]');assert.ok(d.document.getElementById('alertsDialog').open);
+  assert.equal(d.document.querySelectorAll('dialog .language-toggle').length,0);
+  click(d,'#closeAlerts');click(d,'#languageToggle');click(d,'#alertsBtn');assert.ok(d.document.getElementById('alertsDialog').open);
   assert.match(d.document.getElementById('alertsList').textContent,/Safety reminder/);
   click(d,'#alertsList .alert-item:last-child');assert.ok(active(d,'training'));
   assert.equal(d.document.getElementById('alertsDialog').open,false);
@@ -255,9 +271,12 @@ test('weekday ticks save centrally, survive translation and replace the generic 
  click(a,'[data-edit-profile]');
  assert.equal(a.document.querySelectorAll('[data-shift-day]').length,7);
  assert.deepEqual([...a.document.querySelectorAll('[data-shift-day]:checked')].map(x=>x.value),['5','6']);
- click(a,'[data-shift-day="1"]');click(a,'.lang-btn[data-lang="en"]');
- assert.equal(a.document.querySelector('[data-weekday="1"]').textContent,'Monday');assert.ok(a.document.querySelector('[data-shift-day="1"]').checked);
+ click(a,'[data-shift-day="1"]');assert.ok(a.document.querySelector('[data-shift-day="1"]').checked);
  click(a,'#saveProfile');await until(()=>!a.document.getElementById('profileDialog').open);
+ click(a,'#languageToggle');click(a,'[data-edit-profile]');
+ assert.equal(a.document.querySelector('[data-weekday="1"]').textContent,'Monday');
+ assert.ok(a.document.querySelector('[data-shift-day="1"]').checked);
+ click(a,'#cancelProfile');
  assert.equal(JSON.parse(kv.get('private-data')).profile.shiftDays,'1,5,6');
  assert.ok(!a.document.getElementById('shiftHeadline').textContent.includes('at a glance'));
  assert.match(a.document.querySelector('[data-job="shiftDays"]').textContent,/Monday/);
