@@ -338,6 +338,7 @@ test('returning from another page keeps draft inputs and back links return to th
   assert.ok(active(d,'tasks'));assert.equal(d.document.getElementById('taskInput').value,'Finish tonight');
   click(d,'[data-page="home"]');click(d,'#home [data-page="benefits"]');
   assert.ok(active(d,'benefits'));assert.equal(d.document.querySelector('#benefits [data-tab="meals"]').getAttribute('aria-selected'),'true');
+  assert.equal(d.document.getElementById('benefits-tab-travel').textContent,'مزايا أخرى');
   assert.match(d.document.querySelector('#benefits [data-back]').textContent,/الرئيسية/);
   click(d,'#benefits-tab-discounts');
   click(d,'#benefits [data-back]');assert.ok(active(d,'home'));
