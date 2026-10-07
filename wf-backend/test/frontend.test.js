@@ -5,7 +5,9 @@ import { webcrypto } from 'node:crypto';
 import { JSDOM, VirtualConsole } from 'jsdom';
 import worker from '../src/index.js';
 import { fixture } from './fixtures.js';
-const html = readFileSync(new URL('../../wf/index.html', import.meta.url), 'utf8');
+const source = name => readFileSync(new URL('../../wf/' + name, import.meta.url), 'utf8');
+const bundled = ['content.js','model.js','app.js'].map(name=>source(name).replace(/^import .*;$/gm,'').replace(/export (const|function) /g,'$1 ')).join('\n');
+const html = source('index.html').replace('<script type="module" src="./app.js"></script>',()=>'<script>'+bundled+'</script>');
 
 function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false) {
   let cookie = '';
@@ -20,7 +22,7 @@ function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', 
       Object.defineProperty(window, 'crypto', { value: webcrypto });
       window.TextEncoder = TextEncoder; window.TextDecoder = TextDecoder;
       window.AbortController = AbortController;
-      window.scrollTo = () => {}; window.confirm = () => true;
+      window.structuredClone = structuredClone; window.scrollBy = () => {}; window.scrollTo = () => {}; window.confirm = () => true;
       Object.defineProperty(window.navigator, 'onLine', {value:!initiallyOffline,configurable:true});
       window.navigator.clipboard = { writeText: async () => {} };
       window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };
@@ -67,10 +69,10 @@ test('public access, protected direct routes, translated auth, vault CRUD, anoth
   await until(() => !a.document.getElementById('lockScreen').classList.contains('hidden'));
   fill(a, 'passInput', 'wrong'); click(a, '#unlockBtn');
   await until(() => a.document.getElementById('unlockError').textContent.length > 0);
-  assert.match(a.document.getElementById('unlockError').textContent, /كلمة/);
+  assert.match(a.document.getElementById('unlockError').textContent, /الدخول/);
   click(a, '[data-lang="en"]');
   assert.equal(a.document.documentElement.dir, 'ltr');
-  assert.equal(a.document.getElementById('unlockError').textContent, 'Incorrect password.');
+  assert.equal(a.document.getElementById('unlockError').textContent, 'Check your sign-in details.');
   await signIn(a);
   assert.ok(active(a, 'details'));
   click(a, '[data-page="vault"]'); await until(() => active(a, 'vault'));
@@ -158,4 +160,48 @@ test('cached public reference remains available at the previous address while of
   await until(() => !d.document.getElementById('lockScreen').classList.contains('hidden'));
   assert.equal(d.document.querySelector('[data-private="colleagueNumber"]').textContent,'');
   assert.deepEqual(d.errors, []);
+});
+
+test('new account UI, editable profile, task and course changes synchronize without inheriting owner history',async t=>{
+  const {env}=fixture();const a=device(env,'#tasks');t.after(()=>a.window.close());
+  await until(()=>!a.document.getElementById('lockScreen').classList.contains('hidden'));
+  click(a,'#registerBtn');fill(a,'usernameInput','ui-colleague');fill(a,'passInput','fixture-ui-password');click(a,'#unlockBtn');
+  await until(()=>active(a,'tasks') && a.document.getElementById('recoveryDialog').open);
+  assert.ok(a.document.getElementById('newRecoveryCode').value);click(a,'#closeRecovery');
+  assert.equal(a.document.getElementById('completedCount').textContent,'0');
+  fill(a,'taskInput','First task');a.document.getElementById('taskForm').dispatchEvent(new a.window.Event('submit',{bubbles:true,cancelable:true}));
+  await until(()=>a.document.querySelectorAll('.personal-task').length===1);
+  click(a,'.personal-task input');await until(()=>a.document.getElementById('taskProgress').textContent==='1 / 1');
+  click(a,'.personal-task .task-actions button');fill(a,'taskInput','Edited task');a.document.getElementById('taskForm').dispatchEvent(new a.window.Event('submit',{bubbles:true,cancelable:true}));
+  await until(()=>a.document.querySelector('.personal-task .task-text').textContent==='Edited task');
+  click(a,'#resetTasks');await until(()=>a.document.getElementById('taskProgress').textContent==='0 / 1');
+  click(a,'[data-page="training"]');click(a,'#addCourseBtn');fill(a,'courseEN','Personal course');fill(a,'courseAR','كورسي');fill(a,'courseDue','2026-10-08');click(a,'#saveCourse');
+  await until(()=>!a.document.getElementById('courseDialog').open);
+  assert.equal(a.document.querySelectorAll('#courseList .course-row').length,8);
+  click(a,'#courseList .course-row:last-child input');await until(()=>a.document.getElementById('completedCount').textContent==='1');
+  click(a,'[data-page="details"]');await until(()=>active(a,'details'));click(a,'[data-edit-profile]');fill(a,'profile-displayName','UI colleague');fill(a,'profile-hours','20');fill(a,'profile-hourlyRate','12');click(a,'#saveProfile');
+  await until(()=>!a.document.getElementById('profileDialog').open);
+  assert.match(a.document.querySelector('[data-job="weeklyGross"]').textContent,/240|٢٤٠/);
+  const b=device(env,'#tasks');t.after(()=>b.window.close());await until(()=>!b.document.getElementById('lockScreen').classList.contains('hidden'));
+  click(b,'#otherAccountBtn');fill(b,'usernameInput','ui-colleague');fill(b,'passInput','fixture-ui-password');click(b,'#unlockBtn');
+  await until(()=>active(b,'tasks'));
+  assert.equal(b.document.querySelector('.personal-task .task-text').textContent,'Edited task');assert.equal(b.document.getElementById('completedCount').textContent,'1');
+  click(a,'[data-page="training"]');click(a,'#completedCourses .course-edit');click(a,'#deleteCourse');await until(()=>a.document.getElementById('completedCount').textContent==='0');
+  click(a,'[data-page="tasks"]');await until(()=>active(a,'tasks'));click(a,'.personal-task .task-actions button:last-child');await until(()=>a.document.querySelectorAll('.personal-task').length===0);
+  assert.deepEqual(a.errors,[]);assert.deepEqual(b.errors,[]);
+});
+
+test('language switch keeps page, open sections, checklist state and the same reading anchor',async t=>{
+  const {env}=fixture();const a=device(env,'#fire');t.after(()=>a.window.close());
+  const warden=a.document.querySelector('[data-checklist="fire-warden"]');warden.open=true;
+  click(a,'[data-check="fire-warden-1"]');
+  let scroll=1200;Object.defineProperty(a.window,'scrollY',{get:()=>scroll});
+  a.window.scrollBy=({top})=>{scroll+=top;};a.window.scrollTo=({top})=>{scroll=top;};
+  a.document.querySelector('header').getBoundingClientRect=()=>({top:0,bottom:100,height:100});
+  const anchor=warden.querySelector('.task-text');
+  anchor.getBoundingClientRect=()=>{const height=a.document.documentElement.lang==='ar'?200:100;const top=1250-scroll;return {top,bottom:top+height,height};};
+  click(a,'[data-lang="en"]');assert.equal(scroll,1169);assert.equal(a.document.documentElement.dir,'ltr');
+  click(a,'[data-lang="ar"]');assert.equal(scroll,1200);assert.equal(a.document.documentElement.dir,'rtl');
+  assert.ok(active(a,'fire'));assert.ok(warden.open);assert.ok(warden.querySelector('input').checked);
+  assert.deepEqual(a.errors,[]);
 });

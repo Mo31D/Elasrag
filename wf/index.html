@@ -25,264 +25,7 @@
     location.replace(destination.href);
   })();
   </script>
-  <style>
-    :root{
-      --bg:#f4f5f7;--card:#fff;--ink:#111827;--muted:#667085;--line:#e4e7ec;
-      --nav:#17212b;--red:#b42318;--red-bg:#fff1f0;--amber:#b54708;--amber-bg:#fffaeb;
-      --green:#067647;--green-bg:#ecfdf3;--shadow:0 8px 28px rgba(16,24,40,.08);--radius:18px
-    }
-    *{box-sizing:border-box}
-    html{background:var(--bg);-webkit-text-size-adjust:100%}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;color:var(--ink);background:var(--bg)}
-    button,input,textarea{font:inherit}
-    button{cursor:pointer}
-    .hidden{display:none!important}
-    .lock{
-      position:fixed;inset:0;z-index:1000;background:var(--nav);color:#fff;
-      display:grid;place-items:center;padding:24px
-    }
-    .lock-card{width:min(440px,100%);background:#fff;color:var(--ink);border-radius:24px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
-    .lock-mark{width:54px;height:54px;border-radius:16px;background:var(--nav);color:#fff;display:grid;place-items:center;font-size:26px;margin-bottom:18px}
-    .lock h1{margin:0 0 6px;font-size:27px;letter-spacing:-.02em}
-    .lock p{margin:0 0 20px;color:var(--muted);line-height:1.55}
-    .field{display:grid;gap:7px;margin:13px 0}
-    .field label{font-size:13px;font-weight:700;color:#344054}
-    .field input,.field textarea{width:100%;border:1px solid #d0d5dd;border-radius:12px;padding:13px 14px;background:#fff;color:var(--ink);outline:none}
-    .field input:focus,.field textarea:focus{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.12)}
-    .primary{width:100%;border:0;border-radius:12px;padding:13px 16px;background:var(--nav);color:#fff;font-weight:800}
-    .error:empty{display:none}
-    #passInput,#oldPass,#profileFields input{font-size:16px}
-    .lock-card{max-height:calc(100dvh - 80px);overflow:auto}
-    .error{min-height:20px;color:var(--red);font-size:13px;margin-top:9px}
-    .tiny{font-size:12px;color:var(--muted);line-height:1.55}
-    #app{min-height:100vh}
-    header{position:sticky;top:0;z-index:50;background:rgba(23,33,43,.98);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 12px}
-    .topbar{flex-wrap:wrap;max-width:780px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
-    .brand{font-size:17px;font-weight:850;letter-spacing:.01em}
-    .top-actions{margin-inline-start:auto;display:flex;align-items:center;gap:8px}
-    .lang-switch{display:flex;gap:3px;background:rgba(255,255,255,.1);padding:3px;border-radius:10px}
-    .lang-btn{border:0;background:transparent;color:#d0d5dd;border-radius:8px;padding:6px 9px;font-weight:800;font-size:12px}
-    .lang-btn.active{background:#fff;color:var(--nav)}
-    .lock-btn{border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:8px 11px;font-weight:700}
-    .lock-lang{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:5}
-    html[dir="rtl"] .lock-lang{right:auto;left:14px}
-    .lock-lang .lang-switch{background:rgba(255,255,255,.12)}
-    main{max-width:780px;margin:0 auto;padding:16px 14px calc(86px + env(safe-area-inset-bottom))}
-    .hero{background:var(--nav);color:#fff;border-radius:var(--radius);padding:20px;margin:4px 0 16px}
-    .hero .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:#cbd5e1;font-weight:800}
-    html[dir="rtl"] .hero .eyebrow{letter-spacing:0}
-    .hero h1{font-size:27px;margin:5px 0 6px;letter-spacing:-.03em}
-    .hero p{margin:0;color:#d0d5dd;line-height:1.5}
-    .section-title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#667085;font-weight:850;margin:22px 4px 9px}
-    html[dir="rtl"] .section-title{letter-spacing:0}
-    .grid{display:grid;grid-template-columns:1fr;gap:10px}
-    .quick{
-      border:0;border-radius:var(--radius);padding:18px;text-align:start;box-shadow:var(--shadow);
-      display:flex;align-items:center;gap:14px;font-weight:850;font-size:20px
-    }
-    .quick.fire{background:var(--red);color:#fff}
-    .quick.details,.quick.training,.quick.access,.quick.benefits,.quick.uniform,.quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
-    .icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:21px}
-    .quick:not(.fire) .icon{background:#f2f4f7}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:17px;margin-bottom:11px}
-    .card h2{font-size:21px;margin:0 0 8px;letter-spacing:-.02em}
-    .card h3{font-size:16px;margin:0 0 8px}
-    .card p{margin:7px 0;line-height:1.55}
-    .critical{background:var(--red-bg);border-color:#fecdca}
-    .critical .big{font-size:25px;font-weight:900;color:var(--red);line-height:1.25}
-    .warning{background:var(--amber-bg);border-color:#fedf89}
-    .warning strong{color:var(--amber)}
-    .safe{background:var(--green-bg);border-color:#abefc6}
-    .checklist{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:9px}
-    .checklist li{display:grid;grid-template-columns:35px 1fr;gap:10px;align-items:start;border-top:1px solid var(--line);padding-top:11px;font-size:17px;line-height:1.45}
-    .checklist li:first-child{border-top:0;padding-top:0}
-    .num{width:31px;height:31px;border-radius:50%;background:var(--nav);color:#fff;display:grid;place-items:center;font-weight:850;font-size:14px}
-    .fire-card .num{background:var(--red)}
-    .task-list{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:9px}
-    .task{
-      display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:start;
-      border-top:1px solid var(--line);padding-top:11px;font-size:17px;line-height:1.45
-    }
-    .task:first-child{border-top:0;padding-top:0}
-    .task-check{
-      appearance:none;-webkit-appearance:none;width:34px;height:34px;border:2px solid #98a2b3;
-      border-radius:10px;background:#fff;display:grid;place-items:center;margin:0;cursor:pointer
-    }
-    .task-check:checked{background:var(--green);border-color:var(--green)}
-    .task-check:checked::after{content:"✓";color:#fff;font-weight:900;font-size:22px;line-height:1}
-    .task-check:checked + .task-text{text-decoration:line-through;color:#667085}
-    .check-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:4px}
-    .progress-pill{font-size:12px;font-weight:850;background:#f2f4f7;color:#344054;border-radius:999px;padding:6px 9px;white-space:nowrap}
-    .reset-checklist{border:1px solid #d0d5dd;background:#fff;color:#344054;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:850;margin-top:12px}
-    .sub{font-size:13px;color:var(--muted);display:block;margin-top:2px}
-    .row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
-    .row:first-of-type{border-top:0}
-    .key{color:var(--muted);font-size:13px}
-    .value{font-weight:800;text-align:end;word-break:break-word}
-    .copy{border:1px solid #d0d5dd;background:#fff;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:800;color:#344054;flex:0 0 auto}
-    a.action{display:block;text-decoration:none;background:var(--nav);color:#fff;border-radius:11px;padding:11px 13px;margin-top:9px;text-align:center;font-weight:800}
-    .page{display:none}
-    .page.active{display:block}
-    .back{border:0;background:transparent;color:#344054;padding:7px 2px 12px;font-weight:800}
-    nav{
-      position:fixed;z-index:45;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);
-      padding:8px 10px calc(8px + env(safe-area-inset-bottom))
-    }
-    .nav-inner{max-width:780px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-    .nav-btn{border:0;background:transparent;border-radius:12px;padding:9px 6px;color:#667085;font-size:12px;font-weight:800}
-    .nav-btn.active{background:#f2f4f7;color:var(--ink)}
-    .nav-btn span{display:block;font-size:19px;margin-bottom:3px}
-    .vault-list{display:grid;gap:9px;margin-top:12px}
-    .vault-item{border:1px solid var(--line);border-radius:13px;padding:12px}
-    .vault-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
-    .vault-label{font-weight:850}
-    .secret{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;letter-spacing:.03em;margin-top:7px;word-break:break-all;direction:ltr;text-align:start}
-    .secret.masked{filter:blur(5px);user-select:none}
-    .mini-actions{display:flex;gap:7px;margin-top:9px}
-    .mini-actions button{border:1px solid #d0d5dd;background:#fff;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:800}
-    .danger-text{color:var(--red)!important}
-    dialog{border:0;border-radius:20px;width:min(460px,calc(100% - 28px));padding:20px;box-shadow:0 24px 80px rgba(0,0,0,.3)}
-    dialog::backdrop{background:rgba(0,0,0,.45)}
-    .dialog-actions{display:flex;gap:8px;margin-top:14px}
-    .dialog-actions button{flex:1;border:0;border-radius:11px;padding:11px;font-weight:800}
-    .secondary{background:#f2f4f7;color:var(--ink)}
-    .private-cancel{margin-top:8px;color:#344054}
-    .status{font-size:12px;color:var(--muted);margin-top:9px;text-align:center}
-    .official{font-size:12px;color:var(--muted);display:block;margin-top:3px;direction:ltr;text-align:start}
-    @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}.quick{display:block}.quick .icon{margin-bottom:15px}}
-
-    body{font-size:15px}
-    header{
-      padding:calc(7px + env(safe-area-inset-top)) 12px 8px;
-      box-shadow:0 1px 0 rgba(255,255,255,.05)
-    }
-    .topbar{flex-wrap:wrap;max-width:640px;min-height:42px;gap:8px}
-    .brand{
-      font-size:15px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-      max-width:42%
-    }
-    .top-actions{gap:6px}
-    .lang-switch{padding:2px;border-radius:9px}
-    .lang-btn{font-size:11px;padding:5px 8px;border-radius:7px;min-height:32px}
-    .lock-btn{font-size:12px;padding:6px 9px;min-height:34px;border-radius:9px}
-    main{max-width:640px;padding:12px 12px calc(72px + env(safe-area-inset-bottom))}
-    .hero{padding:15px 16px;margin:2px 0 13px;border-radius:16px}
-    .hero .eyebrow{font-size:10.5px}
-    .hero h1{font-size:22px;line-height:1.15;margin:4px 0 5px}
-    .hero p{font-size:13px;line-height:1.4}
-    .section-title{font-size:11px;margin:17px 3px 7px}
-    .grid{gap:8px}
-    .quick{
-      min-height:70px;padding:14px 15px;border-radius:16px;gap:12px;font-size:17px;
-      box-shadow:0 5px 18px rgba(16,24,40,.06)
-    }
-    .icon{width:38px;height:38px;flex-basis:38px;border-radius:11px;font-size:18px}
-    .card{
-      padding:15px;border-radius:16px;margin-bottom:9px;
-      box-shadow:0 5px 18px rgba(16,24,40,.055)
-    }
-    .card h2{font-size:19px;line-height:1.25;margin-bottom:6px}
-    .card p{font-size:14px;line-height:1.5}
-    .critical{padding:15px 16px}
-    .critical .big{font-size:21px;line-height:1.25}
-    .back{font-size:14px;padding:4px 1px 9px}
-    .row{
-      min-height:58px;padding:10px 0;gap:10px;align-items:center
-    }
-    .row>div{min-width:0}
-    .key{font-size:11.5px;line-height:1.25;margin-bottom:2px}
-    .value{
-      font-size:15.5px;line-height:1.3;font-weight:800;
-      overflow-wrap:anywhere;word-break:normal
-    }
-    .copy{
-      min-width:54px;min-height:38px;padding:7px 9px;font-size:11px;border-radius:9px
-    }
-    a.action,.primary{min-height:46px;padding:11px 13px;border-radius:11px;font-size:14px}
-    .task-list{margin-top:9px;gap:0}
-    .task{
-      grid-template-columns:40px 1fr;gap:9px;padding:11px 0;
-      font-size:15.5px;line-height:1.4
-    }
-    .task:first-child{padding-top:7px}
-    .task-check{width:32px;height:32px;border-radius:9px}
-    .task-check:checked::after{font-size:20px}
-    .check-head{margin-bottom:0}
-    .progress-pill{font-size:10.5px;padding:5px 8px}
-    .reset-checklist{min-height:40px;padding:8px 10px;font-size:11px}
-    .warning strong{font-size:14px}
-    .checklist{gap:0}
-    .checklist li{
-      padding:10px 0;font-size:14.5px;line-height:1.42;
-      grid-template-columns:31px 1fr
-    }
-    .num{width:28px;height:28px;font-size:12px}
-    .sub{font-size:11.5px}
-    .training-card .row{align-items:flex-start}
-    .training-card .row>div{width:100%}
-    .training-card .row{position:relative}
-    .training-group-title{
-      margin:12px 0 2px;padding-top:10px;border-top:1px solid var(--line);
-      font-size:11px;font-weight:900;color:#475467;text-transform:uppercase;letter-spacing:.05em
-    }
-    html[dir="rtl"] .training-group-title{letter-spacing:0}
-    .training-group-title:first-of-type{margin-top:5px;padding-top:0;border-top:0}
-    .training-card .value{text-align:start;font-size:15px;padding-inline-end:78px}
-    .training-deadline{
-      position:absolute;inset-inline-end:0;top:10px;text-align:end;min-width:70px
-    }
-    .training-deadline .due-date{display:block;font-size:10px;color:var(--muted);line-height:1.2}
-    .training-deadline .days-left{
-      display:inline-block;margin-top:3px;padding:4px 7px;border-radius:999px;
-      background:#f2f4f7;color:#344054;font-size:10.5px;font-weight:850;white-space:nowrap
-    }
-    .training-deadline .days-left.urgent{background:var(--amber-bg);color:var(--amber)}
-    .training-deadline .days-left.overdue{background:var(--red-bg);color:var(--red)}
-    .completed-history{margin-top:10px}
-    .completed-history summary{
-      list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;
-      cursor:pointer;font-weight:850;font-size:15px
-    }
-    .completed-history summary::-webkit-details-marker{display:none}
-    .completed-count{
-      background:#f2f4f7;color:#344054;border-radius:999px;padding:5px 8px;
-      font-size:10.5px;font-weight:850;white-space:nowrap
-    }
-    .completed-row{
-      display:flex;justify-content:space-between;align-items:center;gap:10px;
-      padding:10px 0;border-top:1px solid var(--line)
-    }
-    .completed-title{font-size:14px;line-height:1.35;font-weight:700;min-width:0}
-    .completed-badge{
-      flex:0 0 auto;border-radius:999px;padding:5px 8px;background:#f7dfd0;
-      color:#7a3e1d;font-size:10.5px;font-weight:850;white-space:nowrap
-    }
-    .official{font-size:11px;margin-top:2px}
-    .status{font-size:10.5px;margin-top:7px}
-    nav{padding:5px 8px calc(5px + env(safe-area-inset-bottom))}
-    .nav-inner{max-width:640px;gap:4px}
-    .nav-btn{
-      min-height:51px;padding:5px 3px;border-radius:11px;font-size:10.5px;line-height:1.15
-    }
-    .nav-btn span{font-size:17px;margin-bottom:2px}
-    .nav-btn.active{background:#f0f2f5}
-    .tiny{font-size:11px}
-    dialog{padding:17px;border-radius:17px}
-    .lock-card{padding:21px;border-radius:20px}
-    .lock-mark{width:48px;height:48px;border-radius:14px;font-size:22px;margin-bottom:14px}
-    .lock h1{font-size:23px}
-    .field{margin:11px 0}
-    .field input,.field textarea{padding:12px 13px}
-
-    @media(max-width:390px){
-      .brand{font-size:14px;max-width:34%}
-      .lang-btn{padding:5px 7px}
-      .lock-btn{padding:6px 8px}
-      .quick{font-size:16px}
-      .critical .big{font-size:20px}
-      .value{font-size:15px}
-    }
-  </style>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <section id="lockScreen" class="lock hidden" aria-label="Private access">
@@ -297,10 +40,14 @@
       <div id="unlockMode">
         <h1 data-i18n="appTitle"></h1>
         <p data-i18n="enterPass"></p>
+        <div id="usernameField" class="field hidden"><label for="usernameInput" data-i18n="accountName"></label><input id="usernameInput" type="text" autocomplete="username" maxlength="40" autocapitalize="none" spellcheck="false" dir="ltr"></div>
+        <div id="recoveryField" class="field hidden"><label for="recoveryInput" data-i18n="recoveryCode"></label><input id="recoveryInput" type="text" autocomplete="off" dir="ltr"></div>
         <div class="field"><label for="passInput" data-i18n="passphrase"></label><input id="passInput" type="password" autocomplete="current-password"></div>
         <button id="unlockBtn" class="primary" data-i18n="unlock"></button>
         <button class="secondary primary private-cancel" type="button" data-i18n="cancel"></button>
-        <div id="unlockError" class="error"></div>
+        <div id="unlockError" class="error" role="status"></div>
+        <p id="passwordHint" class="tiny hidden" data-i18n="newPasswordHint"></p>
+        <div class="auth-links"><button id="otherAccountBtn" class="text-button" data-i18n="otherAccount"></button><button id="registerBtn" class="text-button" data-i18n="createAccount"></button><button id="recoverBtn" class="text-button" data-i18n="recoverAccount"></button></div>
       </div>
     </div>
   </section>
@@ -308,47 +55,65 @@
   <div id="app" data-staff-profile="personal" data-section="filling-station-nights">
     <header>
       <div class="topbar">
-        <div class="brand" data-i18n="appTitle"></div>
+        <button class="brand brand-home" data-page="home" data-i18n="appTitle"></button>
         <div class="top-actions">
-          <button id="logoutBtn" class="lock-btn hidden" data-i18n="logout"></button>
+          <button id="accountBtn" class="lock-btn" data-page="details" data-i18n="myProfile"></button>
+          <button id="logoutBtn" class="lock-btn logout-icon hidden" aria-label="تسجيل الخروج"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 5H4v14h5M9 12h12m-4-4 4 4-4 4"/></svg></button>
           <div class="lang-switch">
             <button class="lang-btn" data-lang="ar">عربي</button>
             <button class="lang-btn" data-lang="en">English</button>
           </div>
         </div>
       </div>
+      <button class="emergency-strip" data-page="fire"><span aria-hidden="true">!</span><span data-i18n="fireQuick"></span><span aria-hidden="true">↗</span></button>
     </header>
 
     <main>
       <p id="privateMessage" class="error" role="status" aria-live="polite"></p>
       <section id="home" class="page active">
-        <div class="hero">
-          <div class="eyebrow" data-i18n="fastReference"></div>
-          <h1 data-i18n="findSeconds"></h1>
-          <p data-i18n="confirmedOnly"></p>
+        <div class="hero compact-hero"><div class="eyebrow" data-i18n="fastReference"></div><h1 data-i18n="findSeconds"></h1><span id="greeting" class="tiny"></span></div>
+        <div class="section-title" data-i18n="nowTitle"></div>
+        <div class="focus-grid">
+          <button class="focus-card" data-page="details"><span class="key" data-i18n="myShift"></span><strong id="shiftSummary" data-i18n="workDetails"></strong><span id="shiftMeta" class="tiny"></span></button>
+          <button class="focus-card" data-page="training"><span class="key" data-i18n="nextLearning"></span><strong id="nextCourseTitle" data-i18n="training"></strong><span id="nextCourseMeta" class="tiny"></span></button>
         </div>
-
-        <div class="section-title" data-i18n="emergency"></div>
+        <button class="task-summary" data-page="tasks"><span data-i18n="myTasks"></span><span id="homeTaskCount" class="progress-pill">✓</span></button>
+        <div class="section-title" data-i18n="quickAccess"></div>
         <div class="grid">
-          <button class="quick fire" data-page="fire"><span class="icon">!</span><span data-i18n="fire"></span></button>
+          <a class="quick access" href="https://mywestmorland.com" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>PeopleXD</span></a>
+          <a class="quick access" href="https://westmorland.learn.link" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>THRIVE</span></a>
+          <button class="quick benefits" data-page="benefits"><span class="icon" aria-hidden="true">★</span><span data-i18n="benefits"></span></button>
+          <button class="quick uniform" data-page="uniform"><span class="icon" aria-hidden="true">◇</span><span data-i18n="uniformDress"></span></button>
         </div>
-
-        <div class="section-title" data-i18n="reference"></div>
-        <div class="grid">
-          <button class="quick details" data-page="details"><span class="icon">ID</span><span data-i18n="workDetails"></span></button>
-          <button class="quick training" data-page="training"><span class="icon">✓</span><span data-i18n="training"></span></button>
-          <button class="quick access" data-page="access"><span class="icon">↗</span><span data-i18n="accountHelp"></span></button>
-          <button class="quick benefits" data-page="benefits"><span class="icon">★</span><span data-i18n="benefits"></span></button>
-          <button class="quick uniform" data-page="uniform"><span class="icon">U</span><span data-i18n="uniformDress"></span></button>
-        </div>
+        <button class="reference-link" data-page="reference"><span data-i18n="allReference"></span><span aria-hidden="true">↗</span></button>
         <div class="status" id="offlineStatus"></div>
       </section>
-
-      <section id="fire" class="page">
+      <section id="tasks" class="page">
         <button class="back" data-page="home" data-i18n="backHome"></button>
+        <div class="check-head"><h1 data-i18n="myTasks"></h1><span id="taskProgress" class="progress-pill"></span></div>
+        <form id="taskForm" class="inline-form"><input id="taskInput" maxlength="300" autocomplete="off" data-placeholder="addTask"><button class="primary" type="submit" data-i18n="add"></button></form>
+        <div class="card"><ul id="personalTasks" class="task-list"></ul><button id="resetTasks" class="reset-checklist" data-i18n="newShift"></button></div>
+      </section>
+      <section id="reference" class="page">
+        <button class="back" data-page="home" data-i18n="backHome"></button>
+        <h1 data-i18n="reference"></h1>
+        <input id="referenceSearch" class="search-input" type="search" data-placeholder="findReference" autocomplete="off">
+        <div class="reference-list">
+          <button class="reference-row" data-page="benefits" data-search="benefits meals discounts food drinks hotel cinema مزايا اكل خصم سينما"><span data-i18n="benefits"></span><span aria-hidden="true">↗</span></button>
+          <button class="reference-row" data-page="uniform" data-search="uniform dress clothes safety PPE shoes زي ملابس مظهر حذاء"><span data-i18n="uniformDress"></span><span aria-hidden="true">↗</span></button>
+          <button class="reference-row" data-page="access" data-search="account password login reset help PeopleXD كلمة مرور باسورد دخول حساب"><span data-i18n="accountHelp"></span><span aria-hidden="true">↗</span></button>
+          <button class="reference-row" data-page="fire" data-search="fire emergency evacuation warden حريق طوارئ اخلاء"><span data-i18n="fire"></span><span aria-hidden="true">↗</span></button>
+          <button class="reference-row" data-page="details" data-search="work shift pay profile شغل شفت اجر بيانات"><span data-i18n="workDetails"></span><span aria-hidden="true">↗</span></button>
+        </div>
+      </section>
+      <section id="fire" class="page">
+        <button class="back" data-back-fire data-i18n="back"></button>
         <div class="card critical">
           <div class="big" data-i18n="fireHeadline"></div>
-          <p data-i18n="fireIntro"></p>
+          <ul class="task-list" data-checklist="fire-evacuation">
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-evacuation-1"><span class="task-text" data-i18n="evacuationExit"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-evacuation-2"><span class="task-text" data-i18n="evacuationAssembly"></span></li>
+          </ul><div class="check-head"><span class="progress-pill" data-check-progress="fire-evacuation">0 / 2</span><button class="reset-checklist" data-reset-checklist="fire-evacuation" data-i18n="newIncident"></button></div>
         </div>
 
         <div class="card fire-card" data-checklist="fire-forecourt">
@@ -362,43 +127,47 @@
             <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-3"><span class="task-text" data-i18n="fireStep3"></span></li>
             <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-4"><span class="task-text"><span data-i18n="fireStep4"></span><span class="sub" data-i18n="onlyIfSafe"></span></span></li>
           </ul>
-          <button class="reset-checklist" data-reset-checklist="fire-forecourt" data-i18n="resetChecklist"></button>
+          <button class="reset-checklist" data-reset-checklist="fire-forecourt" data-i18n="newIncident"></button>
         </div>
 
-        <details class="card">
+        <details class="card" data-checklist="fire-warden">
           <summary style="font-weight:850;cursor:pointer" data-i18n="wardenTitle"></summary>
-          <ul class="checklist">
-            <li><span class="num">1</span><span data-i18n="warden1"></span></li>
-            <li><span class="num">2</span><span data-i18n="warden2"></span></li>
-            <li><span class="num">3</span><span data-i18n="warden3"></span></li>
-            <li><span class="num">4</span><span data-i18n="warden4"></span></li>
-            <li><span class="num">5</span><span data-i18n="warden5"></span></li>
-            <li><span class="num">6</span><span data-i18n="warden6"></span></li>
+          <ul class="task-list">
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-1"><span class="task-text" data-i18n="warden1"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-2"><span class="task-text" data-i18n="warden2"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-3"><span class="task-text" data-i18n="warden3"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-4"><span class="task-text" data-i18n="warden4"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-5"><span class="task-text" data-i18n="warden5"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-6"><span class="task-text" data-i18n="warden6"></span></li>
           </ul>
+<div class="check-head"><span class="progress-pill" data-check-progress="fire-warden">0 / 6</span><button class="reset-checklist" data-reset-checklist="fire-warden" data-i18n="newIncident"></button></div>
         </details>
       </section>
 
       <section id="details" class="page">
         <button class="back" data-page="home" data-i18n="backHome"></button>
+        <div class="check-head"><h1 data-i18n="myProfile"></h1><button class="secondary" data-edit-profile data-i18n="edit"></button></div>
 
-        <div class="card">
+        <div class="card" data-profile-content>
           <h2 data-i18n="myJob"></h2>
-          <div class="row"><div><div class="key" data-i18n="role"></div><div class="value" data-i18n="roleValue"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="site"></div><div class="value">Tebay Services</div></div></div>
-          <div class="row"><div><div class="key" data-i18n="lineManager"></div><div class="value" data-i18n="managerValue"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="managerEmail"></div><div class="value">emma.cash@tebayservices.com</div></div><button class="copy" data-copy="emma.cash@tebayservices.com" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="role"></div><div class="value" data-job="role"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="site"></div><div class="value" data-job="site"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="lineManager"></div><div class="value" data-job="manager"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="managerEmail"></div><div class="value" data-job="managerEmail"></div></div><button class="copy" data-job-copy="managerEmail" data-i18n="copy"></button></div>
           <div class="row"><div><div class="key" data-i18n="colleagueNumber"></div><div class="value" data-private="colleagueNumber"></div></div><button class="copy" data-private-copy="colleagueNumber" data-i18n="copy"></button></div>
-          <div class="row"><div><div class="key" data-i18n="startDate"></div><div class="value" data-i18n="startDateValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="startDate"></div><div class="value" data-job="startDate"></div></div></div>
         </div>
 
         <div class="card">
           <h2 data-i18n="shiftPay"></h2>
-          <div class="row"><div><div class="key" data-i18n="regularShifts"></div><div class="value" data-i18n="regularShiftsValue"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="shiftTime"></div><div class="value">10:45pm – 7:15am</div></div></div>
-          <div class="row"><div><div class="key" data-i18n="contractedHours"></div><div class="value" data-i18n="contractedHoursValue"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="hourlyRate"></div><div class="value" data-i18n="hourlyRateValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="regularShifts"></div><div class="value" data-job="shiftDays"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="shiftTime"></div><div class="value" data-job="shiftTime"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="contractedHours"></div><div class="value" data-job="hours"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="hourlyRate"></div><div class="value" data-job="hourlyRate"></div></div></div>
           <div class="row"><div><div class="key" data-i18n="payFrequency"></div><div class="value" data-i18n="weekly"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="breakLabel"></div><div class="value" data-i18n="breakValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="breakLabel"></div><div class="value" data-job="paidBreak"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="grossEstimate"></div><div class="value" data-job="weeklyGross"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="annualHoliday"></div><div class="value" data-job="annualHoliday"></div></div></div>
         </div>
 
         <div class="card">
@@ -428,12 +197,12 @@
           <a class="action" href="https://apps.apple.com/app/id1539428355" target="_blank" rel="noopener" data-i18n="openThrive"></a>
         </div>
 
-        <div class="card">
+        <div class="card" data-profile-content>
           <h2 data-i18n="firstDay"></h2>
-          <div class="row"><div><div class="key" data-i18n="date"></div><div class="value" data-i18n="startDateValue"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="time"></div><div class="value">9:30am – 3:30pm</div></div></div>
-          <div class="row"><div><div class="key" data-i18n="location"></div><div class="value" data-i18n="inductionLocation"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="postcode"></div><div class="value">CA10 3SB</div></div><button class="copy" data-copy="CA10 3SB" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="date"></div><div class="value" data-job="startDate"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="time"></div><div class="value" data-job="firstDayTime"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="location"></div><div class="value" data-job="firstDayLocation"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="postcode"></div><div class="value" data-job="firstDayPostcode"></div></div><button class="copy" data-job-copy="firstDayPostcode" data-i18n="copy"></button></div>
         </div>
 
         <div class="card safe">
@@ -444,7 +213,7 @@
       </section>
 
       <section id="access" class="page">
-        <button class="back" data-page="home" data-i18n="backHome"></button>
+        <button class="back" data-page="reference" data-i18n="reference"></button>
 
         <div class="card">
           <h2 data-i18n="peopleAccessTitle"></h2>
@@ -486,7 +255,7 @@
       </section>
 
       <section id="uniform" class="page">
-        <button class="back" data-page="home" data-i18n="backHome"></button>
+        <button class="back" data-page="reference" data-i18n="reference"></button>
 
         <div class="card">
           <h2 data-i18n="uniformTitle"></h2>
@@ -504,10 +273,10 @@
         <div class="card">
           <h2 data-i18n="appearanceTitle"></h2>
           <ul class="checklist">
-            <li><span class="num">1</span><span data-i18n="appearance1"></span></li>
-            <li><span class="num">2</span><span data-i18n="appearance2"></span></li>
-            <li><span class="num">3</span><span data-i18n="appearance3"></span></li>
-            <li><span class="num">4</span><span data-i18n="appearance4"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="appearance1"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="appearance2"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="appearance3"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="appearance4"></span></li>
           </ul>
         </div>
 
@@ -520,7 +289,7 @@
       </section>
 
       <section id="benefits" class="page">
-        <button class="back" data-page="home" data-i18n="backHome"></button>
+        <button class="back" data-page="reference" data-i18n="reference"></button>
 
         <div class="card">
           <h2 data-i18n="mealBenefitTitle"></h2>
@@ -534,10 +303,10 @@
         <div class="card warning">
           <h2 data-i18n="mealRulesTitle"></h2>
           <ul class="checklist">
-            <li><span class="num">1</span><span data-i18n="mealRule1"></span></li>
-            <li><span class="num">2</span><span data-i18n="mealRule2"></span></li>
-            <li><span class="num">3</span><span data-i18n="mealRule3"></span></li>
-            <li><span class="num">4</span><span data-i18n="mealRule4"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="mealRule1"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="mealRule2"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="mealRule3"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="mealRule4"></span></li>
           </ul>
         </div>
 
@@ -572,87 +341,31 @@
         <details class="card">
           <summary style="font-weight:850;cursor:pointer" data-i18n="minibusProcedureTitle"></summary>
           <ul class="checklist">
-            <li><span class="num">1</span><span data-i18n="minibusRule1"></span></li>
-            <li><span class="num">2</span><span data-i18n="minibusRule2"></span></li>
-            <li><span class="num">3</span><span data-i18n="minibusRule3"></span></li>
-            <li><span class="num">4</span><span data-i18n="minibusRule4"></span></li>
-            <li><span class="num">5</span><span data-i18n="minibusRule5"></span></li>
-            <li><span class="num">6</span><span data-i18n="minibusRule6"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="minibusRule1"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="minibusRule2"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="minibusRule3"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="minibusRule4"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="minibusRule5"></span></li>
+            <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="minibusRule6"></span></li>
           </ul>
           <a class="action" href="https://maps.app.goo.gl/s8dBo8m9AyspQpgu7" target="_blank" rel="noopener" data-i18n="kendalRouteMap"></a>
           <div class="row"><div><div class="key" data-i18n="kendalBusContact"></div><div class="value">07745 102164</div></div><button class="copy" data-copy="07745102164" data-i18n="copy"></button></div>
         </details>
 
-        <div class="card safe">
+        <div class="card safe" id="travelNote">
           <h2 data-i18n="personalNote"></h2>
-          <p data-i18n="nightMinibusNote"></p>
-          <p class="tiny" data-i18n="benefitsPolicyNote"></p>
-        </div>
+          <p data-job="minibusNote"></p>
+          </div>
+        <p class="tiny" data-i18n="benefitsPolicyNote"></p>
       </section>
 
       <section id="training" class="page">
         <button class="back" data-page="home" data-i18n="backHome"></button>
-        <div class="card training-card">
-          <h2 data-i18n="requiredTraining"></h2>
-          <div class="training-group-title" data-i18n="essentialLearning"></div>
-
-          <div class="row training-item" data-due="2026-10-16">
-            <div><div class="value"><span data-i18n="course1"></span><span class="official">Welcome Antlers – Colleague Induction</span></div></div>
-            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
-          </div>
-          <div class="row training-item" data-due="2026-10-16">
-            <div><div class="value"><span data-i18n="course2"></span><span class="official">Food Safety Training</span></div></div>
-            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
-          </div>
-          <div class="row training-item" data-due="2026-10-16">
-            <div><div class="value"><span data-i18n="course3"></span><span class="official">Health & Safety Training</span></div></div>
-            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
-          </div>
-          <div class="row training-item" data-due="2026-10-18">
-            <div><div class="value"><span data-i18n="course4"></span><span class="official">Allergy Awareness Recap</span></div></div>
-            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
-          </div>
-
-          <div class="training-group-title" data-i18n="otherAssignedTraining"></div>
-
-          <div class="row training-item" data-due="2026-11-01">
-            <div><div class="value"><span data-i18n="course5"></span><span class="official">Customer Experience – The Westmorland Way</span></div></div>
-            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
-          </div>
-          <div class="row training-item" data-due="2026-11-01">
-            <div><div class="value"><span data-i18n="course6"></span><span class="official">CBE Procedures – Filling Station Colleagues</span></div></div>
-            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
-          </div>
-          <div class="row training-item" data-due="2026-11-01">
-            <div><div class="value"><span data-i18n="course7"></span><span class="official">Prevention of Sexual Harassment</span></div></div>
-            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
-          </div>
-
-          <a class="action" href="https://apps.apple.com/app/id1539428355" target="_blank" rel="noopener" data-i18n="openTraining"></a>
-        </div>
-
-        <details class="card completed-history">
-          <summary>
-            <span data-i18n="completedLearning"></span>
-            <span class="completed-count">14</span>
-          </summary>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed1"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed2"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed3"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed4"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed5"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed6"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed7"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed8"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed9"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed10"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed11"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed12"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed13"></div><span class="completed-badge" data-i18n="completed"></span></div>
-          <div class="completed-row"><div class="completed-title" data-i18n="completed14"></div><span class="completed-badge" data-i18n="completed"></span></div>
-        </details>
+        <div class="check-head"><h1 data-i18n="training"></h1><button id="addCourseBtn" class="secondary" data-i18n="addCourse"></button></div>
+        <a class="action compact-action" href="https://westmorland.learn.link" target="_blank" rel="noopener" data-i18n="openTraining"></a>
+        <div class="card training-card"><div class="check-head"><h2 data-i18n="myLearning"></h2><span id="learningProgress" class="progress-pill"></span></div><div id="courseList"></div></div>
+        <details id="completedLearning" class="card completed-history"><summary><span data-i18n="completedLearning"></span><span id="completedCount" class="completed-count">0</span></summary><div id="completedCourses"></div></details>
       </section>
-
       <section id="vault" class="page">
         <button class="back" data-page="home" data-i18n="backHome"></button>
         <div class="card">
@@ -670,28 +383,37 @@
 
     <nav>
       <div class="nav-inner">
-        <button class="nav-btn active" data-page="home"><span>⌂</span><span data-i18n="home"></span></button>
-        <button class="nav-btn" data-page="fire"><span>!</span><span data-i18n="fireNav"></span></button>
-        <button class="nav-btn" data-page="details"><span>ID</span><span data-i18n="detailsNav"></span></button>
-        <button class="nav-btn" data-page="training"><span>✓</span><span data-i18n="trainingNav"></span></button>
+        <button class="nav-btn active" data-page="home"><span aria-hidden="true">⌂</span><span data-i18n="home"></span></button>
+        <button class="nav-btn" data-page="tasks"><span aria-hidden="true">✓</span><span data-i18n="myTasks"></span></button>
+        <button class="nav-btn" data-page="training"><span aria-hidden="true">◷</span><span data-i18n="trainingNav"></span></button>
+        <button class="nav-btn" data-page="reference"><span aria-hidden="true">≡</span><span data-i18n="reference"></span></button>
       </div>
     </nav>
   </div>
 
-  <dialog id="profileDialog">
+  <dialog id="recoveryDialog"><div class="lang-switch dialog-lang"><button type="button" class="lang-btn" data-lang="ar">عربي</button><button type="button" class="lang-btn" data-lang="en">English</button></div><h3 data-i18n="recoveryCode"></h3><p class="tiny" data-i18n="keepRecovery"></p><input id="newRecoveryCode" readonly dir="ltr"><div class="dialog-actions"><button id="copyRecovery" class="secondary" data-i18n="copy"></button><button id="closeRecovery" class="primary" data-i18n="done"></button></div></dialog>
+  <dialog id="courseDialog"><div class="lang-switch dialog-lang"><button type="button" class="lang-btn" data-lang="ar">عربي</button><button type="button" class="lang-btn" data-lang="en">English</button></div><h3 data-i18n="training"></h3>
+    <div class="field"><label for="courseEN" data-i18n="courseTitle"></label><input id="courseEN" maxlength="300" autocomplete="off"></div>
+    <details><summary data-i18n="arabicTitleOptional"></summary><div class="field"><input id="courseAR" maxlength="300" dir="rtl" aria-label="العنوان بالعربي"></div></details>
+    <div class="field"><label for="courseDue" data-i18n="dueDate"></label><input id="courseDue" type="date"></div>
+    <div class="field"><label for="courseStatus" data-i18n="progressLabel"></label><select id="courseStatus"><option value="not-started" data-i18n="notStarted"></option><option value="in-progress" data-i18n="inProgress"></option><option value="completed" data-i18n="completed"></option></select></div>
+    <label class="task"><input id="courseRequired" type="checkbox" class="task-check"><span data-i18n="requiredTraining"></span></label>
+    <p id="courseError" class="error" role="status"></p><div class="dialog-actions"><button id="deleteCourse" class="secondary danger-text" data-i18n="delete"></button><button id="cancelCourse" class="secondary" data-i18n="cancel"></button><button id="saveCourse" class="primary" data-i18n="save"></button></div>
+  </dialog>
+  <dialog id="profileDialog"><div class="lang-switch dialog-lang"><button type="button" class="lang-btn" data-lang="ar">عربي</button><button type="button" class="lang-btn" data-lang="en">English</button></div>
     <h3 data-i18n="editAccountDetails"></h3>
     <div id="profileFields"></div>
     <p id="profileError" class="error" role="status"></p>
     <div class="dialog-actions"><button id="cancelProfile" class="secondary" data-i18n="cancel"></button><button id="saveProfile" class="primary" data-i18n="save"></button></div>
   </dialog>
-  <dialog id="migrationDialog">
+  <dialog id="migrationDialog"><div class="lang-switch dialog-lang"><button type="button" class="lang-btn" data-lang="ar">عربي</button><button type="button" class="lang-btn" data-lang="en">English</button></div>
     <h3 data-i18n="importOldVault"></h3>
     <p data-i18n="importOldIntro"></p>
     <div class="field"><label for="oldPass" data-i18n="oldPassword"></label><input id="oldPass" type="password" autocomplete="off"></div>
     <p id="migrationError" class="error" role="status"></p>
     <div class="dialog-actions"><button id="cancelMigration" class="secondary" data-i18n="cancel"></button><button id="migrateVault" class="primary" data-i18n="importEntries"></button></div>
   </dialog>
-  <dialog id="secretDialog">
+  <dialog id="secretDialog"><div class="lang-switch dialog-lang"><button type="button" class="lang-btn" data-lang="ar">عربي</button><button type="button" class="lang-btn" data-lang="en">English</button></div>
     <h3 style="margin:0 0 10px" data-i18n="privateEntry"></h3>
     <div class="field"><label for="secretLabel" data-i18n="label"></label><input id="secretLabel" autocomplete="off"></div>
     <div class="field"><label for="secretValue" data-i18n="value"></label><input id="secretValue" autocomplete="off"></div>
@@ -703,869 +425,6 @@
     </div>
   </dialog>
 
-<script>
-(() => {
-  const META_KEY = "wf-vault-meta-v1";
-  const DATA_KEY = "wf-vault-data-v1";
-  const LANG_KEY = "wf-language-v1";
-  const enc = new TextEncoder();
-  const dec = new TextDecoder();
-  const CANONICAL_ORIGIN = "https://mo.elasrag.com";
-  const PREVIOUS_ORIGINS = new Set(["https://www.elasrag.com", "https://elasrag.com"]);
-  const migrationMode = PREVIOUS_ORIGINS.has(location.origin) && new URLSearchParams(location.search).get("migrate") === "1";
-  if (PREVIOUS_ORIGINS.has(location.origin) && navigator.onLine && (!migrationMode || !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)))) return;
-  const API_BASE = (location.origin === CANONICAL_ORIGIN ? "" : CANONICAL_ORIGIN) + "/api";
-  const PROFILE_KEYS = ["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername"];
-  let safeWorkerReady = Promise.resolve(true);
-  let authenticated = false;
-  let privateData = null;
-  let privateRevision = null;
-  let navigationVersion = 0;
-  let activePage = "home";
-  let editingIndex = null;
-  let saving = false;
-  let resumePrivatePage = null;
-  let vaultItems = [];
-  let pendingPrivatePage = null;
-  const PROTECTED_PAGES = new Set(["details","vault"]);
-  let lang = new URLSearchParams(location.search).get("lang") || localStorage.getItem(LANG_KEY) || "ar";
-
-  const T = {
-    ar: {
-      returnCompanion:"الرجوع لمساعد الموظف",logout:"تسجيل الخروج",apiError:"مش قادر أفتح بياناتك دلوقتي. حاول تاني.",tooMany:"محاولات كتير. حاول بعد شوية.",conflict:"البيانات اتغيّرت على جهاز تاني. افتح الخزنة تاني قبل الحفظ.",edit:"تعديل",editAccountDetails:"تعديل بيانات الحسابات",workPin:"الرقم السري للشغل",thriveUsername:"اسم المستخدم في THRIVE",importOldVault:"استيراد الخزنة القديمة",importOldIntro:"اكتب كلمة مرور الخزنة القديمة على الجهاز ده لاستيراد محتوياتها. النسخة القديمة هتفضل محفوظة.",oldPassword:"كلمة المرور القديمة",importEntries:"استيراد",importDone:"تم استيراد المحتويات وحفظها.",emptyOldVault:"الخزنة القديمة مفيهاش محتويات.",importFailed:"تعذر فتح الخزنة القديمة. راجع كلمة المرور.",logoutFailed:"تم قفل البيانات هنا. تعذر إكمال تسجيل الخروج؛ حاول تاني.",saveFailed:"تعذر الحفظ. محتوياتك لسه مفتوحة؛ حاول تاني.",invalidEntry:"راجع حجم البيانات المدخلة.",
-      appTitle:"مساعد موظف ويستمورلاند", enterPass:"اكتب كلمة المرور علشان تفتح بياناتك الشخصية.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
-      fastReference:"مساعد الموظف", findSeconds:"هات المعلومة في ثواني.", confirmedOnly:"بياناتي، تدريبي، المزايا، والتصرف السريع في المواقف المهمة.",
-      emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", accountHelp:"مساعدة الدخول", benefits:"المزايا", uniformDress:"الزي والمظهر", privateVault:"الخزنة الخاصة",
-      backHome:"→ الرئيسية", fireHeadline:"إنذار الحريق ← أقرب مخرج حريق ← نقطة التجمع",
-      fireIntro:"الإخلاء الكامل بيتعلن بإنذار الحريق. الموظفين والزوار يروحوا لأقرب مخرج حريق، والموظفين يكملوا لنقطة التجمع.",
-      forecourtSafe:"محطة الوقود — لو آمن تعمل كده",
-      fireStep1:"راجع أرضية محل محطة الوقود.", fireStep2:"راجع المخزن.", fireStep3:"راجع الحمامات.",
-      fireStep4:"الموظف المكلّف ياخد جدول العاملين معاه لنقطة التجمع.", onlyIfSafe:"لو ده آمن فقط.",
-      wardenTitle:"مسؤول الحريق — بس لو الدور ده متكلف بيه",
-      warden1:"افحص مكان الحريق لو ده آمن.", warden2:"فعّل أقرب نقطة إنذار يدوية لو لسه ما اتفعّلتش.",
-      warden3:"تعامل بس مع حريق في بدايته، لو آمن وداخل حدود التدريب اللي أخدته من الشركة.",
-      warden4:"ساعد في الإخلاء واتواصل مع المديرين والمشرفين عند نقطة التجمع.",
-      warden5:"امنع أي حد يرجع يدخل المبنى لحد ما خدمة الإطفاء تقول إنه آمن.",
-      warden6:"بلّغ خدمة الإطفاء بمكان وطبيعة الحريق، وأي شخص مش متأكدين من وجوده، وأي مخاطر.",
-      myJob:"شغلي", role:"الوظيفة", roleValue:"عضو فريق – محطة الوقود (ليل)", site:"الموقع", lineManager:"المدير المباشر", managerValue:"Emma Cash · مديرة محطة الوقود",
-      managerEmail:"إيميل المدير", colleagueNumber:"رقم الموظف", startDate:"تاريخ البداية", startDateValue:"7 أكتوبر 2026",
-      shiftPay:"الشفت والمرتب", regularShifts:"الشفتات الثابتة", regularShiftsValue:"الجمعة والسبت",
-      shiftTime:"ميعاد الشفت", contractedHours:"الساعات المتعاقد عليها", contractedHoursValue:"17 ساعة في الأسبوع",
-      hourlyRate:"الأجر بالساعة", hourlyRateValue:"£14.25 في الساعة", payFrequency:"الدفع", weekly:"أسبوعي",
-      breakLabel:"البريك", breakValue:"مدفوع",
-      payrollTiming:"مواعيد السنة والدفع", companyYear:"السنة", companyYearValue:"1 أبريل – 31 مارس",
-      payWeekEnds:"نهاية أسبوع الدفع", payWeekEndsValue:"الأحد", payDay:"يوم الدفع", payDayValue:"الجمعة اللي بعده — دفع أسبوعي",
-      kioskSettings:"إعدادات الكشك", kioskId:"رقم الكشك", kioskPin:"الرقم السري", temporaryId:"رقم مؤقت",
-      companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح تطبيق PeopleXD", openThrive:"افتح تطبيق THRIVE",
-      firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", inductionLocation:"Westmorland Hotel — الاتجاه الشمالي", postcode:"الرمز البريدي",
-      privateCodes:"الأكواد الخاصة", privateCodesNote:"إدارة بيانات حساباتك وأرقامك وملاحظاتك الخاصة.",
-      openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين", requiredTraining:"التدريبات المطلوبة", essentialLearning:"الأساسي — أولوية حالية", otherAssignedTraining:"تدريبات مطلوبة أخرى", completedLearning:"التدريبات اللي تمت", completed:"تم",
-      course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
-      completed1:"إجراء وجبات الموظفين",
-      completed2:"الكيك الموسمي الجديد من مطبخ Westmorland – Tebay",
-      completed3:"طريقة استخدام صفحة التعلّم",
-      completed4:"طريقة إضافة المحتوى",
-      completed5:"طريقة استخدام الصفحة الرئيسية والاستكشاف",
-      completed6:"منصة My Westmorland Learn",
-      completed7:"كتيّب مدرسة الطبخ",
-      completed8:"كتيّب المسار الوظيفي",
-      completed9:"خريطة طريق تطوير العمليات",
-      completed10:"قيم عائلة Westmorland",
-      completed11:"قصة Antlers",
-      completed12:"مواقعنا",
-      completed13:"Welcome Antlers – نظرة عامة للموظف",
-      completed14:"حزمة إطلاق «الأكل الجاهز والسلطات» – أكتوبر 2026",
-      course5:"تجربة العميل – طريقة Westmorland", course6:"إجراءات CBE – موظفي محطة الوقود", course7:"منع التحرش الجنسي",
-      peopleAccessTitle:"دخول PeopleXD",
-      usernameRule:"اسم المستخدم", usernameRuleValue:"هو رقم الموظف — 6 أرقام وبيبدأ بـ 0",
-      usernameUnknown:"لو مش فاكره", usernameUnknownValue:"اسأل مديرك المباشر أو ابعت لـ help@mywestmorland.com باسمك الكامل",
-      forgotPassword:"نسيت الباسورد",
-      resetStep1:"افتح mywestmorland.com من المتصفح.",
-      resetStep2:"ادخل My Westmorland People واضغط «نسيت كلمة المرور» (Forgot Password).",
-      resetStep3:"اكتب رقم الموظف وتاريخ الميلاد واضغط «إعادة تعيين كلمة المرور» (Reset Password).",
-      resetStep4:"افتح الإيميل من peoplexd@accessacloud.com — راجع الرسائل غير المرغوب فيها — واتبع الرابط، ثم أكد تاريخ الميلاد وسؤال الأمان واعمل كلمة مرور جديدة.",
-      openResetSite:"افتح صفحة استرجاع PeopleXD",
-      bothForgotten:"نسيت الباسورد وأسئلة الأمان؟",
-      bothForgottenValue:"ابعت لـ help@mywestmorland.com باسمك الكامل. فريق شؤون الموظفين هيعمل إعادة تعيين يدوي.",
-      emailPeopleTeam:"راسل فريق شؤون الموظفين",
-      passwordRules:"شروط الباسورد",
-      passwordRulesValue:"12 خانة على الأقل: حرف كبير + حرف صغير + رقم + علامة خاصة.",
-      appFallback:"لو التطبيق مش شغال",
-      appFallbackValue:"استخدم mywestmorland.com من المتصفح وسجّل برقم الموظف والباسورد. تقدر تستخدم نفس وظائف PeopleXD، ومنها حجز الإجازات. لو الصفحة نفسها مش بتفتح، جرّب تحديث الجهاز أو استخدم لابتوب/تابلت.",
-      openBrowserPortal:"افتح PeopleXD في المتصفح",
-      uniformTitle:"الزي والملابس",
-      uniformProvided:"الشركة بتوفر", uniformProvidedValue:"معظم الزي المطلوب مجانًا — عادةً تيشيرت أو قميص، مريلة، جاكيت فليس أو بلوفر",
-      ownItems:"عليك أنت عادةً", ownItemsValue:"البنطلون والحذاء، إلا لو حذاء الأمان جزء من معدات الوقاية الشخصية",
-      replacement:"الاستبدال", replacementValue:"مجاني مع الاستهلاك الطبيعي؛ ممكن يتم التحصيل لو التلف أو الاستبدال خارج المعقول",
-      outsideWork:"الشغل بره", outsideWorkValue:"ملابس دافئة ومقاومة للمطر متاحة؛ وفي الصيف ممكن قبعة وواقي شمس",
-      ppeTitle:"معدات الوقاية الشخصية (PPE)",
-      ppeValue:"لو اتسلمت حذاء أمان أو ملابس عالية الوضوح أو أي معدات وقاية شخصية، لازم تلبسها وقت الشغل المطلوب.",
-      appearanceTitle:"المظهر والسلامة",
-      appearance1:"اختار حذاء ثابت، مريح وآمن؛ الشبشب المفتوح أو الكعب العالي غير مناسبين عادةً.",
-      appearance2:"الشعر الطويل يتربط، ويتغطى لو الدور محتاج كده.",
-      appearance3:"الحلق وثقوب الجسم مسموحة عمومًا لو مش مبالغ فيها ومفيش منها خطر سلامة؛ أي وشم مسيء لازم يتغطى.",
-      appearance4:"لو بتتعامل مع أكل: الساعة تتشال، والخاتم يكون سادة فقط.",
-      foodAppearanceTitle:"الأظافر والأكل",
-      foodAppearanceValue:"في تجهيز أو إنتاج الطعام: ممنوع الأظافر الصناعية أو الجِل أو طلاء الأظافر. في أدوار بيع الأكل المغلف مسبقًا فيه مرونة، بشرط تكون الأظافر قصيرة ونظيفة وثابتة ومن غير زينة أو أجزاء ممكن تقع.",
-      uniformPolicyDate:"سياسة الزي والمظهر — تاريخ المراجعة 05/06/2026",
-      benefitsTitle:"مزايا الموظف",
-      mealBenefitTitle:"الأكل أثناء الشغل",
-      mealEntitlement:"الاستحقاق", mealEntitlementValue:"وجبة واحدة لكل فترة راحة في الشفت",
-      freeBreakfast:"فطار مجاني", freeBreakfastValue:"توست + إما عصيدة شوفان أو حبوب إفطار",
-      freeMeal:"غدا / عشا مجاني", freeMealValue:"شوربة + إما خبز صغير أو ساندوتش مغلف + ثمرة فاكهة",
-      freeDrinks:"مشروبات مجانية", freeDrinksValue:"شاي وقهوة أمريكانو + مياه ومشروبات مركزة من مناطق الموظفين",
-      otherDrinks:"مشروبات تانية", otherDrinksValue:"خصم 50% على باقي المشروبات الساخنة والباردة حسب السياسة",
-      mealRulesTitle:"قواعد مهمة للوجبة",
-      mealRule1:"لازم كل حاجة — حتى المجاني — تتسجل على الكاشير قبل الأكل أو الخروج.",
-      mealRule2:"استخدم بطاقة Westmorland Family الخاصة بيك؛ ممنوع تخدم نفسك من ورا الكاونتر.",
-      mealRule3:"الوجبة للاستهلاك أثناء الشفت، مش للتخزين أو الأخذ للبيت.",
-      mealRule4:"الأكل ممنوع في مناطق تجهيز الطعام، المخازن أو أرضية البيع؛ والمشروبات تكون بعيد عن نظر العملاء.",
-      tebayDiscounts:"خصومات Tebay",
-      ownFood:"منتجات المطابخ والمطابخ السريعة اللي الشركة بتعملها", ownFoodValue:"خصم 75%",
-      otherKitchenItems:"باقي منتجات المطابخ والمطابخ السريعة", otherKitchenItemsValue:"خصم 50%",
-      specialityDrinks:"الشاي والقهوة المتخصصة / الكيك", specialityDrinksValue:"خصم 50%",
-      shopDiscount:"المتجر", shopDiscountValue:"خصم 25% عادةً؛ بعض المنتجات اللي بتتباع كمان في المطابخ ممكن تكون 50% أو 75%",
-      saleClothing:"ملابس عليها تخفيض", saleClothingValue:"خصم 50% من السعر الأصلي",
-      noDiscountTitle:"مفيش خصم على",
-      noDiscountValue:"الوقود، اليانصيب وكروت الخدش، التبغ، الطوابع، معظم السلع المخفضة، عروض شراء عدة قطع، أسطوانات الغاز، PayPoint، وشحن رصيد الموبايل.",
-      hotelCinemaTitle:"الفندق وRheged",
-      hotelRooms:"فندق Westmorland", hotelRoomsValue:"£60 إقامة مع إفطار لغرفة مزدوجة/توأم أو £50 لغرفة فردية — بحد أقصى 4 ليالي في السنة",
-      hotelFood:"أكل وشرب الفندق", hotelFoodValue:"خصم 25% للمجموعة حتى 6 أشخاص",
-      cinema:"سينما Rheged", cinemaValue:"دخول مجاني للأفلام نهارًا ومساءً حسب التوفر؛ الحجز شخصيًا من شباك التذاكر",
-      rhegedExtra:"مزايا Rheged", rhegedExtraValue:"دخول المعرض مجانًا + منطقة اللعب الداخلية للأطفال مجانًا حسب التوفر",
-      otherBenefitsTitle:"مزايا تانية",
-      minibus:"الميني باص", minibusValue:"نقل من وإلى الشغل",
-      birthdayLeave:"إجازة عيد الميلاد", birthdayLeaveValue:"يوم إجازة مدفوع",
-      minibusProcedureTitle:"استخدام الميني باص",
-      minibusRule1:"سجّل نفسك كمستخدم للميني باص على My Westmorland People وحدد الخط.",
-      minibusRule2:"لازم تكون في نقطة الركوب المحددة قبل الميعاد؛ الباص مش بيستنى غير دقائق قليلة.",
-      minibusRule3:"لو مش هتحضر الشغل، بلّغ مديرك/الموقع بدري عشان اسمك يتشال من القائمة والسواق يعرف.",
-      minibusRule4:"اربط حزام الأمان طول الرحلة. ممنوع الأكل والشرب والتدخين أو استخدام السجائر الإلكترونية.",
-      minibusRule5:"الميني باص للشغل فقط: من وإلى مكان العمل في الشفتات المجدولة.",
-      minibusRule6:"تغيير نقطة الركوب أو النزول يحتاج استمارة جديدة للمدير؛ تغيير الخط يتم من My Westmorland People.",
-      kendalRouteMap:"افتح خريطة خط كندال",
-      kendalBusContact:"رقم ميني باص كندال",
-      personalNote:"ملاءمة الشفت", nightMinibusNote:"الميني باص غير متاح لنظام شفت الليل الحالي.",
-      benefitsPolicyNote:"مرجع السياسة: إجراء وجبات الموظفين إصدار 4 (20/06/23) · سياسة خصومات الموظفين إصدار 7 (29/12/23). المزايا قابلة للتعديل.",
-      duePrefix:"آخر موعد", daysLeftOne:"فاضل يوم", daysLeftMany:"فاضل {n} أيام", dueToday:"آخر يوم النهارده", overdueOne:"متأخر يوم", overdueMany:"متأخر {n} أيام",
-      openTraining:"افتح تطبيق THRIVE", resetChecklist:"ابدأ موقف جديد / صفّر العلامات", vaultNote:"أرقامك وملاحظاتك الخاصة، متاحة بعد الدخول من أجهزتك.",
-      addPrivateEntry:"أضف بيانات خاصة", home:"الرئيسية", fireNav:"حريق", detailsNav:"بياناتي", trainingNav:"تدريب",
-      privateEntry:"بيانات خاصة", label:"الاسم", value:"القيمة", noteOptional:"ملاحظة (اختياري)", cancel:"إلغاء", save:"حفظ",
-      noPrivateEntries:"مفيش بيانات خاصة لسه.", reveal:"إظهار", hide:"إخفاء", copy:"نسخ", copied:"اتنسخ", delete:"حذف",
-      deleteConfirm:"تحذف البيانات دي؟",
-      wrongPass:"كلمة المرور غلط.", online:"متصل · النسخة الأوفلاين بتبقى متاحة بعد أول تحميل",
-      offline:"أوفلاين · المرجع محفوظ على الجهاز", ready:"جاهز"
-    },
-    en: {
-      returnCompanion:"Return to Staff Companion",logout:"Sign out",apiError:"Unable to open your information. Please try again.",tooMany:"Too many attempts. Please try again later.",conflict:"Your information changed on another device. Reopen the vault before saving.",edit:"Edit",editAccountDetails:"Edit account details",workPin:"Work PIN",thriveUsername:"THRIVE username",importOldVault:"Import old vault",importOldIntro:"Enter the old vault password for this device to import its entries. The old copy will be kept.",oldPassword:"Old password",importEntries:"Import",importDone:"Entries imported and saved.",emptyOldVault:"The old vault has no entries.",importFailed:"Unable to open the old vault. Check its password.",logoutFailed:"Information is locked here. Sign out could not finish; please try again.",saveFailed:"Unable to save. Your entries are still open; please try again.",invalidEntry:"Check the size of the information entered.",
-      appTitle:"WF Staff Companion", enterPass:"Enter your password to open your personal information.", passphrase:"Password", unlock:"Unlock", lock:"Lock",
-      fastReference:"Staff companion", findSeconds:"Find it in seconds.", confirmedOnly:"My details, training, benefits and fast actions for important situations.",
-      emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", accountHelp:"Account help", benefits:"Benefits", uniformDress:"Uniform & dress", privateVault:"Private vault",
-      backHome:"← Home", fireHeadline:"FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT",
-      fireIntro:"Full evacuation is signalled by the fire alarm. Staff and visitors make their way to the nearest fire exit. Staff continue to the Assembly Point.",
-      forecourtSafe:"Forecourt — if safe to do so",
-      fireStep1:"Check Forecourt shop floor.", fireStep2:"Check storeroom.", fireStep3:"Check toilets.",
-      fireStep4:"Delegated team member takes the rota to the Assembly Point.", onlyIfSafe:"Only if safe to do so.",
-      wardenTitle:"Fire Warden — only if you are assigned this role",
-      warden1:"Investigate the fire scene only if safe.", warden2:"Activate the nearest break-glass point if not already done.",
-      warden3:"Tackle only an early-stage fire, only if safe and within company training.",
-      warden4:"Assist evacuation and liaise with managers/supervisors at the Assembly Point.",
-      warden5:"Prevent re-entry until the Fire Service says it is safe.",
-      warden6:"Brief the Fire Service on fire location/nature, anyone unaccounted for and hazards.",
-      myJob:"My job", role:"Role", roleValue:"Team Member – Filling Station (Nights)", site:"Site", lineManager:"Line manager", managerValue:"Emma Cash · Filling Station Manager",
-      managerEmail:"Manager email", colleagueNumber:"Colleague number", startDate:"Start date", startDateValue:"7 Oct 2026",
-      shiftPay:"Shift & pay", regularShifts:"Regular shifts", regularShiftsValue:"Friday & Saturday",
-      shiftTime:"Shift time", contractedHours:"Contracted hours", contractedHoursValue:"17 hours/week",
-      hourlyRate:"Hourly rate", hourlyRateValue:"£14.25/hour", payFrequency:"Pay frequency", weekly:"Weekly",
-      breakLabel:"Break", breakValue:"Paid",
-      payrollTiming:"Year & payroll timing", companyYear:"Year", companyYearValue:"1 April – 31 March",
-      payWeekEnds:"Pay week closes", payWeekEndsValue:"Sunday", payDay:"Pay day", payDayValue:"Following Friday — paid weekly",
-      kioskSettings:"Kiosk settings", kioskId:"Kiosk ID", kioskPin:"PIN", temporaryId:"Temporary ID",
-      companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD app", openThrive:"Open THRIVE app",
-      firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", inductionLocation:"Westmorland Hotel, Northbound", postcode:"Postcode",
-      privateCodes:"Private codes", privateCodesNote:"Manage your private account details, codes and notes in the Private Vault.",
-      openVault:"Open Private Vault", onlineTraining:"Online training", requiredTraining:"Required training", essentialLearning:"Essential Learning — current priority", otherAssignedTraining:"Other assigned training", completedLearning:"Completed learning", completed:"Completed",
-      course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
-      completed1:"Colleague Meal Procedure",
-      completed2:"NEW Seasonal Cakes from Westmorland Kitchen – Tebay…",
-      completed3:"How to… Learn Page",
-      completed4:"How to… Add Content",
-      completed5:"How to… Homepage & Explore",
-      completed6:"My Westmorland Learn",
-      completed7:"Cookery School Booklet",
-      completed8:"Careers Book",
-      completed9:"Ops Development Road Map",
-      completed10:"Our Family Values",
-      completed11:"Our Antlers Story",
-      completed12:"Our sites",
-      completed13:"Welcome Antlers – Colleague Overview",
-      completed14:"Launch Pack 'Food To Go' & 'Salads' Oct 26",
-      course5:"Customer Experience – The Westmorland Way", course6:"CBE Procedures – Filling Station Colleagues", course7:"Prevention of Sexual Harassment",
-      peopleAccessTitle:"PeopleXD access",
-      usernameRule:"Username", usernameRuleValue:"Your colleague number — 6 digits and starts with 0",
-      usernameUnknown:"If you do not know it", usernameUnknownValue:"Ask your line manager or email help@mywestmorland.com with your full name",
-      forgotPassword:"Forgot password",
-      resetStep1:"Open mywestmorland.com in a browser.",
-      resetStep2:"Open My Westmorland People and select Forgot Password.",
-      resetStep3:"Enter your colleague number and date of birth, then choose Reset Password.",
-      resetStep4:"Open the email from peoplexd@accessacloud.com — check Spam/Junk — follow the link, confirm your date of birth and security question, then set a new password.",
-      openResetSite:"Open PeopleXD reset page",
-      bothForgotten:"Forgot password and security questions?",
-      bothForgottenValue:"Email help@mywestmorland.com with your full name. The People Team will manually reset access.",
-      emailPeopleTeam:"Email People Team",
-      passwordRules:"Password rules",
-      passwordRulesValue:"At least 12 characters: 1 uppercase + 1 lowercase + 1 number + 1 special character.",
-      appFallback:"If the app is not working",
-      appFallbackValue:"Use mywestmorland.com in a browser and sign in with your colleague number and password. The browser portal provides the same PeopleXD functions, including booking holidays. If the page itself will not load, update the device or use a laptop/tablet.",
-      openBrowserPortal:"Open PeopleXD in browser",
-      uniformTitle:"Uniform & dress",
-      uniformProvided:"Company provides", uniformProvidedValue:"Most required uniform free of charge — typically T-shirts/shirts, aprons, fleeces or jumpers",
-      ownItems:"Usually your own", ownItemsValue:"Trousers and footwear, unless safety footwear is issued as PPE",
-      replacement:"Replacement", replacementValue:"Normally free for reasonable wear and tear; charges may apply beyond that",
-      outsideWork:"Outdoor work", outsideWorkValue:"Warm and waterproof clothing is provided; hats and sunscreen may also be available in summer",
-      ppeTitle:"PPE",
-      ppeValue:"If safety footwear, high-vis or other PPE is issued for your role, it must be worn when required.",
-      appearanceTitle:"Appearance & safety",
-      appearance1:"Wear sturdy, comfortable and safe footwear; flip-flops and high heels are normally unsuitable.",
-      appearance2:"Tie back long hair and cover it where required.",
-      appearance3:"Piercings are generally acceptable if not excessive or a safety risk; offensive tattoos must be covered.",
-      appearance4:"When working with food, remove watches and wear only a plain ring.",
-      foodAppearanceTitle:"Nails & food work",
-      foodAppearanceValue:"Food preparation/production: no false nails, gel nails or nail varnish. Pre-packed food retail has some flexibility, but nails must be short, clean, secure and free from jewels or loose additions.",
-      uniformPolicyDate:"Uniform & Dress Policy — review date 05/06/2026",
-      benefitsTitle:"Staff benefits",
-      mealBenefitTitle:"Meals at work",
-      mealEntitlement:"Entitlement", mealEntitlementValue:"One meal entitlement per break in your shift",
-      freeBreakfast:"Free breakfast", freeBreakfastValue:"Toast + either porridge or cereal",
-      freeMeal:"Free lunch / evening meal", freeMealValue:"Soup + either a bread roll or boxed/wrapped sandwich + one piece of fruit",
-      freeDrinks:"Free drinks", freeDrinksValue:"Tea and Americano + water and cordials from colleague areas",
-      otherDrinks:"Other drinks", otherDrinksValue:"50% off other hot and cold drinks where covered by policy",
-      mealRulesTitle:"Meal rules",
-      mealRule1:"Everything — including free items — must be processed through the till before eating or leaving the unit.",
-      mealRule2:"Use your own Westmorland Family Card; do not serve yourself from behind the counter.",
-      mealRule3:"Meal items are for consumption during the shift, not for later or to take home.",
-      mealRule4:"Do not eat in food-preparation areas, stock rooms or on the sales floor; keep drinks out of customers’ view.",
-      tebayDiscounts:"Tebay discounts",
-      ownFood:"Kitchens / Quick Kitchens items made by the company", ownFoodValue:"75% off",
-      otherKitchenItems:"Other Kitchens / Quick Kitchens items", otherKitchenItemsValue:"50% off",
-      specialityDrinks:"Speciality teas & coffees / cakes", specialityDrinksValue:"50% off",
-      shopDiscount:"Shops", shopDiscountValue:"Usually 25% off; items also sold in Kitchens may qualify for 50% or 75%",
-      saleClothing:"Clothing reduced in a sale", saleClothingValue:"50% off the original selling price",
-      noDiscountTitle:"No discount on",
-      noDiscountValue:"Fuel, lottery/scratch cards, tobacco, stamps, most reduced items, multi-buy promotions, gas cylinders, PayPoint and mobile top-ups.",
-      hotelCinemaTitle:"Hotel & Rheged",
-      hotelRooms:"Westmorland Hotel", hotelRoomsValue:"£60 B&B double/twin or £50 B&B single — maximum 4 nights per year",
-      hotelFood:"Hotel food & drink", hotelFoodValue:"25% off the total bill for groups up to 6",
-      cinema:"Rheged cinema", cinemaValue:"Free entry to daytime and evening films, subject to availability; book in person at the box office",
-      rhegedExtra:"Rheged extras", rhegedExtraValue:"Free Gallery entry + free indoor play for children, subject to availability",
-      otherBenefitsTitle:"Other benefits",
-      minibus:"Minibus", minibusValue:"Transport to and from work",
-      birthdayLeave:"Birthday leave", birthdayLeaveValue:"One paid day off",
-      minibusProcedureTitle:"Using the minibus",
-      minibusRule1:"Register as a minibus user in My Westmorland People and select the route you need.",
-      minibusRule2:"Be at the designated pick-up point before the stated time; the bus only waits a few minutes.",
-      minibusRule3:"If you will not attend work, tell your manager/site in advance so the driver can be informed and your name removed.",
-      minibusRule4:"Wear a seat belt at all times. No food/drink, smoking or vaping.",
-      minibusRule5:"The minibus is only for travel to and from work on scheduled shifts.",
-      minibusRule6:"Change of pick-up/drop-off needs a new form to your manager; route changes are requested in My Westmorland People.",
-      kendalRouteMap:"Open Kendal route map",
-      kendalBusContact:"Kendal bus contact",
-      personalNote:"Shift applicability", nightMinibusNote:"The minibus is unavailable for the current night-shift pattern.",
-      benefitsPolicyNote:"Policy reference: Colleague Meal Procedure v4 (20/06/23) · Colleague Discount Policy v7 (29/12/23). Benefits may be amended.",
-      duePrefix:"Due", daysLeftOne:"1 day left", daysLeftMany:"{n} days left", dueToday:"Due today", overdueOne:"1 day overdue", overdueMany:"{n} days overdue",
-      openTraining:"Open THRIVE app", resetChecklist:"New incident / reset checks", vaultNote:"Your private numbers and notes, available after signing in on your devices.",
-      addPrivateEntry:"Add private entry", home:"Home", fireNav:"Fire", detailsNav:"Details", trainingNav:"Training",
-      privateEntry:"Private entry", label:"Label", value:"Value", noteOptional:"Note (optional)", cancel:"Cancel", save:"Save",
-      noPrivateEntries:"No private entries yet.", reveal:"Reveal", hide:"Hide", copy:"Copy", copied:"Copied", delete:"Delete",
-      deleteConfirm:"Delete this private entry?",
-      wrongPass:"Incorrect password.", online:"Online · offline copy available after first load",
-      offline:"Offline · cached reference", ready:"Ready"
-    }
-  };
-
-  const $ = id => document.getElementById(id);
-  const t = key => (T[lang] && T[lang][key]) || key;
-  const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
-
-  function applyLanguage(next) {
-    lang = next === "en" ? "en" : "ar";
-    localStorage.setItem(LANG_KEY, lang);
-    document.documentElement.lang = lang;
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-    document.title = t("appTitle");
-    document.querySelectorAll("[data-i18n]").forEach(el => {
-      const key = el.dataset.i18n;
-      el.textContent = t(key);
-    });
-    document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.lang === lang));
-    document.querySelectorAll(".official").forEach(el => {
-      el.style.display = "none";
-    });
-    updateOnline();
-    updateTrainingDeadlines();
-    renderVault();
-    document.querySelectorAll("[data-error-key]").forEach(el => { el.textContent = el.dataset.errorKey ? t(el.dataset.errorKey) : ""; });
-  }
-
-  async function deriveKey(passphrase, salt) {
-    const base = await crypto.subtle.importKey("raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
-    return crypto.subtle.deriveKey(
-      {name:"PBKDF2", salt, iterations:250000, hash:"SHA-256"},
-      base,
-      {name:"AES-GCM", length:256},
-      false,
-      ["encrypt","decrypt"]
-    );
-  }
-
-  async function decryptText(payload, key) {
-    const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:fromB64(payload.iv)}, key, fromB64(payload.data));
-    return dec.decode(plain);
-  }
-
-  function errorKey(error) {
-    return error.status === 401 ? "wrongPass" : error.status === 429 ? "tooMany" : error.status === 409 ? "conflict" : "apiError";
-  }
-
-  function message(id, key) {
-    const el = $(id);
-    el.dataset.errorKey = key || "";
-    el.textContent = key ? t(key) : "";
-  }
-
-  async function api(path, options = {}) {
-    if (!(await safeWorkerReady)) throw new Error();
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 15000);
-    try {
-      const response = await fetch(API_BASE + path, {
-        ...options, credentials: "include", cache: "no-store", redirect: "error",
-        signal: controller.signal,
-        headers: { ...(options.body ? { "content-type": "application/json" } : {}), ...options.headers },
-      });
-      if (!response.ok) throw Object.assign(new Error(), { status: response.status });
-      return { body: await response.json(), revision: response.headers.get("etag") };
-    } finally { clearTimeout(timer); }
-  }
-
-  function clearPrivateData() {
-    authenticated = false;
-    privateData = null;
-    privateRevision = null;
-    vaultItems = [];
-    editingIndex = null;
-    $("vaultList").replaceChildren();
-    document.querySelectorAll("[data-private]").forEach(el => { el.textContent = ""; el.closest(".row").hidden = true; });
-    document.querySelectorAll("[data-private-copy]").forEach(el => delete el.dataset.copy);
-    ["secretDialog", "profileDialog", "migrationDialog"].forEach(id => { if ($(id).open) $(id).close(); });
-    ["secretLabel", "secretValue", "secretNote", "oldPass", "passInput"].forEach(id => $(id).value = "");
-    $("profileFields").replaceChildren();
-    document.querySelectorAll("[data-private-card]").forEach(el => el.hidden = true);
-    $("logoutBtn").classList.add("hidden");
-  }
-
-  function renderPrivateProfile() {
-    document.querySelectorAll("[data-private]").forEach(el => {
-      const value = privateData?.profile?.[el.dataset.private] || (el.dataset.private === "thriveUsername" ? privateData?.profile?.colleagueNumber : "") || "";
-      el.textContent = value;
-      el.closest(".row").hidden = !value;
-    });
-    document.querySelectorAll("[data-private-copy]").forEach(el => {
-      const value = privateData?.profile?.[el.dataset.privateCopy] || (el.dataset.privateCopy === "thriveUsername" ? privateData?.profile?.colleagueNumber : "");
-      if (value) el.dataset.copy = value;
-      else delete el.dataset.copy;
-    });
-    document.querySelectorAll("[data-private-card]").forEach(el => el.hidden = Array.from(el.querySelectorAll(".row")).every(row => row.hidden));
-  }
-
-  function openPrivateGate(pageId) {
-    pendingPrivatePage = pageId || "details";
-    clearPrivateData();
-    displayPage("home");
-    message("unlockError", "");
-    $("lockScreen").classList.remove("hidden");
-    $("passInput").focus();
-  }
-
-  function closePrivateGate() {
-    navigationVersion++;
-    $("lockScreen").classList.add("hidden");
-    $("passInput").value = "";
-    pendingPrivatePage = null;
-    displayPage("home");
-    history.replaceState(null, "", "#home");
-  }
-
-  async function unlock() {
-    if ($("unlockBtn").disabled) return;
-    const destination = pendingPrivatePage || "details";
-    const version = navigationVersion;
-    message("unlockError", "");
-    $("unlockBtn").disabled = true;
-    try {
-      await api("/login", { method: "POST", body: JSON.stringify({ password: $("passInput").value }) });
-      if (version !== navigationVersion) return;
-      $("passInput").value = "";
-      await showPage(destination);
-    } catch (error) { if (version === navigationVersion) message("unlockError", errorKey(error)); }
-    finally { $("unlockBtn").disabled = false; }
-  }
-
-  function displayPage(id) {
-    activePage = id;
-    document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === id));
-    window.scrollTo({top:0, behavior:"auto"});
-  }
-
-  async function showPage(id) {
-    if (!$(id)?.classList.contains("page")) id = "home";
-    const version = ++navigationVersion;
-    resumePrivatePage = null;
-    message("privateMessage", "");
-    if (PROTECTED_PAGES.has(id)) {
-      clearPrivateData();
-      displayPage("home");
-      try {
-        const session = await api("/session");
-        if (version !== navigationVersion) return;
-        if (!session.body.authenticated) { openPrivateGate(id); return; }
-        const loaded = await api("/private");
-        if (version !== navigationVersion) return;
-        privateData = loaded.body.data;
-        privateRevision = loaded.revision;
-        if (!privateData || privateData.version !== 1 || !Array.isArray(privateData.items) || !privateData.profile || !privateRevision) throw new Error();
-        authenticated = true;
-        vaultItems = privateData.items;
-        renderPrivateProfile();
-        renderVault();
-        $("importLegacyBtn").classList.toggle("hidden", !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)));
-        $("previousVaultLink").classList.toggle("hidden", location.origin !== CANONICAL_ORIGIN);
-        $("returnCompanion").classList.toggle("hidden", !migrationMode);
-        $("logoutBtn").classList.remove("hidden");
-        $("lockScreen").classList.add("hidden");
-        $("passInput").value = "";
-        pendingPrivatePage = null;
-      } catch (error) {
-        if (version !== navigationVersion) return;
-        openPrivateGate(id);
-        message("unlockError", error.status === 401 ? "" : errorKey(error));
-        return;
-      }
-    } else {
-      clearPrivateData();
-      $("lockScreen").classList.add("hidden");
-      pendingPrivatePage = null;
-    }
-    displayPage(id);
-    history.replaceState(null, "", "#" + id);
-  }
-
-  async function persistVault(nextItems, nextProfile = privateData?.profile) {
-    if (!authenticated || !privateData || saving) throw new Error();
-    if (nextItems.length > 200 || nextItems.some(item => item.label.length > 200 || item.value.length > 4096 || item.note.length > 4096)) {
-      throw Object.assign(new Error(), { status: 400 });
-    }
-    const version = navigationVersion;
-    saving = true;
-    try {
-      const data = { version: 1, profile: nextProfile, items: nextItems };
-      const result = await api("/private", { method: "PUT", body: JSON.stringify(data), headers: { "if-match": privateRevision } });
-      if (version !== navigationVersion || !authenticated) return false;
-      if (JSON.stringify(result.body.data) !== JSON.stringify(data) || !result.revision) throw new Error();
-      privateData = result.body.data;
-      privateRevision = result.revision;
-      vaultItems = privateData.items;
-      renderPrivateProfile();
-      renderVault();
-      return true;
-    } catch (error) {
-      if (error.status === 401) {
-        const destination = PROTECTED_PAGES.has(activePage) ? activePage : "vault";
-        navigationVersion++;
-        openPrivateGate(destination);
-      }
-      throw error;
-    } finally { saving = false; }
-  }
-
-  async function logout() {
-    navigationVersion++;
-    clearPrivateData();
-    $("lockScreen").classList.add("hidden");
-    pendingPrivatePage = null;
-    resumePrivatePage = null;
-    displayPage("home");
-    history.replaceState(null, "", "#home");
-    try { await api("/logout", { method: "POST" }); message("privateMessage", ""); }
-    catch { message("privateMessage", "logoutFailed"); $("logoutBtn").classList.remove("hidden"); }
-  }
-
-  function renderVault() {
-    const host = $("vaultList");
-    if (!host) return;
-    host.innerHTML = "";
-    if (!vaultItems.length) {
-      const p = document.createElement("p");
-      p.className = "tiny";
-      p.textContent = t("noPrivateEntries");
-      host.appendChild(p);
-      return;
-    }
-    vaultItems.forEach((item, index) => {
-      const wrap = document.createElement("div");
-      wrap.className = "vault-item";
-      const top = document.createElement("div");
-      top.className = "vault-top";
-      const label = document.createElement("div");
-      label.className = "vault-label";
-      label.textContent = item.label;
-      top.appendChild(label);
-      wrap.appendChild(top);
-
-      const secret = document.createElement("div");
-      secret.className = "secret masked";
-      secret.textContent = item.value;
-      wrap.appendChild(secret);
-
-      if (item.note) {
-        const note = document.createElement("div");
-        note.className = "tiny";
-        note.style.marginTop = "7px";
-        note.textContent = item.note;
-        wrap.appendChild(note);
-      }
-
-      const actions = document.createElement("div");
-      actions.className = "mini-actions";
-      const reveal = document.createElement("button");
-      reveal.textContent = t("reveal");
-      reveal.addEventListener("click", () => {
-        const masked = secret.classList.toggle("masked");
-        reveal.textContent = masked ? t("reveal") : t("hide");
-      });
-      const copy = document.createElement("button");
-      copy.textContent = t("copy");
-      copy.addEventListener("click", async () => {
-        await navigator.clipboard.writeText(item.value);
-        copy.textContent = t("copied");
-        setTimeout(() => copy.textContent = t("copy"), 1000);
-      });
-      const del = document.createElement("button");
-      del.textContent = t("delete");
-      del.className = "danger-text";
-      del.addEventListener("click", async () => {
-        if (!confirm(t("deleteConfirm"))) return;
-        if (saving) return;
-        del.disabled = true;
-        try { await persistVault(vaultItems.filter((_, i) => i !== index)); }
-        catch (error) { message("privateMessage", errorKey(error)); }
-        finally { del.disabled = false; }
-      });
-      const edit = document.createElement("button");
-      edit.textContent = t("edit");
-      edit.addEventListener("click", () => openEntry(index));
-      actions.append(reveal, copy, edit, del);
-      wrap.appendChild(actions);
-      host.appendChild(wrap);
-    });
-  }
-
-  const CHECK_PREFIX = "wf-check-";
-
-  function checklistState(id) {
-    try {
-      const raw = localStorage.getItem(CHECK_PREFIX + id);
-      if (!raw) return {};
-      const parsed = JSON.parse(raw);
-      if (!parsed || typeof parsed !== "object") return {};
-      if (parsed.updatedAt && Date.now() - parsed.updatedAt > 2 * 60 * 60 * 1000) {
-        localStorage.removeItem(CHECK_PREFIX + id);
-        return {};
-      }
-      return parsed.items || {};
-    } catch {
-      return {};
-    }
-  }
-
-  function restoreChecklists() {
-    document.querySelectorAll("[data-checklist]").forEach(card => {
-      const id = card.dataset.checklist;
-      const state = checklistState(id);
-      card.querySelectorAll("[data-check]").forEach(box => {
-        box.checked = !!state[box.dataset.check];
-      });
-      updateChecklistProgress(id);
-    });
-  }
-
-  function saveChecklist(id) {
-    const card = document.querySelector('[data-checklist="' + id + '"]');
-    if (!card) return;
-    const items = {};
-    card.querySelectorAll("[data-check]").forEach(box => {
-      items[box.dataset.check] = box.checked;
-    });
-    localStorage.setItem(CHECK_PREFIX + id, JSON.stringify({updatedAt:Date.now(), items}));
-    updateChecklistProgress(id);
-  }
-
-  function updateChecklistProgress(id) {
-    const card = document.querySelector('[data-checklist="' + id + '"]');
-    const pill = document.querySelector('[data-check-progress="' + id + '"]');
-    if (!card || !pill) return;
-    const boxes = [...card.querySelectorAll("[data-check]")];
-    const done = boxes.filter(b => b.checked).length;
-    pill.textContent = done + " / " + boxes.length;
-  }
-
-  function resetChecklist(id) {
-    const card = document.querySelector('[data-checklist="' + id + '"]');
-    if (!card) return;
-    card.querySelectorAll("[data-check]").forEach(box => box.checked = false);
-    localStorage.removeItem(CHECK_PREFIX + id);
-    updateChecklistProgress(id);
-  }
-
-  function updateTrainingDeadlines() {
-    const today = new Date();
-    const todayLocal = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const locale = lang === "ar" ? "ar-EG" : "en-GB";
-    const formatter = new Intl.DateTimeFormat(locale, {day:"numeric", month:"short", year:"numeric"});
-
-    document.querySelectorAll(".training-item[data-due]").forEach(row => {
-      const [y,m,d] = row.dataset.due.split("-").map(Number);
-      const due = new Date(y, m - 1, d);
-      const diff = Math.round((due - todayLocal) / 86400000);
-      const dueEl = row.querySelector(".due-date");
-      const leftEl = row.querySelector(".days-left");
-
-      dueEl.textContent = t("duePrefix") + " " + formatter.format(due);
-      leftEl.classList.remove("urgent","overdue");
-
-      if (diff > 1) {
-        leftEl.textContent = t("daysLeftMany").replace("{n}", diff);
-        if (diff <= 3) leftEl.classList.add("urgent");
-      } else if (diff === 1) {
-        leftEl.textContent = t("daysLeftOne");
-        leftEl.classList.add("urgent");
-      } else if (diff === 0) {
-        leftEl.textContent = t("dueToday");
-        leftEl.classList.add("urgent");
-      } else if (diff === -1) {
-        leftEl.textContent = t("overdueOne");
-        leftEl.classList.add("overdue");
-      } else {
-        leftEl.textContent = t("overdueMany").replace("{n}", Math.abs(diff));
-        leftEl.classList.add("overdue");
-      }
-    });
-  }
-
-  let lastTrainingDay = "";
-  function refreshTrainingDateIfNeeded() {
-    const now = new Date();
-    const dayKey = [now.getFullYear(), now.getMonth()+1, now.getDate()].join("-");
-    if (dayKey !== lastTrainingDay) {
-      lastTrainingDay = dayKey;
-      updateTrainingDeadlines();
-    }
-  }
-
-  function updateOnline() {
-    if (!$("offlineStatus")) return;
-    $("offlineStatus").textContent = navigator.onLine ? t("online") : t("offline");
-  }
-
-  $("unlockBtn").addEventListener("click", unlock);
-  $("passInput").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
-  document.querySelectorAll(".private-cancel").forEach(btn => btn.addEventListener("click", closePrivateGate));
-
-  document.addEventListener("click", e => {
-    const langBtn = e.target.closest("[data-lang]");
-    if (langBtn) {
-      applyLanguage(langBtn.dataset.lang);
-      return;
-    }
-    const reset = e.target.closest("[data-reset-checklist]");
-    if (reset) {
-      resetChecklist(reset.dataset.resetChecklist);
-      return;
-    }
-    const target = e.target.closest("[data-page]");
-    if (target) showPage(target.dataset.page);
-    const copy = e.target.closest("[data-copy]");
-    if (copy) {
-      navigator.clipboard.writeText(copy.dataset.copy).then(() => {
-        const old = copy.textContent;
-        copy.textContent = t("copied");
-        setTimeout(() => copy.textContent = t("copy"), 900);
-      });
-    }
-  });
-
-  document.addEventListener("change", e => {
-    const box = e.target.closest("[data-check]");
-    if (!box) return;
-    const card = box.closest("[data-checklist]");
-    if (card) saveChecklist(card.dataset.checklist);
-  });
-
-  function openEntry(index = null) {
-    if (!authenticated || saving) return;
-    editingIndex = index;
-    const item = index == null ? {} : vaultItems[index];
-    $("secretLabel").value = item.label || "";
-    $("secretValue").value = item.value || "";
-    $("secretNote").value = item.note || "";
-    message("secretError", "");
-    $("secretDialog").showModal();
-    $("secretLabel").focus();
-  }
-  $("addSecretBtn").addEventListener("click", () => openEntry());
-  $("cancelSecret").addEventListener("click", () => $("secretDialog").close());
-  $("saveSecret").addEventListener("click", async () => {
-    if (saving || !authenticated) return;
-    const label = $("secretLabel").value.trim();
-    const value = $("secretValue").value.trim();
-    const note = $("secretNote").value.trim();
-    if (!label || !value) return;
-    const next = vaultItems.map(item => ({ ...item }));
-    if (editingIndex == null) next.push({label,value,note});
-    else next[editingIndex] = {label,value,note};
-    $("saveSecret").disabled = true;
-    try { if (await persistVault(next)) $("secretDialog").close(); }
-    catch (error) { message("secretError", error.status === 400 ? "invalidEntry" : errorKey(error)); }
-    finally { $("saveSecret").disabled = false; }
-  });
-  $("secretDialog").addEventListener("close", () => {
-    ["secretLabel", "secretValue", "secretNote"].forEach(id => $(id).value = "");
-  });
-  $("logoutBtn").addEventListener("click", logout);
-
-  $("editProfileBtn").addEventListener("click", () => {
-    if (!authenticated || saving) return;
-    $("profileFields").replaceChildren();
-    PROFILE_KEYS.forEach(key => {
-      const field = document.createElement("div"); field.className = "field";
-      const label = document.createElement("label"); label.textContent = t(key); label.dataset.i18n = key; label.htmlFor = "profile-" + key;
-      const input = document.createElement("input"); input.id = "profile-" + key; input.dataset.profile = key;
-      input.maxLength = 256; input.autocomplete = "off"; input.dir = "ltr";
-      input.value = privateData.profile[key] || "";
-      if (key.toLowerCase().includes("pin")) input.type = "password";
-      field.append(label, input); $("profileFields").append(field);
-    });
-    message("profileError", "");
-    $("profileDialog").showModal();
-  });
-  $("cancelProfile").addEventListener("click", () => $("profileDialog").close());
-  $("profileDialog").addEventListener("close", () => $("profileFields").replaceChildren());
-  $("saveProfile").addEventListener("click", async () => {
-    if (saving || !authenticated) return;
-    const profile = {};
-    document.querySelectorAll("[data-profile]").forEach(input => { if (input.value.trim()) profile[input.dataset.profile] = input.value.trim(); });
-    $("saveProfile").disabled = true;
-    try { if (await persistVault(vaultItems, profile)) $("profileDialog").close(); }
-    catch (error) { message("profileError", errorKey(error)); }
-    finally { $("saveProfile").disabled = false; }
-  });
-
-  $("importLegacyBtn").addEventListener("click", () => {
-    if (!authenticated || saving) return;
-    $("oldPass").value = "";
-    message("migrationError", "");
-    $("migrationDialog").showModal();
-    $("oldPass").focus();
-  });
-  $("cancelMigration").addEventListener("click", () => $("migrationDialog").close());
-  $("migrationDialog").addEventListener("close", () => $("oldPass").value = "");
-  $("migrateVault").addEventListener("click", async () => {
-    if (saving || !authenticated || $("migrateVault").disabled) return;
-    const version = navigationVersion;
-    $("migrateVault").disabled = true;
-    let entries;
-    try {
-      const meta = JSON.parse(localStorage.getItem(META_KEY));
-      const key = await deriveKey($("oldPass").value, fromB64(meta.salt));
-      if (await decryptText(meta.verifier, key) !== "wf-ok-v1") throw new Error();
-      entries = JSON.parse(await decryptText(JSON.parse(localStorage.getItem(DATA_KEY)), key));
-      if (!Array.isArray(entries) || entries.some(item => !item || typeof item.label !== "string" || typeof item.value !== "string" || (item.note != null && typeof item.note !== "string"))) throw new Error();
-    } catch {
-      message("migrationError", "importFailed");
-      $("migrateVault").disabled = false;
-      return;
-    }
-    try {
-      if (!authenticated || version !== navigationVersion) return;
-      if (!entries.length) { message("migrationError", "emptyOldVault"); return; }
-      const next = vaultItems.map(item => ({ ...item }));
-      entries.forEach(item => {
-        const normalized = {label:item.label, value:item.value, note:item.note || ""};
-        if (!next.some(existing => JSON.stringify(existing) === JSON.stringify(normalized))) next.push(normalized);
-      });
-      if (await persistVault(next)) {
-        $("migrationDialog").close();
-        message("privateMessage", "importDone");
-        if (migrationMode) location.replace(CANONICAL_ORIGIN + "/#vault");
-      }
-    } catch (error) { message("migrationError", errorKey(error)); }
-    finally { $("oldPass").value = ""; $("migrateVault").disabled = false; }
-  });
-
-  async function checkActiveSession() {
-    if (!authenticated || !PROTECTED_PAGES.has(activePage) || document.hidden) return;
-    const page = activePage;
-    const version = navigationVersion;
-    try {
-      const result = await api("/session");
-      if (version === navigationVersion && !result.body.authenticated) { navigationVersion++; openPrivateGate(page); }
-    } catch {
-      if (version === navigationVersion) { navigationVersion++; openPrivateGate(page); message("unlockError", "apiError"); }
-    }
-  }
-  addEventListener("focus", checkActiveSession);
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden && PROTECTED_PAGES.has(activePage)) {
-      resumePrivatePage = activePage;
-      navigationVersion++;
-      clearPrivateData();
-      displayPage("home");
-    } else if (!document.hidden && resumePrivatePage) {
-      const page = resumePrivatePage; resumePrivatePage = null; showPage(page);
-    }
-  });
-  addEventListener("hashchange", () => showPage(location.hash.slice(1)));
-  addEventListener("pageshow", event => { if (event.persisted) showPage(location.hash.slice(1) || "home"); });
-  addEventListener("pagehide", () => { navigationVersion++; clearPrivateData(); displayPage("home"); });
-  setInterval(checkActiveSession, 60000);
-
-  addEventListener("online", updateOnline);
-  addEventListener("offline", updateOnline);
-  addEventListener("focus", refreshTrainingDateIfNeeded);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshTrainingDateIfNeeded(); });
-  setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
-
-  if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=21").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "21";
-      if (safeController()) return true;
-      return new Promise(resolve => {
-        const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
-        const changed = () => { if (safeController()) finish(true); };
-        const timer = setTimeout(() => finish(false), 15000);
-        navigator.serviceWorker.addEventListener("controllerchange", changed);
-        changed();
-      });
-    }).catch(() => false);
-  }
-
-  applyLanguage(lang);
-  refreshTrainingDateIfNeeded();
-  restoreChecklists();
-  $("lockScreen").classList.add("hidden");
-  showPage(location.hash.slice(1) || "home");
-})();
-</script>
+<script type="module" src="./app.js"></script>
 </body>
 </html>

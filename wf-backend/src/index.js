@@ -1,3 +1,4 @@
+import { OWNER_PROFILE, initialCompanion } from "./defaults.js";
 const ALLOWED_ORIGINS = new Set([
   "https://mo.elasrag.com",
   "https://www.elasrag.com",
@@ -136,21 +137,40 @@ function clearSessionCookie() {
   return "wf_session=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0";
 }
 
-const API_PATHS = new Set(["/health", "/login", "/session", "/logout", "/private"]);
+const API_PATHS = new Set(["/health", "/login", "/register", "/recover", "/session", "/logout", "/private"]);
 const MAX_BYTES = 100000;
-const PROFILE_FIELDS = new Set(["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername"]);
+const PROFILE_FIELDS = new Set(["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername", "displayName", "role", "site", "manager", "managerEmail", "startDate", "shiftDays", "shiftStart", "shiftEnd", "hours", "hourlyRate", "paidBreak", "annualHoliday", "minibusNote", "firstDayTime", "firstDayLocation", "firstDayPostcode"]);
 
 function validData(data) {
   if (!data || Array.isArray(data) || typeof data !== "object") return false;
-  if (Object.keys(data).some(key => !["version", "profile", "items"].includes(key))) return false;
+  if (Object.keys(data).some(key => !["version", "profile", "items", "companion"].includes(key))) return false;
   if (data.version !== 1 || !data.profile || Array.isArray(data.profile) || typeof data.profile !== "object") return false;
   if (Object.entries(data.profile).some(([key, value]) => !PROFILE_FIELDS.has(key) || typeof value !== "string" || value.length > 256)) return false;
+  if (data.companion !== undefined && !validCompanion(data.companion)) return false;
   return Array.isArray(data.items) && data.items.length <= 200 && data.items.every(item =>
     item && !Array.isArray(item) && typeof item === "object" &&
     Object.keys(item).every(key => ["label", "value", "note"].includes(key)) &&
     typeof item.label === "string" && item.label.trim().length > 0 && item.label.length <= 200 &&
     typeof item.value === "string" && item.value.trim().length > 0 && item.value.length <= 4096 &&
     typeof item.note === "string" && item.note.length <= 4096);
+}
+
+function validCompanion(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value) || Object.keys(value).some(key => !["tasks", "courses"].includes(key))) return false;
+  if (!Array.isArray(value.tasks) || value.tasks.length > 100 || !Array.isArray(value.courses) || value.courses.length > 100) return false;
+  const ids = new Set();
+  const validId = id => typeof id === "string" && /^[a-zA-Z0-9-]{1,80}$/.test(id) && !ids.has(id) && !!ids.add(id);
+  if (!value.tasks.every(task => task && Object.keys(task).every(key => ["id", "label", "done"].includes(key)) && validId(task.id) && typeof task.label === "string" && task.label.trim() && task.label.length <= 300 && typeof task.done === "boolean")) return false;
+  return value.courses.every(course => course && Object.keys(course).every(key => ["id", "titleEN", "titleAR", "due", "status", "required"].includes(key)) && validId(course.id) && typeof course.titleEN === "string" && course.titleEN.trim() && course.titleEN.length <= 300 && typeof course.titleAR === "string" && course.titleAR.length <= 300 && ["not-started", "in-progress", "completed"].includes(course.status) && typeof course.required === "boolean" && (course.due === "" || (typeof course.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(course.due) && !Number.isNaN(Date.parse(course.due)) && new Date(course.due).toISOString().slice(0,10) === course.due)));
+}
+
+function username(value) {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+}
+
+async function passwordHash(password, salt) {
+  const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
+  return base64url(await crypto.subtle.deriveBits({ name: "PBKDF2", salt: fromBase64url(salt), iterations: 100000, hash: "SHA-256" }, key, 256));
 }
 
 function normalizeData(raw) {
@@ -194,7 +214,7 @@ async function revision(data) {
 
 // One coordinator gives immediate session revocation and serializes private writes.
 export class WFAuthGuard {
-  constructor(state, env) { this.state = state; this.env = env; this.currentData = null; }
+  constructor(state, env) { this.state = state; this.env = env; this.currentData = new Map(); }
 
   async fetch(request) {
     return this.state.blockConcurrencyWhile(async () => {
@@ -202,17 +222,54 @@ export class WFAuthGuard {
       const now = Date.now();
       const store = this.state.storage;
       if (body.action === "attempt") {
-        const key = "attempt:" + body.ip;
+        const registering = body.kind === "register";
+        const key = "attempt:" + (registering ? "register:" + body.ip : body.ip + ":" + body.account);
         let record = await store.get(key);
-        if (!record || record.until <= now) record = { count: 0, until: now + 15 * 60 * 1000 };
+        if (!record || record.until <= now) record = { count: 0, until: now + (registering ? 60 : 15) * 60 * 1000 };
         record.count++;
         await store.put(key, record);
         await store.setAlarm(now + 12 * 60 * 60 * 1000);
-        return json({ allowed: record.count <= 10 });
+        let globalAllowed = true;
+        if (!registering) {
+          const globalKey="attempt:global:"+body.ip;
+          let global=await store.get(globalKey);
+          if (!global || global.until<=now) global={count:0,until:now+15*60*1000};
+          global.count++;await store.put(globalKey,global);globalAllowed=global.count<=100;
+        }
+        return json({ allowed: globalAllowed && record.count <= (registering ? 5 : 10) });
+      }
+      if (["authenticate", "register", "recover"].includes(body.action)) {
+        const name = username(body.username);
+        if (body.action === "authenticate" && (!name || name === "owner")) {
+          if (!(await verifyPassword(body.password, this.env.WF_PASSWORD))) return json({ error: "Invalid credentials" }, 401);
+          return json({ userId: "owner", username: "owner" });
+        }
+        if (!/^[a-z0-9][a-z0-9._-]{2,39}$/.test(name) || name === "owner") return json({ error: "Invalid account" }, 400);
+        const key = "user:" + name;
+        const account = await store.get(key);
+        if (body.action === "authenticate") {
+          const salt = account?.salt || "MDEyMzQ1Njc4OWFiY2RlZg";
+          const hash = await passwordHash(body.password, salt);
+          if (!account || !constantTimeEqual(fromBase64url(hash), fromBase64url(account.hash))) return json({ error: "Invalid credentials" }, 401);
+          return json({ userId: account.id, username: name });
+        }
+        if (typeof body.password !== "string" || body.password.length < 12 || body.password.length > 1024) return json({ error: "Password too short" }, 400);
+        if (body.action === "register" && account) return json({ error: "Account unavailable" }, 409);
+        if (body.action === "recover") {
+          if (!account || typeof body.recoveryCode !== "string" || !constantTimeEqual(await sha256(body.recoveryCode), fromBase64url(account.recoveryHash))) return json({ error: "Invalid recovery" }, 401);
+          const sessions = await store.list({ prefix: "session:" });
+          const keys = [...sessions].filter(([, session]) => session.userId === account.id).map(([sessionKey]) => sessionKey);
+          if (keys.length) await store.delete(keys);
+        }
+        const salt = base64url(crypto.getRandomValues(new Uint8Array(16)));
+        const recoveryCode = base64url(crypto.getRandomValues(new Uint8Array(24)));
+        const userId = account?.id || crypto.randomUUID();
+        await store.put(key, { id: userId, username: name, salt, hash: await passwordHash(body.password, salt), recoveryHash: base64url(await sha256(recoveryCode)) });
+        return json({ userId, username: name, recoveryCode });
       }
       if (body.action === "create") {
-        await store.put("session:" + body.nonce, { until: now + 12 * 60 * 60 * 1000 });
-        await store.delete("attempt:" + body.ip);
+        await store.put("session:" + body.nonce, { until: now + 12 * 60 * 60 * 1000, userId: body.userId, username: body.username });
+        await store.delete("attempt:" + body.ip + ":" + body.username);
         await store.setAlarm(now + 12 * 60 * 60 * 1000);
         return json({ ok: true });
       }
@@ -222,28 +279,39 @@ export class WFAuthGuard {
       }
       const session = await store.get("session:" + body.nonce);
       if (!session || session.until <= now) return json({ authenticated: false }, 401);
-      if (body.action === "check") return json({ authenticated: true });
+      const userId = session.userId || "owner";
+      if (body.action === "check") return json({ authenticated: true, account: { id: userId, username: session.username || "owner" } });
       if (!this.env.WF_DATA) return json({ error: "Unavailable" }, 503);
-      if (!this.currentData) {
-        const raw = await this.env.WF_DATA.get("private-data", "json");
+      const dataKey = userId === "owner" ? "private-data" : "private:" + userId;
+      const revisionKey = userId === "owner" ? "private-revision" : "private-revision:" + userId;
+      const writeTimeKey = userId === "owner" ? "private-write-time" : "private-write-time:" + userId;
+      if (!this.currentData.has(userId)) {
+        const raw = await this.env.WF_DATA.get(dataKey, "json");
         // An existing record always takes priority over the legacy secret.
-        const data = normalizeData(raw ?? (this.env.WF_PRIVATE_DATA ? JSON.parse(this.env.WF_PRIVATE_DATA) : null));
-        const expected = await store.get("private-revision");
+        let data = normalizeData(raw ?? (userId === "owner" && this.env.WF_PRIVATE_DATA ? JSON.parse(this.env.WF_PRIVATE_DATA) : null));
+        const expected = await store.get(revisionKey);
         if (expected && expected !== await revision(data)) return json({ error: "Unavailable" }, 503);
-        this.currentData = data;
+        if (!data.companion) {
+          data = { ...data, profile: userId === "owner" ? { ...OWNER_PROFILE, ...data.profile } : data.profile, companion: initialCompanion(userId === "owner") };
+          await this.env.WF_DATA.put(dataKey, JSON.stringify(data));
+          await store.put({ [revisionKey]: await revision(data), [writeTimeKey]: Date.now() });
+        }
+        this.currentData.set(userId, data);
       }
-      const etag = await revision(this.currentData);
-      if (body.action === "read") return json({ ok: true, data: this.currentData }, 200, null, { etag });
+      const current = this.currentData.get(userId);
+      const etag = await revision(current);
+      if (body.action === "read") return json({ ok: true, data: current }, 200, null, { etag });
       if (body.action === "write") {
         if (body.etag !== etag) return json({ error: "Conflict" }, 409);
-        const lastWrite = await store.get("private-write-time") || 0;
+        const lastWrite = await store.get(writeTimeKey) || 0;
         if (now - lastWrite < 1000) return json({ error: "Try again" }, 429);
         if (!validData(body.data)) return json({ error: "Invalid data" }, 400);
-        const nextRevision = await revision(body.data);
-        await this.env.WF_DATA.put("private-data", JSON.stringify(body.data));
-        await store.put({ "private-revision": nextRevision, "private-write-time": now });
-        this.currentData = body.data;
-        return json({ ok: true, data: body.data }, 200, null, { etag: nextRevision });
+        const next = body.data.companion ? body.data : { ...body.data, profile: { ...current.profile, ...body.data.profile }, companion: current.companion };
+        const nextRevision = await revision(next);
+        await this.env.WF_DATA.put(dataKey, JSON.stringify(next));
+        await store.put({ [revisionKey]: nextRevision, [writeTimeKey]: now });
+        this.currentData.set(userId, next);
+        return json({ ok: true, data: next }, 200, null, { etag: nextRevision });
       }
       return json({ error: "Not found" }, 404);
     });
@@ -272,7 +340,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const origin = request.headers.get("origin");
-    if (["GET", "HEAD"].includes(request.method) && ["/", "/index.html", "/sw.js"].includes(url.pathname)) {
+    if (["GET", "HEAD"].includes(request.method) && ["/", "/index.html", "/sw.js", "/content.js", "/app.js", "/model.js", "/styles.css"].includes(url.pathname)) {
       if (!env.ASSETS) return new Response("Service unavailable", { status: 503, headers: { "cache-control": "no-store" } });
       try {
         const assetUrl = new URL(request.url);
@@ -296,25 +364,26 @@ export default {
     if (request.method === "OPTIONS") return corsPreflight(origin);
     if (apiPath === "/health" && request.method === "GET") {
       const ready = Boolean(env.WF_PASSWORD && env.SESSION_SECRET && env.WF_DATA && env.WF_AUTH && env.ASSETS);
-      return json({ ok: ready, service: "wf-backend", version: 3 }, ready ? 200 : 503, origin);
+      return json({ ok: ready, service: "wf-backend", version: 4 }, ready ? 200 : 503, origin);
     }
     // CORS alone does not prevent cross-origin writes.
     if (origin && !ALLOWED_ORIGINS.has(origin)) return json({ error: "Forbidden" }, 403);
     if (["POST", "PUT"].includes(request.method) && !ALLOWED_ORIGINS.has(origin)) return json({ error: "Forbidden" }, 403);
     if (!env.WF_PASSWORD || !env.SESSION_SECRET || !env.WF_AUTH) return json({ error: "Unavailable" }, 503, origin);
     try {
-      if (apiPath === "/login" && request.method === "POST") {
+      if (["/login", "/register", "/recover"].includes(apiPath) && request.method === "POST") {
         const body = await readJson(request, 4096);
+        if (typeof body?.password !== "string" || body.password.length > 1024) return json({ error: "Invalid credentials" }, 400, origin);
         const ip = base64url(await sha256(request.headers.get("cf-connecting-ip") || "unknown"));
-        const attempt = await (await guard(env, { action: "attempt", ip })).json();
+        const attempt = await (await guard(env, { action: "attempt", ip, kind: apiPath === "/register" ? "register" : "login", account: username(body.username) || "owner" })).json();
         if (!attempt.allowed) return json({ error: "Try again later" }, 429, origin);
-        if (typeof body?.password !== "string" || body.password.length > 1024 || !(await verifyPassword(body.password, env.WF_PASSWORD))) {
-          return json({ error: "Invalid password" }, 401, origin);
-        }
+        const result = await guard(env, { action: apiPath === "/login" ? "authenticate" : apiPath === "/register" ? "register" : "recover", username: body.username, password: body.password, recoveryCode: body.recoveryCode });
+        const identity = await result.json();
+        if (!result.ok) return json(identity, result.status, origin);
         const nonce = crypto.randomUUID();
-        await guard(env, { action: "create", nonce, ip });
+        await guard(env, { action: "create", nonce, ip, userId: identity.userId, username: identity.username });
         const token = await makeSession(env.SESSION_SECRET, nonce);
-        return json({ ok: true }, 200, origin, { "set-cookie": sessionCookie(token) });
+        return json({ ok: true, ...(identity.recoveryCode ? { recoveryCode: identity.recoveryCode } : {}) }, 200, origin, { "set-cookie": sessionCookie(token) });
       }
       const payload = await verifySession(cookieValue(request, "wf_session"), env.SESSION_SECRET);
       if (apiPath === "/logout" && request.method === "POST") {
@@ -322,8 +391,9 @@ export default {
         return json({ ok: true }, 200, origin, { "set-cookie": clearSessionCookie() });
       }
       if (apiPath === "/session" && request.method === "GET") {
-        const authenticated = !!payload && (await guard(env, { action: "check", nonce: payload.nonce })).ok;
-        return json({ ok: true, authenticated }, 200, origin);
+        if (!payload) return json({ ok: true, authenticated: false }, 200, origin);
+        const result = await guard(env, { action: "check", nonce: payload.nonce });
+        return json({ ok: true, ...(await result.json()) }, 200, origin);
       }
       if (apiPath === "/private" && ["GET", "PUT"].includes(request.method)) {
         if (!payload) return json({ error: "Unauthorized" }, 401, origin);

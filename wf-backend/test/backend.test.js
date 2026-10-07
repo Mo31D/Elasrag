@@ -16,7 +16,7 @@ async function login(env) {
 }
 
 test('login, host-only secure cookie, cross-device data, conflict and immediate logout revocation', async () => {
-  const { env, kv } = fixture();
+  const { env, kv, records } = fixture();
   assert.equal((await worker.fetch(request('/health'), env)).status, 200);
   assert.equal((await worker.fetch(request('/private'), env)).status, 401);
   assert.equal((await worker.fetch(request('/login', 'POST', { password: 'wrong' }), env)).status, 401);
@@ -28,8 +28,12 @@ test('login, host-only secure cookie, cross-device data, conflict and immediate 
   const cookie2 = await login(env);
   const initial = await worker.fetch(request('/private', 'GET', null, cookie), env);
   const revision = initial.headers.get('etag');
-  assert.deepEqual((await initial.json()).data, { version: 1, profile: {}, items: [] });
-  const data = { version: 1, profile: { colleagueNumber: 'test-colleague' }, items: [{ label: '<img onerror=alert(1)>', value: 'test-value', note: '' }] };
+  const seeded = (await initial.json()).data;
+  assert.equal(seeded.companion.courses.length,21);
+  assert.deepEqual(seeded.items,[]);
+  const data = { ...seeded, version: 1, profile: { colleagueNumber: 'test-colleague' }, items: [{ label: '<img onerror=alert(1)>', value: 'test-value', note: '' }] };
+  assert.equal((await worker.fetch(request('/private', 'PUT', data, cookie, { 'if-match': revision }), env)).status,429);
+  records.set("private-write-time",Date.now()-1001);
   const saved = await worker.fetch(request('/private', 'PUT', data, cookie, { 'if-match': revision }), env);
   assert.equal(saved.status, 200);
   assert.deepEqual(JSON.parse(kv.get('private-data')), data);

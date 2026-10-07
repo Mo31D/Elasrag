@@ -19,11 +19,12 @@ test('canonical origin serves native app assets publicly, independent of authent
   assert.equal(home.headers.get('x-frame-options'), 'DENY');
   const html = await home.text();
   assert.match(html, /data-staff-profile="personal"/);
-  assert.match(html, /const API_BASE = .*"\/api"/);
-  const sw = await worker.fetch(req('/sw.js?v=21'), env);
+  assert.match(html, /src=".\/app.js"/);
+  assert.match(await (await worker.fetch(req("/app.js"),env)).text(), /const API_BASE = .*"\/api"/);
+  const sw = await worker.fetch(req('/sw.js?v=22'), env);
   assert.equal(sw.status, 200);
   assert.match(sw.headers.get('content-type'), /javascript/);
-  assert.match(await sw.text(), /wf-quick-reference-v21/);
+  assert.match(await sw.text(), /wf-quick-reference-v22/);
   assert.equal((await worker.fetch(req('/index.html', 'HEAD'), env)).body, null);
   assert.equal((await worker.fetch(req('/unknown'), env)).status, 404);
   const redirected = await worker.fetch(req('/wf/'), env);
@@ -32,10 +33,10 @@ test('canonical origin serves native app assets publicly, independent of authent
 });
 
 test('same-origin API and legacy migration share the existing session and private store', async () => {
-  const { env } = fixture();
+  const { env, records } = fixture();
   const health = await worker.fetch(req('/api/health'), env);
   assert.equal(health.status, 200);
-  assert.equal((await health.json()).version, 3);
+  assert.equal((await health.json()).version, 4);
   const login = await worker.fetch(req('/api/login','POST',{password:env.WF_PASSWORD}), env);
   assert.equal(login.status, 200);
   const setCookie = login.headers.get('set-cookie');
@@ -48,9 +49,12 @@ test('same-origin API and legacy migration share the existing session and privat
   assert.equal(legacy.headers.get('access-control-allow-origin'),'https://www.elasrag.com');
   const data = {version:1,profile:{},items:[{label:'Migration fixture',value:'fixture-only',note:''}]};
   const write = new Request(origin + '/api/private', {method:'PUT',headers:{origin:'https://www.elasrag.com','content-type':'application/json',cookie,'if-match':legacy.headers.get('etag')},body:JSON.stringify(data)});
+  records.set("private-write-time",Date.now()-1001);
   assert.equal((await worker.fetch(write,env)).status,200);
   const canonical = await worker.fetch(req('/api/private','GET',null,cookie),env);
-  assert.deepEqual((await canonical.json()).data,data);
+  const stored=(await canonical.json()).data;
+  assert.deepEqual(stored.items,data.items);
+  assert.equal(stored.companion.courses.length,21);
   assert.equal(canonical.headers.get('cache-control'),'no-store');
   const missing = await worker.fetch(req('/api/missing'),env);
   assert.equal(missing.status,404);
