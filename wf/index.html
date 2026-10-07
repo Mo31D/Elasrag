@@ -59,7 +59,7 @@
       display:flex;align-items:center;gap:14px;font-weight:850;font-size:20px
     }
     .quick.fire{background:var(--red);color:#fff}
-    .quick.details,.quick.training,.quick.access,.quick.benefits,.quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .quick.details,.quick.training,.quick.access,.quick.benefits,.quick.uniform,.quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
     .icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:21px}
     .quick:not(.fire) .icon{background:#f2f4f7}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:17px;margin-bottom:11px}
@@ -290,6 +290,7 @@
           <button class="quick training" data-page="training"><span class="icon">✓</span><span data-i18n="training"></span></button>
           <button class="quick access" data-page="access"><span class="icon">↗</span><span data-i18n="accountHelp"></span></button>
           <button class="quick benefits" data-page="benefits"><span class="icon">★</span><span data-i18n="benefits"></span></button>
+          <button class="quick uniform" data-page="uniform"><span class="icon">U</span><span data-i18n="uniformDress"></span></button>
         </div>
         <div class="status" id="offlineStatus"></div>
       </section>
@@ -440,6 +441,40 @@
         </div>
       </section>
 
+      <section id="uniform" class="page">
+        <button class="back" data-page="home" data-i18n="backHome"></button>
+
+        <div class="card">
+          <h2 data-i18n="uniformTitle"></h2>
+          <div class="row"><div><div class="key" data-i18n="uniformProvided"></div><div class="value" data-i18n="uniformProvidedValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="ownItems"></div><div class="value" data-i18n="ownItemsValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="replacement"></div><div class="value" data-i18n="replacementValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="outsideWork"></div><div class="value" data-i18n="outsideWorkValue"></div></div></div>
+        </div>
+
+        <div class="card warning">
+          <h2 data-i18n="ppeTitle"></h2>
+          <p data-i18n="ppeValue"></p>
+        </div>
+
+        <div class="card">
+          <h2 data-i18n="appearanceTitle"></h2>
+          <ul class="checklist">
+            <li><span class="num">1</span><span data-i18n="appearance1"></span></li>
+            <li><span class="num">2</span><span data-i18n="appearance2"></span></li>
+            <li><span class="num">3</span><span data-i18n="appearance3"></span></li>
+            <li><span class="num">4</span><span data-i18n="appearance4"></span></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2 data-i18n="foodAppearanceTitle"></h2>
+          <p data-i18n="foodAppearanceValue"></p>
+        </div>
+
+        <div class="status" data-i18n="uniformPolicyDate"></div>
+      </section>
+
       <section id="benefits" class="page">
         <button class="back" data-page="home" data-i18n="backHome"></button>
 
@@ -565,7 +600,7 @@
       setupNote:"الخزنة الخاصة معمولة للأرقام السرية والملاحظات الحساسة. البيانات دي ما بتترفعش على GitHub.",
       appTitle:"WF Staff Companion", enterPass:"اكتب كلمة المرور علشان تفتح بياناتك الشخصية.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
       fastReference:"مساعد الموظف", findSeconds:"هات المعلومة في ثواني.", confirmedOnly:"بياناتي، تدريبي، المزايا، والتصرف السريع في المواقف المهمة.",
-      emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", accountHelp:"مساعدة الدخول", benefits:"المزايا", privateVault:"الخزنة الخاصة",
+      emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", accountHelp:"مساعدة الدخول", benefits:"المزايا", uniformDress:"الزي والمظهر", privateVault:"الخزنة الخاصة",
       backHome:"→ الرئيسية", fireHeadline:"إنذار الحريق ← أقرب مخرج حريق ← نقطة التجمع",
       fireIntro:"الإخلاء الكامل بيتعلن بإنذار الحريق. الموظفين والزوار يروحوا لأقرب مخرج حريق، والموظفين يكملوا لنقطة التجمع.",
       forecourtSafe:"محطة الوقود — لو آمن تعمل كده",
@@ -611,6 +646,21 @@
       appFallback:"لو التطبيق مش شغال",
       appFallbackValue:"استخدم mywestmorland.com من المتصفح وسجّل برقم الموظف والباسورد. تقدر تستخدم نفس وظائف PeopleXD، ومنها حجز الإجازات. لو الصفحة نفسها مش بتفتح، جرّب تحديث الجهاز أو استخدم لابتوب/تابلت.",
       openBrowserPortal:"افتح PeopleXD في المتصفح",
+      uniformTitle:"الزي والملابس",
+      uniformProvided:"الشركة بتوفر", uniformProvidedValue:"معظم الزي المطلوب مجانًا — عادةً تيشيرت/قميص، مريلة، Fleece أو Jumper",
+      ownItems:"عليك أنت عادةً", ownItemsValue:"البنطلون والحذاء، إلا لو Safety Footwear جزء من الـPPE",
+      replacement:"الاستبدال", replacementValue:"مجاني مع الاستهلاك الطبيعي؛ ممكن يتم التحصيل لو التلف أو الاستبدال خارج المعقول",
+      outsideWork:"الشغل بره", outsideWorkValue:"ملابس دافئة ومقاومة للمطر متاحة؛ وفي الصيف ممكن Hat وSuncream",
+      ppeTitle:"PPE",
+      ppeValue:"لو اتسلمت Safety Footwear أو High-Vis أو أي PPE، لبسه إلزامي أثناء الشغل المطلوب لأنه جزء من السلامة.",
+      appearanceTitle:"المظهر والسلامة",
+      appearance1:"اختار حذاء ثابت، مريح وآمن؛ Flip-flops أو High heels غير مناسبة عادةً.",
+      appearance2:"الشعر الطويل يتربط، ويتغطى لو الدور محتاج كده.",
+      appearance3:"Piercings مسموحة عمومًا لو مش مبالغ فيها ومفيش منها خطر سلامة؛ أي Tattoo مسيء لازم يتغطى.",
+      appearance4:"لو بتتعامل مع أكل: الساعة تتشال، والخاتم يكون Plain فقط.",
+      foodAppearanceTitle:"الأظافر والأكل",
+      foodAppearanceValue:"في Food preparation/production: ممنوع false nails أو gel nails أو nail varnish. في أدوار بيع أكل مغلف مسبقًا فقط فيه مرونة، بشرط تكون الأظافر قصيرة، نظيفة، ثابتة ومفيهاش Jewels أو أجزاء مفكوكة.",
+      uniformPolicyDate:"Uniform & Dress Policy — review date 05/06/2026",
       benefitsTitle:"مزايا الموظف",
       mealBenefitTitle:"الأكل أثناء الشغل",
       mealEntitlement:"الاستحقاق", mealEntitlementValue:"وجبة واحدة لكل Break في الشفت",
@@ -656,7 +706,7 @@
       setupNote:"Use the Private Vault for sensitive codes and notes. Those entries are not uploaded to GitHub.",
       appTitle:"WF Quick Reference", enterPass:"Enter your passphrase to open your personal information.", passphrase:"Passphrase", unlock:"Unlock", lock:"Lock",
       fastReference:"Staff companion", findSeconds:"Find it in seconds.", confirmedOnly:"My details, training, benefits and fast actions for important situations.",
-      emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", accountHelp:"Account help", benefits:"Benefits", privateVault:"Private vault",
+      emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", accountHelp:"Account help", benefits:"Benefits", uniformDress:"Uniform & dress", privateVault:"Private vault",
       backHome:"← Home", fireHeadline:"FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT",
       fireIntro:"Full evacuation is signalled by the fire alarm. Staff and visitors make their way to the nearest fire exit. Staff continue to the Assembly Point.",
       forecourtSafe:"Forecourt — if safe to do so",
@@ -702,6 +752,21 @@
       appFallback:"If the app is not working",
       appFallbackValue:"Use mywestmorland.com in a browser and sign in with your colleague number and password. The browser portal provides the same PeopleXD functions, including booking holidays. If the page itself will not load, update the device or use a laptop/tablet.",
       openBrowserPortal:"Open PeopleXD in browser",
+      uniformTitle:"Uniform & dress",
+      uniformProvided:"Company provides", uniformProvidedValue:"Most required uniform free of charge — typically T-shirts/shirts, aprons, fleeces or jumpers",
+      ownItems:"Usually your own", ownItemsValue:"Trousers and footwear, unless safety footwear is issued as PPE",
+      replacement:"Replacement", replacementValue:"Normally free for reasonable wear and tear; charges may apply beyond that",
+      outsideWork:"Outdoor work", outsideWorkValue:"Warm and waterproof clothing is provided; hats and sunscreen may also be available in summer",
+      ppeTitle:"PPE",
+      ppeValue:"If safety footwear, high-vis or other PPE is issued for your role, it must be worn when required.",
+      appearanceTitle:"Appearance & safety",
+      appearance1:"Wear sturdy, comfortable and safe footwear; flip-flops and high heels are normally unsuitable.",
+      appearance2:"Tie back long hair and cover it where required.",
+      appearance3:"Piercings are generally acceptable if not excessive or a safety risk; offensive tattoos must be covered.",
+      appearance4:"When working with food, remove watches and wear only a plain ring.",
+      foodAppearanceTitle:"Nails & food work",
+      foodAppearanceValue:"Food preparation/production: no false nails, gel nails or nail varnish. Pre-packed food retail has some flexibility, but nails must be short, clean, secure and free from jewels or loose additions.",
+      uniformPolicyDate:"Uniform & Dress Policy — review date 05/06/2026",
       benefitsTitle:"Staff benefits",
       mealBenefitTitle:"Meals at work",
       mealEntitlement:"Entitlement", mealEntitlementValue:"One meal entitlement per break in your shift",
