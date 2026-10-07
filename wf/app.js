@@ -61,7 +61,6 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     renderPrivateProfile();
     renderCompanion();
     document.querySelectorAll("[data-placeholder]").forEach(el => el.placeholder = t(el.dataset.placeholder));
-    $('homeSearch').setAttribute('aria-label',t('findReference'));
     document.querySelectorAll("[data-error-key]").forEach(el => { el.textContent = el.dataset.errorKey ? t(el.dataset.errorKey) : ""; });
     if (focusId && $(focusId)) $(focusId).focus({preventScroll:true});
     $("logoutBtn").setAttribute("aria-label",t("logout"));$("logoutBtn").title=t("logout");
@@ -297,7 +296,6 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     activePage = id;
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === (["tasks","training"].includes(id) ? id : "home")));
-    document.querySelector('.emergency-strip').hidden=id==='home';
     if(changed)window.scrollTo({top:0, behavior:"auto"});
     updateBackButton();
   }
@@ -823,7 +821,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     if(!page)return null;
     const line=readingLine();
     let index=0;
-    page.querySelectorAll('h1,h2,p,summary,.value,.task-text,.course-copy,.guide-card,.work-overview,.focus-card').forEach(el=>{if(!el.dataset.readAnchor)el.dataset.readAnchor=page.id+'-read-'+index;index++;});
+    page.querySelectorAll('h1,h2,p,summary,.value,.task-text,.course-copy,.guide-card,.focus-card').forEach(el=>{if(!el.dataset.readAnchor)el.dataset.readAnchor=page.id+'-read-'+index;index++;});
     const blocks=[...page.querySelectorAll('[data-read-anchor]')];
     const el=blocks.find(block=>{const r=block.getBoundingClientRect();return r.height>0 && r.top<=line && r.bottom>line;}) || blocks.find(block=>{const r=block.getBoundingClientRect();return r.height>0 && r.top>=line;});
     if(!el)return {page:page.id,scroll:window.scrollY};
@@ -992,18 +990,6 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     try{if(await saveCompanion(next)){editingTaskId=null;$('taskInput').value='';$('taskInput').focus({preventScroll:true});}}catch(error){message('privateMessage',errorKey(error));}finally{submit.disabled=false;}
   });
   $('resetTasks').addEventListener('click',async()=>{if(saving || !authenticated)return;const next=structuredClone(privateData.companion);next.tasks.forEach(task=>task.done=false);try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));}});
-  $('homeSearch').addEventListener('input',()=>{
-    const normalize=text=>text.normalize('NFKD').replace(/[\u064b-\u065f]/g,'').replace(/[أإآ]/g,'ا').toLowerCase();
-    const query=normalize($('homeSearch').value.trim());
-    let shown=0;
-    document.querySelectorAll('#home .home-searchable').forEach(button=>{const key=button.querySelector('[data-i18n]')?.dataset.i18n;const text=button.dataset.search+' '+(T.en[key]||'')+' '+(T.ar[key]||'');button.hidden=!!query && !normalize(text).includes(query);if(!button.hidden)shown++;});
-    for(const [title,grid] of [['situationsTitle','situationsGrid'],['guidesTitle','guidesGrid']]){
-      const visible=[...$(grid).querySelectorAll('.home-searchable')].some(button=>!button.hidden);
-      $(title).hidden=!visible;$(grid).hidden=!visible;
-    }
-    $('homeSearchEmpty').hidden=!!shown;
-  });
-
   $("otherAccountBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode(authMode==="owner"?"login":"owner" );});
   $("registerBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode("register" );});
   $("recoverBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode("recover" );});
@@ -1021,8 +1007,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=30").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "30";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=31").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "31";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

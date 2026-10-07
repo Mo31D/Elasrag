@@ -349,13 +349,11 @@ test('returning from another page keeps draft inputs and back links return to th
   click(d,'#benefits [data-back]');assert.ok(active(d,'home'));
   assert.equal(d.document.getElementById('reference'),null);
   assert.equal(d.document.querySelectorAll('.nav-btn').length,3);
-  fill(d,'homeSearch','وجبات');d.document.getElementById('homeSearch').dispatchEvent(new d.window.Event('input',{bubbles:true}));
-  assert.equal(d.document.querySelector('#home [data-page="benefits/meals"]').hidden,false);
-  assert.equal(d.document.querySelector('#home [data-page="uniform"]').hidden,true);
-  assert.equal(d.document.getElementById('situationsTitle').hidden,true);
-  fill(d,'homeSearch','');d.document.getElementById('homeSearch').dispatchEvent(new d.window.Event('input',{bubbles:true}));
-  assert.equal(d.document.querySelector('#home [data-page="uniform"]').hidden,false);
-  assert.equal(d.document.getElementById('situationsTitle').hidden,false);
+  assert.equal(d.document.getElementById('homeSearch'),null);
+  assert.equal(d.document.querySelector('.emergency-strip').hidden,false);
+  assert.equal(d.document.querySelectorAll('#home [data-page="fire"]').length,0);
+  assert.ok(d.document.querySelector('#home .shift-hero').compareDocumentPosition(d.document.querySelector('#home .home-focus')) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
+  assert.equal(d.document.querySelectorAll('#home .home-focus .focus-card').length,2);
   click(d,'#home [data-page="uniform"]');assert.ok(active(d,'uniform'));
   assert.equal(d.document.querySelectorAll('#uniform [data-tab]').length,0);
   assert.equal(d.document.querySelectorAll('#uniform .uniform-guide').length,1);

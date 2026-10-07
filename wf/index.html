@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head>
   <meta charset="utf-8">
-  <meta name="wf-build" content="30">
+  <meta name="wf-build" content="31">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
@@ -74,22 +74,21 @@
     <main>
       <p id="privateMessage" class="error" role="status" aria-live="polite"></p>
       <section id="home" class="page active">
-        <button class="work-overview" data-page="details"><span class="work-overview-icon" aria-hidden="true">◷</span><span><strong data-i18n="workDetails"></strong><small data-i18n="workQuickHint"></small></span><span aria-hidden="true">↗</span></button>
         <button id="shiftHero" class="hero compact-hero shift-hero" data-page="details"><span id="shiftStatus" class="eyebrow"></span><h1 id="shiftHeadline"></h1><span id="shiftDetail" class="tiny"></span><span id="shiftCountdown" class="shift-countdown"></span></button><span id="greeting" hidden></span>
-        <button class="focus-card home-learning" data-page="training"><span class="key" data-i18n="nextLearning"></span><strong id="nextCourseTitle" data-i18n="training"></strong><span id="nextCourseMeta" class="tiny"></span></button>
+        <div class="section-title" data-i18n="nowTitle"></div>
+        <div class="focus-grid home-focus">
+          <button class="focus-card home-work" data-page="details"><span class="key" data-i18n="workDetails"></span><strong data-i18n="workQuickHint"></strong></button>
+          <button class="focus-card home-learning" data-page="training"><span class="key" data-i18n="nextLearning"></span><strong id="nextCourseTitle" data-i18n="training"></strong><span id="nextCourseMeta" class="tiny"></span></button>
+        </div>
         <button class="task-summary" data-page="tasks"><span data-i18n="myTasks"></span><span id="homeTaskCount" class="progress-pill">✓</span></button>
-        <input id="homeSearch" class="search-input" type="search" data-placeholder="findReference" autocomplete="off">
-        <div id="situationsTitle" class="section-title" data-i18n="situationsTitle"></div>
-        <div id="situationsGrid" class="guide-grid situations-grid"><button class="guide-card scenario-card home-searchable" data-page="fire" data-search="fire emergency evacuation warden حريق طوارئ اخلاء"><span class="guide-icon fire-icon" aria-hidden="true">!</span><span data-i18n="fireQuick"></span><span aria-hidden="true">↗</span></button></div>
         <div id="guidesTitle" class="section-title" data-i18n="workGuides"></div>
         <div id="guidesGrid" class="guide-grid">
-          <button class="guide-card home-searchable" data-page="benefits/meals" data-search="meal food breakfast sandwich till وجبة وجبات أكل ساندوتش"><span class="guide-icon" aria-hidden="true">◒</span><span data-i18n="mealGuide"></span></button>
-          <button class="guide-card home-searchable" data-page="benefits/discounts" data-search="discount benefits hotel cinema خصم خصومات مزايا فندق سينما"><span class="guide-icon" aria-hidden="true">%</span><span data-i18n="discountGuide"></span></button>
-          <button class="guide-card home-searchable" data-page="access/reset" data-search="account password login reset help PeopleXD كلمة مرور باسورد دخول حساب"><span class="guide-icon" aria-hidden="true">⌘</span><span data-i18n="accountHelp"></span></button>
-          <button class="guide-card home-searchable" data-page="uniform" data-search="uniform dress clothes safety PPE shoes زي ملابس مظهر حذاء"><span class="guide-icon" aria-hidden="true">◇</span><span data-i18n="uniformDress"></span></button>
-          <button class="guide-card home-searchable" data-page="benefits/travel" data-search="minibus kendal route bus مواصلات ميني باص كندال"><span class="guide-icon" aria-hidden="true">↗</span><span data-i18n="minibusGuide"></span></button>
+          <button class="guide-card" data-page="benefits/meals"><span class="guide-icon" aria-hidden="true">◒</span><span data-i18n="mealGuide"></span></button>
+          <button class="guide-card" data-page="benefits/discounts"><span class="guide-icon" aria-hidden="true">%</span><span data-i18n="discountGuide"></span></button>
+          <button class="guide-card" data-page="access/reset"><span class="guide-icon" aria-hidden="true">⌘</span><span data-i18n="accountHelp"></span></button>
+          <button class="guide-card" data-page="uniform"><span class="guide-icon" aria-hidden="true">◇</span><span data-i18n="uniformDress"></span></button>
+          <button class="guide-card" data-page="benefits/travel"><span class="guide-icon" aria-hidden="true">↗</span><span data-i18n="minibusGuide"></span></button>
         </div>
-        <p id="homeSearchEmpty" class="tiny" data-i18n="nothingFound" hidden></p>
         <div class="section-title" data-i18n="workTools"></div>
         <div class="grid">
           <a class="quick access" href="https://mywestmorland.com" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>PeopleXD</span></a>
