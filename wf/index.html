@@ -76,6 +76,22 @@
     .checklist li:first-child{border-top:0;padding-top:0}
     .num{width:31px;height:31px;border-radius:50%;background:var(--nav);color:#fff;display:grid;place-items:center;font-weight:850;font-size:14px}
     .fire-card .num{background:var(--red)}
+    .task-list{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:9px}
+    .task{
+      display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:start;
+      border-top:1px solid var(--line);padding-top:11px;font-size:17px;line-height:1.45
+    }
+    .task:first-child{border-top:0;padding-top:0}
+    .task-check{
+      appearance:none;-webkit-appearance:none;width:34px;height:34px;border:2px solid #98a2b3;
+      border-radius:10px;background:#fff;display:grid;place-items:center;margin:0;cursor:pointer
+    }
+    .task-check:checked{background:var(--green);border-color:var(--green)}
+    .task-check:checked::after{content:"✓";color:#fff;font-weight:900;font-size:22px;line-height:1}
+    .task-check:checked + .task-text{text-decoration:line-through;color:#667085}
+    .check-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:4px}
+    .progress-pill{font-size:12px;font-weight:850;background:#f2f4f7;color:#344054;border-radius:999px;padding:6px 9px;white-space:nowrap}
+    .reset-checklist{border:1px solid #d0d5dd;background:#fff;color:#344054;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:850;margin-top:12px}
     .sub{font-size:13px;color:var(--muted);display:block;margin-top:2px}
     .row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
     .row:first-of-type{border-top:0}
@@ -185,14 +201,18 @@
           <p data-i18n="fireIntro"></p>
         </div>
 
-        <div class="card fire-card">
-          <h2 data-i18n="forecourtSafe"></h2>
-          <ul class="checklist">
-            <li><span class="num">1</span><span data-i18n="fireStep1"></span></li>
-            <li><span class="num">2</span><span data-i18n="fireStep2"></span></li>
-            <li><span class="num">3</span><span data-i18n="fireStep3"></span></li>
-            <li><span class="num">4</span><span><span data-i18n="fireStep4"></span><span class="sub" data-i18n="onlyIfSafe"></span></span></li>
+        <div class="card fire-card" data-checklist="fire-forecourt">
+          <div class="check-head">
+            <h2 data-i18n="forecourtSafe"></h2>
+            <span class="progress-pill" data-check-progress="fire-forecourt">0 / 4</span>
+          </div>
+          <ul class="task-list">
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-1"><span class="task-text" data-i18n="fireStep1"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-2"><span class="task-text" data-i18n="fireStep2"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-3"><span class="task-text" data-i18n="fireStep3"></span></li>
+            <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-4"><span class="task-text"><span data-i18n="fireStep4"></span><span class="sub" data-i18n="onlyIfSafe"></span></span></li>
           </ul>
+          <button class="reset-checklist" data-reset-checklist="fire-forecourt" data-i18n="resetChecklist"></button>
         </div>
 
         <div class="card warning">
@@ -240,14 +260,14 @@
           <h2>My Westmorland People / PeopleXD</h2>
           <div class="row"><div><div class="key" data-i18n="companyId"></div><div class="value">weslp</div></div><button class="copy" data-copy="weslp" data-i18n="copy"></button></div>
           <div class="row"><div><div class="key" data-i18n="username"></div><div class="value">012636</div></div><button class="copy" data-copy="012636" data-i18n="copy"></button></div>
-          <a class="action" href="https://mywestmorland.com" target="_blank" rel="noopener" data-i18n="openPeopleXD"></a>
+          <a class="action" href="https://apps.apple.com/app/id1277596302" target="_blank" rel="noopener" data-i18n="openPeopleXD"></a>
         </div>
 
         <div class="card">
           <h2>My Westmorland Learn / THRIVE</h2>
           <div class="row"><div><div class="key" data-i18n="workspace"></div><div class="value">westmorland</div></div><button class="copy" data-copy="westmorland" data-i18n="copy"></button></div>
           <div class="row"><div><div class="key" data-i18n="username"></div><div class="value">012636</div></div><button class="copy" data-copy="012636" data-i18n="copy"></button></div>
-          <a class="action" href="https://westmorland.learn.link" target="_blank" rel="noopener" data-i18n="openThrive"></a>
+          <a class="action" href="https://apps.apple.com/app/id1539428355" target="_blank" rel="noopener" data-i18n="openThrive"></a>
         </div>
 
         <div class="card">
@@ -276,7 +296,7 @@
           <div class="row"><div><div class="key" data-i18n="due1Nov"></div><div class="value"><span data-i18n="course5"></span><span class="official">Customer Experience – The Westmorland Way</span></div></div></div>
           <div class="row"><div><div class="key" data-i18n="due1Nov"></div><div class="value"><span data-i18n="course6"></span><span class="official">CBE Procedures – Filling Station Colleagues</span></div></div></div>
           <div class="row"><div><div class="key" data-i18n="due1Nov"></div><div class="value"><span data-i18n="course7"></span><span class="official">Prevention of Sexual Harassment</span></div></div></div>
-          <a class="action" href="https://westmorland.learn.link" target="_blank" rel="noopener" data-i18n="openTraining"></a>
+          <a class="action" href="https://apps.apple.com/app/id1539428355" target="_blank" rel="noopener" data-i18n="openTraining"></a>
         </div>
       </section>
 
@@ -350,14 +370,14 @@
       shiftTime:"ميعاد الشفت", contractedHours:"الساعات المتعاقد عليها", contractedHoursValue:"17 ساعة في الأسبوع",
       hourlyRate:"الأجر بالساعة", hourlyRateValue:"£14.25 في الساعة", payFrequency:"الدفع", weekly:"أسبوعي",
       breakLabel:"البريك", breakValue:"مدفوع — حسب تأكيد المدير",
-      companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح PeopleXD", openThrive:"افتح THRIVE",
+      companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح تطبيق PeopleXD", openThrive:"افتح تطبيق THRIVE",
       firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", postcode:"الرمز البريدي",
       privateCodes:"الأكواد الخاصة", privateCodesNote:"حط أي PIN أو كلمة سر أو رقم حساس في الخزنة الخاصة المشفّرة بدل ما يتكتب داخل كود الموقع.",
       openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين",
       due16:"آخر موعد 16 أكتوبر 2026", due18:"آخر موعد 18 أكتوبر 2026", due1Nov:"آخر موعد 1 نوفمبر 2026",
       course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
       course5:"تجربة العميل – طريقة Westmorland", course6:"إجراءات CBE – موظفي محطة الوقود", course7:"منع التحرش الجنسي",
-      openTraining:"افتح التدريب", vaultNote:"للأرقام أو الملاحظات الحساسة. البيانات بتتشفّر على المتصفح ده ومش بتتخزن على GitHub.",
+      openTraining:"افتح تطبيق THRIVE", resetChecklist:"ابدأ موقف جديد / صفّر العلامات", vaultNote:"للأرقام أو الملاحظات الحساسة. البيانات بتتشفّر على المتصفح ده ومش بتتخزن على GitHub.",
       addPrivateEntry:"أضف بيانات خاصة", home:"الرئيسية", fireNav:"حريق", detailsNav:"بياناتي", trainingNav:"تدريب",
       privateEntry:"بيانات خاصة", label:"الاسم", value:"القيمة", noteOptional:"ملاحظة (اختياري)", cancel:"إلغاء", save:"حفظ",
       noPrivateEntries:"مفيش بيانات خاصة لسه.", reveal:"إظهار", hide:"إخفاء", copy:"نسخ", copied:"اتنسخ", delete:"حذف",
@@ -391,14 +411,14 @@
       shiftTime:"Shift time", contractedHours:"Contracted hours", contractedHoursValue:"17 hours/week",
       hourlyRate:"Hourly rate", hourlyRateValue:"£14.25/hour", payFrequency:"Pay frequency", weekly:"Weekly",
       breakLabel:"Break", breakValue:"Paid — confirmed by manager",
-      companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD", openThrive:"Open THRIVE",
+      companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD app", openThrive:"Open THRIVE app",
       firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", postcode:"Postcode",
       privateCodes:"Private codes", privateCodesNote:"Keep PINs, passwords and other sensitive numbers in the encrypted Private Vault instead of writing them into the site code.",
       openVault:"Open Private Vault", onlineTraining:"Online training",
       due16:"Due 16 Oct 2026", due18:"Due 18 Oct 2026", due1Nov:"Due 1 Nov 2026",
       course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
       course5:"Customer Experience – The Westmorland Way", course6:"CBE Procedures – Filling Station Colleagues", course7:"Prevention of Sexual Harassment",
-      openTraining:"Open training", vaultNote:"For sensitive numbers or notes. Entries are encrypted in this browser and are not stored in GitHub.",
+      openTraining:"Open THRIVE app", resetChecklist:"New incident / reset checks", vaultNote:"For sensitive numbers or notes. Entries are encrypted in this browser and are not stored in GitHub.",
       addPrivateEntry:"Add private entry", home:"Home", fireNav:"Fire", detailsNav:"Details", trainingNav:"Training",
       privateEntry:"Private entry", label:"Label", value:"Value", noteOptional:"Note (optional)", cancel:"Cancel", save:"Save",
       noPrivateEntries:"No private entries yet.", reveal:"Reveal", hide:"Hide", copy:"Copy", copied:"Copied", delete:"Delete",
@@ -589,6 +609,63 @@
     });
   }
 
+  const CHECK_PREFIX = "wf-check-";
+
+  function checklistState(id) {
+    try {
+      const raw = localStorage.getItem(CHECK_PREFIX + id);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return {};
+      if (parsed.updatedAt && Date.now() - parsed.updatedAt > 2 * 60 * 60 * 1000) {
+        localStorage.removeItem(CHECK_PREFIX + id);
+        return {};
+      }
+      return parsed.items || {};
+    } catch {
+      return {};
+    }
+  }
+
+  function restoreChecklists() {
+    document.querySelectorAll("[data-checklist]").forEach(card => {
+      const id = card.dataset.checklist;
+      const state = checklistState(id);
+      card.querySelectorAll("[data-check]").forEach(box => {
+        box.checked = !!state[box.dataset.check];
+      });
+      updateChecklistProgress(id);
+    });
+  }
+
+  function saveChecklist(id) {
+    const card = document.querySelector('[data-checklist="' + id + '"]');
+    if (!card) return;
+    const items = {};
+    card.querySelectorAll("[data-check]").forEach(box => {
+      items[box.dataset.check] = box.checked;
+    });
+    localStorage.setItem(CHECK_PREFIX + id, JSON.stringify({updatedAt:Date.now(), items}));
+    updateChecklistProgress(id);
+  }
+
+  function updateChecklistProgress(id) {
+    const card = document.querySelector('[data-checklist="' + id + '"]');
+    const pill = document.querySelector('[data-check-progress="' + id + '"]');
+    if (!card || !pill) return;
+    const boxes = [...card.querySelectorAll("[data-check]")];
+    const done = boxes.filter(b => b.checked).length;
+    pill.textContent = done + " / " + boxes.length;
+  }
+
+  function resetChecklist(id) {
+    const card = document.querySelector('[data-checklist="' + id + '"]');
+    if (!card) return;
+    card.querySelectorAll("[data-check]").forEach(box => box.checked = false);
+    localStorage.removeItem(CHECK_PREFIX + id);
+    updateChecklistProgress(id);
+  }
+
   function updateOnline() {
     if (!$("offlineStatus")) return;
     $("offlineStatus").textContent = navigator.onLine ? t("online") : t("offline");
@@ -607,6 +684,11 @@
       applyLanguage(langBtn.dataset.lang);
       return;
     }
+    const reset = e.target.closest("[data-reset-checklist]");
+    if (reset) {
+      resetChecklist(reset.dataset.resetChecklist);
+      return;
+    }
     const target = e.target.closest("[data-page]");
     if (target) showPage(target.dataset.page);
     const copy = e.target.closest("[data-copy]");
@@ -617,6 +699,13 @@
         setTimeout(() => copy.textContent = t("copy"), 900);
       });
     }
+  });
+
+  document.addEventListener("change", e => {
+    const box = e.target.closest("[data-check]");
+    if (!box) return;
+    const card = box.closest("[data-checklist]");
+    if (card) saveChecklist(card.dataset.checklist);
   });
 
   $("addSecretBtn").addEventListener("click", () => {
@@ -646,6 +735,7 @@
   }
 
   applyLanguage(lang);
+  restoreChecklists();
   initLock();
 })();
 </script>
