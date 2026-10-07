@@ -377,7 +377,7 @@
           <h2 data-i18n="myJob"></h2>
           <div class="row"><div><div class="key" data-i18n="role"></div><div class="value" data-i18n="roleValue"></div></div></div>
           <div class="row"><div><div class="key" data-i18n="site"></div><div class="value">Tebay Services</div></div></div>
-          <div class="row"><div><div class="key" data-i18n="lineManager"></div><div class="value">Emma Cash · Filling Station Manager</div></div></div>
+          <div class="row"><div><div class="key" data-i18n="lineManager"></div><div class="value" data-i18n="managerValue"></div></div></div>
           <div class="row"><div><div class="key" data-i18n="managerEmail"></div><div class="value">emma.cash@tebayservices.com</div></div><button class="copy" data-copy="emma.cash@tebayservices.com" data-i18n="copy"></button></div>
           <div class="row"><div><div class="key" data-i18n="colleagueNumber"></div><div class="value">012636</div></div><button class="copy" data-copy="012636" data-i18n="copy"></button></div>
           <div class="row"><div><div class="key" data-i18n="startDate"></div><div class="value" data-i18n="startDateValue"></div></div></div>
@@ -424,7 +424,7 @@
           <h2 data-i18n="firstDay"></h2>
           <div class="row"><div><div class="key" data-i18n="date"></div><div class="value" data-i18n="startDateValue"></div></div></div>
           <div class="row"><div><div class="key" data-i18n="time"></div><div class="value">9:30am – 3:30pm</div></div></div>
-          <div class="row"><div><div class="key" data-i18n="location"></div><div class="value">Westmorland Hotel, Northbound</div></div></div>
+          <div class="row"><div><div class="key" data-i18n="location"></div><div class="value" data-i18n="inductionLocation"></div></div></div>
           <div class="row"><div><div class="key" data-i18n="postcode"></div><div class="value">CA10 3SB</div></div><button class="copy" data-copy="CA10 3SB" data-i18n="copy"></button></div>
         </div>
 
@@ -712,7 +712,7 @@
       warden4:"ساعد في الإخلاء واتواصل مع المديرين والمشرفين عند نقطة التجمع.",
       warden5:"امنع أي حد يرجع يدخل المبنى لحد ما خدمة الإطفاء تقول إنه آمن.",
       warden6:"بلّغ خدمة الإطفاء بمكان وطبيعة الحريق، وأي شخص مش متأكدين من وجوده، وأي مخاطر.",
-      myJob:"شغلي", role:"الوظيفة", roleValue:"عضو فريق – محطة الوقود (ليل)", site:"الموقع", lineManager:"المدير المباشر",
+      myJob:"شغلي", role:"الوظيفة", roleValue:"عضو فريق – محطة الوقود (ليل)", site:"الموقع", lineManager:"المدير المباشر", managerValue:"Emma Cash · مديرة محطة الوقود",
       managerEmail:"إيميل المدير", colleagueNumber:"رقم الموظف", startDate:"تاريخ البداية", startDateValue:"7 أكتوبر 2026",
       shiftPay:"الشفت والمرتب", regularShifts:"الشفتات الثابتة", regularShiftsValue:"الجمعة والسبت",
       shiftTime:"ميعاد الشفت", contractedHours:"الساعات المتعاقد عليها", contractedHoursValue:"17 ساعة في الأسبوع",
@@ -722,7 +722,7 @@
       payWeekEnds:"نهاية أسبوع الدفع", payWeekEndsValue:"الأحد", payDay:"يوم الدفع", payDayValue:"الجمعة اللي بعده — دفع أسبوعي",
       kioskSettings:"إعدادات الكشك", kioskId:"رقم الكشك", kioskPin:"الرقم السري", temporaryId:"مؤقت — هيتغير بعدين",
       companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح تطبيق PeopleXD", openThrive:"افتح تطبيق THRIVE",
-      firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", postcode:"الرمز البريدي",
+      firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", inductionLocation:"Westmorland Hotel — الاتجاه الشمالي", postcode:"الرمز البريدي",
       privateCodes:"الأكواد الخاصة", privateCodesNote:"حط أي رقم سري أو كلمة مرور أو رقم حساس في الخزنة الخاصة المشفّرة بدل ما يتكتب داخل كود الموقع.",
       openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين", requiredTraining:"التدريبات المطلوبة", essentialLearning:"الأساسي — أولوية حالية", otherAssignedTraining:"تدريبات مطلوبة أخرى", completedLearning:"التدريبات اللي تمت", completed:"تم",
       course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
@@ -827,7 +827,7 @@
       setupIntro:"Create a passphrase for your personal details and Private Vault. The rest of the reference stays open without a password.",
       newPass:"New passphrase", confirmPass:"Confirm passphrase", createAccess:"Create access",
       setupNote:"Use the Private Vault for sensitive codes and notes. Those entries are not uploaded to GitHub.",
-      appTitle:"WF Quick Reference", enterPass:"Enter your passphrase to open your personal information.", passphrase:"Passphrase", unlock:"Unlock", lock:"Lock",
+      appTitle:"WF Staff Companion", enterPass:"Enter your passphrase to open your personal information.", passphrase:"Passphrase", unlock:"Unlock", lock:"Lock",
       fastReference:"Staff companion", findSeconds:"Find it in seconds.", confirmedOnly:"My details, training, benefits and fast actions for important situations.",
       emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", accountHelp:"Account help", benefits:"Benefits", uniformDress:"Uniform & dress", privateVault:"Private vault",
       backHome:"← Home", fireHeadline:"FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT",
@@ -842,7 +842,7 @@
       warden4:"Assist evacuation and liaise with managers/supervisors at the Assembly Point.",
       warden5:"Prevent re-entry until the Fire Service says it is safe.",
       warden6:"Brief the Fire Service on fire location/nature, anyone unaccounted for and hazards.",
-      myJob:"My job", role:"Role", roleValue:"Team Member – Filling Station (Nights)", site:"Site", lineManager:"Line manager",
+      myJob:"My job", role:"Role", roleValue:"Team Member – Filling Station (Nights)", site:"Site", lineManager:"Line manager", managerValue:"Emma Cash · Filling Station Manager",
       managerEmail:"Manager email", colleagueNumber:"Colleague number", startDate:"Start date", startDateValue:"7 Oct 2026",
       shiftPay:"Shift & pay", regularShifts:"Regular shifts", regularShiftsValue:"Friday & Saturday",
       shiftTime:"Shift time", contractedHours:"Contracted hours", contractedHoursValue:"17 hours/week",
@@ -852,7 +852,7 @@
       payWeekEnds:"Pay week closes", payWeekEndsValue:"Sunday", payDay:"Pay day", payDayValue:"Following Friday — paid weekly",
       kioskSettings:"Kiosk settings", kioskId:"Kiosk ID", kioskPin:"PIN", temporaryId:"Temporary — will change later",
       companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD app", openThrive:"Open THRIVE app",
-      firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", postcode:"Postcode",
+      firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", inductionLocation:"Westmorland Hotel, Northbound", postcode:"Postcode",
       privateCodes:"Private codes", privateCodesNote:"Keep PINs, passwords and other sensitive numbers in the encrypted Private Vault instead of writing them into the site code.",
       openVault:"Open Private Vault", onlineTraining:"Online training", requiredTraining:"Required training", essentialLearning:"Essential Learning — current priority", otherAssignedTraining:"Other assigned training", completedLearning:"Completed learning", completed:"Completed",
       course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
@@ -964,6 +964,7 @@
     localStorage.setItem(LANG_KEY, lang);
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.title = t("appTitle");
     document.querySelectorAll("[data-i18n]").forEach(el => {
       const key = el.dataset.i18n;
       el.textContent = t(key);
@@ -1072,7 +1073,7 @@
     }
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === id));
-    window.scrollTo({top:0, behavior:"instant"});
+    window.scrollTo({top:0, behavior:"auto"});
   }
 
   async function persistVault() {
