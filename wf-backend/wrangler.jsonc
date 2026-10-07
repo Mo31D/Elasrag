@@ -12,5 +12,21 @@
   ],
   "observability": {
     "enabled": true
-  }
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "WF_AUTH",
+        "class_name": "WFAuthGuard"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "wf-auth-v1",
+      "new_sqlite_classes": [
+        "WFAuthGuard"
+      ]
+    }
+  ]
 }

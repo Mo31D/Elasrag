@@ -1,4 +1,4 @@
-const CACHE = "wf-quick-reference-v19";
+const CACHE = "wf-quick-reference-v20";
 const CORE = ["./", "./index.html"];
 
 self.addEventListener("install", event => {
@@ -8,20 +8,28 @@ self.addEventListener("install", event => {
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith("wf-quick-reference-") && key !== CACHE).map(key => caches.delete(key))))
   );
   self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
-  if (event.request.method !== "GET") return;
-  event.respondWith(
-    fetch(event.request)
-      .then(response => {
-        const copy = response.clone();
-        caches.open(CACHE).then(cache => cache.put(event.request, copy));
+  const url = new URL(event.request.url);
+  const scope = new URL(self.registration.scope);
+  // Only the public app shell belongs in this cache.
+  if (event.request.method !== "GET" || url.origin !== scope.origin || ![scope.pathname, scope.pathname + "index.html"].includes(url.pathname)) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    const key = url.pathname === scope.pathname ? "./" : "./index.html";
+    try {
+      const response = await fetch(event.request);
+      if (response.ok && response.type === "basic" && response.headers.get("content-type")?.includes("text/html")) {
+        await cache.put(key, response.clone());
         return response;
-      })
-      .catch(() => caches.match(event.request).then(hit => hit || caches.match("./index.html")))
-  );
+      }
+      return await cache.match(key) || response;
+    } catch {
+      return await cache.match(key) || await cache.match("./index.html") || Response.error();
+    }
+  })());
 });

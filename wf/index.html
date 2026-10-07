@@ -31,13 +31,16 @@
     .field input,.field textarea{width:100%;border:1px solid #d0d5dd;border-radius:12px;padding:13px 14px;background:#fff;color:var(--ink);outline:none}
     .field input:focus,.field textarea:focus{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.12)}
     .primary{width:100%;border:0;border-radius:12px;padding:13px 16px;background:var(--nav);color:#fff;font-weight:800}
+    .error:empty{display:none}
+    #passInput,#oldPass,#profileFields input{font-size:16px}
+    .lock-card{max-height:calc(100dvh - 80px);overflow:auto}
     .error{min-height:20px;color:var(--red);font-size:13px;margin-top:9px}
     .tiny{font-size:12px;color:var(--muted);line-height:1.55}
     #app{min-height:100vh}
     header{position:sticky;top:0;z-index:50;background:rgba(23,33,43,.98);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 12px}
-    .topbar{max-width:780px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .topbar{flex-wrap:wrap;max-width:780px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
     .brand{font-size:17px;font-weight:850;letter-spacing:.01em}
-    .top-actions{display:flex;align-items:center;gap:8px}
+    .top-actions{margin-inline-start:auto;display:flex;align-items:center;gap:8px}
     .lang-switch{display:flex;gap:3px;background:rgba(255,255,255,.1);padding:3px;border-radius:10px}
     .lang-btn{border:0;background:transparent;color:#d0d5dd;border-radius:8px;padding:6px 9px;font-weight:800;font-size:12px}
     .lang-btn.active{background:#fff;color:var(--nav)}
@@ -134,7 +137,7 @@
       padding:calc(7px + env(safe-area-inset-top)) 12px 8px;
       box-shadow:0 1px 0 rgba(255,255,255,.05)
     }
-    .topbar{max-width:640px;min-height:42px;gap:8px}
+    .topbar{flex-wrap:wrap;max-width:640px;min-height:42px;gap:8px}
     .brand{
       font-size:15px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
       max-width:42%
@@ -272,17 +275,7 @@
     </div>
     <div class="lock-card">
       <div class="lock-mark">WF</div>
-      <div id="setupMode" class="hidden">
-        <h1 data-i18n="setupTitle"></h1>
-        <p data-i18n="setupIntro"></p>
-        <div class="field"><label for="newPass" data-i18n="newPass"></label><input id="newPass" type="password" autocomplete="new-password" minlength="6"></div>
-        <div class="field"><label for="confirmPass" data-i18n="confirmPass"></label><input id="confirmPass" type="password" autocomplete="new-password" minlength="6"></div>
-        <button id="setupBtn" class="primary" data-i18n="createAccess"></button>
-        <button class="secondary primary private-cancel" type="button" data-i18n="cancel"></button>
-        <div id="setupError" class="error"></div>
-        <div class="tiny" data-i18n="setupNote"></div>
-      </div>
-      <div id="unlockMode" class="hidden">
+      <div id="unlockMode">
         <h1 data-i18n="appTitle"></h1>
         <p data-i18n="enterPass"></p>
         <div class="field"><label for="passInput" data-i18n="passphrase"></label><input id="passInput" type="password" autocomplete="current-password"></div>
@@ -298,6 +291,7 @@
       <div class="topbar">
         <div class="brand" data-i18n="appTitle"></div>
         <div class="top-actions">
+          <button id="logoutBtn" class="lock-btn hidden" data-i18n="logout"></button>
           <div class="lang-switch">
             <button class="lang-btn" data-lang="ar">عربي</button>
             <button class="lang-btn" data-lang="en">English</button>
@@ -307,6 +301,7 @@
     </header>
 
     <main>
+      <p id="privateMessage" class="error" role="status" aria-live="polite"></p>
       <section id="home" class="page active">
         <div class="hero">
           <div class="eyebrow" data-i18n="fastReference"></div>
@@ -373,7 +368,7 @@
           <div class="row"><div><div class="key" data-i18n="site"></div><div class="value">Tebay Services</div></div></div>
           <div class="row"><div><div class="key" data-i18n="lineManager"></div><div class="value" data-i18n="managerValue"></div></div></div>
           <div class="row"><div><div class="key" data-i18n="managerEmail"></div><div class="value">emma.cash@tebayservices.com</div></div><button class="copy" data-copy="emma.cash@tebayservices.com" data-i18n="copy"></button></div>
-          <div class="row"><div><div class="key" data-i18n="colleagueNumber"></div><div class="value">012636</div></div><button class="copy" data-copy="012636" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="colleagueNumber"></div><div class="value" data-private="colleagueNumber"></div></div><button class="copy" data-private-copy="colleagueNumber" data-i18n="copy"></button></div>
           <div class="row"><div><div class="key" data-i18n="startDate"></div><div class="value" data-i18n="startDateValue"></div></div></div>
         </div>
 
@@ -394,23 +389,23 @@
           <div class="row"><div><div class="key" data-i18n="payDay"></div><div class="value" data-i18n="payDayValue"></div></div></div>
         </div>
 
-        <div class="card warning">
+        <div class="card warning" data-private-card>
           <h2 data-i18n="kioskSettings"></h2>
-          <div class="row"><div><div class="key" data-i18n="kioskId"></div><div class="value">101089</div><span class="sub" data-i18n="temporaryId"></span></div><button class="copy" data-copy="101089" data-i18n="copy"></button></div>
-          <div class="row"><div><div class="key" data-i18n="kioskPin"></div><div class="value">3170</div></div><button class="copy" data-copy="3170" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="kioskId"></div><div class="value" data-private="kioskId"></div><span class="sub" data-i18n="temporaryId"></span></div><button class="copy" data-private-copy="kioskId" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="kioskPin"></div><div class="value" data-private="kioskPin"></div></div><button class="copy" data-private-copy="kioskPin" data-i18n="copy"></button></div>
         </div>
 
         <div class="card">
           <h2>My Westmorland People / PeopleXD</h2>
           <div class="row"><div><div class="key" data-i18n="companyId"></div><div class="value">weslp</div></div><button class="copy" data-copy="weslp" data-i18n="copy"></button></div>
-          <div class="row"><div><div class="key" data-i18n="username"></div><div class="value">012636</div></div><button class="copy" data-copy="012636" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="username"></div><div class="value" data-private="colleagueNumber"></div></div><button class="copy" data-private-copy="colleagueNumber" data-i18n="copy"></button></div>
           <a class="action" href="https://apps.apple.com/app/id1277596302" target="_blank" rel="noopener" data-i18n="openPeopleXD"></a>
         </div>
 
         <div class="card">
           <h2>My Westmorland Learn / THRIVE</h2>
           <div class="row"><div><div class="key" data-i18n="workspace"></div><div class="value">westmorland</div></div><button class="copy" data-copy="westmorland" data-i18n="copy"></button></div>
-          <div class="row"><div><div class="key" data-i18n="username"></div><div class="value">012636</div></div><button class="copy" data-copy="012636" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="username"></div><div class="value" data-private="thriveUsername"></div></div><button class="copy" data-private-copy="thriveUsername" data-i18n="copy"></button></div>
           <a class="action" href="https://apps.apple.com/app/id1539428355" target="_blank" rel="noopener" data-i18n="openThrive"></a>
         </div>
 
@@ -645,6 +640,8 @@
           <h2 data-i18n="privateVault"></h2>
           <p class="tiny" data-i18n="vaultNote"></p>
           <button id="addSecretBtn" class="primary" data-i18n="addPrivateEntry"></button>
+          <button id="editProfileBtn" class="secondary primary" data-i18n="editAccountDetails"></button>
+          <button id="importLegacyBtn" class="secondary primary hidden" data-i18n="importOldVault"></button>
           <div id="vaultList" class="vault-list"></div>
         </div>
       </section>
@@ -660,11 +657,25 @@
     </nav>
   </div>
 
+  <dialog id="profileDialog">
+    <h3 data-i18n="editAccountDetails"></h3>
+    <div id="profileFields"></div>
+    <p id="profileError" class="error" role="status"></p>
+    <div class="dialog-actions"><button id="cancelProfile" class="secondary" data-i18n="cancel"></button><button id="saveProfile" class="primary" data-i18n="save"></button></div>
+  </dialog>
+  <dialog id="migrationDialog">
+    <h3 data-i18n="importOldVault"></h3>
+    <p data-i18n="importOldIntro"></p>
+    <div class="field"><label for="oldPass" data-i18n="oldPassword"></label><input id="oldPass" type="password" autocomplete="off"></div>
+    <p id="migrationError" class="error" role="status"></p>
+    <div class="dialog-actions"><button id="cancelMigration" class="secondary" data-i18n="cancel"></button><button id="migrateVault" class="primary" data-i18n="importEntries"></button></div>
+  </dialog>
   <dialog id="secretDialog">
     <h3 style="margin:0 0 10px" data-i18n="privateEntry"></h3>
     <div class="field"><label for="secretLabel" data-i18n="label"></label><input id="secretLabel" autocomplete="off"></div>
     <div class="field"><label for="secretValue" data-i18n="value"></label><input id="secretValue" autocomplete="off"></div>
     <div class="field"><label for="secretNote" data-i18n="noteOptional"></label><textarea id="secretNote" rows="3"></textarea></div>
+    <p id="secretError" class="error" role="status"></p>
     <div class="dialog-actions">
       <button id="cancelSecret" class="secondary" data-i18n="cancel"></button>
       <button id="saveSecret" class="primary" data-i18n="save"></button>
@@ -678,7 +689,17 @@
   const LANG_KEY = "wf-language-v1";
   const enc = new TextEncoder();
   const dec = new TextDecoder();
-  let cryptoKey = null;
+  const API_BASE = "https://mo.elasrag.com";
+  const PROFILE_KEYS = ["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername"];
+  let safeWorkerReady = Promise.resolve(true);
+  let authenticated = false;
+  let privateData = null;
+  let privateRevision = null;
+  let navigationVersion = 0;
+  let activePage = "home";
+  let editingIndex = null;
+  let saving = false;
+  let resumePrivatePage = null;
   let vaultItems = [];
   let pendingPrivatePage = null;
   const PROTECTED_PAGES = new Set(["details","vault"]);
@@ -686,10 +707,7 @@
 
   const T = {
     ar: {
-      setupTitle:"أمّن بياناتك الشخصية",
-      setupIntro:"اعمل كلمة مرور لصفحة بياناتك الشخصية والخزنة الخاصة. باقي المرجع يفضل مفتوح من غير باسورد.",
-      newPass:"كلمة مرور جديدة", confirmPass:"أكد كلمة المرور", createAccess:"إنشاء الدخول",
-      setupNote:"الخزنة الخاصة معمولة للأرقام السرية والملاحظات الحساسة. البيانات دي ما بتترفعش على GitHub.",
+      logout:"تسجيل الخروج",apiError:"مش قادر أفتح بياناتك دلوقتي. حاول تاني.",tooMany:"محاولات كتير. حاول بعد شوية.",conflict:"البيانات اتغيّرت على جهاز تاني. افتح الخزنة تاني قبل الحفظ.",edit:"تعديل",editAccountDetails:"تعديل بيانات الحسابات",workPin:"الرقم السري للشغل",thriveUsername:"اسم المستخدم في THRIVE",importOldVault:"استيراد الخزنة القديمة",importOldIntro:"اكتب كلمة مرور الخزنة القديمة على الجهاز ده لاستيراد محتوياتها. النسخة القديمة هتفضل محفوظة.",oldPassword:"كلمة المرور القديمة",importEntries:"استيراد",importDone:"تم استيراد المحتويات وحفظها.",emptyOldVault:"الخزنة القديمة مفيهاش محتويات.",importFailed:"تعذر فتح الخزنة القديمة. راجع كلمة المرور.",logoutFailed:"تم قفل البيانات هنا. تعذر إكمال تسجيل الخروج؛ حاول تاني.",saveFailed:"تعذر الحفظ. محتوياتك لسه مفتوحة؛ حاول تاني.",invalidEntry:"راجع حجم البيانات المدخلة.",
       appTitle:"مساعد موظف ويستمورلاند", enterPass:"اكتب كلمة المرور علشان تفتح بياناتك الشخصية.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
       fastReference:"مساعد الموظف", findSeconds:"هات المعلومة في ثواني.", confirmedOnly:"بياناتي، تدريبي، المزايا، والتصرف السريع في المواقف المهمة.",
       emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", accountHelp:"مساعدة الدخول", benefits:"المزايا", uniformDress:"الزي والمظهر", privateVault:"الخزنة الخاصة",
@@ -715,7 +733,7 @@
       kioskSettings:"إعدادات الكشك", kioskId:"رقم الكشك", kioskPin:"الرقم السري", temporaryId:"رقم مؤقت",
       companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح تطبيق PeopleXD", openThrive:"افتح تطبيق THRIVE",
       firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", inductionLocation:"Westmorland Hotel — الاتجاه الشمالي", postcode:"الرمز البريدي",
-      privateCodes:"الأكواد الخاصة", privateCodesNote:"حط أي رقم سري أو كلمة مرور أو رقم حساس في الخزنة الخاصة المشفّرة بدل ما يتكتب داخل كود الموقع.",
+      privateCodes:"الأكواد الخاصة", privateCodesNote:"إدارة بيانات حساباتك وأرقامك وملاحظاتك الخاصة.",
       openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين", requiredTraining:"التدريبات المطلوبة", essentialLearning:"الأساسي — أولوية حالية", otherAssignedTraining:"تدريبات مطلوبة أخرى", completedLearning:"التدريبات اللي تمت", completed:"تم",
       course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
       completed1:"إجراء وجبات الموظفين",
@@ -805,20 +823,17 @@
       personalNote:"ملاءمة الشفت", nightMinibusNote:"الميني باص غير متاح لنظام شفت الليل الحالي.",
       benefitsPolicyNote:"مرجع السياسة: إجراء وجبات الموظفين إصدار 4 (20/06/23) · سياسة خصومات الموظفين إصدار 7 (29/12/23). المزايا قابلة للتعديل.",
       duePrefix:"آخر موعد", daysLeftOne:"فاضل يوم", daysLeftMany:"فاضل {n} أيام", dueToday:"آخر يوم النهارده", overdueOne:"متأخر يوم", overdueMany:"متأخر {n} أيام",
-      openTraining:"افتح تطبيق THRIVE", resetChecklist:"ابدأ موقف جديد / صفّر العلامات", vaultNote:"للأرقام أو الملاحظات الحساسة. البيانات بتتشفّر على المتصفح ده ومش بتتخزن على GitHub.",
+      openTraining:"افتح تطبيق THRIVE", resetChecklist:"ابدأ موقف جديد / صفّر العلامات", vaultNote:"أرقامك وملاحظاتك الخاصة، متاحة بعد الدخول من أجهزتك.",
       addPrivateEntry:"أضف بيانات خاصة", home:"الرئيسية", fireNav:"حريق", detailsNav:"بياناتي", trainingNav:"تدريب",
       privateEntry:"بيانات خاصة", label:"الاسم", value:"القيمة", noteOptional:"ملاحظة (اختياري)", cancel:"إلغاء", save:"حفظ",
       noPrivateEntries:"مفيش بيانات خاصة لسه.", reveal:"إظهار", hide:"إخفاء", copy:"نسخ", copied:"اتنسخ", delete:"حذف",
-      deleteConfirm:"تحذف البيانات دي؟", passTooShort:"استخدم 6 حروف أو أرقام على الأقل.", passMismatch:"كلمتا المرور مش متطابقين.",
-      setupFail:"ماقدرتش أأمّن الجهاز.", wrongPass:"كلمة المرور غلط.", online:"متصل · النسخة الأوفلاين بتبقى متاحة بعد أول تحميل",
+      deleteConfirm:"تحذف البيانات دي؟",
+      wrongPass:"كلمة المرور غلط.", online:"متصل · النسخة الأوفلاين بتبقى متاحة بعد أول تحميل",
       offline:"أوفلاين · المرجع محفوظ على الجهاز", ready:"جاهز"
     },
     en: {
-      setupTitle:"Protect your personal information",
-      setupIntro:"Create a passphrase for your personal details and Private Vault. The rest of the reference stays open without a password.",
-      newPass:"New passphrase", confirmPass:"Confirm passphrase", createAccess:"Create access",
-      setupNote:"Use the Private Vault for sensitive codes and notes. Those entries are not uploaded to GitHub.",
-      appTitle:"WF Staff Companion", enterPass:"Enter your passphrase to open your personal information.", passphrase:"Passphrase", unlock:"Unlock", lock:"Lock",
+      logout:"Sign out",apiError:"Unable to open your information. Please try again.",tooMany:"Too many attempts. Please try again later.",conflict:"Your information changed on another device. Reopen the vault before saving.",edit:"Edit",editAccountDetails:"Edit account details",workPin:"Work PIN",thriveUsername:"THRIVE username",importOldVault:"Import old vault",importOldIntro:"Enter the old vault password for this device to import its entries. The old copy will be kept.",oldPassword:"Old password",importEntries:"Import",importDone:"Entries imported and saved.",emptyOldVault:"The old vault has no entries.",importFailed:"Unable to open the old vault. Check its password.",logoutFailed:"Information is locked here. Sign out could not finish; please try again.",saveFailed:"Unable to save. Your entries are still open; please try again.",invalidEntry:"Check the size of the information entered.",
+      appTitle:"WF Staff Companion", enterPass:"Enter your password to open your personal information.", passphrase:"Password", unlock:"Unlock", lock:"Lock",
       fastReference:"Staff companion", findSeconds:"Find it in seconds.", confirmedOnly:"My details, training, benefits and fast actions for important situations.",
       emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", accountHelp:"Account help", benefits:"Benefits", uniformDress:"Uniform & dress", privateVault:"Private vault",
       backHome:"← Home", fireHeadline:"FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT",
@@ -843,7 +858,7 @@
       kioskSettings:"Kiosk settings", kioskId:"Kiosk ID", kioskPin:"PIN", temporaryId:"Temporary ID",
       companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD app", openThrive:"Open THRIVE app",
       firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", inductionLocation:"Westmorland Hotel, Northbound", postcode:"Postcode",
-      privateCodes:"Private codes", privateCodesNote:"Keep PINs, passwords and other sensitive numbers in the encrypted Private Vault instead of writing them into the site code.",
+      privateCodes:"Private codes", privateCodesNote:"Manage your private account details, codes and notes in the Private Vault.",
       openVault:"Open Private Vault", onlineTraining:"Online training", requiredTraining:"Required training", essentialLearning:"Essential Learning — current priority", otherAssignedTraining:"Other assigned training", completedLearning:"Completed learning", completed:"Completed",
       course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
       completed1:"Colleague Meal Procedure",
@@ -933,19 +948,18 @@
       personalNote:"Shift applicability", nightMinibusNote:"The minibus is unavailable for the current night-shift pattern.",
       benefitsPolicyNote:"Policy reference: Colleague Meal Procedure v4 (20/06/23) · Colleague Discount Policy v7 (29/12/23). Benefits may be amended.",
       duePrefix:"Due", daysLeftOne:"1 day left", daysLeftMany:"{n} days left", dueToday:"Due today", overdueOne:"1 day overdue", overdueMany:"{n} days overdue",
-      openTraining:"Open THRIVE app", resetChecklist:"New incident / reset checks", vaultNote:"For sensitive numbers or notes. Entries are encrypted in this browser and are not stored in GitHub.",
+      openTraining:"Open THRIVE app", resetChecklist:"New incident / reset checks", vaultNote:"Your private numbers and notes, available after signing in on your devices.",
       addPrivateEntry:"Add private entry", home:"Home", fireNav:"Fire", detailsNav:"Details", trainingNav:"Training",
       privateEntry:"Private entry", label:"Label", value:"Value", noteOptional:"Note (optional)", cancel:"Cancel", save:"Save",
       noPrivateEntries:"No private entries yet.", reveal:"Reveal", hide:"Hide", copy:"Copy", copied:"Copied", delete:"Delete",
-      deleteConfirm:"Delete this private entry?", passTooShort:"Use at least 6 characters.", passMismatch:"Passphrases do not match.",
-      setupFail:"Could not secure this device.", wrongPass:"Incorrect passphrase.", online:"Online · offline copy available after first load",
+      deleteConfirm:"Delete this private entry?",
+      wrongPass:"Incorrect password.", online:"Online · offline copy available after first load",
       offline:"Offline · cached reference", ready:"Ready"
     }
   };
 
   const $ = id => document.getElementById(id);
   const t = key => (T[lang] && T[lang][key]) || key;
-  const toB64 = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));
   const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
 
   function applyLanguage(next) {
@@ -965,6 +979,7 @@
     updateOnline();
     updateTrainingDeadlines();
     renderVault();
+    document.querySelectorAll("[data-error-key]").forEach(el => { el.textContent = el.dataset.errorKey ? t(el.dataset.errorKey) : ""; });
   }
 
   async function deriveKey(passphrase, salt) {
@@ -978,96 +993,185 @@
     );
   }
 
-  async function encryptText(text, key) {
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const cipher = await crypto.subtle.encrypt({name:"AES-GCM", iv}, key, enc.encode(text));
-    return {iv:toB64(iv), data:toB64(cipher)};
-  }
-
   async function decryptText(payload, key) {
     const plain = await crypto.subtle.decrypt({name:"AES-GCM", iv:fromB64(payload.iv)}, key, fromB64(payload.data));
     return dec.decode(plain);
   }
 
+  function errorKey(error) {
+    return error.status === 401 ? "wrongPass" : error.status === 429 ? "tooMany" : error.status === 409 ? "conflict" : "apiError";
+  }
+
+  function message(id, key) {
+    const el = $(id);
+    el.dataset.errorKey = key || "";
+    el.textContent = key ? t(key) : "";
+  }
+
+  async function api(path, options = {}) {
+    if (!(await safeWorkerReady)) throw new Error();
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+    try {
+      const response = await fetch(API_BASE + path, {
+        ...options, credentials: "include", cache: "no-store", redirect: "error",
+        signal: controller.signal,
+        headers: { ...(options.body ? { "content-type": "application/json" } : {}), ...options.headers },
+      });
+      if (!response.ok) throw Object.assign(new Error(), { status: response.status });
+      return { body: await response.json(), revision: response.headers.get("etag") };
+    } finally { clearTimeout(timer); }
+  }
+
+  function clearPrivateData() {
+    authenticated = false;
+    privateData = null;
+    privateRevision = null;
+    vaultItems = [];
+    editingIndex = null;
+    $("vaultList").replaceChildren();
+    document.querySelectorAll("[data-private]").forEach(el => { el.textContent = ""; el.closest(".row").hidden = true; });
+    document.querySelectorAll("[data-private-copy]").forEach(el => delete el.dataset.copy);
+    ["secretDialog", "profileDialog", "migrationDialog"].forEach(id => { if ($(id).open) $(id).close(); });
+    ["secretLabel", "secretValue", "secretNote", "oldPass", "passInput"].forEach(id => $(id).value = "");
+    $("profileFields").replaceChildren();
+    document.querySelectorAll("[data-private-card]").forEach(el => el.hidden = true);
+    $("logoutBtn").classList.add("hidden");
+  }
+
+  function renderPrivateProfile() {
+    document.querySelectorAll("[data-private]").forEach(el => {
+      const value = privateData?.profile?.[el.dataset.private] || (el.dataset.private === "thriveUsername" ? privateData?.profile?.colleagueNumber : "") || "";
+      el.textContent = value;
+      el.closest(".row").hidden = !value;
+    });
+    document.querySelectorAll("[data-private-copy]").forEach(el => {
+      const value = privateData?.profile?.[el.dataset.privateCopy] || (el.dataset.privateCopy === "thriveUsername" ? privateData?.profile?.colleagueNumber : "");
+      if (value) el.dataset.copy = value;
+      else delete el.dataset.copy;
+    });
+    document.querySelectorAll("[data-private-card]").forEach(el => el.hidden = Array.from(el.querySelectorAll(".row")).every(row => row.hidden));
+  }
+
   function openPrivateGate(pageId) {
     pendingPrivatePage = pageId || "details";
-    const meta = localStorage.getItem(META_KEY);
-    $("setupMode").classList.toggle("hidden", !!meta);
-    $("unlockMode").classList.toggle("hidden", !meta);
-    $("setupError").textContent = "";
-    $("unlockError").textContent = "";
+    clearPrivateData();
+    displayPage("home");
+    message("unlockError", "");
     $("lockScreen").classList.remove("hidden");
-    setTimeout(() => (meta ? $("passInput") : $("newPass")).focus(), 40);
+    $("passInput").focus();
   }
 
   function closePrivateGate() {
+    navigationVersion++;
     $("lockScreen").classList.add("hidden");
     $("passInput").value = "";
-    $("newPass").value = "";
-    $("confirmPass").value = "";
     pendingPrivatePage = null;
-  }
-
-  function finishPrivateUnlock() {
-    const destination = pendingPrivatePage || "details";
-    $("lockScreen").classList.add("hidden");
-    $("passInput").value = "";
-    $("newPass").value = "";
-    $("confirmPass").value = "";
-    renderVault();
-    showPage(destination, true);
-    pendingPrivatePage = null;
-  }
-
-  async function setup() {
-    $("setupError").textContent = "";
-    const p1 = $("newPass").value;
-    const p2 = $("confirmPass").value;
-    if (p1.length < 6) return $("setupError").textContent = t("passTooShort");
-    if (p1 !== p2) return $("setupError").textContent = t("passMismatch");
-    try {
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-      const key = await deriveKey(p1, salt);
-      const verifier = await encryptText("wf-ok-v1", key);
-      localStorage.setItem(META_KEY, JSON.stringify({salt:toB64(salt), verifier}));
-      localStorage.setItem(DATA_KEY, JSON.stringify(await encryptText("[]", key)));
-      cryptoKey = key;
-      vaultItems = [];
-      finishPrivateUnlock();
-    } catch {
-      $("setupError").textContent = t("setupFail");
-    }
+    displayPage("home");
+    history.replaceState(null, "", "#home");
   }
 
   async function unlock() {
-    $("unlockError").textContent = "";
+    if ($("unlockBtn").disabled) return;
+    const destination = pendingPrivatePage || "details";
+    const version = navigationVersion;
+    message("unlockError", "");
+    $("unlockBtn").disabled = true;
     try {
-      const meta = JSON.parse(localStorage.getItem(META_KEY));
-      const key = await deriveKey($("passInput").value, fromB64(meta.salt));
-      const check = await decryptText(meta.verifier, key);
-      if (check !== "wf-ok-v1") throw new Error("bad");
-      cryptoKey = key;
-      const stored = localStorage.getItem(DATA_KEY);
-      vaultItems = stored ? JSON.parse(await decryptText(JSON.parse(stored), key)) : [];
-      finishPrivateUnlock();
-    } catch {
-      $("unlockError").textContent = t("wrongPass");
-    }
+      await api("/login", { method: "POST", body: JSON.stringify({ password: $("passInput").value }) });
+      if (version !== navigationVersion) return;
+      $("passInput").value = "";
+      await showPage(destination);
+    } catch (error) { if (version === navigationVersion) message("unlockError", errorKey(error)); }
+    finally { $("unlockBtn").disabled = false; }
   }
 
-  function showPage(id, bypassProtection = false) {
-    if (!bypassProtection && PROTECTED_PAGES.has(id) && !cryptoKey) {
-      openPrivateGate(id);
-      return;
-    }
+  function displayPage(id) {
+    activePage = id;
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === id));
     window.scrollTo({top:0, behavior:"auto"});
   }
 
-  async function persistVault() {
-    if (!cryptoKey) return;
-    localStorage.setItem(DATA_KEY, JSON.stringify(await encryptText(JSON.stringify(vaultItems), cryptoKey)));
+  async function showPage(id) {
+    if (!$(id)?.classList.contains("page")) id = "home";
+    const version = ++navigationVersion;
+    resumePrivatePage = null;
+    message("privateMessage", "");
+    if (PROTECTED_PAGES.has(id)) {
+      clearPrivateData();
+      displayPage("home");
+      try {
+        const session = await api("/session");
+        if (version !== navigationVersion) return;
+        if (!session.body.authenticated) { openPrivateGate(id); return; }
+        const loaded = await api("/private");
+        if (version !== navigationVersion) return;
+        privateData = loaded.body.data;
+        privateRevision = loaded.revision;
+        if (!privateData || privateData.version !== 1 || !Array.isArray(privateData.items) || !privateData.profile || !privateRevision) throw new Error();
+        authenticated = true;
+        vaultItems = privateData.items;
+        renderPrivateProfile();
+        renderVault();
+        $("importLegacyBtn").classList.toggle("hidden", !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)));
+        $("logoutBtn").classList.remove("hidden");
+        $("lockScreen").classList.add("hidden");
+        $("passInput").value = "";
+        pendingPrivatePage = null;
+      } catch (error) {
+        if (version !== navigationVersion) return;
+        openPrivateGate(id);
+        message("unlockError", error.status === 401 ? "" : errorKey(error));
+        return;
+      }
+    } else {
+      clearPrivateData();
+      $("lockScreen").classList.add("hidden");
+      pendingPrivatePage = null;
+    }
+    displayPage(id);
+    history.replaceState(null, "", "#" + id);
+  }
+
+  async function persistVault(nextItems, nextProfile = privateData?.profile) {
+    if (!authenticated || !privateData || saving) throw new Error();
+    if (nextItems.length > 200 || nextItems.some(item => item.label.length > 200 || item.value.length > 4096 || item.note.length > 4096)) {
+      throw Object.assign(new Error(), { status: 400 });
+    }
+    const version = navigationVersion;
+    saving = true;
+    try {
+      const data = { version: 1, profile: nextProfile, items: nextItems };
+      const result = await api("/private", { method: "PUT", body: JSON.stringify(data), headers: { "if-match": privateRevision } });
+      if (version !== navigationVersion || !authenticated) return false;
+      if (JSON.stringify(result.body.data) !== JSON.stringify(data) || !result.revision) throw new Error();
+      privateData = result.body.data;
+      privateRevision = result.revision;
+      vaultItems = privateData.items;
+      renderPrivateProfile();
+      renderVault();
+      return true;
+    } catch (error) {
+      if (error.status === 401) {
+        const destination = PROTECTED_PAGES.has(activePage) ? activePage : "vault";
+        navigationVersion++;
+        openPrivateGate(destination);
+      }
+      throw error;
+    } finally { saving = false; }
+  }
+
+  async function logout() {
+    navigationVersion++;
+    clearPrivateData();
+    $("lockScreen").classList.add("hidden");
+    pendingPrivatePage = null;
+    resumePrivatePage = null;
+    displayPage("home");
+    history.replaceState(null, "", "#home");
+    try { await api("/logout", { method: "POST" }); message("privateMessage", ""); }
+    catch { message("privateMessage", "logoutFailed"); $("logoutBtn").classList.remove("hidden"); }
   }
 
   function renderVault() {
@@ -1125,11 +1229,16 @@
       del.className = "danger-text";
       del.addEventListener("click", async () => {
         if (!confirm(t("deleteConfirm"))) return;
-        vaultItems.splice(index,1);
-        await persistVault();
-        renderVault();
+        if (saving) return;
+        del.disabled = true;
+        try { await persistVault(vaultItems.filter((_, i) => i !== index)); }
+        catch (error) { message("privateMessage", errorKey(error)); }
+        finally { del.disabled = false; }
       });
-      actions.append(reveal, copy, del);
+      const edit = document.createElement("button");
+      edit.textContent = t("edit");
+      edit.addEventListener("click", () => openEntry(index));
+      actions.append(reveal, copy, edit, del);
       wrap.appendChild(actions);
       host.appendChild(wrap);
     });
@@ -1242,10 +1351,7 @@
     $("offlineStatus").textContent = navigator.onLine ? t("online") : t("offline");
   }
 
-  $("setupBtn").addEventListener("click", setup);
   $("unlockBtn").addEventListener("click", unlock);
-  $("newPass").addEventListener("keydown", e => { if (e.key === "Enter") $("confirmPass").focus(); });
-  $("confirmPass").addEventListener("keydown", e => { if (e.key === "Enter") setup(); });
   $("passInput").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
   document.querySelectorAll(".private-cancel").forEach(btn => btn.addEventListener("click", closePrivateGate));
 
@@ -1279,24 +1385,132 @@
     if (card) saveChecklist(card.dataset.checklist);
   });
 
-  $("addSecretBtn").addEventListener("click", () => {
-    $("secretLabel").value = "";
-    $("secretValue").value = "";
-    $("secretNote").value = "";
+  function openEntry(index = null) {
+    if (!authenticated || saving) return;
+    editingIndex = index;
+    const item = index == null ? {} : vaultItems[index];
+    $("secretLabel").value = item.label || "";
+    $("secretValue").value = item.value || "";
+    $("secretNote").value = item.note || "";
+    message("secretError", "");
     $("secretDialog").showModal();
-    setTimeout(() => $("secretLabel").focus(), 50);
-  });
+    $("secretLabel").focus();
+  }
+  $("addSecretBtn").addEventListener("click", () => openEntry());
   $("cancelSecret").addEventListener("click", () => $("secretDialog").close());
   $("saveSecret").addEventListener("click", async () => {
+    if (saving || !authenticated) return;
     const label = $("secretLabel").value.trim();
     const value = $("secretValue").value.trim();
     const note = $("secretNote").value.trim();
     if (!label || !value) return;
-    vaultItems.push({label,value,note});
-    await persistVault();
-    $("secretDialog").close();
-    renderVault();
+    const next = vaultItems.map(item => ({ ...item }));
+    if (editingIndex == null) next.push({label,value,note});
+    else next[editingIndex] = {label,value,note};
+    $("saveSecret").disabled = true;
+    try { if (await persistVault(next)) $("secretDialog").close(); }
+    catch (error) { message("secretError", error.status === 400 ? "invalidEntry" : errorKey(error)); }
+    finally { $("saveSecret").disabled = false; }
   });
+  $("secretDialog").addEventListener("close", () => {
+    ["secretLabel", "secretValue", "secretNote"].forEach(id => $(id).value = "");
+  });
+  $("logoutBtn").addEventListener("click", logout);
+
+  $("editProfileBtn").addEventListener("click", () => {
+    if (!authenticated || saving) return;
+    $("profileFields").replaceChildren();
+    PROFILE_KEYS.forEach(key => {
+      const field = document.createElement("div"); field.className = "field";
+      const label = document.createElement("label"); label.textContent = t(key); label.dataset.i18n = key; label.htmlFor = "profile-" + key;
+      const input = document.createElement("input"); input.id = "profile-" + key; input.dataset.profile = key;
+      input.maxLength = 256; input.autocomplete = "off"; input.dir = "ltr";
+      input.value = privateData.profile[key] || "";
+      if (key.toLowerCase().includes("pin")) input.type = "password";
+      field.append(label, input); $("profileFields").append(field);
+    });
+    message("profileError", "");
+    $("profileDialog").showModal();
+  });
+  $("cancelProfile").addEventListener("click", () => $("profileDialog").close());
+  $("profileDialog").addEventListener("close", () => $("profileFields").replaceChildren());
+  $("saveProfile").addEventListener("click", async () => {
+    if (saving || !authenticated) return;
+    const profile = {};
+    document.querySelectorAll("[data-profile]").forEach(input => { if (input.value.trim()) profile[input.dataset.profile] = input.value.trim(); });
+    $("saveProfile").disabled = true;
+    try { if (await persistVault(vaultItems, profile)) $("profileDialog").close(); }
+    catch (error) { message("profileError", errorKey(error)); }
+    finally { $("saveProfile").disabled = false; }
+  });
+
+  $("importLegacyBtn").addEventListener("click", () => {
+    if (!authenticated || saving) return;
+    $("oldPass").value = "";
+    message("migrationError", "");
+    $("migrationDialog").showModal();
+    $("oldPass").focus();
+  });
+  $("cancelMigration").addEventListener("click", () => $("migrationDialog").close());
+  $("migrationDialog").addEventListener("close", () => $("oldPass").value = "");
+  $("migrateVault").addEventListener("click", async () => {
+    if (saving || !authenticated || $("migrateVault").disabled) return;
+    const version = navigationVersion;
+    $("migrateVault").disabled = true;
+    let entries;
+    try {
+      const meta = JSON.parse(localStorage.getItem(META_KEY));
+      const key = await deriveKey($("oldPass").value, fromB64(meta.salt));
+      if (await decryptText(meta.verifier, key) !== "wf-ok-v1") throw new Error();
+      entries = JSON.parse(await decryptText(JSON.parse(localStorage.getItem(DATA_KEY)), key));
+      if (!Array.isArray(entries) || entries.some(item => !item || typeof item.label !== "string" || typeof item.value !== "string" || (item.note != null && typeof item.note !== "string"))) throw new Error();
+    } catch {
+      message("migrationError", "importFailed");
+      $("migrateVault").disabled = false;
+      return;
+    }
+    try {
+      if (!authenticated || version !== navigationVersion) return;
+      if (!entries.length) { message("migrationError", "emptyOldVault"); return; }
+      const next = vaultItems.map(item => ({ ...item }));
+      entries.forEach(item => {
+        const normalized = {label:item.label, value:item.value, note:item.note || ""};
+        if (!next.some(existing => JSON.stringify(existing) === JSON.stringify(normalized))) next.push(normalized);
+      });
+      if (await persistVault(next)) {
+        $("migrationDialog").close();
+        message("privateMessage", "importDone");
+      }
+    } catch (error) { message("migrationError", errorKey(error)); }
+    finally { $("oldPass").value = ""; $("migrateVault").disabled = false; }
+  });
+
+  async function checkActiveSession() {
+    if (!authenticated || !PROTECTED_PAGES.has(activePage) || document.hidden) return;
+    const page = activePage;
+    const version = navigationVersion;
+    try {
+      const result = await api("/session");
+      if (version === navigationVersion && !result.body.authenticated) { navigationVersion++; openPrivateGate(page); }
+    } catch {
+      if (version === navigationVersion) { navigationVersion++; openPrivateGate(page); message("unlockError", "apiError"); }
+    }
+  }
+  addEventListener("focus", checkActiveSession);
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden && PROTECTED_PAGES.has(activePage)) {
+      resumePrivatePage = activePage;
+      navigationVersion++;
+      clearPrivateData();
+      displayPage("home");
+    } else if (!document.hidden && resumePrivatePage) {
+      const page = resumePrivatePage; resumePrivatePage = null; showPage(page);
+    }
+  });
+  addEventListener("hashchange", () => showPage(location.hash.slice(1)));
+  addEventListener("pageshow", event => { if (event.persisted) showPage(location.hash.slice(1) || "home"); });
+  addEventListener("pagehide", () => { navigationVersion++; clearPrivateData(); displayPage("home"); });
+  setInterval(checkActiveSession, 60000);
 
   addEventListener("online", updateOnline);
   addEventListener("offline", updateOnline);
@@ -1305,14 +1519,24 @@
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js").catch(() => {});
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=20").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "20";
+      if (safeController()) return true;
+      return new Promise(resolve => {
+        const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
+        const changed = () => { if (safeController()) finish(true); };
+        const timer = setTimeout(() => finish(false), 15000);
+        navigator.serviceWorker.addEventListener("controllerchange", changed);
+        changed();
+      });
+    }).catch(() => false);
   }
 
   applyLanguage(lang);
   refreshTrainingDateIfNeeded();
   restoreChecklists();
   $("lockScreen").classList.add("hidden");
-  showPage("home", true);
+  showPage(location.hash.slice(1) || "home");
 })();
 </script>
 </body>
