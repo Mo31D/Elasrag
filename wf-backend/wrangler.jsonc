@@ -4,6 +4,12 @@
   "main": "src/index.js",
   "compatibility_date": "2026-10-07",
   "workers_dev": true,
+  "kv_namespaces": [
+    {
+      "binding": "WF_DATA",
+      "id": "93611c6e8b7045adb24ab731e9df4681"
+    }
+  ],
   "observability": {
     "enabled": true
   }
