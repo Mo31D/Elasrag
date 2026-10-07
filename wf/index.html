@@ -59,7 +59,7 @@
       display:flex;align-items:center;gap:14px;font-weight:850;font-size:20px
     }
     .quick.fire{background:var(--red);color:#fff}
-    .quick.details,.quick.training,.quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .quick.details,.quick.training,.quick.benefits,.quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
     .icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:21px}
     .quick:not(.fire) .icon{background:#f2f4f7}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:17px;margin-bottom:11px}
@@ -258,7 +258,7 @@
     </div>
   </section>
 
-  <div id="app">
+  <div id="app" data-staff-profile="personal" data-section="filling-station-nights">
     <header>
       <div class="topbar">
         <div class="brand" data-i18n="appTitle"></div>
@@ -288,6 +288,7 @@
         <div class="grid">
           <button class="quick details" data-page="details"><span class="icon">ID</span><span data-i18n="workDetails"></span></button>
           <button class="quick training" data-page="training"><span class="icon">✓</span><span data-i18n="training"></span></button>
+          <button class="quick benefits" data-page="benefits"><span class="icon">★</span><span data-i18n="benefits"></span></button>
         </div>
         <div class="status" id="offlineStatus"></div>
       </section>
@@ -383,6 +384,26 @@
         </div>
       </section>
 
+      <section id="benefits" class="page">
+        <button class="back" data-page="home" data-i18n="backHome"></button>
+
+        <div class="card">
+          <h2 data-i18n="benefitsTitle"></h2>
+          <div class="row"><div><div class="key" data-i18n="cinema"></div><div class="value" data-i18n="cinemaValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="hotelDiscount"></div><div class="value" data-i18n="hotelDiscountValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="ownFood"></div><div class="value" data-i18n="ownFoodValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="producerFood"></div><div class="value" data-i18n="producerFoodValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="workMeal"></div><div class="value" data-i18n="workMealValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="minibus"></div><div class="value" data-i18n="minibusValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="birthdayLeave"></div><div class="value" data-i18n="birthdayLeaveValue"></div></div></div>
+        </div>
+
+        <div class="card safe">
+          <h2 data-i18n="personalNote"></h2>
+          <p data-i18n="nightMinibusNote"></p>
+        </div>
+      </section>
+
       <section id="training" class="page">
         <button class="back" data-page="home" data-i18n="backHome"></button>
         <div class="card training-card">
@@ -449,9 +470,9 @@
       setupIntro:"اعمل كلمة مرور لصفحة بياناتك الشخصية والخزنة الخاصة. باقي المرجع يفضل مفتوح من غير باسورد.",
       newPass:"كلمة مرور جديدة", confirmPass:"أكد كلمة المرور", createAccess:"إنشاء الدخول",
       setupNote:"الخزنة الخاصة معمولة للأرقام السرية والملاحظات الحساسة. البيانات دي ما بتترفعش على GitHub.",
-      appTitle:"مرجع الشغل السريع", enterPass:"اكتب كلمة المرور علشان تفتح بياناتك الشخصية.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
-      fastReference:"مرجع سريع", findSeconds:"هات المعلومة في ثواني.", confirmedOnly:"هنا بنضيف بس معلومات الشغل اللي اتأكدنا منها.",
-      emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", privateVault:"الخزنة الخاصة",
+      appTitle:"WF Staff Companion", enterPass:"اكتب كلمة المرور علشان تفتح بياناتك الشخصية.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
+      fastReference:"مساعد الموظف", findSeconds:"هات المعلومة في ثواني.", confirmedOnly:"بياناتي، تدريبي، المزايا، والتصرف السريع في المواقف المهمة.",
+      emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", benefits:"المزايا", privateVault:"الخزنة الخاصة",
       backHome:"→ الرئيسية", fireHeadline:"إنذار الحريق ← أقرب مخرج حريق ← نقطة التجمع",
       fireIntro:"الإخلاء الكامل بيتعلن بإنذار الحريق. الموظفين والزوار يروحوا لأقرب مخرج حريق، والموظفين يكملوا لنقطة التجمع.",
       forecourtSafe:"محطة الوقود — لو آمن تعمل كده",
@@ -477,6 +498,15 @@
       due16:"آخر موعد 16 أكتوبر 2026", due18:"آخر موعد 18 أكتوبر 2026", due1Nov:"آخر موعد 1 نوفمبر 2026",
       course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
       course5:"تجربة العميل – طريقة Westmorland", course6:"إجراءات CBE – موظفي محطة الوقود", course7:"منع التحرش الجنسي",
+      benefitsTitle:"مزايا الموظف",
+      cinema:"السينما", cinemaValue:"تذاكر مجانية لسينما الشركة",
+      hotelDiscount:"خصم الفندق", hotelDiscountValue:"حوالي £60 للغرفة أو خصم 33% من قيمة الغرفة",
+      ownFood:"الأكل اللي الشركة بتعمله", ownFoodValue:"خصم 75%",
+      producerFood:"أكل المنتجين", producerFoodValue:"خصم 25%",
+      workMeal:"وجبة أثناء الشغل", workMealValue:"مجانية — ساندوتش وشوربة",
+      minibus:"الميني باص", minibusValue:"نقل من وإلى الشغل",
+      birthdayLeave:"إجازة عيد الميلاد", birthdayLeaveValue:"يوم إجازة مدفوع",
+      personalNote:"ملاحظة تخصني", nightMinibusNote:"الميني باص مش متاح لي لأن شغلي Night Shift.",
       openTraining:"افتح تطبيق THRIVE", resetChecklist:"ابدأ موقف جديد / صفّر العلامات", vaultNote:"للأرقام أو الملاحظات الحساسة. البيانات بتتشفّر على المتصفح ده ومش بتتخزن على GitHub.",
       addPrivateEntry:"أضف بيانات خاصة", home:"الرئيسية", fireNav:"حريق", detailsNav:"بياناتي", trainingNav:"تدريب",
       privateEntry:"بيانات خاصة", label:"الاسم", value:"القيمة", noteOptional:"ملاحظة (اختياري)", cancel:"إلغاء", save:"حفظ",
@@ -491,8 +521,8 @@
       newPass:"New passphrase", confirmPass:"Confirm passphrase", createAccess:"Create access",
       setupNote:"Use the Private Vault for sensitive codes and notes. Those entries are not uploaded to GitHub.",
       appTitle:"WF Quick Reference", enterPass:"Enter your passphrase to open your personal information.", passphrase:"Passphrase", unlock:"Unlock", lock:"Lock",
-      fastReference:"Fast reference", findSeconds:"Find it in seconds.", confirmedOnly:"Only confirmed work information is added here.",
-      emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", privateVault:"Private vault",
+      fastReference:"Staff companion", findSeconds:"Find it in seconds.", confirmedOnly:"My details, training, benefits and fast actions for important situations.",
+      emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", benefits:"Benefits", privateVault:"Private vault",
       backHome:"← Home", fireHeadline:"FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT",
       fireIntro:"Full evacuation is signalled by the fire alarm. Staff and visitors make their way to the nearest fire exit. Staff continue to the Assembly Point.",
       forecourtSafe:"Forecourt — if safe to do so",
@@ -518,6 +548,15 @@
       due16:"Due 16 Oct 2026", due18:"Due 18 Oct 2026", due1Nov:"Due 1 Nov 2026",
       course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
       course5:"Customer Experience – The Westmorland Way", course6:"CBE Procedures – Filling Station Colleagues", course7:"Prevention of Sexual Harassment",
+      benefitsTitle:"Staff benefits",
+      cinema:"Cinema", cinemaValue:"Free tickets for the company cinema room",
+      hotelDiscount:"Hotel discount", hotelDiscountValue:"About £60 per room or 33% off the room value",
+      ownFood:"Food made by the company", ownFoodValue:"75% off",
+      producerFood:"Food made by producers", producerFoodValue:"25% off",
+      workMeal:"Meal at work", workMealValue:"Free — sandwich and soup",
+      minibus:"Minibus", minibusValue:"Transport to and from work",
+      birthdayLeave:"Birthday leave", birthdayLeaveValue:"One paid day off",
+      personalNote:"Personal note", nightMinibusNote:"The minibus does not apply to me because I work night shift.",
       openTraining:"Open THRIVE app", resetChecklist:"New incident / reset checks", vaultNote:"For sensitive numbers or notes. Entries are encrypted in this browser and are not stored in GitHub.",
       addPrivateEntry:"Add private entry", home:"Home", fireNav:"Fire", detailsNav:"Details", trainingNav:"Training",
       privateEntry:"Private entry", label:"Label", value:"Value", noteOptional:"Note (optional)", cancel:"Cancel", save:"Save",
