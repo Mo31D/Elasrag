@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -9,13 +9,12 @@
   <style>
     :root{
       --bg:#f4f5f7;--card:#fff;--ink:#111827;--muted:#667085;--line:#e4e7ec;
-      --nav:#17212b;--nav2:#22303c;--red:#b42318;--red-bg:#fff1f0;
-      --amber:#b54708;--amber-bg:#fffaeb;--green:#067647;--green-bg:#ecfdf3;
-      --shadow:0 8px 28px rgba(16,24,40,.08);--radius:18px
+      --nav:#17212b;--red:#b42318;--red-bg:#fff1f0;--amber:#b54708;--amber-bg:#fffaeb;
+      --green:#067647;--green-bg:#ecfdf3;--shadow:0 8px 28px rgba(16,24,40,.08);--radius:18px
     }
     *{box-sizing:border-box}
     html{background:var(--bg);-webkit-text-size-adjust:100%}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial,sans-serif;color:var(--ink);background:var(--bg)}
     button,input,textarea{font:inherit}
     button{cursor:pointer}
     .hidden{display:none!important}
@@ -26,47 +25,54 @@
     .lock-card{width:min(440px,100%);background:#fff;color:var(--ink);border-radius:24px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
     .lock-mark{width:54px;height:54px;border-radius:16px;background:var(--nav);color:#fff;display:grid;place-items:center;font-size:26px;margin-bottom:18px}
     .lock h1{margin:0 0 6px;font-size:27px;letter-spacing:-.02em}
-    .lock p{margin:0 0 20px;color:var(--muted);line-height:1.45}
+    .lock p{margin:0 0 20px;color:var(--muted);line-height:1.55}
     .field{display:grid;gap:7px;margin:13px 0}
     .field label{font-size:13px;font-weight:700;color:#344054}
     .field input,.field textarea{width:100%;border:1px solid #d0d5dd;border-radius:12px;padding:13px 14px;background:#fff;color:var(--ink);outline:none}
     .field input:focus,.field textarea:focus{border-color:#667085;box-shadow:0 0 0 3px rgba(102,112,133,.12)}
     .primary{width:100%;border:0;border-radius:12px;padding:13px 16px;background:var(--nav);color:#fff;font-weight:800}
     .error{min-height:20px;color:var(--red);font-size:13px;margin-top:9px}
-    .tiny{font-size:12px;color:var(--muted);line-height:1.45}
+    .tiny{font-size:12px;color:var(--muted);line-height:1.55}
     #app{min-height:100vh}
     header{position:sticky;top:0;z-index:50;background:rgba(23,33,43,.98);color:#fff;padding:calc(10px + env(safe-area-inset-top)) 16px 12px}
-    .topbar{max-width:780px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .topbar{max-width:780px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:10px}
     .brand{font-size:17px;font-weight:850;letter-spacing:.01em}
+    .top-actions{display:flex;align-items:center;gap:8px}
+    .lang-switch{display:flex;gap:3px;background:rgba(255,255,255,.1);padding:3px;border-radius:10px}
+    .lang-btn{border:0;background:transparent;color:#d0d5dd;border-radius:8px;padding:6px 9px;font-weight:800;font-size:12px}
+    .lang-btn.active{background:#fff;color:var(--nav)}
     .lock-btn{border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:8px 11px;font-weight:700}
+    .lock-lang{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:5}
+    html[dir="rtl"] .lock-lang{right:auto;left:14px}
+    .lock-lang .lang-switch{background:rgba(255,255,255,.12)}
     main{max-width:780px;margin:0 auto;padding:16px 14px calc(86px + env(safe-area-inset-bottom))}
     .hero{background:var(--nav);color:#fff;border-radius:var(--radius);padding:20px;margin:4px 0 16px}
     .hero .eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:#cbd5e1;font-weight:800}
+    html[dir="rtl"] .hero .eyebrow{letter-spacing:0}
     .hero h1{font-size:27px;margin:5px 0 6px;letter-spacing:-.03em}
-    .hero p{margin:0;color:#d0d5dd;line-height:1.4}
+    .hero p{margin:0;color:#d0d5dd;line-height:1.5}
     .section-title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#667085;font-weight:850;margin:22px 4px 9px}
+    html[dir="rtl"] .section-title{letter-spacing:0}
     .grid{display:grid;grid-template-columns:1fr;gap:10px}
     .quick{
-      border:0;border-radius:var(--radius);padding:18px;text-align:left;box-shadow:var(--shadow);
+      border:0;border-radius:var(--radius);padding:18px;text-align:start;box-shadow:var(--shadow);
       display:flex;align-items:center;gap:14px;font-weight:850;font-size:20px
     }
     .quick.fire{background:var(--red);color:#fff}
-    .quick.details{background:#fff;color:var(--ink);border:1px solid var(--line)}
-    .quick.training{background:#fff;color:var(--ink);border:1px solid var(--line)}
-    .quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .quick.details,.quick.training,.quick.vault{background:#fff;color:var(--ink);border:1px solid var(--line)}
     .icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:rgba(255,255,255,.15);font-size:21px}
     .quick:not(.fire) .icon{background:#f2f4f7}
     .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:17px;margin-bottom:11px}
     .card h2{font-size:21px;margin:0 0 8px;letter-spacing:-.02em}
     .card h3{font-size:16px;margin:0 0 8px}
-    .card p{margin:7px 0;line-height:1.45}
+    .card p{margin:7px 0;line-height:1.55}
     .critical{background:var(--red-bg);border-color:#fecdca}
-    .critical .big{font-size:25px;font-weight:900;color:var(--red);line-height:1.15}
+    .critical .big{font-size:25px;font-weight:900;color:var(--red);line-height:1.25}
     .warning{background:var(--amber-bg);border-color:#fedf89}
     .warning strong{color:var(--amber)}
     .safe{background:var(--green-bg);border-color:#abefc6}
     .checklist{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:9px}
-    .checklist li{display:grid;grid-template-columns:35px 1fr;gap:10px;align-items:start;border-top:1px solid var(--line);padding-top:11px;font-size:17px;line-height:1.35}
+    .checklist li{display:grid;grid-template-columns:35px 1fr;gap:10px;align-items:start;border-top:1px solid var(--line);padding-top:11px;font-size:17px;line-height:1.45}
     .checklist li:first-child{border-top:0;padding-top:0}
     .num{width:31px;height:31px;border-radius:50%;background:var(--nav);color:#fff;display:grid;place-items:center;font-weight:850;font-size:14px}
     .fire-card .num{background:var(--red)}
@@ -74,9 +80,8 @@
     .row{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
     .row:first-of-type{border-top:0}
     .key{color:var(--muted);font-size:13px}
-    .value{font-weight:800;text-align:right;word-break:break-word}
-    .copy{border:1px solid #d0d5dd;background:#fff;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:800;color:#344054}
-    .row-actions{display:flex;gap:7px;align-items:center}
+    .value{font-weight:800;text-align:end;word-break:break-word}
+    .copy{border:1px solid #d0d5dd;background:#fff;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:800;color:#344054;flex:0 0 auto}
     a.action{display:block;text-decoration:none;background:var(--nav);color:#fff;border-radius:11px;padding:11px 13px;margin-top:9px;text-align:center;font-weight:800}
     .page{display:none}
     .page.active{display:block}
@@ -93,7 +98,7 @@
     .vault-item{border:1px solid var(--line);border-radius:13px;padding:12px}
     .vault-top{display:flex;justify-content:space-between;gap:12px;align-items:center}
     .vault-label{font-weight:850}
-    .secret{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;letter-spacing:.03em;margin-top:7px;word-break:break-all}
+    .secret{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:16px;letter-spacing:.03em;margin-top:7px;word-break:break-all;direction:ltr;text-align:start}
     .secret.masked{filter:blur(5px);user-select:none}
     .mini-actions{display:flex;gap:7px;margin-top:9px}
     .mini-actions button{border:1px solid #d0d5dd;background:#fff;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:800}
@@ -104,27 +109,34 @@
     .dialog-actions button{flex:1;border:0;border-radius:11px;padding:11px;font-weight:800}
     .secondary{background:#f2f4f7;color:var(--ink)}
     .status{font-size:12px;color:var(--muted);margin-top:9px;text-align:center}
+    .official{font-size:12px;color:var(--muted);display:block;margin-top:3px;direction:ltr;text-align:start}
     @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}.quick{display:block}.quick .icon{margin-bottom:15px}}
   </style>
 </head>
 <body>
   <section id="lockScreen" class="lock" aria-label="Access">
+    <div class="lock-lang">
+      <div class="lang-switch">
+        <button class="lang-btn" data-lang="ar">عربي</button>
+        <button class="lang-btn" data-lang="en">English</button>
+      </div>
+    </div>
     <div class="lock-card">
       <div class="lock-mark">WF</div>
       <div id="setupMode" class="hidden">
-        <h1>Secure this device</h1>
-        <p>Create a passphrase for this browser. Private vault entries are encrypted and stay on this device.</p>
-        <div class="field"><label for="newPass">New passphrase</label><input id="newPass" type="password" autocomplete="new-password" minlength="6"></div>
-        <div class="field"><label for="confirmPass">Confirm passphrase</label><input id="confirmPass" type="password" autocomplete="new-password" minlength="6"></div>
-        <button id="setupBtn" class="primary">Create access</button>
+        <h1 data-i18n="setupTitle"></h1>
+        <p data-i18n="setupIntro"></p>
+        <div class="field"><label for="newPass" data-i18n="newPass"></label><input id="newPass" type="password" autocomplete="new-password" minlength="6"></div>
+        <div class="field"><label for="confirmPass" data-i18n="confirmPass"></label><input id="confirmPass" type="password" autocomplete="new-password" minlength="6"></div>
+        <button id="setupBtn" class="primary" data-i18n="createAccess"></button>
         <div id="setupError" class="error"></div>
-        <div class="tiny">The GitHub-hosted reference page itself is not a secure place for real passwords. Sensitive values added in Private Vault are encrypted locally and are not committed to GitHub.</div>
+        <div class="tiny" data-i18n="setupNote"></div>
       </div>
       <div id="unlockMode" class="hidden">
-        <h1>WF Quick Reference</h1>
-        <p>Enter your passphrase.</p>
-        <div class="field"><label for="passInput">Passphrase</label><input id="passInput" type="password" autocomplete="current-password"></div>
-        <button id="unlockBtn" class="primary">Unlock</button>
+        <h1 data-i18n="appTitle"></h1>
+        <p data-i18n="enterPass"></p>
+        <div class="field"><label for="passInput" data-i18n="passphrase"></label><input id="passInput" type="password" autocomplete="current-password"></div>
+        <button id="unlockBtn" class="primary" data-i18n="unlock"></button>
         <div id="unlockError" class="error"></div>
       </div>
     </div>
@@ -133,141 +145,147 @@
   <div id="app" class="hidden">
     <header>
       <div class="topbar">
-        <div class="brand">WF Quick Reference</div>
-        <button id="lockBtn" class="lock-btn">Lock</button>
+        <div class="brand" data-i18n="appTitle"></div>
+        <div class="top-actions">
+          <div class="lang-switch">
+            <button class="lang-btn" data-lang="ar">عربي</button>
+            <button class="lang-btn" data-lang="en">English</button>
+          </div>
+          <button id="lockBtn" class="lock-btn" data-i18n="lock"></button>
+        </div>
       </div>
     </header>
 
     <main>
       <section id="home" class="page active">
         <div class="hero">
-          <div class="eyebrow">Fast reference</div>
-          <h1>Find it in seconds.</h1>
-          <p>Only confirmed work information is added here.</p>
+          <div class="eyebrow" data-i18n="fastReference"></div>
+          <h1 data-i18n="findSeconds"></h1>
+          <p data-i18n="confirmedOnly"></p>
         </div>
 
-        <div class="section-title">Emergency</div>
+        <div class="section-title" data-i18n="emergency"></div>
         <div class="grid">
-          <button class="quick fire" data-page="fire"><span class="icon">!</span><span>Fire / حريق</span></button>
+          <button class="quick fire" data-page="fire"><span class="icon">!</span><span data-i18n="fire"></span></button>
         </div>
 
-        <div class="section-title">Reference</div>
+        <div class="section-title" data-i18n="reference"></div>
         <div class="grid">
-          <button class="quick details" data-page="details"><span class="icon">ID</span><span>Work details</span></button>
-          <button class="quick training" data-page="training"><span class="icon">✓</span><span>Training</span></button>
-          <button class="quick vault" data-page="vault"><span class="icon">▣</span><span>Private vault</span></button>
+          <button class="quick details" data-page="details"><span class="icon">ID</span><span data-i18n="workDetails"></span></button>
+          <button class="quick training" data-page="training"><span class="icon">✓</span><span data-i18n="training"></span></button>
+          <button class="quick vault" data-page="vault"><span class="icon">▣</span><span data-i18n="privateVault"></span></button>
         </div>
-        <div class="status" id="offlineStatus">Ready</div>
+        <div class="status" id="offlineStatus"></div>
       </section>
 
       <section id="fire" class="page">
-        <button class="back" data-page="home">← Home</button>
+        <button class="back" data-page="home" data-i18n="backHome"></button>
         <div class="card critical">
-          <div class="big">FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT</div>
-          <p>Full evacuation is signalled by the fire alarm. Staff and visitors make their way to the nearest fire exit. Staff continue to the Assembly Point.</p>
+          <div class="big" data-i18n="fireHeadline"></div>
+          <p data-i18n="fireIntro"></p>
         </div>
 
         <div class="card fire-card">
-          <h2>Forecourt — if safe to do so</h2>
+          <h2 data-i18n="forecourtSafe"></h2>
           <ul class="checklist">
-            <li><span class="num">1</span><span><b>Check Forecourt shop floor</b></span></li>
-            <li><span class="num">2</span><span><b>Check storeroom</b></span></li>
-            <li><span class="num">3</span><span><b>Check toilets</b></span></li>
-            <li><span class="num">4</span><span><b>Delegated team member takes the rota to the Assembly Point</b><span class="sub">Only if safe to do so.</span></span></li>
+            <li><span class="num">1</span><span data-i18n="fireStep1"></span></li>
+            <li><span class="num">2</span><span data-i18n="fireStep2"></span></li>
+            <li><span class="num">3</span><span data-i18n="fireStep3"></span></li>
+            <li><span class="num">4</span><span><span data-i18n="fireStep4"></span><span class="sub" data-i18n="onlyIfSafe"></span></span></li>
           </ul>
         </div>
 
         <div class="card warning">
-          <strong>Night shift:</strong>
-          <p>The supplied fire procedure explicitly refers to a separate <b>Night Shift Fire responsibilities</b> document. That document has not been supplied yet, so no night-specific steps have been invented here.</p>
+          <strong data-i18n="nightShift"></strong>
+          <p data-i18n="nightShiftMissing"></p>
         </div>
 
         <details class="card">
-          <summary style="font-weight:850;cursor:pointer">Fire Warden — only if you are assigned this role</summary>
+          <summary style="font-weight:850;cursor:pointer" data-i18n="wardenTitle"></summary>
           <ul class="checklist">
-            <li><span class="num">1</span><span>Investigate the fire scene <b>only if safe</b>.</span></li>
-            <li><span class="num">2</span><span>Activate the nearest break-glass point if not already done.</span></li>
-            <li><span class="num">3</span><span>Tackle only an early-stage fire, only if safe and within company training.</span></li>
-            <li><span class="num">4</span><span>Assist evacuation and liaise with managers/supervisors at the Assembly Point.</span></li>
-            <li><span class="num">5</span><span>Prevent re-entry until the Fire Service says it is safe.</span></li>
-            <li><span class="num">6</span><span>Brief the Fire Service on fire location/nature, anyone unaccounted for and hazards.</span></li>
+            <li><span class="num">1</span><span data-i18n="warden1"></span></li>
+            <li><span class="num">2</span><span data-i18n="warden2"></span></li>
+            <li><span class="num">3</span><span data-i18n="warden3"></span></li>
+            <li><span class="num">4</span><span data-i18n="warden4"></span></li>
+            <li><span class="num">5</span><span data-i18n="warden5"></span></li>
+            <li><span class="num">6</span><span data-i18n="warden6"></span></li>
           </ul>
         </details>
       </section>
 
       <section id="details" class="page">
-        <button class="back" data-page="home">← Home</button>
+        <button class="back" data-page="home" data-i18n="backHome"></button>
 
         <div class="card">
-          <h2>My job</h2>
-          <div class="row"><div><div class="key">Role</div><div class="value">Team Member – Filling Station (Nights)</div></div></div>
-          <div class="row"><div><div class="key">Site</div><div class="value">Tebay Services</div></div></div>
-          <div class="row"><div><div class="key">Line manager</div><div class="value">Emma Cash · Filling Station Manager</div></div></div>
-          <div class="row"><div><div class="key">Manager email</div><div class="value">emma.cash@tebayservices.com</div></div><button class="copy" data-copy="emma.cash@tebayservices.com">Copy</button></div>
-          <div class="row"><div><div class="key">Colleague number</div><div class="value">012636</div></div><button class="copy" data-copy="012636">Copy</button></div>
-          <div class="row"><div><div class="key">Start date</div><div class="value">7 Oct 2026</div></div></div>
+          <h2 data-i18n="myJob"></h2>
+          <div class="row"><div><div class="key" data-i18n="role"></div><div class="value" data-i18n="roleValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="site"></div><div class="value">Tebay Services</div></div></div>
+          <div class="row"><div><div class="key" data-i18n="lineManager"></div><div class="value">Emma Cash · Filling Station Manager</div></div></div>
+          <div class="row"><div><div class="key" data-i18n="managerEmail"></div><div class="value">emma.cash@tebayservices.com</div></div><button class="copy" data-copy="emma.cash@tebayservices.com" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="colleagueNumber"></div><div class="value">012636</div></div><button class="copy" data-copy="012636" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="startDate"></div><div class="value" data-i18n="startDateValue"></div></div></div>
         </div>
 
         <div class="card">
-          <h2>Shift & pay</h2>
-          <div class="row"><div><div class="key">Regular shifts</div><div class="value">Friday & Saturday</div></div></div>
-          <div class="row"><div><div class="key">Shift time</div><div class="value">10:45pm – 7:15am</div></div></div>
-          <div class="row"><div><div class="key">Contracted hours</div><div class="value">17 hours/week</div></div></div>
-          <div class="row"><div><div class="key">Hourly rate</div><div class="value">£14.25/hour</div></div></div>
-          <div class="row"><div><div class="key">Pay frequency</div><div class="value">Weekly</div></div></div>
-          <div class="row"><div><div class="key">Break</div><div class="value">Paid — confirmed by manager</div></div></div>
+          <h2 data-i18n="shiftPay"></h2>
+          <div class="row"><div><div class="key" data-i18n="regularShifts"></div><div class="value" data-i18n="regularShiftsValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="shiftTime"></div><div class="value">10:45pm – 7:15am</div></div></div>
+          <div class="row"><div><div class="key" data-i18n="contractedHours"></div><div class="value" data-i18n="contractedHoursValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="hourlyRate"></div><div class="value" data-i18n="hourlyRateValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="payFrequency"></div><div class="value" data-i18n="weekly"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="breakLabel"></div><div class="value" data-i18n="breakValue"></div></div></div>
         </div>
 
         <div class="card">
           <h2>My Westmorland People / PeopleXD</h2>
-          <div class="row"><div><div class="key">Company ID</div><div class="value">weslp</div></div><button class="copy" data-copy="weslp">Copy</button></div>
-          <div class="row"><div><div class="key">Username</div><div class="value">012636</div></div><button class="copy" data-copy="012636">Copy</button></div>
-          <a class="action" href="https://mywestmorland.com" target="_blank" rel="noopener">Open PeopleXD</a>
+          <div class="row"><div><div class="key" data-i18n="companyId"></div><div class="value">weslp</div></div><button class="copy" data-copy="weslp" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="username"></div><div class="value">012636</div></div><button class="copy" data-copy="012636" data-i18n="copy"></button></div>
+          <a class="action" href="https://mywestmorland.com" target="_blank" rel="noopener" data-i18n="openPeopleXD"></a>
         </div>
 
         <div class="card">
           <h2>My Westmorland Learn / THRIVE</h2>
-          <div class="row"><div><div class="key">Workspace</div><div class="value">westmorland</div></div><button class="copy" data-copy="westmorland">Copy</button></div>
-          <div class="row"><div><div class="key">Username</div><div class="value">012636</div></div><button class="copy" data-copy="012636">Copy</button></div>
-          <a class="action" href="https://westmorland.learn.link" target="_blank" rel="noopener">Open THRIVE</a>
+          <div class="row"><div><div class="key" data-i18n="workspace"></div><div class="value">westmorland</div></div><button class="copy" data-copy="westmorland" data-i18n="copy"></button></div>
+          <div class="row"><div><div class="key" data-i18n="username"></div><div class="value">012636</div></div><button class="copy" data-copy="012636" data-i18n="copy"></button></div>
+          <a class="action" href="https://westmorland.learn.link" target="_blank" rel="noopener" data-i18n="openThrive"></a>
         </div>
 
         <div class="card">
-          <h2>First day / induction</h2>
-          <div class="row"><div><div class="key">Date</div><div class="value">7 Oct 2026</div></div></div>
-          <div class="row"><div><div class="key">Time</div><div class="value">9:30am – 3:30pm</div></div></div>
-          <div class="row"><div><div class="key">Location</div><div class="value">Westmorland Hotel, Northbound</div></div></div>
-          <div class="row"><div><div class="key">Postcode</div><div class="value">CA10 3SB</div></div><button class="copy" data-copy="CA10 3SB">Copy</button></div>
+          <h2 data-i18n="firstDay"></h2>
+          <div class="row"><div><div class="key" data-i18n="date"></div><div class="value" data-i18n="startDateValue"></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="time"></div><div class="value">9:30am – 3:30pm</div></div></div>
+          <div class="row"><div><div class="key" data-i18n="location"></div><div class="value">Westmorland Hotel, Northbound</div></div></div>
+          <div class="row"><div><div class="key" data-i18n="postcode"></div><div class="value">CA10 3SB</div></div><button class="copy" data-copy="CA10 3SB" data-i18n="copy"></button></div>
         </div>
 
         <div class="card safe">
-          <h2>Private codes</h2>
-          <p>Actual passwords/PINs were not provided in this chat. Add them to the encrypted Private Vault if needed.</p>
-          <button class="primary" data-page="vault">Open Private Vault</button>
+          <h2 data-i18n="privateCodes"></h2>
+          <p data-i18n="privateCodesNote"></p>
+          <button class="primary" data-page="vault" data-i18n="openVault"></button>
         </div>
       </section>
 
       <section id="training" class="page">
-        <button class="back" data-page="home">← Home</button>
+        <button class="back" data-page="home" data-i18n="backHome"></button>
         <div class="card">
-          <h2>Online training</h2>
-          <div class="row"><div><div class="key">Due 16 Oct 2026</div><div class="value">Welcome Antlers – Colleague Induction</div></div></div>
-          <div class="row"><div><div class="key">Due 16 Oct 2026</div><div class="value">Food Safety Training</div></div></div>
-          <div class="row"><div><div class="key">Due 16 Oct 2026</div><div class="value">Health & Safety Training</div></div></div>
-          <div class="row"><div><div class="key">Due 18 Oct 2026</div><div class="value">Allergy Awareness Recap</div></div></div>
-          <div class="row"><div><div class="key">Due 1 Nov 2026</div><div class="value">Customer Experience – The Westmorland Way</div></div></div>
-          <div class="row"><div><div class="key">Due 1 Nov 2026</div><div class="value">CBE Procedures – Filling Station Colleagues</div></div></div>
-          <div class="row"><div><div class="key">Due 1 Nov 2026</div><div class="value">Prevention of Sexual Harassment</div></div></div>
-          <a class="action" href="https://westmorland.learn.link" target="_blank" rel="noopener">Open training</a>
+          <h2 data-i18n="onlineTraining"></h2>
+          <div class="row"><div><div class="key" data-i18n="due16"></div><div class="value"><span data-i18n="course1"></span><span class="official">Welcome Antlers – Colleague Induction</span></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="due16"></div><div class="value"><span data-i18n="course2"></span><span class="official">Food Safety Training</span></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="due16"></div><div class="value"><span data-i18n="course3"></span><span class="official">Health & Safety Training</span></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="due18"></div><div class="value"><span data-i18n="course4"></span><span class="official">Allergy Awareness Recap</span></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="due1Nov"></div><div class="value"><span data-i18n="course5"></span><span class="official">Customer Experience – The Westmorland Way</span></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="due1Nov"></div><div class="value"><span data-i18n="course6"></span><span class="official">CBE Procedures – Filling Station Colleagues</span></div></div></div>
+          <div class="row"><div><div class="key" data-i18n="due1Nov"></div><div class="value"><span data-i18n="course7"></span><span class="official">Prevention of Sexual Harassment</span></div></div></div>
+          <a class="action" href="https://westmorland.learn.link" target="_blank" rel="noopener" data-i18n="openTraining"></a>
         </div>
       </section>
 
       <section id="vault" class="page">
-        <button class="back" data-page="home">← Home</button>
+        <button class="back" data-page="home" data-i18n="backHome"></button>
         <div class="card">
-          <h2>Private vault</h2>
-          <p class="tiny">For sensitive numbers or notes you choose to add later. Entries are encrypted in this browser and are not stored in GitHub.</p>
-          <button id="addSecretBtn" class="primary">Add private entry</button>
+          <h2 data-i18n="privateVault"></h2>
+          <p class="tiny" data-i18n="vaultNote"></p>
+          <button id="addSecretBtn" class="primary" data-i18n="addPrivateEntry"></button>
           <div id="vaultList" class="vault-list"></div>
         </div>
       </section>
@@ -275,22 +293,22 @@
 
     <nav>
       <div class="nav-inner">
-        <button class="nav-btn active" data-page="home"><span>⌂</span>Home</button>
-        <button class="nav-btn" data-page="fire"><span>!</span>Fire</button>
-        <button class="nav-btn" data-page="details"><span>ID</span>Details</button>
-        <button class="nav-btn" data-page="training"><span>✓</span>Training</button>
+        <button class="nav-btn active" data-page="home"><span>⌂</span><span data-i18n="home"></span></button>
+        <button class="nav-btn" data-page="fire"><span>!</span><span data-i18n="fireNav"></span></button>
+        <button class="nav-btn" data-page="details"><span>ID</span><span data-i18n="detailsNav"></span></button>
+        <button class="nav-btn" data-page="training"><span>✓</span><span data-i18n="trainingNav"></span></button>
       </div>
     </nav>
   </div>
 
   <dialog id="secretDialog">
-    <h3 style="margin:0 0 10px">Private entry</h3>
-    <div class="field"><label for="secretLabel">Label</label><input id="secretLabel" autocomplete="off"></div>
-    <div class="field"><label for="secretValue">Value</label><input id="secretValue" autocomplete="off"></div>
-    <div class="field"><label for="secretNote">Note (optional)</label><textarea id="secretNote" rows="3"></textarea></div>
+    <h3 style="margin:0 0 10px" data-i18n="privateEntry"></h3>
+    <div class="field"><label for="secretLabel" data-i18n="label"></label><input id="secretLabel" autocomplete="off"></div>
+    <div class="field"><label for="secretValue" data-i18n="value"></label><input id="secretValue" autocomplete="off"></div>
+    <div class="field"><label for="secretNote" data-i18n="noteOptional"></label><textarea id="secretNote" rows="3"></textarea></div>
     <div class="dialog-actions">
-      <button id="cancelSecret" class="secondary">Cancel</button>
-      <button id="saveSecret" class="primary">Save</button>
+      <button id="cancelSecret" class="secondary" data-i18n="cancel"></button>
+      <button id="saveSecret" class="primary" data-i18n="save"></button>
     </div>
   </dialog>
 
@@ -298,14 +316,119 @@
 (() => {
   const META_KEY = "wf-vault-meta-v1";
   const DATA_KEY = "wf-vault-data-v1";
+  const LANG_KEY = "wf-language-v1";
   const enc = new TextEncoder();
   const dec = new TextDecoder();
   let cryptoKey = null;
   let vaultItems = [];
+  let lang = localStorage.getItem(LANG_KEY) || "ar";
+
+  const T = {
+    ar: {
+      setupTitle:"أمّن الجهاز ده",
+      setupIntro:"اعمل كلمة مرور للصفحة على المتصفح ده. أي بيانات تحطها في الخزنة الخاصة بتتشفّر وبتفضل على الجهاز.",
+      newPass:"كلمة مرور جديدة", confirmPass:"أكد كلمة المرور", createAccess:"إنشاء الدخول",
+      setupNote:"الخزنة الخاصة معمولة للأرقام السرية والملاحظات الحساسة. البيانات دي ما بتترفعش على GitHub.",
+      appTitle:"مرجع الشغل السريع", enterPass:"اكتب كلمة المرور.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
+      fastReference:"مرجع سريع", findSeconds:"هات المعلومة في ثواني.", confirmedOnly:"هنا بنضيف بس معلومات الشغل اللي اتأكدنا منها.",
+      emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", privateVault:"الخزنة الخاصة",
+      backHome:"→ الرئيسية", fireHeadline:"إنذار الحريق ← أقرب مخرج حريق ← نقطة التجمع",
+      fireIntro:"الإخلاء الكامل بيتعلن بإنذار الحريق. الموظفين والزوار يروحوا لأقرب مخرج حريق، والموظفين يكملوا لنقطة التجمع.",
+      forecourtSafe:"محطة الوقود — لو آمن تعمل كده",
+      fireStep1:"راجع أرضية محل محطة الوقود.", fireStep2:"راجع المخزن.", fireStep3:"راجع الحمامات.",
+      fireStep4:"الموظف المكلّف ياخد جدول العاملين معاه لنقطة التجمع.", onlyIfSafe:"لو ده آمن فقط.",
+      nightShift:"شفت الليل:", nightShiftMissing:"المستند اللي اتبعت بيقول بوضوح إن فيه ورقة منفصلة لمسؤوليات الحريق في شفت الليل. الورقة دي لسه ما اتبعتتش، فمش ضايف أي خطوات من عندي.",
+      wardenTitle:"مسؤول الحريق — بس لو الدور ده متكلف بيه",
+      warden1:"افحص مكان الحريق لو ده آمن.", warden2:"فعّل أقرب نقطة إنذار يدوية لو لسه ما اتفعّلتش.",
+      warden3:"تعامل بس مع حريق في بدايته، لو آمن وداخل حدود التدريب اللي أخدته من الشركة.",
+      warden4:"ساعد في الإخلاء واتواصل مع المديرين والمشرفين عند نقطة التجمع.",
+      warden5:"امنع أي حد يرجع يدخل المبنى لحد ما خدمة الإطفاء تقول إنه آمن.",
+      warden6:"بلّغ خدمة الإطفاء بمكان وطبيعة الحريق، وأي شخص مش متأكدين من وجوده، وأي مخاطر.",
+      myJob:"شغلي", role:"الوظيفة", roleValue:"عضو فريق – محطة الوقود (ليل)", site:"الموقع", lineManager:"المدير المباشر",
+      managerEmail:"إيميل المدير", colleagueNumber:"رقم الموظف", startDate:"تاريخ البداية", startDateValue:"7 أكتوبر 2026",
+      shiftPay:"الشفت والمرتب", regularShifts:"الشفتات الثابتة", regularShiftsValue:"الجمعة والسبت",
+      shiftTime:"ميعاد الشفت", contractedHours:"الساعات المتعاقد عليها", contractedHoursValue:"17 ساعة في الأسبوع",
+      hourlyRate:"الأجر بالساعة", hourlyRateValue:"£14.25 في الساعة", payFrequency:"الدفع", weekly:"أسبوعي",
+      breakLabel:"البريك", breakValue:"مدفوع — حسب تأكيد المدير",
+      companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح PeopleXD", openThrive:"افتح THRIVE",
+      firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", postcode:"الرمز البريدي",
+      privateCodes:"الأكواد الخاصة", privateCodesNote:"حط أي PIN أو كلمة سر أو رقم حساس في الخزنة الخاصة المشفّرة بدل ما يتكتب داخل كود الموقع.",
+      openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين",
+      due16:"آخر موعد 16 أكتوبر 2026", due18:"آخر موعد 18 أكتوبر 2026", due1Nov:"آخر موعد 1 نوفمبر 2026",
+      course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
+      course5:"تجربة العميل – طريقة Westmorland", course6:"إجراءات CBE – موظفي محطة الوقود", course7:"منع التحرش الجنسي",
+      openTraining:"افتح التدريب", vaultNote:"للأرقام أو الملاحظات الحساسة. البيانات بتتشفّر على المتصفح ده ومش بتتخزن على GitHub.",
+      addPrivateEntry:"أضف بيانات خاصة", home:"الرئيسية", fireNav:"حريق", detailsNav:"بياناتي", trainingNav:"تدريب",
+      privateEntry:"بيانات خاصة", label:"الاسم", value:"القيمة", noteOptional:"ملاحظة (اختياري)", cancel:"إلغاء", save:"حفظ",
+      noPrivateEntries:"مفيش بيانات خاصة لسه.", reveal:"إظهار", hide:"إخفاء", copy:"نسخ", copied:"اتنسخ", delete:"حذف",
+      deleteConfirm:"تحذف البيانات دي؟", passTooShort:"استخدم 6 حروف أو أرقام على الأقل.", passMismatch:"كلمتا المرور مش متطابقين.",
+      setupFail:"ماقدرتش أأمّن الجهاز.", wrongPass:"كلمة المرور غلط.", online:"متصل · النسخة الأوفلاين بتبقى متاحة بعد أول تحميل",
+      offline:"أوفلاين · المرجع محفوظ على الجهاز", ready:"جاهز"
+    },
+    en: {
+      setupTitle:"Secure this device",
+      setupIntro:"Create a passphrase for this browser. Private vault entries are encrypted and stay on this device.",
+      newPass:"New passphrase", confirmPass:"Confirm passphrase", createAccess:"Create access",
+      setupNote:"Use the Private Vault for sensitive codes and notes. Those entries are not uploaded to GitHub.",
+      appTitle:"WF Quick Reference", enterPass:"Enter your passphrase.", passphrase:"Passphrase", unlock:"Unlock", lock:"Lock",
+      fastReference:"Fast reference", findSeconds:"Find it in seconds.", confirmedOnly:"Only confirmed work information is added here.",
+      emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", privateVault:"Private vault",
+      backHome:"← Home", fireHeadline:"FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT",
+      fireIntro:"Full evacuation is signalled by the fire alarm. Staff and visitors make their way to the nearest fire exit. Staff continue to the Assembly Point.",
+      forecourtSafe:"Forecourt — if safe to do so",
+      fireStep1:"Check Forecourt shop floor.", fireStep2:"Check storeroom.", fireStep3:"Check toilets.",
+      fireStep4:"Delegated team member takes the rota to the Assembly Point.", onlyIfSafe:"Only if safe to do so.",
+      nightShift:"Night shift:", nightShiftMissing:"The supplied fire procedure explicitly refers to a separate Night Shift Fire responsibilities document. That document has not been supplied yet, so no night-specific steps have been invented here.",
+      wardenTitle:"Fire Warden — only if you are assigned this role",
+      warden1:"Investigate the fire scene only if safe.", warden2:"Activate the nearest break-glass point if not already done.",
+      warden3:"Tackle only an early-stage fire, only if safe and within company training.",
+      warden4:"Assist evacuation and liaise with managers/supervisors at the Assembly Point.",
+      warden5:"Prevent re-entry until the Fire Service says it is safe.",
+      warden6:"Brief the Fire Service on fire location/nature, anyone unaccounted for and hazards.",
+      myJob:"My job", role:"Role", roleValue:"Team Member – Filling Station (Nights)", site:"Site", lineManager:"Line manager",
+      managerEmail:"Manager email", colleagueNumber:"Colleague number", startDate:"Start date", startDateValue:"7 Oct 2026",
+      shiftPay:"Shift & pay", regularShifts:"Regular shifts", regularShiftsValue:"Friday & Saturday",
+      shiftTime:"Shift time", contractedHours:"Contracted hours", contractedHoursValue:"17 hours/week",
+      hourlyRate:"Hourly rate", hourlyRateValue:"£14.25/hour", payFrequency:"Pay frequency", weekly:"Weekly",
+      breakLabel:"Break", breakValue:"Paid — confirmed by manager",
+      companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD", openThrive:"Open THRIVE",
+      firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", postcode:"Postcode",
+      privateCodes:"Private codes", privateCodesNote:"Keep PINs, passwords and other sensitive numbers in the encrypted Private Vault instead of writing them into the site code.",
+      openVault:"Open Private Vault", onlineTraining:"Online training",
+      due16:"Due 16 Oct 2026", due18:"Due 18 Oct 2026", due1Nov:"Due 1 Nov 2026",
+      course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
+      course5:"Customer Experience – The Westmorland Way", course6:"CBE Procedures – Filling Station Colleagues", course7:"Prevention of Sexual Harassment",
+      openTraining:"Open training", vaultNote:"For sensitive numbers or notes. Entries are encrypted in this browser and are not stored in GitHub.",
+      addPrivateEntry:"Add private entry", home:"Home", fireNav:"Fire", detailsNav:"Details", trainingNav:"Training",
+      privateEntry:"Private entry", label:"Label", value:"Value", noteOptional:"Note (optional)", cancel:"Cancel", save:"Save",
+      noPrivateEntries:"No private entries yet.", reveal:"Reveal", hide:"Hide", copy:"Copy", copied:"Copied", delete:"Delete",
+      deleteConfirm:"Delete this private entry?", passTooShort:"Use at least 6 characters.", passMismatch:"Passphrases do not match.",
+      setupFail:"Could not secure this device.", wrongPass:"Incorrect passphrase.", online:"Online · offline copy available after first load",
+      offline:"Offline · cached reference", ready:"Ready"
+    }
+  };
 
   const $ = id => document.getElementById(id);
+  const t = key => (T[lang] && T[lang][key]) || key;
   const toB64 = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes)));
   const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
+
+  function applyLanguage(next) {
+    lang = next === "en" ? "en" : "ar";
+    localStorage.setItem(LANG_KEY, lang);
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      const key = el.dataset.i18n;
+      el.textContent = t(key);
+    });
+    document.querySelectorAll(".lang-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.lang === lang));
+    document.querySelectorAll(".official").forEach(el => {
+      el.style.display = lang === "ar" ? "block" : "none";
+    });
+    updateOnline();
+    renderVault();
+  }
 
   async function deriveKey(passphrase, salt) {
     const base = await crypto.subtle.importKey("raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
@@ -342,8 +465,8 @@
     $("setupError").textContent = "";
     const p1 = $("newPass").value;
     const p2 = $("confirmPass").value;
-    if (p1.length < 6) return $("setupError").textContent = "Use at least 6 characters.";
-    if (p1 !== p2) return $("setupError").textContent = "Passphrases do not match.";
+    if (p1.length < 6) return $("setupError").textContent = t("passTooShort");
+    if (p1 !== p2) return $("setupError").textContent = t("passMismatch");
     try {
       const salt = crypto.getRandomValues(new Uint8Array(16));
       const key = await deriveKey(p1, salt);
@@ -354,7 +477,7 @@
       vaultItems = [];
       openApp();
     } catch {
-      $("setupError").textContent = "Could not secure this device.";
+      $("setupError").textContent = t("setupFail");
     }
   }
 
@@ -370,7 +493,7 @@
       vaultItems = stored ? JSON.parse(await decryptText(JSON.parse(stored), key)) : [];
       openApp();
     } catch {
-      $("unlockError").textContent = "Incorrect passphrase.";
+      $("unlockError").textContent = t("wrongPass");
     }
   }
 
@@ -403,11 +526,12 @@
 
   function renderVault() {
     const host = $("vaultList");
+    if (!host) return;
     host.innerHTML = "";
     if (!vaultItems.length) {
       const p = document.createElement("p");
       p.className = "tiny";
-      p.textContent = "No private entries yet.";
+      p.textContent = t("noPrivateEntries");
       host.appendChild(p);
       return;
     }
@@ -438,23 +562,23 @@
       const actions = document.createElement("div");
       actions.className = "mini-actions";
       const reveal = document.createElement("button");
-      reveal.textContent = "Reveal";
+      reveal.textContent = t("reveal");
       reveal.addEventListener("click", () => {
         const masked = secret.classList.toggle("masked");
-        reveal.textContent = masked ? "Reveal" : "Hide";
+        reveal.textContent = masked ? t("reveal") : t("hide");
       });
       const copy = document.createElement("button");
-      copy.textContent = "Copy";
+      copy.textContent = t("copy");
       copy.addEventListener("click", async () => {
         await navigator.clipboard.writeText(item.value);
-        copy.textContent = "Copied";
-        setTimeout(() => copy.textContent = "Copy", 1000);
+        copy.textContent = t("copied");
+        setTimeout(() => copy.textContent = t("copy"), 1000);
       });
       const del = document.createElement("button");
-      del.textContent = "Delete";
+      del.textContent = t("delete");
       del.className = "danger-text";
       del.addEventListener("click", async () => {
-        if (!confirm("Delete this private entry?")) return;
+        if (!confirm(t("deleteConfirm"))) return;
         vaultItems.splice(index,1);
         await persistVault();
         renderVault();
@@ -465,6 +589,11 @@
     });
   }
 
+  function updateOnline() {
+    if (!$("offlineStatus")) return;
+    $("offlineStatus").textContent = navigator.onLine ? t("online") : t("offline");
+  }
+
   $("setupBtn").addEventListener("click", setup);
   $("unlockBtn").addEventListener("click", unlock);
   $("newPass").addEventListener("keydown", e => { if (e.key === "Enter") $("confirmPass").focus(); });
@@ -473,14 +602,19 @@
   $("lockBtn").addEventListener("click", lock);
 
   document.addEventListener("click", e => {
+    const langBtn = e.target.closest("[data-lang]");
+    if (langBtn) {
+      applyLanguage(langBtn.dataset.lang);
+      return;
+    }
     const target = e.target.closest("[data-page]");
     if (target) showPage(target.dataset.page);
     const copy = e.target.closest("[data-copy]");
     if (copy) {
       navigator.clipboard.writeText(copy.dataset.copy).then(() => {
         const old = copy.textContent;
-        copy.textContent = "Copied";
-        setTimeout(() => copy.textContent = old, 900);
+        copy.textContent = t("copied");
+        setTimeout(() => copy.textContent = t("copy"), 900);
       });
     }
   });
@@ -504,16 +638,14 @@
     renderVault();
   });
 
-  function updateOnline() {
-    $("offlineStatus").textContent = navigator.onLine ? "Online · offline copy available after first load" : "Offline · cached reference";
-  }
   addEventListener("online", updateOnline);
   addEventListener("offline", updateOnline);
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(() => {});
   }
-  updateOnline();
+
+  applyLanguage(lang);
   initLock();
 })();
 </script>
