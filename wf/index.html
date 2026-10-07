@@ -199,7 +199,18 @@
     .sub{font-size:11.5px}
     .training-card .row{align-items:flex-start}
     .training-card .row>div{width:100%}
-    .training-card .value{text-align:start;font-size:15px}
+    .training-card .row{position:relative}
+    .training-card .value{text-align:start;font-size:15px;padding-inline-end:78px}
+    .training-deadline{
+      position:absolute;inset-inline-end:0;top:10px;text-align:end;min-width:70px
+    }
+    .training-deadline .due-date{display:block;font-size:10px;color:var(--muted);line-height:1.2}
+    .training-deadline .days-left{
+      display:inline-block;margin-top:3px;padding:4px 7px;border-radius:999px;
+      background:#f2f4f7;color:#344054;font-size:10.5px;font-weight:850;white-space:nowrap
+    }
+    .training-deadline .days-left.urgent{background:var(--amber-bg);color:var(--amber)}
+    .training-deadline .days-left.overdue{background:var(--red-bg);color:var(--red)}
     .official{font-size:11px;margin-top:2px}
     .status{font-size:10.5px;margin-top:7px}
     nav{padding:5px 8px calc(5px + env(safe-area-inset-bottom))}
@@ -550,14 +561,37 @@
       <section id="training" class="page">
         <button class="back" data-page="home" data-i18n="backHome"></button>
         <div class="card training-card">
-          <h2 data-i18n="onlineTraining"></h2>
-          <div class="row"><div><div class="key" data-i18n="due16"></div><div class="value"><span data-i18n="course1"></span><span class="official">Welcome Antlers – Colleague Induction</span></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="due16"></div><div class="value"><span data-i18n="course2"></span><span class="official">Food Safety Training</span></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="due16"></div><div class="value"><span data-i18n="course3"></span><span class="official">Health & Safety Training</span></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="due18"></div><div class="value"><span data-i18n="course4"></span><span class="official">Allergy Awareness Recap</span></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="due1Nov"></div><div class="value"><span data-i18n="course5"></span><span class="official">Customer Experience – The Westmorland Way</span></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="due1Nov"></div><div class="value"><span data-i18n="course6"></span><span class="official">CBE Procedures – Filling Station Colleagues</span></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="due1Nov"></div><div class="value"><span data-i18n="course7"></span><span class="official">Prevention of Sexual Harassment</span></div></div></div>
+          <h2 data-i18n="requiredTraining"></h2>
+
+          <div class="row training-item" data-due="2026-10-16">
+            <div><div class="value"><span data-i18n="course1"></span><span class="official">Welcome Antlers – Colleague Induction</span></div></div>
+            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
+          </div>
+          <div class="row training-item" data-due="2026-10-16">
+            <div><div class="value"><span data-i18n="course2"></span><span class="official">Food Safety Training</span></div></div>
+            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
+          </div>
+          <div class="row training-item" data-due="2026-10-16">
+            <div><div class="value"><span data-i18n="course3"></span><span class="official">Health & Safety Training</span></div></div>
+            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
+          </div>
+          <div class="row training-item" data-due="2026-10-18">
+            <div><div class="value"><span data-i18n="course4"></span><span class="official">Allergy Awareness Recap</span></div></div>
+            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
+          </div>
+          <div class="row training-item" data-due="2026-11-01">
+            <div><div class="value"><span data-i18n="course5"></span><span class="official">Customer Experience – The Westmorland Way</span></div></div>
+            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
+          </div>
+          <div class="row training-item" data-due="2026-11-01">
+            <div><div class="value"><span data-i18n="course6"></span><span class="official">CBE Procedures – Filling Station Colleagues</span></div></div>
+            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
+          </div>
+          <div class="row training-item" data-due="2026-11-01">
+            <div><div class="value"><span data-i18n="course7"></span><span class="official">Prevention of Sexual Harassment</span></div></div>
+            <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
+          </div>
+
           <a class="action" href="https://apps.apple.com/app/id1539428355" target="_blank" rel="noopener" data-i18n="openTraining"></a>
         </div>
       </section>
@@ -640,8 +674,7 @@
       companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح تطبيق PeopleXD", openThrive:"افتح تطبيق THRIVE",
       firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", postcode:"الرمز البريدي",
       privateCodes:"الأكواد الخاصة", privateCodesNote:"حط أي PIN أو كلمة سر أو رقم حساس في الخزنة الخاصة المشفّرة بدل ما يتكتب داخل كود الموقع.",
-      openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين",
-      due16:"آخر موعد 16 أكتوبر 2026", due18:"آخر موعد 18 أكتوبر 2026", due1Nov:"آخر موعد 1 نوفمبر 2026",
+      openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين", requiredTraining:"التدريبات المطلوبة",
       course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
       course5:"تجربة العميل – طريقة Westmorland", course6:"إجراءات CBE – موظفي محطة الوقود", course7:"منع التحرش الجنسي",
       peopleAccessTitle:"دخول PeopleXD",
@@ -716,6 +749,7 @@
       timetableNotStored:"مواعيد الورقة الحالية لم تتخزن في التطبيق لأنها ممكن تتغير؛ اعتمد على الجدول الحالي عند الاستخدام.",
       personalNote:"ملاحظة تخصني", nightMinibusNote:"الميني باص مش متاح لي لأن شغلي Night Shift.",
       benefitsPolicyNote:"المستندات اللي اتبعتت: Meal Procedure v4 (20/06/23) وColleague Discount Policy v7 (29/12/23). المزايا تقديرية وممكن تتغير.",
+      duePrefix:"آخر موعد", daysLeftOne:"فاضل يوم", daysLeftMany:"فاضل {n} أيام", dueToday:"آخر يوم النهارده", overdueOne:"متأخر يوم", overdueMany:"متأخر {n} أيام",
       openTraining:"افتح تطبيق THRIVE", resetChecklist:"ابدأ موقف جديد / صفّر العلامات", vaultNote:"للأرقام أو الملاحظات الحساسة. البيانات بتتشفّر على المتصفح ده ومش بتتخزن على GitHub.",
       addPrivateEntry:"أضف بيانات خاصة", home:"الرئيسية", fireNav:"حريق", detailsNav:"بياناتي", trainingNav:"تدريب",
       privateEntry:"بيانات خاصة", label:"الاسم", value:"القيمة", noteOptional:"ملاحظة (اختياري)", cancel:"إلغاء", save:"حفظ",
@@ -756,8 +790,7 @@
       companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD app", openThrive:"Open THRIVE app",
       firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", postcode:"Postcode",
       privateCodes:"Private codes", privateCodesNote:"Keep PINs, passwords and other sensitive numbers in the encrypted Private Vault instead of writing them into the site code.",
-      openVault:"Open Private Vault", onlineTraining:"Online training",
-      due16:"Due 16 Oct 2026", due18:"Due 18 Oct 2026", due1Nov:"Due 1 Nov 2026",
+      openVault:"Open Private Vault", onlineTraining:"Online training", requiredTraining:"Required training",
       course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
       course5:"Customer Experience – The Westmorland Way", course6:"CBE Procedures – Filling Station Colleagues", course7:"Prevention of Sexual Harassment",
       peopleAccessTitle:"PeopleXD access",
@@ -832,6 +865,7 @@
       timetableNotStored:"The printed timetable times are not stored here because they may change; use the current timetable when travelling.",
       personalNote:"Personal note", nightMinibusNote:"The minibus does not apply to me because I work night shift.",
       benefitsPolicyNote:"Documents supplied: Meal Procedure v4 (20/06/23) and Colleague Discount Policy v7 (29/12/23). Benefits are discretionary and may change.",
+      duePrefix:"Due", daysLeftOne:"1 day left", daysLeftMany:"{n} days left", dueToday:"Due today", overdueOne:"1 day overdue", overdueMany:"{n} days overdue",
       openTraining:"Open THRIVE app", resetChecklist:"New incident / reset checks", vaultNote:"For sensitive numbers or notes. Entries are encrypted in this browser and are not stored in GitHub.",
       addPrivateEntry:"Add private entry", home:"Home", fireNav:"Fire", detailsNav:"Details", trainingNav:"Training",
       privateEntry:"Private entry", label:"Label", value:"Value", noteOptional:"Note (optional)", cancel:"Cancel", save:"Save",
@@ -861,6 +895,7 @@
       el.style.display = lang === "ar" ? "block" : "none";
     });
     updateOnline();
+    updateTrainingDeadlines();
     renderVault();
   }
 
@@ -1089,6 +1124,51 @@
     updateChecklistProgress(id);
   }
 
+  function updateTrainingDeadlines() {
+    const today = new Date();
+    const todayLocal = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const locale = lang === "ar" ? "ar-EG" : "en-GB";
+    const formatter = new Intl.DateTimeFormat(locale, {day:"numeric", month:"short", year:"numeric"});
+
+    document.querySelectorAll(".training-item[data-due]").forEach(row => {
+      const [y,m,d] = row.dataset.due.split("-").map(Number);
+      const due = new Date(y, m - 1, d);
+      const diff = Math.round((due - todayLocal) / 86400000);
+      const dueEl = row.querySelector(".due-date");
+      const leftEl = row.querySelector(".days-left");
+
+      dueEl.textContent = t("duePrefix") + " " + formatter.format(due);
+      leftEl.classList.remove("urgent","overdue");
+
+      if (diff > 1) {
+        leftEl.textContent = t("daysLeftMany").replace("{n}", diff);
+        if (diff <= 3) leftEl.classList.add("urgent");
+      } else if (diff === 1) {
+        leftEl.textContent = t("daysLeftOne");
+        leftEl.classList.add("urgent");
+      } else if (diff === 0) {
+        leftEl.textContent = t("dueToday");
+        leftEl.classList.add("urgent");
+      } else if (diff === -1) {
+        leftEl.textContent = t("overdueOne");
+        leftEl.classList.add("overdue");
+      } else {
+        leftEl.textContent = t("overdueMany").replace("{n}", Math.abs(diff));
+        leftEl.classList.add("overdue");
+      }
+    });
+  }
+
+  let lastTrainingDay = "";
+  function refreshTrainingDateIfNeeded() {
+    const now = new Date();
+    const dayKey = [now.getFullYear(), now.getMonth()+1, now.getDate()].join("-");
+    if (dayKey !== lastTrainingDay) {
+      lastTrainingDay = dayKey;
+      updateTrainingDeadlines();
+    }
+  }
+
   function updateOnline() {
     if (!$("offlineStatus")) return;
     $("offlineStatus").textContent = navigator.onLine ? t("online") : t("offline");
@@ -1152,12 +1232,16 @@
 
   addEventListener("online", updateOnline);
   addEventListener("offline", updateOnline);
+  addEventListener("focus", refreshTrainingDateIfNeeded);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshTrainingDateIfNeeded(); });
+  setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("./sw.js").catch(() => {});
   }
 
   applyLanguage(lang);
+  refreshTrainingDateIfNeeded();
   restoreChecklists();
   $("lockScreen").classList.add("hidden");
   showPage("home", true);
