@@ -62,7 +62,7 @@ test('public access, protected direct routes, translated auth, vault CRUD, anoth
   assert.equal(a.document.documentElement.dir, 'rtl');
   assert.equal(a.document.getElementById('setupMode'), null);
   for (const page of ['fire', 'training', 'benefits', 'uniform', 'access', 'home']) {
-    click(a, page==='benefits'?'#home [data-page="benefits/meals"]':page==='access'?'#home [data-page="access/reset"]':`[data-page="${page}"]`);
+    click(a, page==='benefits'?'#home [data-page="benefits"]':page==='access'?'#home [data-page="access/reset"]':`[data-page="${page}"]`);
     assert.ok(active(a, page));
     assert.ok(a.document.getElementById('lockScreen').classList.contains('hidden'));
   }
@@ -336,11 +336,15 @@ test('returning from another page keeps draft inputs and back links return to th
   const shown=new d.window.Event('pageshow');Object.defineProperty(shown,'persisted',{value:true});d.window.dispatchEvent(shown);
   await until(()=>d.document.getElementById('privacyShield').classList.contains('hidden'));
   assert.ok(active(d,'tasks'));assert.equal(d.document.getElementById('taskInput').value,'Finish tonight');
-  click(d,'[data-page="home"]');click(d,'#home [data-page="benefits/meals"]');
+  click(d,'[data-page="home"]');click(d,'#home [data-page="benefits"]');
   assert.ok(active(d,'benefits'));assert.equal(d.document.querySelector('#benefits [data-tab="meals"]').getAttribute('aria-selected'),'true');
   assert.match(d.document.querySelector('#benefits [data-back]').textContent,/الرئيسية/);
+  click(d,'#benefits-tab-discounts');
   click(d,'#benefits [data-back]');assert.ok(active(d,'home'));
-  click(d,'#home [data-page="benefits/discounts"]');
+  assert.equal(d.document.querySelectorAll('#home [data-page="benefits"]').length,1);
+  assert.equal(d.document.querySelectorAll('#home [data-page^="benefits/"]').length,0);
+  assert.equal(d.document.querySelectorAll('#home .company-tools [data-page="access/reset"]').length,1);
+  click(d,'#home [data-page="benefits"]');
   assert.equal(d.document.querySelector('#benefits [data-tab="discounts"]').getAttribute('aria-selected'),'true');
   assert.match(d.document.querySelector('#benefits [data-back]').textContent,/الرئيسية/);
   assert.equal(d.window.history.state.wfFrom,'home');
@@ -354,6 +358,9 @@ test('returning from another page keeps draft inputs and back links return to th
   assert.equal(d.document.querySelectorAll('#home [data-page="fire"]').length,0);
   assert.ok(d.document.querySelector('#home .shift-hero').compareDocumentPosition(d.document.querySelector('#home .home-focus')) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
   assert.equal(d.document.querySelectorAll('#home .home-focus .focus-card').length,2);
+  click(d,'#home .company-tools [data-page="access/reset"]');assert.ok(active(d,'access'));
+  assert.equal(d.document.querySelector('#access [data-tab="reset"]').getAttribute('aria-selected'),'true');
+  click(d,'#access [data-back]');assert.ok(active(d,'home'));
   click(d,'#home [data-page="uniform"]');assert.ok(active(d,'uniform'));
   assert.equal(d.document.querySelectorAll('#uniform [data-tab]').length,0);
   assert.equal(d.document.querySelectorAll('#uniform .uniform-guide').length,1);
