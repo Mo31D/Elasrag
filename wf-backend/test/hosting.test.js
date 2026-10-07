@@ -36,7 +36,7 @@ test('same-origin API and legacy migration share the existing session and privat
   const { env, records } = fixture();
   const health = await worker.fetch(req('/api/health'), env);
   assert.equal(health.status, 200);
-  assert.equal((await health.json()).version, 4);
+  assert.equal((await health.json()).version, 5);
   const login = await worker.fetch(req('/api/login','POST',{password:env.WF_PASSWORD}), env);
   assert.equal(login.status, 200);
   const setCookie = login.headers.get('set-cookie');

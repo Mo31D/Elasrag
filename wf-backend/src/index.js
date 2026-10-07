@@ -483,7 +483,7 @@ export default {
     if (request.method === "OPTIONS") return corsPreflight(origin);
     if (apiPath === "/health" && request.method === "GET") {
       const ready = Boolean(env.WF_PASSWORD && env.SESSION_SECRET && env.WF_DATA && env.WF_AUTH && env.ASSETS);
-      return json({ ok: ready, service: "wf-backend", version: 4 }, ready ? 200 : 503, origin);
+      return json({ ok: ready, service: "wf-backend", version: 5 }, ready ? 200 : 503, origin);
     }
     // CORS alone does not prevent cross-origin writes.
     if (origin && !ALLOWED_ORIGINS.has(origin)) return json({ error: "Forbidden" }, 403);
