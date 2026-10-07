@@ -200,6 +200,12 @@
     .training-card .row{align-items:flex-start}
     .training-card .row>div{width:100%}
     .training-card .row{position:relative}
+    .training-group-title{
+      margin:12px 0 2px;padding-top:10px;border-top:1px solid var(--line);
+      font-size:11px;font-weight:900;color:#475467;text-transform:uppercase;letter-spacing:.05em
+    }
+    html[dir="rtl"] .training-group-title{letter-spacing:0}
+    .training-group-title:first-of-type{margin-top:5px;padding-top:0;border-top:0}
     .training-card .value{text-align:start;font-size:15px;padding-inline-end:78px}
     .training-deadline{
       position:absolute;inset-inline-end:0;top:10px;text-align:end;min-width:70px
@@ -562,6 +568,7 @@
         <button class="back" data-page="home" data-i18n="backHome"></button>
         <div class="card training-card">
           <h2 data-i18n="requiredTraining"></h2>
+          <div class="training-group-title" data-i18n="essentialLearning"></div>
 
           <div class="row training-item" data-due="2026-10-16">
             <div><div class="value"><span data-i18n="course1"></span><span class="official">Welcome Antlers – Colleague Induction</span></div></div>
@@ -579,6 +586,9 @@
             <div><div class="value"><span data-i18n="course4"></span><span class="official">Allergy Awareness Recap</span></div></div>
             <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
           </div>
+
+          <div class="training-group-title" data-i18n="otherAssignedTraining"></div>
+
           <div class="row training-item" data-due="2026-11-01">
             <div><div class="value"><span data-i18n="course5"></span><span class="official">Customer Experience – The Westmorland Way</span></div></div>
             <div class="training-deadline"><span class="due-date"></span><span class="days-left"></span></div>
@@ -674,7 +684,7 @@
       companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح تطبيق PeopleXD", openThrive:"افتح تطبيق THRIVE",
       firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", postcode:"الرمز البريدي",
       privateCodes:"الأكواد الخاصة", privateCodesNote:"حط أي PIN أو كلمة سر أو رقم حساس في الخزنة الخاصة المشفّرة بدل ما يتكتب داخل كود الموقع.",
-      openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين", requiredTraining:"التدريبات المطلوبة",
+      openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين", requiredTraining:"التدريبات المطلوبة", essentialLearning:"الأساسي — أولوية حالية", otherAssignedTraining:"تدريبات مطلوبة أخرى",
       course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
       course5:"تجربة العميل – طريقة Westmorland", course6:"إجراءات CBE – موظفي محطة الوقود", course7:"منع التحرش الجنسي",
       peopleAccessTitle:"دخول PeopleXD",
@@ -790,7 +800,7 @@
       companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD app", openThrive:"Open THRIVE app",
       firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", postcode:"Postcode",
       privateCodes:"Private codes", privateCodesNote:"Keep PINs, passwords and other sensitive numbers in the encrypted Private Vault instead of writing them into the site code.",
-      openVault:"Open Private Vault", onlineTraining:"Online training", requiredTraining:"Required training",
+      openVault:"Open Private Vault", onlineTraining:"Online training", requiredTraining:"Required training", essentialLearning:"Essential Learning — current priority", otherAssignedTraining:"Other assigned training",
       course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
       course5:"Customer Experience – The Westmorland Way", course6:"CBE Procedures – Filling Station Colleagues", course7:"Prevention of Sexual Harassment",
       peopleAccessTitle:"PeopleXD access",
