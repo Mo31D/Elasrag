@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head>
   <meta charset="utf-8">
-  <meta name="wf-build" content="25">
+  <meta name="wf-build" content="26">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
@@ -53,6 +53,7 @@
     </div>
   </section>
 
+  <div id="privacyShield" class="privacy-shield hidden" aria-hidden="true"></div>
   <div id="app" data-staff-profile="personal" data-section="filling-station-nights">
     <header>
       <div class="topbar">
@@ -79,28 +80,37 @@
           <button class="focus-card" data-page="training"><span class="key" data-i18n="nextLearning"></span><strong id="nextCourseTitle" data-i18n="training"></strong><span id="nextCourseMeta" class="tiny"></span></button>
         </div>
         <button class="task-summary" data-page="tasks"><span data-i18n="myTasks"></span><span id="homeTaskCount" class="progress-pill">✓</span></button>
-        <div class="section-title" data-i18n="quickAccess"></div>
+        <div class="section-title" data-i18n="workGuides"></div>
+        <div class="guide-grid">
+          <button class="guide-card" data-page="fire"><span class="guide-icon fire-icon" aria-hidden="true">!</span><span data-i18n="fireQuick"></span></button>
+          <button class="guide-card" data-page="benefits/meals"><span class="guide-icon" aria-hidden="true">◒</span><span data-i18n="mealGuide"></span></button>
+          <button class="guide-card" data-page="benefits/discounts"><span class="guide-icon" aria-hidden="true">%</span><span data-i18n="discountGuide"></span></button>
+          <button class="guide-card" data-page="access/reset"><span class="guide-icon" aria-hidden="true">⌘</span><span data-i18n="accountHelp"></span></button>
+          <button class="guide-card" data-page="uniform"><span class="guide-icon" aria-hidden="true">◇</span><span data-i18n="uniformDress"></span></button>
+          <button class="guide-card" data-page="benefits/travel"><span class="guide-icon" aria-hidden="true">↗</span><span data-i18n="minibusGuide"></span></button>
+        </div>
+        <button class="reference-link" data-page="reference"><span data-i18n="allReference"></span><span aria-hidden="true">↗</span></button>
+        <div class="section-title" data-i18n="workTools"></div>
         <div class="grid">
           <a class="quick access" href="https://mywestmorland.com" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>PeopleXD</span></a>
           <a class="quick access" href="https://westmorland.learn.link" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>THRIVE</span></a>
-          <button class="quick benefits" data-page="benefits"><span class="icon" aria-hidden="true">★</span><span data-i18n="benefits"></span></button>
-          <button class="quick uniform" data-page="uniform"><span class="icon" aria-hidden="true">◇</span><span data-i18n="uniformDress"></span></button>
         </div>
-        <button class="reference-link" data-page="reference"><span data-i18n="allReference"></span><span aria-hidden="true">↗</span></button>
         <div class="status" id="offlineStatus"></div>
       </section>
       <section id="tasks" class="page">
-        <button class="back" data-page="home" data-i18n="backHome"></button>
+        <button class="back" data-back></button>
         <div class="check-head"><h1 data-i18n="myTasks"></h1><span id="taskProgress" class="progress-pill"></span></div>
         <form id="taskForm" class="inline-form"><input id="taskInput" maxlength="300" autocomplete="off" data-placeholder="addTask"><button class="primary" type="submit" data-i18n="add"></button></form>
         <div class="card"><ul id="personalTasks" class="task-list"></ul><button id="resetTasks" class="reset-checklist" data-i18n="newShift"></button></div>
       </section>
       <section id="reference" class="page">
-        <button class="back" data-page="home" data-i18n="backHome"></button>
+        <button class="back" data-back></button>
         <h1 data-i18n="reference"></h1>
         <input id="referenceSearch" class="search-input" type="search" data-placeholder="findReference" autocomplete="off">
         <div class="reference-list">
-          <button class="reference-row" data-page="benefits" data-search="benefits meals discounts food drinks hotel cinema مزايا اكل خصم سينما"><span data-i18n="benefits"></span><span aria-hidden="true">↗</span></button>
+          <button class="reference-row" data-page="benefits/meals" data-search="meal food breakfast sandwich till وجبة وجبات أكل ساندوتش"><span data-i18n="mealGuide"></span><span aria-hidden="true">↗</span></button>
+          <button class="reference-row" data-page="benefits/discounts" data-search="discount benefits hotel cinema خصم خصومات مزايا فندق سينما"><span data-i18n="discountGuide"></span><span aria-hidden="true">↗</span></button>
+          <button class="reference-row" data-page="benefits/travel" data-search="minibus kendal route bus مواصلات ميني باص كندال"><span data-i18n="minibusGuide"></span><span aria-hidden="true">↗</span></button>
           <button class="reference-row" data-page="uniform" data-search="uniform dress clothes safety PPE shoes زي ملابس مظهر حذاء"><span data-i18n="uniformDress"></span><span aria-hidden="true">↗</span></button>
           <button class="reference-row" data-page="access" data-search="account password login reset help PeopleXD كلمة مرور باسورد دخول حساب"><span data-i18n="accountHelp"></span><span aria-hidden="true">↗</span></button>
           <button class="reference-row" data-page="fire" data-search="fire emergency evacuation warden حريق طوارئ اخلاء"><span data-i18n="fire"></span><span aria-hidden="true">↗</span></button>
@@ -108,7 +118,7 @@
         </div>
       </section>
       <section id="fire" class="page">
-        <button class="back" data-back-fire="" data-i18n="back"></button>
+        <button class="back" data-back data-back-fire=""></button>
         <div class="card critical">
           <div class="big" data-i18n="fireHeadline"></div>
           <ul class="task-list" data-checklist="fire-evacuation">
@@ -146,7 +156,7 @@
       </section>
 
       <section id="details" class="page">
-        <button class="back" data-page="home" data-i18n="backHome"></button>
+        <button class="back" data-back></button>
         <div class="check-head"><h1 data-i18n="myProfile"></h1><button class="secondary" data-edit-profile="" data-i18n="edit"></button></div><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="shift" data-i18n="shiftTab" aria-selected="true" id="details-tab-shift" aria-controls="details-panel-shift" tabindex="0"></button><button type="button" role="tab" data-tab="accounts" data-i18n="accountsTab" aria-selected="false" id="details-tab-accounts" aria-controls="details-panel-accounts" tabindex="-1"></button><button type="button" role="tab" data-tab="arrival" data-i18n="arrivalTab" aria-selected="false" id="details-tab-arrival" aria-controls="details-panel-arrival" tabindex="-1"></button></div>
 
 
@@ -214,7 +224,7 @@
         </div></div></section>
 
       <section id="access" class="page">
-        <button class="back" data-page="reference" data-i18n="reference"></button><h1 data-i18n="accountHelp"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="reset" data-i18n="resetTab" aria-selected="true" id="access-tab-reset" aria-controls="access-panel-reset" tabindex="0"></button><button type="button" role="tab" data-tab="username" data-i18n="usernameTab" aria-selected="false" id="access-tab-username" aria-controls="access-panel-username" tabindex="-1"></button><button type="button" role="tab" data-tab="app" data-i18n="appTab" aria-selected="false" id="access-tab-app" aria-controls="access-panel-app" tabindex="-1"></button></div>
+        <button class="back" data-back></button><h1 data-i18n="accountHelp"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="reset" data-i18n="resetTab" aria-selected="true" id="access-tab-reset" aria-controls="access-panel-reset" tabindex="0"></button><button type="button" role="tab" data-tab="username" data-i18n="usernameTab" aria-selected="false" id="access-tab-username" aria-controls="access-panel-username" tabindex="-1"></button><button type="button" role="tab" data-tab="app" data-i18n="appTab" aria-selected="false" id="access-tab-app" aria-controls="access-panel-app" tabindex="-1"></button></div>
 
 
 
@@ -256,7 +266,7 @@
         </div></div></section>
 
       <section id="uniform" class="page">
-        <button class="back" data-page="reference" data-i18n="reference"></button><h1 data-i18n="uniformDress"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="daily" data-i18n="dailyTab" aria-selected="true" id="uniform-tab-daily" aria-controls="uniform-panel-daily" tabindex="0"></button><button type="button" role="tab" data-tab="food" data-i18n="foodTab" aria-selected="false" id="uniform-tab-food" aria-controls="uniform-panel-food" tabindex="-1"></button><button type="button" role="tab" data-tab="issued" data-i18n="issuedTab" aria-selected="false" id="uniform-tab-issued" aria-controls="uniform-panel-issued" tabindex="-1"></button></div>
+        <button class="back" data-back></button><h1 data-i18n="uniformDress"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="daily" data-i18n="dailyTab" aria-selected="true" id="uniform-tab-daily" aria-controls="uniform-panel-daily" tabindex="0"></button><button type="button" role="tab" data-tab="food" data-i18n="foodTab" aria-selected="false" id="uniform-tab-food" aria-controls="uniform-panel-food" tabindex="-1"></button><button type="button" role="tab" data-tab="issued" data-i18n="issuedTab" aria-selected="false" id="uniform-tab-issued" aria-controls="uniform-panel-issued" tabindex="-1"></button></div>
 
 
 
@@ -290,7 +300,7 @@
         </div></div><div class="status" data-i18n="uniformPolicyDate"></div></section>
 
       <section id="benefits" class="page">
-        <button class="back" data-page="reference" data-i18n="reference"></button><h1 data-i18n="benefits"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="meals" data-i18n="mealsTab" aria-selected="true" id="benefits-tab-meals" aria-controls="benefits-panel-meals" tabindex="0"></button><button type="button" role="tab" data-tab="discounts" data-i18n="discountsTab" aria-selected="false" id="benefits-tab-discounts" aria-controls="benefits-panel-discounts" tabindex="-1"></button><button type="button" role="tab" data-tab="travel" data-i18n="travelTab" aria-selected="false" id="benefits-tab-travel" aria-controls="benefits-panel-travel" tabindex="-1"></button><button type="button" role="tab" data-tab="leisure" data-i18n="leisureTab" aria-selected="false" id="benefits-tab-leisure" aria-controls="benefits-panel-leisure" tabindex="-1"></button></div>
+        <button class="back" data-back></button><h1 data-i18n="benefits"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="meals" data-i18n="mealsTab" aria-selected="true" id="benefits-tab-meals" aria-controls="benefits-panel-meals" tabindex="0"></button><button type="button" role="tab" data-tab="discounts" data-i18n="discountsTab" aria-selected="false" id="benefits-tab-discounts" aria-controls="benefits-panel-discounts" tabindex="-1"></button><button type="button" role="tab" data-tab="travel" data-i18n="travelTab" aria-selected="false" id="benefits-tab-travel" aria-controls="benefits-panel-travel" tabindex="-1"></button><button type="button" role="tab" data-tab="leisure" data-i18n="leisureTab" aria-selected="false" id="benefits-tab-leisure" aria-controls="benefits-panel-leisure" tabindex="-1"></button></div>
 
 
 
@@ -361,14 +371,14 @@
         </div></div><p class="tiny" data-i18n="benefitsPolicyNote"></p></section>
 
       <section id="training" class="page">
-        <button class="back" data-page="home" data-i18n="backHome"></button>
+        <button class="back" data-back></button>
         <div class="check-head"><h1 data-i18n="training"></h1><button id="addCourseBtn" class="secondary" data-i18n="addCourse"></button></div>
         <a class="action compact-action" href="https://westmorland.learn.link" target="_blank" rel="noopener" data-i18n="openTraining"></a><div class="section-tabs" role="tablist"><button type="button" data-tab="pending" data-i18n="pendingTab" role="tab" aria-selected="true" id="training-tab-pending" aria-controls="training-panel-pending" tabindex="0"></button><button type="button" data-tab="completed" data-i18n="completedLearning" role="tab" aria-selected="false" id="training-tab-completed" aria-controls="completedLearning" tabindex="-1"></button></div>
         <div class="card training-card" id="training-panel-pending" data-tab-panel="pending" role="tabpanel" aria-labelledby="training-tab-pending"><div class="check-head"><h2 data-i18n="myLearning"></h2><span id="learningProgress" class="progress-pill"></span></div><div id="courseList"></div></div>
         <div id="completedLearning" class="card completed-history" data-tab-panel="completed" role="tabpanel" aria-labelledby="training-tab-completed" hidden=""><h2 class="check-head"><span data-i18n="completedLearning"></span><span id="completedCount" class="completed-count">0</span></h2><div id="completedCourses"></div></div>
       </section>
       <section id="vault" class="page">
-        <button class="back" data-page="home" data-i18n="backHome"></button>
+        <button class="back" data-back></button>
         <div class="card">
           <h2 data-i18n="privateVault"></h2>
           <p class="tiny" data-i18n="vaultNote"></p>

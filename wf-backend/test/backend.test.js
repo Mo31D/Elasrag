@@ -94,3 +94,64 @@ test('older unversioned secret data migrates without blocking owner access or de
   const data=(await response.json()).data;assert.equal(data.profile.colleagueNumber,original.colleagueNumber);assert.equal(data.profile.kioskId,original.profile.kioskId);
   assert.ok(data.items.some(item=>item.value===original.savedNote));assert.equal(env.WF_PRIVATE_DATA,JSON.stringify(original));
 });
+
+test('concurrent focused changes preserve independent profile, tasks, courses and vault edits',async()=>{
+  const {env,kv}=fixture();
+  const a=await login(env),b=await login(env);
+  const patch=(cookie,changes)=>worker.fetch(request('/api/private/changes','POST',{changes},cookie),env);
+  const read=async cookie=>(await (await worker.fetch(request('/api/private','GET',null,cookie),env)).json()).data;
+  const before=await read(a);
+  const profile=patch(a,[{section:'profile',key:'site',before:before.profile.site,after:'Fixture site'}]);
+  const task=patch(b,[{section:'tasks',type:'add',after:{id:'task-one',label:'Check forecourt',done:false}}]);
+  const course=patch(a,[{section:'courses',type:'update',id:before.companion.courses[0].id,fields:{status:{before:before.companion.courses[0].status,after:'completed'}}}]);
+  const vault=patch(b,[{section:'items',type:'add',after:{label:'Key',value:'fixture-only',note:''}}]);
+  const results=await Promise.all([profile,task,course,vault]);
+  assert.deepEqual(results.map(result=>result.status),[200,200,200,200]);
+  const data=await read(b);
+  assert.equal(data.profile.site,'Fixture site');
+  assert.deepEqual(data.companion.tasks,[{id:'task-one',label:'Check forecourt',done:false}]);
+  assert.equal(data.companion.courses[0].status,'completed');
+  assert.deepEqual(data.items,[{label:'Key',value:'fixture-only',note:''}]);
+  assert.deepEqual(JSON.parse(kv.get('private-data')),data);
+  const c=await patch(a,[{section:'profile',key:'manager',before:before.profile.manager,after:'Manager A'}]);
+  const d=await patch(b,[{section:'profile',key:'hours',before:before.profile.hours,after:'19'}]);
+  assert.equal(c.status,200);assert.equal(d.status,200);
+  const concurrent=await Promise.all([
+    patch(a,[{section:'tasks',type:'update',id:'task-one',fields:{label:{before:'Check forecourt',after:'Close forecourt'}}}]),
+    patch(b,[{section:'tasks',type:'update',id:'task-one',fields:{done:{before:false,after:true}}}]),
+  ]);
+  assert.deepEqual(concurrent.map(result=>result.status),[200,200]);
+  const after=await read(a);
+  assert.equal(after.companion.tasks[0].label,'Close forecourt');assert.equal(after.companion.tasks[0].done,true);
+  assert.equal(after.profile.manager,'Manager A');assert.equal(after.profile.hours,'19');
+  const conflict=await patch(b,[{section:'tasks',type:'update',id:'task-one',fields:{label:{before:'Check forecourt',after:'Old stale text'}}}]);
+  assert.equal(conflict.status,409);assert.equal((await conflict.json()).code,'edit_conflict');
+  assert.deepEqual(await read(a),after);
+  assert.equal((await patch(a,[{section:'tasks',type:'remove',id:'task-one',before:{id:'task-one',label:'Check forecourt',done:false}}])).status,409);
+  assert.equal((await patch(a,[{section:'courses',type:'update',id:before.companion.courses[0].id,fields:{status:{before:'in-progress',after:'not-started'}}}])).status,409);
+  assert.equal((await patch(a,[{section:'items',type:'update',index:0,before:{label:'Key',value:'stale',note:''},after:{label:'Key',value:'other',note:''}}])).status,409);
+  assert.deepEqual(await read(b),after);
+  assert.equal((await worker.fetch(request('/api/private/changes','POST',{changes:[{section:'profile',key:'site',before:'Fixture site',after:'bad'}]}),env)).status,401);
+});
+
+test('existing KV data gains only missing legacy fields with a durable backup',async()=>{
+  const {env,kv}=fixture();
+  const original={version:1,profile:{site:'Current site',kioskId:'Current kiosk'},items:[{label:'Current',value:'present',note:''}],companion:{tasks:[{id:'saved-task',label:'Existing task',done:true}],courses:[]}};
+  kv.set('private-data',JSON.stringify(original));
+  env.WF_PRIVATE_DATA=JSON.stringify({version:1,profile:{site:'Stale site',kioskId:'Stale kiosk',colleagueNumber:'legacy-number',workPin:'legacy-pin',thriveUsername:'legacy-thrive'},items:[{label:'Legacy',value:'preserved',note:''}]});
+  const cookie=await login(env);
+  const result=await worker.fetch(request('/private','GET',null,cookie),env);
+  assert.equal(result.status,200);
+  const data=(await result.json()).data;
+  assert.equal(data.profile.site,'Current site');assert.equal(data.profile.kioskId,'Current kiosk');
+  assert.equal(data.profile.colleagueNumber,'legacy-number');assert.equal(data.profile.workPin,'legacy-pin');
+  assert.equal(data.profile.thriveUsername,'legacy-thrive');
+  assert.deepEqual(data.companion,original.companion);
+  assert.deepEqual(data.items,[...original.items,{label:'Legacy',value:'preserved',note:''}]);
+  const backup=[...kv.entries()].find(([key])=>key.startsWith('private-backup:'));
+  assert.ok(backup);assert.deepEqual(JSON.parse(backup[1]),original);
+  assert.deepEqual(JSON.parse(kv.get('private-data')),data);
+  const reopened=await worker.fetch(request('/private','GET',null,cookie),env);
+  assert.deepEqual((await reopened.json()).data,data);
+  assert.equal([...kv.keys()].filter(key=>key.startsWith('private-backup:')).length,1);
+});

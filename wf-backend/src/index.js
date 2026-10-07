@@ -32,7 +32,7 @@ function corsPreflight(origin) {
     headers: {
       "access-control-allow-origin": origin,
       "access-control-allow-credentials": "true",
-      "access-control-allow-methods": "GET,POST,PUT,OPTIONS",
+    "access-control-allow-methods": "GET,POST,PUT,OPTIONS",
       "access-control-allow-headers": "content-type, if-match",
       "access-control-max-age": "86400",
       "vary": "Origin",
@@ -137,7 +137,7 @@ function clearSessionCookie() {
   return "wf_session=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0";
 }
 
-const API_PATHS = new Set(["/health", "/login", "/register", "/recover", "/session", "/logout", "/private"]);
+const API_PATHS = new Set(["/health", "/login", "/register", "/recover", "/session", "/logout", "/private", "/private/changes"]);
 const MAX_BYTES = 100000;
 const PROFILE_FIELDS = new Set(["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername", "displayName", "role", "site", "manager", "managerEmail", "startDate", "shiftDays", "shiftStart", "shiftEnd", "hours", "hourlyRate", "paidBreak", "annualHoliday", "minibusNote", "firstDayTime", "firstDayLocation", "firstDayPostcode"]);
 
@@ -199,6 +199,23 @@ function normalizeLegacySecret(encoded) {
   const data={version:1,profile,items};if(!validData(data))throw new Error("Unsupported stored data");return data;
 }
 
+function supplementLegacy(data, encoded) {
+  if (!encoded) return data;
+  let legacy;
+  try { legacy = normalizeLegacySecret(encoded); } catch { return data; }
+  const profile = { ...data.profile };
+  for (const [field, value] of Object.entries(legacy.profile)) {
+    if (!profile[field] && value) profile[field] = value;
+  }
+  const items = data.items.slice();
+  for (const item of legacy.items) {
+    if (items.length >= 200) break;
+    if (!items.some(existing => JSON.stringify(existing) === JSON.stringify(item))) items.push(item);
+  }
+  const merged = { ...data, profile, items };
+  return validData(merged) && encoder.encode(JSON.stringify(merged)).byteLength <= MAX_BYTES ? merged : data;
+}
+
 async function readJson(request, limit = MAX_BYTES) {
   if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) {
     throw Object.assign(new Error(), { status: 415 });
@@ -227,6 +244,74 @@ async function readJson(request, limit = MAX_BYTES) {
 
 async function revision(data) {
   return '"' + base64url(await sha256(JSON.stringify(data))) + '"';
+}
+
+const RECORD_FIELDS = {
+  tasks: new Set(["label", "done"]),
+  courses: new Set(["titleEN", "titleAR", "due", "status", "required"]),
+};
+const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
+const own = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+
+function applyChanges(current, changes) {
+  if (!Array.isArray(changes) || !changes.length || changes.length > 100) return { status: 400 };
+  const next = structuredClone(current);
+  for (const change of changes) {
+    if (!change || typeof change !== "object" || Array.isArray(change)) return { status: 400 };
+    if (change.section === "profile") {
+      if (!PROFILE_FIELDS.has(change.key) || !["string", "object"].includes(typeof change.before) ||
+          !["string", "object"].includes(typeof change.after) ||
+          (change.before !== null && typeof change.before !== "string") ||
+          (change.after !== null && typeof change.after !== "string") ||
+          (typeof change.after === "string" && change.after.length > 256)) return { status: 400 };
+      const existing = own(next.profile, change.key) ? next.profile[change.key] : null;
+      if (existing !== change.before) return { status: 409 };
+      if (change.after === null) delete next.profile[change.key];
+      else next.profile[change.key] = change.after;
+      continue;
+    }
+    if (change.section === "items") {
+      if (change.type === "add" && change.after && typeof change.after === "object") {
+        if (next.items.some(item => same(item, change.after))) continue;
+        next.items.push(change.after);
+        continue;
+      }
+      if (!["update", "remove"].includes(change.type) || !Number.isInteger(change.index) || change.index < 0 || !change.before || typeof change.before !== "object") return { status: 400 };
+      let index = change.index;
+      if (!same(next.items[index], change.before)) {
+        const matches = next.items.flatMap((item, i) => same(item, change.before) ? [i] : []);
+        if (matches.length !== 1) return { status: 409 };
+        index = matches[0];
+      }
+      if (change.type === "remove") next.items.splice(index, 1);
+      else if (change.after && typeof change.after === "object") next.items[index] = change.after;
+      else return { status: 400 };
+      continue;
+    }
+    if (!RECORD_FIELDS[change.section] || !["add", "update", "remove"].includes(change.type)) return { status: 400 };
+    const records = next.companion[change.section];
+    if (change.type === "add") {
+      if (!change.after || typeof change.after !== "object" || typeof change.after.id !== "string") return { status: 400 };
+      if (records.some(item => item.id === change.after.id)) return { status: 409 };
+      records.push(change.after);
+      continue;
+    }
+    if (typeof change.id !== "string") return { status: 400 };
+    const index = records.findIndex(item => item.id === change.id);
+    if (index < 0) return { status: 409 };
+    if (change.type === "remove") {
+      if (!same(records[index], change.before)) return { status: 409 };
+      records.splice(index, 1);
+      continue;
+    }
+    if (!change.fields || typeof change.fields !== "object" || Array.isArray(change.fields) || !Object.keys(change.fields).length) return { status: 400 };
+    for (const [key, field] of Object.entries(change.fields)) {
+      if (!RECORD_FIELDS[change.section].has(key) || !field || typeof field !== "object" || !own(field, "before") || !own(field, "after")) return { status: 400 };
+      if (!same(records[index][key], field.before)) return { status: 409 };
+      records[index][key] = field.after;
+    }
+  }
+  return validData(next) && encoder.encode(JSON.stringify(next)).byteLength <= MAX_BYTES ? { data: next } : { status: 400 };
 }
 
 // One coordinator gives immediate session revocation and serializes private writes.
@@ -304,12 +389,18 @@ export class WFAuthGuard {
       const writeTimeKey = userId === "owner" ? "private-write-time" : "private-write-time:" + userId;
       if (!this.currentData.has(userId)) {
         const raw = await this.env.WF_DATA.get(dataKey, "json");
-        // An existing record always takes priority over the legacy secret.
         let data = raw == null && userId === "owner" && this.env.WF_PRIVATE_DATA ? normalizeLegacySecret(this.env.WF_PRIVATE_DATA) : normalizeData(raw);
         const expected = await store.get(revisionKey);
         if (expected && expected !== await revision(data)) return json({ error: "Unavailable" }, 503);
+        if (raw != null && userId === "owner") data = supplementLegacy(data, this.env.WF_PRIVATE_DATA);
         if (!data.companion) {
           data = { ...data, profile: userId === "owner" ? { ...OWNER_PROFILE, ...data.profile } : data.profile, companion: initialCompanion(userId === "owner") };
+        }
+        if (raw == null || !same(raw, data)) {
+          if (raw != null) {
+            const backupKey = "private-backup:" + base64url(await sha256(JSON.stringify(raw)));
+            if (await this.env.WF_DATA.get(backupKey) == null) await this.env.WF_DATA.put(backupKey, JSON.stringify(raw));
+          }
           await this.env.WF_DATA.put(dataKey, JSON.stringify(data));
           await store.put({ [revisionKey]: await revision(data), [writeTimeKey]: Date.now() });
         }
@@ -318,8 +409,19 @@ export class WFAuthGuard {
       const current = this.currentData.get(userId);
       const etag = await revision(current);
       if (body.action === "read") return json({ ok: true, data: current }, 200, null, { etag });
+      if (body.action === "change") {
+        const applied = applyChanges(current, body.changes);
+        if (applied.status) return json({ error: applied.status === 409 ? "The edited value changed" : "Invalid data", code: applied.status === 409 ? "edit_conflict" : "invalid_change" }, applied.status);
+        const next = applied.data;
+        if (same(next, current)) return json({ ok: true, data: current }, 200, null, { etag });
+        const nextRevision = await revision(next);
+        await this.env.WF_DATA.put(dataKey, JSON.stringify(next));
+        await store.put(revisionKey, nextRevision);
+        this.currentData.set(userId, next);
+        return json({ ok: true, data: next }, 200, null, { etag: nextRevision });
+      }
       if (body.action === "write") {
-        if (body.etag !== etag) return json({ error: "Conflict" }, 409);
+        if (body.etag !== etag) return json({ error: "The stored data changed", code: "snapshot_conflict" }, 409);
         const lastWrite = await store.get(writeTimeKey) || 0;
         if (now - lastWrite < 1000) return json({ error: "Try again" }, 429);
         if (!validData(body.data)) return json({ error: "Invalid data" }, 400);
@@ -367,7 +469,7 @@ export default {
         const headers = new Headers(response.headers);
         headers.set("cache-control", "no-store");
         headers.set("strict-transport-security", "max-age=31536000");
-        headers.set("x-wf-build", "25");
+        headers.set("x-wf-build", "26");
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");
@@ -423,6 +525,12 @@ export default {
           action: request.method === "PUT" ? "write" : "read",
           nonce: payload.nonce, data: body, etag: request.headers.get("if-match"),
         });
+        return json(await response.json(), response.status, origin, response.headers.has("etag") ? { etag: response.headers.get("etag") } : {});
+      }
+      if (apiPath === "/private/changes" && request.method === "POST") {
+        if (!payload) return json({ error: "Unauthorized" }, 401, origin);
+        const body = await readJson(request);
+        const response = await guard(env, { action: "change", nonce: payload.nonce, changes: body?.changes });
         return json(await response.json(), response.status, origin, response.headers.has("etag") ? { etag: response.headers.get("etag") } : {});
       }
       return json({ error: "Not found" }, 404, origin);

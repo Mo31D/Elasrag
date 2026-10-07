@@ -3,8 +3,9 @@ import { WFAuthGuard } from '../src/index.js';
 export function fixture() {
   const records = new Map();
   const kv = new Map();
+  let turn = Promise.resolve();
   const state = {
-    blockConcurrencyWhile: fn => fn(),
+    blockConcurrencyWhile(fn) { const result = turn.then(fn); turn = result.catch(() => {}); return result; },
     storage: {
       async get(key) { return records.get(key); },
       async put(key, value) { if (typeof key === 'object') Object.entries(key).forEach(([k, v]) => records.set(k, v)); else records.set(key, value); },

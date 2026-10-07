@@ -5,7 +5,7 @@ export const TRANSLATIONS = {
     "logout": "تسجيل الخروج",
     "apiError": "مش قادر أفتح بياناتك دلوقتي. حاول تاني.",
     "tooMany": "محاولات كتير. حاول بعد شوية.",
-    "conflict": "البيانات اتغيّرت على جهاز تاني. افتح القسم تاني وحاول الحفظ.",
+    "conflict": "نفس البيانات اتعدّلت أثناء كتابتك. راجعها قبل ما تحفظ تاني.",
     "edit": "تعديل",
     "editAccountDetails": "تعديل بيانات الحسابات",
     "workPin": "الرقم السري للشغل",
@@ -330,7 +330,7 @@ export const TRANSLATIONS = {
     "logout": "Sign out",
     "apiError": "Unable to open your information. Please try again.",
     "tooMany": "Too many attempts. Please try again later.",
-    "conflict": "Updated on another device. Reopen this section and try again.",
+    "conflict": "This item changed while you were editing. Review it before saving again.",
     "edit": "Edit",
     "editAccountDetails": "Edit account details",
     "workPin": "Work PIN",
@@ -653,3 +653,5 @@ export const TRANSLATIONS = {
 
 Object.assign(TRANSLATIONS.en, {nextShift:'Next shift',setShift:'Your schedule',onShift:'On shift',workingToday:'Working today',dayOff:'Day off today',endsAt:'Finishes at {time}',setSchedule:'Choose your work days',signInShift:'Sign in to see your next shift',timeRemaining:'{time} left',startsIn:'Starts in {time}',durationDays:'d',durationHours:'h',durationMinutes:'min'});
 Object.assign(TRANSLATIONS.ar, {nextShift:'الشيف الجاي',setShift:'مواعيد شغلك',onShift:'إنت في الشيف دلوقتي',workingToday:'عندك شيف النهارده',dayOff:'النهارده إجازة',endsAt:'بتخلص الساعة {time}',setSchedule:'اختار أيام شغلك',signInShift:'ادخل حسابك علشان تشوف الشيف الجاي',timeRemaining:'فاضل {time}',startsIn:'بيبدأ كمان {time}',durationDays:'يوم',durationHours:'ساعة',durationMinutes:'دقيقة'});
+Object.assign(TRANSLATIONS.en,{workGuides:'At work',mealGuide:'Colleague meals',discountGuide:'Discounts',minibusGuide:'Minibus',workTools:'Work apps',allReference:'Search all guidance'});
+Object.assign(TRANSLATIONS.ar,{workGuides:'في الشغل',mealGuide:'وجبات الموظفين',discountGuide:'الخصومات',minibusGuide:'الميني باص',workTools:'تطبيقات الشغل',allReference:'ابحث في كل الإرشادات'});

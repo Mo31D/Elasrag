@@ -62,7 +62,7 @@ test('public access, protected direct routes, translated auth, vault CRUD, anoth
   assert.equal(a.document.documentElement.dir, 'rtl');
   assert.equal(a.document.getElementById('setupMode'), null);
   for (const page of ['fire', 'training', 'benefits', 'uniform', 'access', 'home']) {
-    click(a, `[data-page="${page}"]`);
+    click(a, page==='benefits'?'#home [data-page="benefits/meals"]':`[data-page="${page}"]`);
     assert.ok(active(a, page));
     assert.ok(a.document.getElementById('lockScreen').classList.contains('hidden'));
   }
@@ -270,4 +270,91 @@ test('a task added from a stale device merges with newer tasks and profile chang
   await until(()=>a.document.querySelectorAll('.personal-task').length===3);
   assert.equal(JSON.parse(kv.get('private-data')).profile.site,'Second device site');
   assert.deepEqual(a.errors,[]);
+});
+
+test('two signed-in tabs save across sections without false conflicts and protect a real field conflict',async t=>{
+  const {env,kv}=fixture();const a=device(env,'#details'),b=device(env,'#details');
+  t.after(()=>{a.window.close();b.window.close();});await signIn(a);await signIn(b);
+  click(a,'[data-edit-profile]');click(b,'[data-edit-profile]');
+  fill(a,'profile-site','New site');fill(b,'profile-manager','New manager');
+  click(a,'#saveProfile');await until(()=>!a.document.getElementById('profileDialog').open);
+  click(b,'#saveProfile');await until(()=>!b.document.getElementById('profileDialog').open);
+  click(a,'[data-page="tasks"]');fill(a,'taskInput','Fresh task');
+  a.document.getElementById('taskForm').dispatchEvent(new a.window.Event('submit',{bubbles:true,cancelable:true}));
+  await until(()=>a.document.querySelectorAll('.personal-task').length===1);
+  click(b,'[data-page="training"]');click(b,'#addCourseBtn');fill(b,'courseEN','Fresh course');click(b,'#saveCourse');
+  await until(()=>!b.document.getElementById('courseDialog').open);
+  click(a,'[data-page="vault"]');await until(()=>active(a,'vault'));click(a,'#addSecretBtn');
+  fill(a,'secretLabel','Secure note');fill(a,'secretValue','One');click(a,'#saveSecret');
+  await until(()=>!a.document.getElementById('secretDialog').open);
+  const saved=JSON.parse(kv.get('private-data'));
+  assert.equal(saved.profile.site,'New site');assert.equal(saved.profile.manager,'New manager');
+  assert.equal(saved.companion.tasks[0].label,'Fresh task');
+  assert.ok(saved.companion.courses.some(course=>course.titleEN==='Fresh course'));
+  assert.equal(saved.items[0].value,'One');
+  click(a,'#editProfileBtn');fill(a,'profile-site','Latest site');click(a,'#saveProfile');
+  await until(()=>!a.document.getElementById('profileDialog').open);
+  click(b,'[data-page="vault"]');await until(()=>active(b,'vault'));
+  click(b,'#editProfileBtn');fill(b,'profile-site','Stale site');click(b,'#saveProfile');
+  await until(()=>b.document.getElementById('profileError').textContent.length>0);
+  assert.match(b.document.getElementById('profileError').textContent,/اتعدّلت/);
+  assert.equal(b.document.getElementById('profileDialog').open,true);
+  assert.equal(JSON.parse(kv.get('private-data')).profile.site,'Latest site');
+  click(b,'#cancelProfile');click(b,'#editProfileBtn');
+  assert.equal(b.document.getElementById('profile-site').value,'Latest site');
+  assert.deepEqual(a.errors,[]);assert.deepEqual(b.errors,[]);
+});
+
+test('returning from another page keeps draft inputs and back links return to their actual source',async t=>{
+  const {env}=fixture();const d=device(env,'#tasks');t.after(()=>d.window.close());
+  await signIn(d);
+  fill(d,'taskInput','Finish tonight');
+  click(d,'[data-page="fire"]');assert.ok(active(d,'fire'));
+  assert.match(d.document.querySelector('#fire [data-back]').textContent,/مهامي/);
+  click(d,'#fire [data-back]');await until(()=>active(d,'tasks'));
+  assert.equal(d.document.getElementById('taskInput').value,'Finish tonight');
+  d.window.dispatchEvent(new d.window.Event('pagehide'));
+  assert.equal(d.document.getElementById('privacyShield').classList.contains('hidden'),false);
+  const shown=new d.window.Event('pageshow');Object.defineProperty(shown,'persisted',{value:true});d.window.dispatchEvent(shown);
+  await until(()=>d.document.getElementById('privacyShield').classList.contains('hidden'));
+  assert.ok(active(d,'tasks'));assert.equal(d.document.getElementById('taskInput').value,'Finish tonight');
+  click(d,'[data-page="home"]');click(d,'#home [data-page="benefits/meals"]');
+  assert.ok(active(d,'benefits'));assert.equal(d.document.querySelector('#benefits [data-tab="meals"]').getAttribute('aria-selected'),'true');
+  assert.match(d.document.querySelector('#benefits [data-back]').textContent,/الرئيسية/);
+  click(d,'#benefits [data-back]');assert.ok(active(d,'home'));
+  click(d,'[data-page="reference"]');click(d,'#reference [data-page="benefits/discounts"]');
+  assert.equal(d.document.querySelector('#benefits [data-tab="discounts"]').getAttribute('aria-selected'),'true');
+  assert.match(d.document.querySelector('#benefits [data-back]').textContent,/المرجع/);
+  click(d,'#benefits [data-back]');assert.ok(active(d,'reference'));
+  assert.deepEqual(d.errors,[]);
+});
+
+test('a session renewal restores unsaved task and profile edits for the same account',async t=>{
+  const {env,kv}=fixture();const d=device(env,'#tasks');t.after(()=>d.window.close());
+  await signIn(d);
+  Object.defineProperty(d.document,'hidden',{value:false,configurable:true});
+  const originalFetch=d.window.fetch;
+  let expire=false;
+  d.window.fetch=(url,options)=>expire && String(url).endsWith('/session')?(expire=false,Promise.resolve(new Response(JSON.stringify({authenticated:false}),{headers:{'content-type':'application/json'}}))):originalFetch(url,options);
+  fill(d,'taskInput','Unfinished handover');expire=true;d.window.dispatchEvent(new d.window.Event('focus'));
+  await until(()=>!d.document.getElementById('lockScreen').classList.contains('hidden'));
+  assert.equal(d.document.getElementById('taskInput').value,'');
+  fill(d,'passInput','fixture-password-only');click(d,'#unlockBtn');
+  await until(()=>active(d,'tasks') && d.document.getElementById('lockScreen').classList.contains('hidden'));
+  assert.equal(d.document.getElementById('taskInput').value,'Unfinished handover');
+  click(d,'[data-page="details"]');await until(()=>active(d,'details'));
+  click(d,'#details [data-edit-profile]');fill(d,'profile-manager','Draft manager');
+  const other=device(env,'#details');t.after(()=>other.window.close());await signIn(other);
+  click(other,'#details [data-edit-profile]');fill(other,'profile-site','Other tab site');click(other,'#saveProfile');
+  await until(()=>!other.document.getElementById('profileDialog').open);
+  expire=true;d.window.dispatchEvent(new d.window.Event('focus'));
+  await until(()=>!d.document.getElementById('lockScreen').classList.contains('hidden'));
+  fill(d,'passInput','fixture-password-only');click(d,'#unlockBtn');
+  await until(()=>active(d,'details') && d.document.getElementById('profileDialog').open);
+  assert.equal(d.document.getElementById('profile-manager').value,'Draft manager');
+  assert.equal(d.document.getElementById('profile-site').value,'Other tab site');
+  click(d,'#saveProfile');await until(()=>!d.document.getElementById('profileDialog').open);
+  assert.equal(JSON.parse(kv.get('private-data')).profile.site,'Other tab site');
+  assert.equal(JSON.parse(kv.get('private-data')).profile.manager,'Draft manager');
+  assert.deepEqual(d.errors,[]);assert.deepEqual(other.errors,[]);
 });

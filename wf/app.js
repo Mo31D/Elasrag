@@ -20,18 +20,16 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   let authMode = localStorage.getItem("wf-account-hint") ? "login" : "owner";
   let editingCourseId = null;
   let editingTaskId = null;
-  let backFromFire = "home";
-  let fireReadingPosition = null;
-  let resumeReadingPosition = null;
+  const returnTargets = new Map();
   let privateData = null;
-  let privateRevision = null;
   let navigationVersion = 0;
   let activePage = "home";
   let editingIndex = null;
   let saving = false;
-  let resumePrivatePage = null;
   let vaultItems = [];
   let pendingPrivatePage = null;
+  let pendingDraft = null;
+  const conflictedEditors = new Set();
   const PROTECTED_PAGES = new Set(["details","vault","tasks"]);
   let lang = new URLSearchParams(location.search).get("lang") || localStorage.getItem(LANG_KEY) || "ar";
 
@@ -67,6 +65,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     if (focusId && $(focusId)) $(focusId).focus({preventScroll:true});
     $("logoutBtn").setAttribute("aria-label",t("logout"));$("logoutBtn").title=t("logout");
     $("otherAccountBtn").textContent=t(authMode==="owner"?"otherAccount":"ownerAccount");
+    updateBackButton();
     restoreReadingPosition(reading);
   }
 
@@ -116,9 +115,9 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     authenticated = false;
     account = null;
     privateData = null;
-    privateRevision = null;
     vaultItems = [];
     editingIndex = null; editingTaskId = null;
+    conflictedEditors.clear();
     $("vaultList").replaceChildren();
     document.querySelectorAll("[data-private]").forEach(el => { el.textContent = ""; el.closest(".row").hidden = true; });
     document.querySelectorAll("[data-private-copy]").forEach(el => delete el.dataset.copy);
@@ -132,6 +131,54 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     $("travelNote").hidden=true;
     renderCompanion();
     $("logoutBtn").classList.add("hidden");
+  }
+
+  function rememberDraft() {
+    if(!authenticated || !account)return;
+    const task=$('taskInput').value;
+    const profileOpen=$('profileDialog').open;
+    const courseOpen=$('courseDialog').open;
+    const secretOpen=$('secretDialog').open;
+    if(!task && !profileOpen && !courseOpen && !secretOpen)return;
+    pendingDraft={accountId:account.id,task,editingTaskId,
+      profile:profileOpen?{
+        values:Object.fromEntries([...document.querySelectorAll('[data-profile]')].map(input=>[input.dataset.profile,input.value])),
+        original:{...privateData.profile},
+        days:[...document.querySelectorAll('[data-shift-day]:checked')].map(input=>input.value),
+        expanded:[...$('profileFields').querySelectorAll('details')].map(group=>group.open)
+      }:null,
+      course:courseOpen?{id:editingCourseId,original:privateData.companion.courses.find(item=>item.id===editingCourseId),values:Object.fromEntries(['courseEN','courseAR','courseDue','courseStatus'].map(id=>[id,$(id).value])),required:$('courseRequired').checked}:null,
+      secret:secretOpen?{item:editingIndex==null?null:vaultItems[editingIndex],values:['secretLabel','secretValue','secretNote'].map(id=>$(id).value)}:null};
+  }
+
+  function restoreDraft() {
+    if(!pendingDraft)return;
+    const draft=pendingDraft;pendingDraft=null;
+    if(draft.accountId!==account?.id)return;
+    $('taskInput').value=draft.task;
+    editingTaskId=draft.editingTaskId && privateData.companion.tasks.some(item=>item.id===draft.editingTaskId)?draft.editingTaskId:null;
+    if(draft.profile){
+      editProfile();
+      document.querySelectorAll('[data-profile]').forEach(input=>{
+        const key=input.dataset.profile;
+        if(draft.profile.values[key] !== (draft.profile.original[key]??''))input.value=draft.profile.values[key]??'';
+      });
+      if(JSON.stringify(draft.profile.days.slice().sort())!==JSON.stringify(shiftDays(draft.profile.original.shiftDays).map(String).sort()))
+        document.querySelectorAll('[data-shift-day]').forEach(input=>{input.checked=draft.profile.days.includes(input.value);});
+      $('profileFields').querySelectorAll('details').forEach((group,index)=>{group.open=Boolean(draft.profile.expanded[index]);});
+    }else if(draft.course){
+      const found=privateData.companion.courses.some(item=>item.id===draft.course.id);
+      openCourse(found?draft.course.id:null);
+      const keys={courseEN:'titleEN',courseAR:'titleAR',courseDue:'due',courseStatus:'status'};
+      for(const [id,value] of Object.entries(draft.course.values))if(!draft.course.original || value!==draft.course.original[keys[id]])$(id).value=value;
+      if(!draft.course.original || draft.course.required!==draft.course.original.required)$('courseRequired').checked=draft.course.required;
+      if(draft.course.id && !found){conflictedEditors.add('course');message('courseError','conflict');}
+    }else if(draft.secret){
+      const index=draft.secret.item?vaultItems.findIndex(item=>JSON.stringify(item)===JSON.stringify(draft.secret.item)):-1;
+      openEntry(index<0?null:index);
+      ['secretLabel','secretValue','secretNote'].forEach((id,i)=>$(id).value=draft.secret.values[i]);
+      if(draft.secret.item && index<0){conflictedEditors.add('secret');message('secretError','conflict');}
+    }
   }
 
   function renderPrivateProfile() {
@@ -159,6 +206,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
 
   function openPrivateGate(pageId) {
     pendingPrivatePage = pageId || "details";
+    rememberDraft();
     clearPrivateData();
     displayPage("home");
     message("unlockError", "");
@@ -204,11 +252,11 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     if (version !== navigationVersion) return false;
     if (!loaded.body.data?.companion || !loaded.revision || !session.body.account) throw new Error();
     privateData = loaded.body.data;
-    privateRevision = loaded.revision;
     account = session.body.account;
     authenticated = true;
     vaultItems = privateData.items;
     renderPrivateProfile(); renderVault(); renderCompanion();
+    restoreDraft();
     $("importLegacyBtn").classList.toggle("hidden", account.id !== "owner" || !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)));
     $("previousVaultLink").classList.toggle("hidden", account.id !== "owner" || location.origin !== CANONICAL_ORIGIN);
     $("returnCompanion").classList.toggle("hidden", !migrationMode);
@@ -244,10 +292,20 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   }
 
   function displayPage(id) {
+    const changed = activePage !== id;
     activePage = id;
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === ( ["benefits","uniform","access"].includes(id) ? "reference" : id )));
-    window.scrollTo({top:0, behavior:"auto"});
+    if(changed)window.scrollTo({top:0, behavior:"auto"});
+    updateBackButton();
+  }
+
+  function updateBackButton() {
+    const button=$(activePage)?.querySelector('[data-back]');
+    if(!button)return;
+    const target=(returnTargets.get(activePage)?.route || (['benefits','uniform','access'].includes(activePage)?'reference':'home')).split('/')[0];
+    const label={home:'home',reference:'reference',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'accountHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
+    button.textContent=(lang==='ar'?'→ ':'← ')+t(label);
   }
 
   function selectTab(page,name,updateHistory=false){
@@ -260,13 +318,14 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   async function showPage(id, historyMode = "push") {
     const [routePage,routeTab]=String(id).split("/");id=routePage;
     if (!$(id)?.classList.contains("page")) id = "home";
+    const source=activePage;
+    const selected=$(source)?.querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;
+    const previous={route:source+(selected?'/'+selected:''),reading:captureReadingPosition()};
     const version = ++navigationVersion;
-    resumePrivatePage = null;
     message("privateMessage", "");
     if (PROTECTED_PAGES.has(id)) {
-      displayPage("home");
       try {
-        if (!(await loadPrivateSession(version))) {
+        if (!authenticated && !(await loadPrivateSession(version))) {
           if (version === navigationVersion) openPrivateGate(id);
           return;
         }
@@ -279,94 +338,62 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     } else { $("lockScreen").classList.add("hidden"); pendingPrivatePage = null; }
     displayPage(id);
     if(routeTab)selectTab($(id),routeTab);
-    renderCompanion();
+    if(historyMode==='push' && id!==source) returnTargets.set(id,previous);
+    updateBackButton();
     const tab=$(id).querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;const hash=id==="home"?"":"#"+id+(tab?"/"+tab:"");
     if(location.hash!==hash)history[historyMode === "replace" ? "replaceState" : "pushState"](null,"",hash || location.pathname+location.search);
   }
 
-  function mergeRecords(before, proposed, latest) {
-    const result = latest.map(item => ({...item}));
-    const same = (a,b) => JSON.stringify(a) === JSON.stringify(b);
-    for (const old of before) {
-      const changed = proposed.find(item => item.id === old.id);
-      if (changed && same(changed,old)) continue;
-      const index = result.findIndex(item => item.id === old.id);
-      if (!changed) { if (index >= 0) result.splice(index,1); continue; }
-      if (index < 0) throw Object.assign(new Error(),{status:409});
-      for (const key of new Set([...Object.keys(old),...Object.keys(changed)])) {
-        if (same(old[key],changed[key])) continue;
-        if (key in changed) result[index][key] = changed[key];
-        else delete result[index][key];
-      }
-    }
-    for (const added of proposed.filter(item => !before.some(old => old.id === item.id))) {
-      if (result.some(item => item.id === added.id)) throw Object.assign(new Error(),{status:409});
-      result.push(added);
-    }
-    return result;
-  }
-  function mergeItems(before, proposed, latest) {
-    const same = (a,b) => JSON.stringify(a) === JSON.stringify(b);
-    if (same(before,proposed)) return latest;
-    if (proposed.length >= before.length && before.every((item,index)=>same(item,proposed[index]))) {
-      return [...latest,...proposed.slice(before.length).filter(item=>!latest.some(existing=>same(existing,item)))];
-    }
-    let changed = -1;
-    if (proposed.length === before.length) {
-      const differences = before.flatMap((item,index)=>same(item,proposed[index])?[]:[index]);
-      if (differences.length === 1) changed = differences[0];
-    } else if (proposed.length === before.length-1) {
-      changed = before.findIndex((_,index)=>before.filter((__,i)=>i!==index).every((item,i)=>same(item,proposed[i])));
-    }
-    if (changed < 0) throw Object.assign(new Error(),{status:409});
-    const matches = latest.flatMap((item,index)=>same(item,before[changed])?[index]:[]);
-    if (matches.length !== 1) throw Object.assign(new Error(),{status:409});
-    const result=latest.slice();result.splice(matches[0],1,...(proposed.length===before.length?[proposed[changed]]:[]));
-    return result;
-  }
-  function mergePrivateChanges(before, proposed, latest) {
-    const profile={...latest.profile};
+  function privateChanges(before, proposed) {
+    const changes=[];
+    const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
     for(const key of new Set([...Object.keys(before.profile),...Object.keys(proposed.profile)])) {
-      if(before.profile[key]===proposed.profile[key])continue;
-      if(key in proposed.profile)profile[key]=proposed.profile[key];else delete profile[key];
+      const old=before.profile[key]??null, after=proposed.profile[key]??null;
+      if(old!==after)changes.push({section:'profile',key,before:old,after});
     }
-    return {version:1,profile,items:mergeItems(before.items,proposed.items,latest.items),companion:{
-      tasks:mergeRecords(before.companion.tasks,proposed.companion.tasks,latest.companion.tasks),
-      courses:mergeRecords(before.companion.courses,proposed.companion.courses,latest.companion.courses)
-    }};
+    for(const section of ['tasks','courses']) {
+      const original=before.companion[section], updated=proposed.companion[section];
+      for(const old of original) {
+        const next=updated.find(item=>item.id===old.id);
+        if(!next){changes.push({section,type:'remove',id:old.id,before:old});continue;}
+        const fields={};
+        for(const key of Object.keys(old))if(key!=='id' && !same(old[key],next[key]))fields[key]={before:old[key],after:next[key]};
+        if(Object.keys(fields).length)changes.push({section,type:'update',id:old.id,fields});
+      }
+      for(const item of updated.filter(item=>!original.some(old=>old.id===item.id)))changes.push({section,type:'add',after:item});
+    }
+    const original=before.items,updated=proposed.items;
+    if(!same(original,updated)) {
+      if(updated.length>=original.length && original.every((item,index)=>same(item,updated[index]))) {
+        for(const item of updated.slice(original.length))changes.push({section:'items',type:'add',after:item});
+      } else if(updated.length===original.length) {
+        const indices=original.flatMap((item,index)=>same(item,updated[index])?[]:[index]);
+        if(indices.length!==1)throw Object.assign(new Error(),{status:400});
+        const index=indices[0];changes.push({section:'items',type:'update',index,before:original[index],after:updated[index]});
+      } else if(updated.length===original.length-1) {
+        const index=original.findIndex((_,i)=>original.filter((__,j)=>j!==i).every((item,j)=>same(item,updated[j])));
+        if(index<0)throw Object.assign(new Error(),{status:400});
+        changes.push({section:'items',type:'remove',index,before:original[index]});
+      } else throw Object.assign(new Error(),{status:400});
+    }
+    return changes;
   }
   async function persistVault(nextItems, nextProfile = privateData?.profile, nextCompanion = privateData?.companion) {
     if (!authenticated || !privateData || saving) throw new Error();
     if (nextItems.length > 200 || nextItems.some(item => item.label.length > 200 || item.value.length > 4096 || item.note.length > 4096)) {
       throw Object.assign(new Error(), { status: 400 });
     }
-    const version = navigationVersion;
     const mutationAccount=account?.id;
     saving = true;
     try {
       const before=privateData;
       const proposed = { version: 1, profile: nextProfile, items: nextItems, companion: nextCompanion };
-      let data=proposed;
-      let revision=privateRevision;
-      let result;
-      for (let attempt = 0; attempt < 5; attempt++) {
-        try { result = await api("/private", { method:"PUT", body:JSON.stringify(data), headers:{"if-match":revision} }); break; }
-        catch (error) {
-          if (attempt === 4 || ![409,429].includes(error.status)) throw error;
-          if (error.status === 409) {
-            const fresh=await api("/private");
-            if (mutationAccount !== account?.id || !authenticated) return false;
-            if (!fresh.body.data?.companion || !fresh.revision) throw new Error();
-            data=mergePrivateChanges(before,proposed,fresh.body.data);
-            revision=fresh.revision;
-          } else await new Promise(resolve=>setTimeout(resolve,1100));
-          if (mutationAccount !== account?.id || !authenticated) return false;
-        }
-      }
+      const changes=privateChanges(before,proposed);
+      if(!changes.length)return true;
+      const result=await api("/private/changes",{method:"POST",body:JSON.stringify({changes})});
       if (mutationAccount !== account?.id || !authenticated) return false;
-      if (JSON.stringify(result.body.data) !== JSON.stringify(data) || !result.revision) throw new Error();
+      if (!result.body.data?.companion || !result.revision) throw new Error();
       privateData = result.body.data;
-      privateRevision = result.revision;
       vaultItems = privateData.items;
       saving=false;
       message("privateMessage", "");
@@ -375,6 +402,17 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
       renderCompanion();
       return true;
     } catch (error) {
+      if (error.status === 409 && mutationAccount === account?.id && authenticated) {
+        for(const [id,button] of [['profileDialog','profile'],['secretDialog','secret'],['courseDialog','course']])if($(id).open)conflictedEditors.add(button);
+        try {
+          const latest = await api('/private');
+          if (mutationAccount === account?.id && authenticated && latest.body.data?.companion) {
+            privateData = latest.body.data;
+            vaultItems = privateData.items;
+            renderPrivateProfile();renderVault();renderCompanion();
+          }
+        } catch {}
+      }
       if (error.status === 401 && mutationAccount===account?.id) {
         const destination = PROTECTED_PAGES.has(activePage) ? activePage : "vault";
         navigationVersion++;
@@ -387,12 +425,13 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   async function logout() {
     serverSessionKnown=false;
     navigationVersion++;
+    pendingDraft=null;
     clearPrivateData();
     $("lockScreen").classList.add("hidden");
     pendingPrivatePage = null;
-    resumePrivatePage = null;
+    returnTargets.clear();
     displayPage("home");
-    history.replaceState(null, "", "#home");
+    history.replaceState(null, "", location.pathname+location.search);
     try { await api("/logout", { method: "POST" }); message("privateMessage", ""); }
     catch { message("privateMessage", "logoutFailed"); $("logoutBtn").classList.remove("hidden"); }
   }
@@ -592,11 +631,14 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
       resetChecklist(reset.dataset.resetChecklist);
       return;
     }
-    if(e.target.closest("[data-back-fire]")){showPage(backFromFire).then(()=>restoreReadingPosition(fireReadingPosition));return;}
+    if(e.target.closest('[data-back]')){
+      const previous=returnTargets.get(activePage) || {route:['benefits','uniform','access'].includes(activePage)?'reference':'home'};
+      showPage(previous.route,'replace').then(()=>restoreReadingPosition(previous.reading));
+      return;
+    }
     const tab=e.target.closest("[data-tab]");if(tab){selectTab(tab.closest(".page"),tab.dataset.tab,true);return;}
     const target = e.target.closest("[data-page]");
     if (target) {
-      if(target.dataset.page==="fire" && activePage!=="fire"){backFromFire=activePage;fireReadingPosition=captureReadingPosition();}
       showPage(target.dataset.page);
     }
     const copy = e.target.closest("[data-copy]");
@@ -618,6 +660,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
 
   function openEntry(index = null) {
     if (!authenticated || saving) return;
+    conflictedEditors.delete('secret');
     editingIndex = index;
     const item = index == null ? {} : vaultItems[index];
     $("secretLabel").value = item.label || "";
@@ -630,7 +673,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   $("addSecretBtn").addEventListener("click", () => openEntry());
   $("cancelSecret").addEventListener("click", () => $("secretDialog").close());
   $("saveSecret").addEventListener("click", async () => {
-    if (saving || !authenticated) return;
+    if (saving || !authenticated || conflictedEditors.has('secret')) return;
     const label = $("secretLabel").value.trim();
     const value = $("secretValue").value.trim();
     const note = $("secretNote").value.trim();
@@ -651,6 +694,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   function editProfile() {
     if (!authenticated) return openPrivateGate("details");
     if (saving) return;
+    conflictedEditors.delete('profile');
     $("profileFields").replaceChildren();
     const groups = [{title:"shiftDays",keys:["shiftDays","shiftStart","shiftEnd"]},{ title:"myProfile", keys:["displayName","role","site","manager","managerEmail","startDate","hours","hourlyRate","paidBreak","annualHoliday","minibusNote"] },{title:"accountHelp",keys:["colleagueNumber","kioskId","kioskPin","workPin","thriveUsername"]},{title:"firstDay",keys:["firstDayTime","firstDayLocation","firstDayPostcode"]}];
     groups.forEach((group,index) => {
@@ -686,9 +730,10 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   $("cancelProfile").addEventListener("click", () => $("profileDialog").close());
   $("profileDialog").addEventListener("close", () => $("profileFields").replaceChildren());
   $("saveProfile").addEventListener("click",async()=>{
-    if(saving || !authenticated)return;
+    if(saving || !authenticated || conflictedEditors.has('profile'))return;
     const profile={...privateData.profile};
-    profile.shiftDays=[...document.querySelectorAll('[data-shift-day]:checked')].map(input=>input.value).join(',');
+    const selected=[...document.querySelectorAll('[data-shift-day]:checked')].map(input=>Number(input.value));
+    if(JSON.stringify(selected.slice().sort())!==JSON.stringify(shiftDays(privateData.profile.shiftDays).slice().sort()))profile.shiftDays=selected.join(',');
     const inputs=[...document.querySelectorAll("[data-profile]")];
     if(inputs.some(input=>!input.reportValidity()))return;
     inputs.forEach(input=>{if(input.value.trim())profile[input.dataset.profile]=input.value.trim();else delete profile[input.dataset.profile];});
@@ -747,26 +792,21 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     try {
       const result = await api("/session");
       if(!result.body.authenticated)serverSessionKnown=false;
-      if (version === navigationVersion && !result.body.authenticated) { navigationVersion++; if(PROTECTED_PAGES.has(page))openPrivateGate(page);else{clearPrivateData();renderPrivateProfile();} }
+      if (version === navigationVersion && !result.body.authenticated) { navigationVersion++; if(PROTECTED_PAGES.has(page))openPrivateGate(page);else{rememberDraft();clearPrivateData();renderPrivateProfile();} }
     } catch {
-      if (version === navigationVersion) { navigationVersion++; if(PROTECTED_PAGES.has(page)){openPrivateGate(page);message("unlockError", "apiError");}else{clearPrivateData();renderPrivateProfile();} }
+      if (version === navigationVersion) message("privateMessage", "apiError");
     }
   }
   addEventListener("focus", checkActiveSession);
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden && authenticated) {
-      resumeReadingPosition = captureReadingPosition();
-      resumePrivatePage = activePage;
-      navigationVersion++;
-      clearPrivateData();
-      displayPage("home");
-    } else if (!document.hidden && resumePrivatePage) {
-      const page = resumePrivatePage; resumePrivatePage = null; const reading=resumeReadingPosition; resumeReadingPosition=null; loadPrivateSession().then(()=>showPage(page,"replace")).then(()=>restoreReadingPosition(reading)).catch(()=>{if(PROTECTED_PAGES.has(page))openPrivateGate(page);});
-    }
-  });
+  const conceal=()=>{if(authenticated)$("privacyShield").classList.remove("hidden");};
+  const resume=async()=>{
+    if($("privacyShield").classList.contains("hidden"))return;
+    try{await checkActiveSession();}finally{$("privacyShield").classList.add("hidden");}
+  };
+  document.addEventListener("visibilitychange",()=>document.hidden?conceal():resume());
   addEventListener("hashchange", () => showPage(location.hash.slice(1),"replace"));
-  addEventListener("pageshow", event => { if (event.persisted) showPage(location.hash.slice(1) || "home","replace"); });
-  addEventListener("pagehide", () => { navigationVersion++; clearPrivateData(); displayPage("home"); });
+  addEventListener("pageshow",event=>{if(event.persisted)resume();});
+  addEventListener("pagehide",conceal);
   setInterval(checkActiveSession, 60000);
 
   function readingLine(){const header=document.querySelector("header")?.getBoundingClientRect().bottom || 0;const tabs=$(activePage)?.querySelector(".section-tabs")?.getBoundingClientRect();return (tabs && tabs.top<=header+4 && tabs.bottom>header ? tabs.bottom : header)+12;}
@@ -899,6 +939,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   function openCourse(id=null){
     if(!authenticated)return openPrivateGate('training');
     if(saving)return;
+    conflictedEditors.delete('course');
     editingCourseId=id;
     const course=privateData.companion.courses.find(item=>item.id===id);
     $('courseEN').value=course?.titleEN || '';$('courseAR').value=course?.titleAR || '';$('courseDue').value=course?.due || '';
@@ -909,7 +950,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   $('cancelCourse').addEventListener('click',()=>$('courseDialog').close());
   $('courseDialog').addEventListener('close',()=>{for(const id of ['courseEN','courseAR','courseDue'])$(id).value='';editingCourseId=null;});
   $('saveCourse').addEventListener('click',async()=>{
-    if(saving || !authenticated || !$('courseEN').value.trim())return;
+    if(saving || !authenticated || conflictedEditors.has('course') || !$('courseEN').value.trim())return;
     const next=structuredClone(privateData.companion);
     const course={id:editingCourseId || crypto.randomUUID(),titleEN:$('courseEN').value.trim(),titleAR:$('courseAR').value.trim(),due:$('courseDue').value,status:$('courseStatus').value,required:$('courseRequired').checked};
     if(editingCourseId)next.courses[next.courses.findIndex(item=>item.id===editingCourseId)]=course;else next.courses.push(course);
@@ -917,7 +958,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     try{if(await saveCompanion(next))$('courseDialog').close();}catch(error){message('courseError',errorKey(error));}finally{$('saveCourse').disabled=false;}
   });
   $('deleteCourse').addEventListener('click',async()=>{
-    if(saving || !editingCourseId || !confirm(t('deleteCourseConfirm')))return;
+    if(saving || conflictedEditors.has('course') || !editingCourseId || !confirm(t('deleteCourseConfirm')))return;
     const next=structuredClone(privateData.companion);next.courses=next.courses.filter(item=>item.id!==editingCourseId);
     try{if(await saveCompanion(next))$('courseDialog').close();}catch(error){message('courseError',errorKey(error));}
   });
@@ -953,8 +994,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=25").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "25";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=26").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "26";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
