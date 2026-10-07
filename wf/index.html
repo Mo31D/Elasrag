@@ -217,6 +217,25 @@
     }
     .training-deadline .days-left.urgent{background:var(--amber-bg);color:var(--amber)}
     .training-deadline .days-left.overdue{background:var(--red-bg);color:var(--red)}
+    .completed-history{margin-top:10px}
+    .completed-history summary{
+      list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;
+      cursor:pointer;font-weight:850;font-size:15px
+    }
+    .completed-history summary::-webkit-details-marker{display:none}
+    .completed-count{
+      background:#f2f4f7;color:#344054;border-radius:999px;padding:5px 8px;
+      font-size:10.5px;font-weight:850;white-space:nowrap
+    }
+    .completed-row{
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      padding:10px 0;border-top:1px solid var(--line)
+    }
+    .completed-title{font-size:14px;line-height:1.35;font-weight:700;min-width:0}
+    .completed-badge{
+      flex:0 0 auto;border-radius:999px;padding:5px 8px;background:#f7dfd0;
+      color:#7a3e1d;font-size:10.5px;font-weight:850;white-space:nowrap
+    }
     .official{font-size:11px;margin-top:2px}
     .status{font-size:10.5px;margin-top:7px}
     nav{padding:5px 8px calc(5px + env(safe-area-inset-bottom))}
@@ -604,6 +623,27 @@
 
           <a class="action" href="https://apps.apple.com/app/id1539428355" target="_blank" rel="noopener" data-i18n="openTraining"></a>
         </div>
+
+        <details class="card completed-history">
+          <summary>
+            <span data-i18n="completedLearning"></span>
+            <span class="completed-count">14</span>
+          </summary>
+          <div class="completed-row"><div class="completed-title">Colleague Meal Procedure</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">NEW Seasonal Cakes from Westmorland Kitchen – Tebay…</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">How to… Learn Page</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">How to… Add Content</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">How to… Homepage & Explore</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">My Westmorland Learn</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">Cookery School Booklet</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">Careers Book</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">Ops Development Road Map</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">Our Family Values</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">Our Antlers Story</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">Our sites</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">Welcome Antlers – Colleague Overview</div><span class="completed-badge" data-i18n="completed"></span></div>
+          <div class="completed-row"><div class="completed-title">Launch Pack 'Food To Go' & 'Salads' Oct 26</div><span class="completed-badge" data-i18n="completed"></span></div>
+        </details>
       </section>
 
       <section id="vault" class="page">
@@ -684,7 +724,7 @@
       companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح تطبيق PeopleXD", openThrive:"افتح تطبيق THRIVE",
       firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", postcode:"الرمز البريدي",
       privateCodes:"الأكواد الخاصة", privateCodesNote:"حط أي PIN أو كلمة سر أو رقم حساس في الخزنة الخاصة المشفّرة بدل ما يتكتب داخل كود الموقع.",
-      openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين", requiredTraining:"التدريبات المطلوبة", essentialLearning:"الأساسي — أولوية حالية", otherAssignedTraining:"تدريبات مطلوبة أخرى",
+      openVault:"افتح الخزنة الخاصة", onlineTraining:"التدريب أونلاين", requiredTraining:"التدريبات المطلوبة", essentialLearning:"الأساسي — أولوية حالية", otherAssignedTraining:"تدريبات مطلوبة أخرى", completedLearning:"التدريبات اللي تمت", completed:"تم",
       course1:"تعريف الزملاء الجدد", course2:"سلامة الغذاء", course3:"الصحة والسلامة", course4:"مراجعة الوعي بالحساسية",
       course5:"تجربة العميل – طريقة Westmorland", course6:"إجراءات CBE – موظفي محطة الوقود", course7:"منع التحرش الجنسي",
       peopleAccessTitle:"دخول PeopleXD",
@@ -800,7 +840,7 @@
       companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD app", openThrive:"Open THRIVE app",
       firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", postcode:"Postcode",
       privateCodes:"Private codes", privateCodesNote:"Keep PINs, passwords and other sensitive numbers in the encrypted Private Vault instead of writing them into the site code.",
-      openVault:"Open Private Vault", onlineTraining:"Online training", requiredTraining:"Required training", essentialLearning:"Essential Learning — current priority", otherAssignedTraining:"Other assigned training",
+      openVault:"Open Private Vault", onlineTraining:"Online training", requiredTraining:"Required training", essentialLearning:"Essential Learning — current priority", otherAssignedTraining:"Other assigned training", completedLearning:"Completed learning", completed:"Completed",
       course1:"Welcome Antlers – Colleague Induction", course2:"Food Safety Training", course3:"Health & Safety Training", course4:"Allergy Awareness Recap",
       course5:"Customer Experience – The Westmorland Way", course6:"CBE Procedures – Filling Station Colleagues", course7:"Prevention of Sexual Harassment",
       peopleAccessTitle:"PeopleXD access",
