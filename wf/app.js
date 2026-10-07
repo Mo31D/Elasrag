@@ -284,6 +284,57 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     if(location.hash!==hash)history[historyMode === "replace" ? "replaceState" : "pushState"](null,"",hash || location.pathname+location.search);
   }
 
+  function mergeRecords(before, proposed, latest) {
+    const result = latest.map(item => ({...item}));
+    const same = (a,b) => JSON.stringify(a) === JSON.stringify(b);
+    for (const old of before) {
+      const changed = proposed.find(item => item.id === old.id);
+      if (changed && same(changed,old)) continue;
+      const index = result.findIndex(item => item.id === old.id);
+      if (!changed) { if (index >= 0) result.splice(index,1); continue; }
+      if (index < 0) throw Object.assign(new Error(),{status:409});
+      for (const key of new Set([...Object.keys(old),...Object.keys(changed)])) {
+        if (same(old[key],changed[key])) continue;
+        if (key in changed) result[index][key] = changed[key];
+        else delete result[index][key];
+      }
+    }
+    for (const added of proposed.filter(item => !before.some(old => old.id === item.id))) {
+      if (result.some(item => item.id === added.id)) throw Object.assign(new Error(),{status:409});
+      result.push(added);
+    }
+    return result;
+  }
+  function mergeItems(before, proposed, latest) {
+    const same = (a,b) => JSON.stringify(a) === JSON.stringify(b);
+    if (same(before,proposed)) return latest;
+    if (proposed.length >= before.length && before.every((item,index)=>same(item,proposed[index]))) {
+      return [...latest,...proposed.slice(before.length).filter(item=>!latest.some(existing=>same(existing,item)))];
+    }
+    let changed = -1;
+    if (proposed.length === before.length) {
+      const differences = before.flatMap((item,index)=>same(item,proposed[index])?[]:[index]);
+      if (differences.length === 1) changed = differences[0];
+    } else if (proposed.length === before.length-1) {
+      changed = before.findIndex((_,index)=>before.filter((__,i)=>i!==index).every((item,i)=>same(item,proposed[i])));
+    }
+    if (changed < 0) throw Object.assign(new Error(),{status:409});
+    const matches = latest.flatMap((item,index)=>same(item,before[changed])?[index]:[]);
+    if (matches.length !== 1) throw Object.assign(new Error(),{status:409});
+    const result=latest.slice();result.splice(matches[0],1,...(proposed.length===before.length?[proposed[changed]]:[]));
+    return result;
+  }
+  function mergePrivateChanges(before, proposed, latest) {
+    const profile={...latest.profile};
+    for(const key of new Set([...Object.keys(before.profile),...Object.keys(proposed.profile)])) {
+      if(before.profile[key]===proposed.profile[key])continue;
+      if(key in proposed.profile)profile[key]=proposed.profile[key];else delete profile[key];
+    }
+    return {version:1,profile,items:mergeItems(before.items,proposed.items,latest.items),companion:{
+      tasks:mergeRecords(before.companion.tasks,proposed.companion.tasks,latest.companion.tasks),
+      courses:mergeRecords(before.companion.courses,proposed.companion.courses,latest.companion.courses)
+    }};
+  }
   async function persistVault(nextItems, nextProfile = privateData?.profile, nextCompanion = privateData?.companion) {
     if (!authenticated || !privateData || saving) throw new Error();
     if (nextItems.length > 200 || nextItems.some(item => item.label.length > 200 || item.value.length > 4096 || item.note.length > 4096)) {
@@ -293,11 +344,24 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     const mutationAccount=account?.id;
     saving = true;
     try {
-      const data = { version: 1, profile: nextProfile, items: nextItems, companion: nextCompanion };
+      const before=privateData;
+      const proposed = { version: 1, profile: nextProfile, items: nextItems, companion: nextCompanion };
+      let data=proposed;
+      let revision=privateRevision;
       let result;
-      for (let attempt = 0; attempt < 2; attempt++) {
-        try { result = await api("/private", { method:"PUT", body:JSON.stringify(data), headers:{"if-match":privateRevision} }); break; }
-        catch (error) { if (error.status !== 429 || attempt) throw error; await new Promise(resolve => setTimeout(resolve,1100)); if (mutationAccount !== account?.id || !authenticated) return false; }
+      for (let attempt = 0; attempt < 5; attempt++) {
+        try { result = await api("/private", { method:"PUT", body:JSON.stringify(data), headers:{"if-match":revision} }); break; }
+        catch (error) {
+          if (attempt === 4 || ![409,429].includes(error.status)) throw error;
+          if (error.status === 409) {
+            const fresh=await api("/private");
+            if (mutationAccount !== account?.id || !authenticated) return false;
+            if (!fresh.body.data?.companion || !fresh.revision) throw new Error();
+            data=mergePrivateChanges(before,proposed,fresh.body.data);
+            revision=fresh.revision;
+          } else await new Promise(resolve=>setTimeout(resolve,1100));
+          if (mutationAccount !== account?.id || !authenticated) return false;
+        }
       }
       if (mutationAccount !== account?.id || !authenticated) return false;
       if (JSON.stringify(result.body.data) !== JSON.stringify(data) || !result.revision) throw new Error();
@@ -305,6 +369,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
       privateRevision = result.revision;
       vaultItems = privateData.items;
       saving=false;
+      message("privateMessage", "");
       renderPrivateProfile();
       renderVault();
       renderCompanion();
@@ -888,8 +953,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=24").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "24";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=25").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "25";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

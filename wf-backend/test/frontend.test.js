@@ -246,3 +246,28 @@ test('weekday ticks save centrally, survive translation and replace the generic 
  assert.ok(a.document.getElementById('shiftMeta').textContent.includes('22:45'));
  assert.deepEqual(a.errors,[]);
 });
+
+test('a task added from a stale device merges with newer tasks and profile changes',async t=>{
+  const {env,kv}=fixture();
+  const a=device(env,'#tasks');const b=device(env,'#tasks');
+  t.after(()=>{a.window.close();b.window.close();});
+  await signIn(a);await signIn(b);
+  fill(b,'taskInput','From the other device');
+  b.document.getElementById('taskForm').dispatchEvent(new b.window.Event('submit',{bubbles:true,cancelable:true}));
+  await until(()=>b.document.querySelectorAll('.personal-task').length===1);
+  fill(a,'taskInput','My new task');
+  a.document.getElementById('taskForm').dispatchEvent(new a.window.Event('submit',{bubbles:true,cancelable:true}));
+  await until(()=>a.document.querySelectorAll('.personal-task').length===2);
+  assert.deepEqual(JSON.parse(kv.get('private-data')).companion.tasks.map(task=>task.label),['From the other device','My new task']);
+  assert.equal(a.document.getElementById('taskInput').value,'');
+  assert.equal(a.document.getElementById('privateMessage').textContent,'');
+  click(b,'[data-page="details"]');await until(()=>active(b,'details'));
+  click(b,'#details [data-edit-profile]');fill(b,'profile-site','Second device site');click(b,'#saveProfile');
+  await until(()=>!b.document.getElementById('profileDialog').open);
+  assert.equal(JSON.parse(kv.get('private-data')).companion.tasks.length,2);
+  fill(a,'taskInput','Third task');
+  a.document.getElementById('taskForm').dispatchEvent(new a.window.Event('submit',{bubbles:true,cancelable:true}));
+  await until(()=>a.document.querySelectorAll('.personal-task').length===3);
+  assert.equal(JSON.parse(kv.get('private-data')).profile.site,'Second device site');
+  assert.deepEqual(a.errors,[]);
+});
