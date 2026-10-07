@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import worker from '../src/index.js';
+import worker, { WFAuthGuard } from '../src/index.js';
 
 import { fixture } from './fixtures.js';
 const origin = 'https://www.elasrag.com';
@@ -134,8 +134,8 @@ test('concurrent focused changes preserve independent profile, tasks, courses an
   assert.equal((await worker.fetch(request('/api/private/changes','POST',{changes:[{section:'profile',key:'site',before:'Fixture site',after:'bad'}]}),env)).status,401);
 });
 
-test('existing KV data gains only missing legacy fields with a durable backup',async()=>{
-  const {env,kv}=fixture();
+test('existing KV remains authoritative while missing legacy profile fields are imported once',async()=>{
+  const {env,kv,state,records}=fixture();
   const original={version:1,profile:{site:'Current site',kioskId:'Current kiosk'},items:[{label:'Current',value:'present',note:''}],companion:{tasks:[{id:'saved-task',label:'Existing task',done:true}],courses:[]}};
   kv.set('private-data',JSON.stringify(original));
   env.WF_PRIVATE_DATA=JSON.stringify({version:1,profile:{site:'Stale site',kioskId:'Stale kiosk',colleagueNumber:'legacy-number',workPin:'legacy-pin',thriveUsername:'legacy-thrive'},items:[{label:'Legacy',value:'preserved',note:''}]});
@@ -147,11 +147,19 @@ test('existing KV data gains only missing legacy fields with a durable backup',a
   assert.equal(data.profile.colleagueNumber,'legacy-number');assert.equal(data.profile.workPin,'legacy-pin');
   assert.equal(data.profile.thriveUsername,'legacy-thrive');
   assert.deepEqual(data.companion,original.companion);
-  assert.deepEqual(data.items,[...original.items,{label:'Legacy',value:'preserved',note:''}]);
+  assert.deepEqual(data.items,original.items);
   const backup=[...kv.entries()].find(([key])=>key.startsWith('private-backup:'));
   assert.ok(backup);assert.deepEqual(JSON.parse(backup[1]),original);
   assert.deepEqual(JSON.parse(kv.get('private-data')),data);
   const reopened=await worker.fetch(request('/private','GET',null,cookie),env);
   assert.deepEqual((await reopened.json()).data,data);
   assert.equal([...kv.keys()].filter(key=>key.startsWith('private-backup:')).length,1);
+  assert.equal(records.get('private-legacy-merged'),true);
+  const removed=await worker.fetch(request('/api/private/changes','POST',{changes:[{section:'profile',key:'workPin',before:'legacy-pin',after:null}]},cookie),env);
+  assert.equal(removed.status,200);
+  const guard=new WFAuthGuard(state,env);
+  env.WF_AUTH={idFromName:name=>name,get:()=>guard};
+  const afterRestart=(await (await worker.fetch(request('/private','GET',null,cookie),env)).json()).data;
+  assert.equal(afterRestart.profile.workPin,undefined);
+  assert.deepEqual(afterRestart.items,original.items);
 });

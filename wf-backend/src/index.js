@@ -207,12 +207,7 @@ function supplementLegacy(data, encoded) {
   for (const [field, value] of Object.entries(legacy.profile)) {
     if (!profile[field] && value) profile[field] = value;
   }
-  const items = data.items.slice();
-  for (const item of legacy.items) {
-    if (items.length >= 200) break;
-    if (!items.some(existing => JSON.stringify(existing) === JSON.stringify(item))) items.push(item);
-  }
-  const merged = { ...data, profile, items };
+  const merged = { ...data, profile };
   return validData(merged) && encoder.encode(JSON.stringify(merged)).byteLength <= MAX_BYTES ? merged : data;
 }
 
@@ -389,10 +384,11 @@ export class WFAuthGuard {
       const writeTimeKey = userId === "owner" ? "private-write-time" : "private-write-time:" + userId;
       if (!this.currentData.has(userId)) {
         const raw = await this.env.WF_DATA.get(dataKey, "json");
+        const legacyPending = userId === "owner" && Boolean(this.env.WF_PRIVATE_DATA) && !(await store.get("private-legacy-merged"));
         let data = raw == null && userId === "owner" && this.env.WF_PRIVATE_DATA ? normalizeLegacySecret(this.env.WF_PRIVATE_DATA) : normalizeData(raw);
         const expected = await store.get(revisionKey);
         if (expected && expected !== await revision(data)) return json({ error: "Unavailable" }, 503);
-        if (raw != null && userId === "owner") data = supplementLegacy(data, this.env.WF_PRIVATE_DATA);
+        if (raw != null && legacyPending) data = supplementLegacy(data, this.env.WF_PRIVATE_DATA);
         if (!data.companion) {
           data = { ...data, profile: userId === "owner" ? { ...OWNER_PROFILE, ...data.profile } : data.profile, companion: initialCompanion(userId === "owner") };
         }
@@ -404,6 +400,7 @@ export class WFAuthGuard {
           await this.env.WF_DATA.put(dataKey, JSON.stringify(data));
           await store.put({ [revisionKey]: await revision(data), [writeTimeKey]: Date.now() });
         }
+        if (legacyPending) await store.put("private-legacy-merged", true);
         this.currentData.set(userId, data);
       }
       const current = this.currentData.get(userId);
