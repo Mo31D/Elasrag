@@ -1014,8 +1014,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=34").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "34";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=35").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "35";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

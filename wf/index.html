@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head>
   <meta charset="utf-8">
-  <meta name="wf-build" content="34">
+  <meta name="wf-build" content="35">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
@@ -20,7 +20,7 @@
     } catch {}
     if (migration && hasLegacyVault) return;
     const destination = new URL("https://mo.elasrag.com/");
-    if (language === "en") destination.searchParams.set("lang", "en");
+    destination.searchParams.set("lang", language);
     destination.hash = location.hash;
     location.replace(destination.href);
   })();
