@@ -129,7 +129,6 @@
     .official{font-size:12px;color:var(--muted);display:block;margin-top:3px;direction:ltr;text-align:start}
     @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}.quick{display:block}.quick .icon{margin-bottom:15px}}
 
-    /* iPhone-first polish: tuned from the supplied 428px-wide screenshots */
     body{font-size:15px}
     header{
       padding:calc(7px + env(safe-area-inset-top)) 12px 8px;
@@ -352,11 +351,6 @@
           <button class="reset-checklist" data-reset-checklist="fire-forecourt" data-i18n="resetChecklist"></button>
         </div>
 
-        <div class="card warning">
-          <strong data-i18n="nightShift"></strong>
-          <p data-i18n="nightShiftMissing"></p>
-        </div>
-
         <details class="card">
           <summary style="font-weight:850;cursor:pointer" data-i18n="wardenTitle"></summary>
           <ul class="checklist">
@@ -573,7 +567,6 @@
           </ul>
           <a class="action" href="https://maps.app.goo.gl/s8dBo8m9AyspQpgu7" target="_blank" rel="noopener" data-i18n="kendalRouteMap"></a>
           <div class="row"><div><div class="key" data-i18n="kendalBusContact"></div><div class="value">07745 102164</div></div><button class="copy" data-copy="07745102164" data-i18n="copy"></button></div>
-          <p class="tiny" data-i18n="timetableNotStored"></p>
         </details>
 
         <div class="card safe">
@@ -705,7 +698,6 @@
       forecourtSafe:"محطة الوقود — لو آمن تعمل كده",
       fireStep1:"راجع أرضية محل محطة الوقود.", fireStep2:"راجع المخزن.", fireStep3:"راجع الحمامات.",
       fireStep4:"الموظف المكلّف ياخد جدول العاملين معاه لنقطة التجمع.", onlyIfSafe:"لو ده آمن فقط.",
-      nightShift:"شفت الليل:", nightShiftMissing:"المستند اللي اتبعت بيقول بوضوح إن فيه ورقة منفصلة لمسؤوليات الحريق في شفت الليل. الورقة دي لسه ما اتبعتتش، فمش ضايف أي خطوات من عندي.",
       wardenTitle:"مسؤول الحريق — بس لو الدور ده متكلف بيه",
       warden1:"افحص مكان الحريق لو ده آمن.", warden2:"فعّل أقرب نقطة إنذار يدوية لو لسه ما اتفعّلتش.",
       warden3:"تعامل بس مع حريق في بدايته، لو آمن وداخل حدود التدريب اللي أخدته من الشركة.",
@@ -717,10 +709,10 @@
       shiftPay:"الشفت والمرتب", regularShifts:"الشفتات الثابتة", regularShiftsValue:"الجمعة والسبت",
       shiftTime:"ميعاد الشفت", contractedHours:"الساعات المتعاقد عليها", contractedHoursValue:"17 ساعة في الأسبوع",
       hourlyRate:"الأجر بالساعة", hourlyRateValue:"£14.25 في الساعة", payFrequency:"الدفع", weekly:"أسبوعي",
-      breakLabel:"البريك", breakValue:"مدفوع — حسب تأكيد المدير",
+      breakLabel:"البريك", breakValue:"مدفوع",
       payrollTiming:"مواعيد السنة والدفع", companyYear:"السنة", companyYearValue:"1 أبريل – 31 مارس",
       payWeekEnds:"نهاية أسبوع الدفع", payWeekEndsValue:"الأحد", payDay:"يوم الدفع", payDayValue:"الجمعة اللي بعده — دفع أسبوعي",
-      kioskSettings:"إعدادات الكشك", kioskId:"رقم الكشك", kioskPin:"الرقم السري", temporaryId:"مؤقت — هيتغير بعدين",
+      kioskSettings:"إعدادات الكشك", kioskId:"رقم الكشك", kioskPin:"الرقم السري", temporaryId:"رقم مؤقت",
       companyId:"معرّف الشركة", username:"اسم المستخدم", workspace:"مساحة العمل", openPeopleXD:"افتح تطبيق PeopleXD", openThrive:"افتح تطبيق THRIVE",
       firstDay:"أول يوم / التعريف بالشركة", date:"التاريخ", time:"الوقت", location:"المكان", inductionLocation:"Westmorland Hotel — الاتجاه الشمالي", postcode:"الرمز البريدي",
       privateCodes:"الأكواد الخاصة", privateCodesNote:"حط أي رقم سري أو كلمة مرور أو رقم حساس في الخزنة الخاصة المشفّرة بدل ما يتكتب داخل كود الموقع.",
@@ -810,9 +802,8 @@
       minibusRule6:"تغيير نقطة الركوب أو النزول يحتاج استمارة جديدة للمدير؛ تغيير الخط يتم من My Westmorland People.",
       kendalRouteMap:"افتح خريطة خط كندال",
       kendalBusContact:"رقم ميني باص كندال",
-      timetableNotStored:"مواعيد الورقة الحالية لم تتخزن في التطبيق لأنها ممكن تتغير؛ اعتمد على الجدول الحالي عند الاستخدام.",
-      personalNote:"ملاحظة تخصني", nightMinibusNote:"الميني باص مش متاح لي لأن شغلي شفت ليل.",
-      benefitsPolicyNote:"المستندات اللي اتبعتت: إجراء وجبات الموظفين إصدار 4 (20/06/23) وسياسة خصومات الموظفين إصدار 7 (29/12/23). المزايا تقديرية وممكن تتغير.",
+      personalNote:"ملاءمة الشفت", nightMinibusNote:"الميني باص غير متاح لنظام شفت الليل الحالي.",
+      benefitsPolicyNote:"مرجع السياسة: إجراء وجبات الموظفين إصدار 4 (20/06/23) · سياسة خصومات الموظفين إصدار 7 (29/12/23). المزايا قابلة للتعديل.",
       duePrefix:"آخر موعد", daysLeftOne:"فاضل يوم", daysLeftMany:"فاضل {n} أيام", dueToday:"آخر يوم النهارده", overdueOne:"متأخر يوم", overdueMany:"متأخر {n} أيام",
       openTraining:"افتح تطبيق THRIVE", resetChecklist:"ابدأ موقف جديد / صفّر العلامات", vaultNote:"للأرقام أو الملاحظات الحساسة. البيانات بتتشفّر على المتصفح ده ومش بتتخزن على GitHub.",
       addPrivateEntry:"أضف بيانات خاصة", home:"الرئيسية", fireNav:"حريق", detailsNav:"بياناتي", trainingNav:"تدريب",
@@ -835,7 +826,6 @@
       forecourtSafe:"Forecourt — if safe to do so",
       fireStep1:"Check Forecourt shop floor.", fireStep2:"Check storeroom.", fireStep3:"Check toilets.",
       fireStep4:"Delegated team member takes the rota to the Assembly Point.", onlyIfSafe:"Only if safe to do so.",
-      nightShift:"Night shift:", nightShiftMissing:"The supplied fire procedure explicitly refers to a separate Night Shift Fire responsibilities document. That document has not been supplied yet, so no night-specific steps have been invented here.",
       wardenTitle:"Fire Warden — only if you are assigned this role",
       warden1:"Investigate the fire scene only if safe.", warden2:"Activate the nearest break-glass point if not already done.",
       warden3:"Tackle only an early-stage fire, only if safe and within company training.",
@@ -847,10 +837,10 @@
       shiftPay:"Shift & pay", regularShifts:"Regular shifts", regularShiftsValue:"Friday & Saturday",
       shiftTime:"Shift time", contractedHours:"Contracted hours", contractedHoursValue:"17 hours/week",
       hourlyRate:"Hourly rate", hourlyRateValue:"£14.25/hour", payFrequency:"Pay frequency", weekly:"Weekly",
-      breakLabel:"Break", breakValue:"Paid — confirmed by manager",
+      breakLabel:"Break", breakValue:"Paid",
       payrollTiming:"Year & payroll timing", companyYear:"Year", companyYearValue:"1 April – 31 March",
       payWeekEnds:"Pay week closes", payWeekEndsValue:"Sunday", payDay:"Pay day", payDayValue:"Following Friday — paid weekly",
-      kioskSettings:"Kiosk settings", kioskId:"Kiosk ID", kioskPin:"PIN", temporaryId:"Temporary — will change later",
+      kioskSettings:"Kiosk settings", kioskId:"Kiosk ID", kioskPin:"PIN", temporaryId:"Temporary ID",
       companyId:"Company ID", username:"Username", workspace:"Workspace", openPeopleXD:"Open PeopleXD app", openThrive:"Open THRIVE app",
       firstDay:"First day / induction", date:"Date", time:"Time", location:"Location", inductionLocation:"Westmorland Hotel, Northbound", postcode:"Postcode",
       privateCodes:"Private codes", privateCodesNote:"Keep PINs, passwords and other sensitive numbers in the encrypted Private Vault instead of writing them into the site code.",
@@ -940,9 +930,8 @@
       minibusRule6:"Change of pick-up/drop-off needs a new form to your manager; route changes are requested in My Westmorland People.",
       kendalRouteMap:"Open Kendal route map",
       kendalBusContact:"Kendal bus contact",
-      timetableNotStored:"The printed timetable times are not stored here because they may change; use the current timetable when travelling.",
-      personalNote:"Personal note", nightMinibusNote:"The minibus does not apply to me because I work night shift.",
-      benefitsPolicyNote:"Documents supplied: Meal Procedure v4 (20/06/23) and Colleague Discount Policy v7 (29/12/23). Benefits are discretionary and may change.",
+      personalNote:"Shift applicability", nightMinibusNote:"The minibus is unavailable for the current night-shift pattern.",
+      benefitsPolicyNote:"Policy reference: Colleague Meal Procedure v4 (20/06/23) · Colleague Discount Policy v7 (29/12/23). Benefits may be amended.",
       duePrefix:"Due", daysLeftOne:"1 day left", daysLeftMany:"{n} days left", dueToday:"Due today", overdueOne:"1 day overdue", overdueMany:"{n} days overdue",
       openTraining:"Open THRIVE app", resetChecklist:"New incident / reset checks", vaultNote:"For sensitive numbers or notes. Entries are encrypted in this browser and are not stored in GitHub.",
       addPrivateEntry:"Add private entry", home:"Home", fireNav:"Fire", detailsNav:"Details", trainingNav:"Training",
