@@ -124,6 +124,7 @@
     .dialog-actions{display:flex;gap:8px;margin-top:14px}
     .dialog-actions button{flex:1;border:0;border-radius:11px;padding:11px;font-weight:800}
     .secondary{background:#f2f4f7;color:var(--ink)}
+    .private-cancel{margin-top:8px;color:#344054}
     .status{font-size:12px;color:var(--muted);margin-top:9px;text-align:center}
     .official{font-size:12px;color:var(--muted);display:block;margin-top:3px;direction:ltr;text-align:start}
     @media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}.quick{display:block}.quick .icon{margin-bottom:15px}}
@@ -227,7 +228,7 @@
   </style>
 </head>
 <body>
-  <section id="lockScreen" class="lock" aria-label="Access">
+  <section id="lockScreen" class="lock hidden" aria-label="Private access">
     <div class="lock-lang">
       <div class="lang-switch">
         <button class="lang-btn" data-lang="ar">عربي</button>
@@ -242,6 +243,7 @@
         <div class="field"><label for="newPass" data-i18n="newPass"></label><input id="newPass" type="password" autocomplete="new-password" minlength="6"></div>
         <div class="field"><label for="confirmPass" data-i18n="confirmPass"></label><input id="confirmPass" type="password" autocomplete="new-password" minlength="6"></div>
         <button id="setupBtn" class="primary" data-i18n="createAccess"></button>
+        <button class="secondary primary private-cancel" type="button" data-i18n="cancel"></button>
         <div id="setupError" class="error"></div>
         <div class="tiny" data-i18n="setupNote"></div>
       </div>
@@ -250,12 +252,13 @@
         <p data-i18n="enterPass"></p>
         <div class="field"><label for="passInput" data-i18n="passphrase"></label><input id="passInput" type="password" autocomplete="current-password"></div>
         <button id="unlockBtn" class="primary" data-i18n="unlock"></button>
+        <button class="secondary primary private-cancel" type="button" data-i18n="cancel"></button>
         <div id="unlockError" class="error"></div>
       </div>
     </div>
   </section>
 
-  <div id="app" class="hidden">
+  <div id="app">
     <header>
       <div class="topbar">
         <div class="brand" data-i18n="appTitle"></div>
@@ -264,7 +267,6 @@
             <button class="lang-btn" data-lang="ar">عربي</button>
             <button class="lang-btn" data-lang="en">English</button>
           </div>
-          <button id="lockBtn" class="lock-btn" data-i18n="lock"></button>
         </div>
       </div>
     </header>
@@ -438,15 +440,17 @@
   const dec = new TextDecoder();
   let cryptoKey = null;
   let vaultItems = [];
+  let pendingPrivatePage = null;
+  const PROTECTED_PAGES = new Set(["details","vault"]);
   let lang = localStorage.getItem(LANG_KEY) || "ar";
 
   const T = {
     ar: {
-      setupTitle:"أمّن الجهاز ده",
-      setupIntro:"اعمل كلمة مرور للصفحة على المتصفح ده. أي بيانات تحطها في الخزنة الخاصة بتتشفّر وبتفضل على الجهاز.",
+      setupTitle:"أمّن بياناتك الشخصية",
+      setupIntro:"اعمل كلمة مرور لصفحة بياناتك الشخصية والخزنة الخاصة. باقي المرجع يفضل مفتوح من غير باسورد.",
       newPass:"كلمة مرور جديدة", confirmPass:"أكد كلمة المرور", createAccess:"إنشاء الدخول",
       setupNote:"الخزنة الخاصة معمولة للأرقام السرية والملاحظات الحساسة. البيانات دي ما بتترفعش على GitHub.",
-      appTitle:"مرجع الشغل السريع", enterPass:"اكتب كلمة المرور.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
+      appTitle:"مرجع الشغل السريع", enterPass:"اكتب كلمة المرور علشان تفتح بياناتك الشخصية.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
       fastReference:"مرجع سريع", findSeconds:"هات المعلومة في ثواني.", confirmedOnly:"هنا بنضيف بس معلومات الشغل اللي اتأكدنا منها.",
       emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", privateVault:"الخزنة الخاصة",
       backHome:"→ الرئيسية", fireHeadline:"إنذار الحريق ← أقرب مخرج حريق ← نقطة التجمع",
@@ -483,11 +487,11 @@
       offline:"أوفلاين · المرجع محفوظ على الجهاز", ready:"جاهز"
     },
     en: {
-      setupTitle:"Secure this device",
-      setupIntro:"Create a passphrase for this browser. Private vault entries are encrypted and stay on this device.",
+      setupTitle:"Protect your personal information",
+      setupIntro:"Create a passphrase for your personal details and Private Vault. The rest of the reference stays open without a password.",
       newPass:"New passphrase", confirmPass:"Confirm passphrase", createAccess:"Create access",
       setupNote:"Use the Private Vault for sensitive codes and notes. Those entries are not uploaded to GitHub.",
-      appTitle:"WF Quick Reference", enterPass:"Enter your passphrase.", passphrase:"Passphrase", unlock:"Unlock", lock:"Lock",
+      appTitle:"WF Quick Reference", enterPass:"Enter your passphrase to open your personal information.", passphrase:"Passphrase", unlock:"Unlock", lock:"Lock",
       fastReference:"Fast reference", findSeconds:"Find it in seconds.", confirmedOnly:"Only confirmed work information is added here.",
       emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", privateVault:"Private vault",
       backHome:"← Home", fireHeadline:"FIRE ALARM → NEAREST FIRE EXIT → ASSEMBLY POINT",
@@ -569,13 +573,34 @@
     return dec.decode(plain);
   }
 
-  function initLock() {
+  function openPrivateGate(pageId) {
+    pendingPrivatePage = pageId || "details";
     const meta = localStorage.getItem(META_KEY);
     $("setupMode").classList.toggle("hidden", !!meta);
     $("unlockMode").classList.toggle("hidden", !meta);
+    $("setupError").textContent = "";
+    $("unlockError").textContent = "";
     $("lockScreen").classList.remove("hidden");
-    $("app").classList.add("hidden");
     setTimeout(() => (meta ? $("passInput") : $("newPass")).focus(), 40);
+  }
+
+  function closePrivateGate() {
+    $("lockScreen").classList.add("hidden");
+    $("passInput").value = "";
+    $("newPass").value = "";
+    $("confirmPass").value = "";
+    pendingPrivatePage = null;
+  }
+
+  function finishPrivateUnlock() {
+    const destination = pendingPrivatePage || "details";
+    $("lockScreen").classList.add("hidden");
+    $("passInput").value = "";
+    $("newPass").value = "";
+    $("confirmPass").value = "";
+    renderVault();
+    showPage(destination, true);
+    pendingPrivatePage = null;
   }
 
   async function setup() {
@@ -592,7 +617,7 @@
       localStorage.setItem(DATA_KEY, JSON.stringify(await encryptText("[]", key)));
       cryptoKey = key;
       vaultItems = [];
-      openApp();
+      finishPrivateUnlock();
     } catch {
       $("setupError").textContent = t("setupFail");
     }
@@ -608,29 +633,17 @@
       cryptoKey = key;
       const stored = localStorage.getItem(DATA_KEY);
       vaultItems = stored ? JSON.parse(await decryptText(JSON.parse(stored), key)) : [];
-      openApp();
+      finishPrivateUnlock();
     } catch {
       $("unlockError").textContent = t("wrongPass");
     }
   }
 
-  function openApp() {
-    $("lockScreen").classList.add("hidden");
-    $("app").classList.remove("hidden");
-    $("passInput").value = "";
-    $("newPass").value = "";
-    $("confirmPass").value = "";
-    renderVault();
-    showPage("home");
-  }
-
-  function lock() {
-    cryptoKey = null;
-    vaultItems = [];
-    initLock();
-  }
-
-  function showPage(id) {
+  function showPage(id, bypassProtection = false) {
+    if (!bypassProtection && PROTECTED_PAGES.has(id) && !cryptoKey) {
+      openPrivateGate(id);
+      return;
+    }
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
     document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === id));
     window.scrollTo({top:0, behavior:"instant"});
@@ -773,7 +786,7 @@
   $("newPass").addEventListener("keydown", e => { if (e.key === "Enter") $("confirmPass").focus(); });
   $("confirmPass").addEventListener("keydown", e => { if (e.key === "Enter") setup(); });
   $("passInput").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
-  $("lockBtn").addEventListener("click", lock);
+  document.querySelectorAll(".private-cancel").forEach(btn => btn.addEventListener("click", closePrivateGate));
 
   document.addEventListener("click", e => {
     const langBtn = e.target.closest("[data-lang]");
@@ -833,7 +846,8 @@
 
   applyLanguage(lang);
   restoreChecklists();
-  initLock();
+  $("lockScreen").classList.add("hidden");
+  showPage("home", true);
 })();
 </script>
 </body>
