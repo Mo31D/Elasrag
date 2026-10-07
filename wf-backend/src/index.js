@@ -28,7 +28,7 @@ function corsPreflight(origin) {
     headers: {
       "access-control-allow-origin": origin,
       "access-control-allow-credentials": "true",
-      "access-control-allow-methods": "GET,POST,OPTIONS",
+      "access-control-allow-methods": "GET,POST,PUT,OPTIONS",
       "access-control-allow-headers": "content-type",
       "access-control-max-age": "86400",
       "vary": "Origin",
@@ -182,16 +182,37 @@ export default {
       if (!(await requireSession(request, env))) {
         return json({ ok: false, error: "Unauthorized" }, 401, origin);
       }
-
-      let data = {};
-      if (env.WF_PRIVATE_DATA) {
-        try {
-          data = JSON.parse(env.WF_PRIVATE_DATA);
-        } catch {
-          return json({ ok: false, error: "Private data is not valid JSON" }, 500, origin);
-        }
+      if (!env.WF_DATA) {
+        return json({ ok: false, error: "KV storage not configured" }, 503, origin);
       }
+
+      let data = await env.WF_DATA.get("private-data", "json");
+      if (data == null) data = {};
       return json({ ok: true, data }, 200, origin);
+    }
+
+    if (url.pathname === "/private" && request.method === "PUT") {
+      if (!(await requireSession(request, env))) {
+        return json({ ok: false, error: "Unauthorized" }, 401, origin);
+      }
+      if (!env.WF_DATA) {
+        return json({ ok: false, error: "KV storage not configured" }, 503, origin);
+      }
+
+      let body;
+      try {
+        body = await request.json();
+      } catch {
+        return json({ ok: false, error: "Invalid JSON" }, 400, origin);
+      }
+
+      const encoded = JSON.stringify(body ?? {});
+      if (encoded.length > 100000) {
+        return json({ ok: false, error: "Private data too large" }, 413, origin);
+      }
+
+      await env.WF_DATA.put("private-data", encoded);
+      return json({ ok: true }, 200, origin);
     }
 
     if (url.pathname === "/logout" && request.method === "POST") {
