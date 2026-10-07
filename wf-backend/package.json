@@ -1,0 +1,9 @@
+{
+  "name": "wf-backend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "devDependencies": {
+    "wrangler": "^4.68.0"
+  }
+}
