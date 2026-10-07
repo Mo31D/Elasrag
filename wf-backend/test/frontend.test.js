@@ -327,6 +327,9 @@ test('returning from another page keeps draft inputs and back links return to th
   click(d,'[data-page="reference"]');click(d,'#reference [data-page="benefits/discounts"]');
   assert.equal(d.document.querySelector('#benefits [data-tab="discounts"]').getAttribute('aria-selected'),'true');
   assert.match(d.document.querySelector('#benefits [data-back]').textContent,/المرجع/);
+  assert.equal(d.window.history.state.wfFrom,'reference');
+  click(d,'#benefits-tab-leisure');
+  assert.equal(d.window.history.state.wfFrom,'reference');
   click(d,'#benefits [data-back]');assert.ok(active(d,'reference'));
   assert.deepEqual(d.errors,[]);
 });

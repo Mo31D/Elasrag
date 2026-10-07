@@ -303,16 +303,20 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   function updateBackButton() {
     const button=$(activePage)?.querySelector('[data-back]');
     if(!button)return;
-    const target=(returnTargets.get(activePage)?.route || (['benefits','uniform','access'].includes(activePage)?'reference':'home')).split('/')[0];
+    const target=(returnTarget(activePage).route).split('/')[0];
     const label={home:'home',reference:'reference',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'accountHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
     button.textContent=(lang==='ar'?'→ ':'← ')+t(label);
+  }
+
+  function returnTarget(page) {
+    return returnTargets.get(page) || (history.state?.wfPage===page && history.state.wfFrom ? {route:history.state.wfFrom} : null) || {route:'home'};
   }
 
   function selectTab(page,name,updateHistory=false){
     if(!page?.querySelector(`[data-tab="${name}"]`))return;
     page.querySelectorAll("[data-tab]").forEach(button=>{const selected=button.dataset.tab===name;button.setAttribute("aria-selected",String(selected));button.tabIndex=selected?0:-1;});
     page.querySelectorAll("[data-tab-panel]").forEach(panel=>panel.hidden=panel.dataset.tabPanel!==name);
-    if(updateHistory)history.replaceState(null,"","#"+page.id+"/"+name);
+    if(updateHistory)history.replaceState(history.state,"","#"+page.id+"/"+name);
   }
   document.addEventListener("keydown",event=>{const tab=event.target.closest?.("[data-tab]");if(!tab || !["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;event.preventDefault();const tabs=[...tab.parentElement.querySelectorAll("[data-tab]")].filter(button=>!button.hidden && !button.disabled);let index=tabs.indexOf(tab);if(event.key==="Home")index=0;else if(event.key==="End")index=tabs.length-1;else index=(index+(event.key==="ArrowRight"?(lang==="ar"?-1:1):(lang==="ar"?1:-1))+tabs.length)%tabs.length;tabs[index].click();tabs[index].focus();});
   async function showPage(id, historyMode = "push") {
@@ -341,7 +345,9 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     if(historyMode==='push' && id!==source) returnTargets.set(id,previous);
     updateBackButton();
     const tab=$(id).querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;const hash=id==="home"?"":"#"+id+(tab?"/"+tab:"");
-    if(location.hash!==hash)history[historyMode === "replace" ? "replaceState" : "pushState"](null,"",hash || location.pathname+location.search);
+    if(location.hash!==hash)history[historyMode === "replace" ? "replaceState" : "pushState"](
+      historyMode==='push' ? {wfPage:id,wfFrom:previous.route} : history.state?.wfPage===id ? history.state : null,
+      "",hash || location.pathname+location.search);
   }
 
   function privateChanges(before, proposed) {
@@ -632,7 +638,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
       return;
     }
     if(e.target.closest('[data-back]')){
-      const previous=returnTargets.get(activePage) || {route:['benefits','uniform','access'].includes(activePage)?'reference':'home'};
+      const previous=returnTarget(activePage);
       showPage(previous.route,'replace').then(()=>restoreReadingPosition(previous.reading));
       return;
     }
@@ -994,8 +1000,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=27").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "27";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=28").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "28";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
