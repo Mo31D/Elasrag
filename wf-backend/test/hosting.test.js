@@ -1,0 +1,62 @@
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import worker from '../src/index.js';
+import { fixture } from './fixtures.js';
+
+const origin = 'https://mo.elasrag.com';
+const req = (path, method = 'GET', body, cookie, source = origin) => new Request(origin + path, {
+  method, headers: { origin: source, ...(body ? {'content-type':'application/json'} : {}), ...(cookie ? {cookie} : {}) },
+  ...(body ? {body:JSON.stringify(body)} : {}),
+});
+
+test('canonical origin serves native app assets publicly, independent of authentication', async () => {
+  const { env } = fixture();
+  delete env.WF_PASSWORD; delete env.SESSION_SECRET;
+  const home = await worker.fetch(req('/'), env);
+  assert.equal(home.status, 200);
+  assert.match(home.headers.get('content-type'), /text\/html/);
+  assert.equal(home.headers.get('cache-control'), 'no-cache');
+  assert.equal(home.headers.get('x-frame-options'), 'DENY');
+  const html = await home.text();
+  assert.match(html, /data-staff-profile="personal"/);
+  assert.match(html, /const API_BASE = .*"\/api"/);
+  const sw = await worker.fetch(req('/sw.js?v=21'), env);
+  assert.equal(sw.status, 200);
+  assert.match(sw.headers.get('content-type'), /javascript/);
+  assert.match(await sw.text(), /wf-quick-reference-v21/);
+  assert.equal((await worker.fetch(req('/index.html', 'HEAD'), env)).body, null);
+  assert.equal((await worker.fetch(req('/unknown'), env)).status, 404);
+  const redirected = await worker.fetch(req('/wf/'), env);
+  assert.equal(redirected.status, 308);
+  assert.equal(redirected.headers.get('location'), origin + '/');
+});
+
+test('same-origin API and legacy migration share the existing session and private store', async () => {
+  const { env } = fixture();
+  const health = await worker.fetch(req('/api/health'), env);
+  assert.equal(health.status, 200);
+  assert.equal((await health.json()).version, 3);
+  const login = await worker.fetch(req('/api/login','POST',{password:env.WF_PASSWORD}), env);
+  assert.equal(login.status, 200);
+  const setCookie = login.headers.get('set-cookie');
+  assert.doesNotMatch(setCookie, /Domain=/i);
+  const cookie = setCookie.split(';')[0];
+  const session = await worker.fetch(req('/api/session','GET',null,cookie), env);
+  assert.equal((await session.json()).authenticated, true);
+  const legacy = await worker.fetch(req('/private','GET',null,cookie,'https://www.elasrag.com'),env);
+  assert.equal(legacy.status, 200);
+  assert.equal(legacy.headers.get('access-control-allow-origin'),'https://www.elasrag.com');
+  const data = {version:1,profile:{},items:[{label:'Migration fixture',value:'fixture-only',note:''}]};
+  const write = new Request(origin + '/api/private', {method:'PUT',headers:{origin:'https://www.elasrag.com','content-type':'application/json',cookie,'if-match':legacy.headers.get('etag')},body:JSON.stringify(data)});
+  assert.equal((await worker.fetch(write,env)).status,200);
+  const canonical = await worker.fetch(req('/api/private','GET',null,cookie),env);
+  assert.deepEqual((await canonical.json()).data,data);
+  assert.equal(canonical.headers.get('cache-control'),'no-store');
+  const missing = await worker.fetch(req('/api/missing'),env);
+  assert.equal(missing.status,404);
+  assert.match(missing.headers.get('content-type'),/application\/json/);
+  assert.equal((await worker.fetch(req('/api/private','GET',null,null),env)).status,401);
+  assert.equal((await worker.fetch(req('/api/login','POST',{password:env.WF_PASSWORD},null,'https://other.example'),env)).status,403);
+  assert.equal((await worker.fetch(req('/api/logout','POST',null,cookie),env)).status,200);
+  assert.equal((await worker.fetch(req('/api/private','GET',null,cookie),env)).status,401);
+});

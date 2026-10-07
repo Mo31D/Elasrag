@@ -5,7 +5,26 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
-  <title>WF Quick Reference</title>
+  <link rel="canonical" href="https://mo.elasrag.com/">
+  <title>مساعد موظف ويستمورلاند</title>
+  <script>
+  (() => {
+    const previousOrigins = new Set(["https://www.elasrag.com", "https://elasrag.com"]);
+    if (!previousOrigins.has(location.origin)) return;
+    const migration = new URLSearchParams(location.search).get("migrate") === "1";
+    let hasLegacyVault = false;
+    let language = "ar";
+    try {
+      hasLegacyVault = Boolean(localStorage.getItem("wf-vault-meta-v1") && localStorage.getItem("wf-vault-data-v1"));
+      language = localStorage.getItem("wf-language-v1") === "en" ? "en" : "ar";
+    } catch {}
+    if (migration && hasLegacyVault) return;
+    const destination = new URL("https://mo.elasrag.com/");
+    if (language === "en") destination.searchParams.set("lang", "en");
+    destination.hash = location.hash;
+    location.replace(destination.href);
+  })();
+  </script>
   <style>
     :root{
       --bg:#f4f5f7;--card:#fff;--ink:#111827;--muted:#667085;--line:#e4e7ec;
@@ -642,6 +661,8 @@
           <button id="addSecretBtn" class="primary" data-i18n="addPrivateEntry"></button>
           <button id="editProfileBtn" class="secondary primary" data-i18n="editAccountDetails"></button>
           <button id="importLegacyBtn" class="secondary primary hidden" data-i18n="importOldVault"></button>
+          <a id="previousVaultLink" class="action hidden" href="https://www.elasrag.com/wf/?migrate=1#vault" data-i18n="importOldVault"></a>
+          <a id="returnCompanion" class="action hidden" href="https://mo.elasrag.com/#vault" data-i18n="returnCompanion"></a>
           <div id="vaultList" class="vault-list"></div>
         </div>
       </section>
@@ -689,7 +710,11 @@
   const LANG_KEY = "wf-language-v1";
   const enc = new TextEncoder();
   const dec = new TextDecoder();
-  const API_BASE = "https://mo.elasrag.com";
+  const CANONICAL_ORIGIN = "https://mo.elasrag.com";
+  const PREVIOUS_ORIGINS = new Set(["https://www.elasrag.com", "https://elasrag.com"]);
+  const migrationMode = PREVIOUS_ORIGINS.has(location.origin) && new URLSearchParams(location.search).get("migrate") === "1";
+  if (PREVIOUS_ORIGINS.has(location.origin) && (!migrationMode || !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)))) return;
+  const API_BASE = (location.origin === CANONICAL_ORIGIN ? "" : CANONICAL_ORIGIN) + "/api";
   const PROFILE_KEYS = ["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername"];
   let safeWorkerReady = Promise.resolve(true);
   let authenticated = false;
@@ -703,11 +728,11 @@
   let vaultItems = [];
   let pendingPrivatePage = null;
   const PROTECTED_PAGES = new Set(["details","vault"]);
-  let lang = localStorage.getItem(LANG_KEY) || "ar";
+  let lang = new URLSearchParams(location.search).get("lang") || localStorage.getItem(LANG_KEY) || "ar";
 
   const T = {
     ar: {
-      logout:"تسجيل الخروج",apiError:"مش قادر أفتح بياناتك دلوقتي. حاول تاني.",tooMany:"محاولات كتير. حاول بعد شوية.",conflict:"البيانات اتغيّرت على جهاز تاني. افتح الخزنة تاني قبل الحفظ.",edit:"تعديل",editAccountDetails:"تعديل بيانات الحسابات",workPin:"الرقم السري للشغل",thriveUsername:"اسم المستخدم في THRIVE",importOldVault:"استيراد الخزنة القديمة",importOldIntro:"اكتب كلمة مرور الخزنة القديمة على الجهاز ده لاستيراد محتوياتها. النسخة القديمة هتفضل محفوظة.",oldPassword:"كلمة المرور القديمة",importEntries:"استيراد",importDone:"تم استيراد المحتويات وحفظها.",emptyOldVault:"الخزنة القديمة مفيهاش محتويات.",importFailed:"تعذر فتح الخزنة القديمة. راجع كلمة المرور.",logoutFailed:"تم قفل البيانات هنا. تعذر إكمال تسجيل الخروج؛ حاول تاني.",saveFailed:"تعذر الحفظ. محتوياتك لسه مفتوحة؛ حاول تاني.",invalidEntry:"راجع حجم البيانات المدخلة.",
+      returnCompanion:"الرجوع لمساعد الموظف",logout:"تسجيل الخروج",apiError:"مش قادر أفتح بياناتك دلوقتي. حاول تاني.",tooMany:"محاولات كتير. حاول بعد شوية.",conflict:"البيانات اتغيّرت على جهاز تاني. افتح الخزنة تاني قبل الحفظ.",edit:"تعديل",editAccountDetails:"تعديل بيانات الحسابات",workPin:"الرقم السري للشغل",thriveUsername:"اسم المستخدم في THRIVE",importOldVault:"استيراد الخزنة القديمة",importOldIntro:"اكتب كلمة مرور الخزنة القديمة على الجهاز ده لاستيراد محتوياتها. النسخة القديمة هتفضل محفوظة.",oldPassword:"كلمة المرور القديمة",importEntries:"استيراد",importDone:"تم استيراد المحتويات وحفظها.",emptyOldVault:"الخزنة القديمة مفيهاش محتويات.",importFailed:"تعذر فتح الخزنة القديمة. راجع كلمة المرور.",logoutFailed:"تم قفل البيانات هنا. تعذر إكمال تسجيل الخروج؛ حاول تاني.",saveFailed:"تعذر الحفظ. محتوياتك لسه مفتوحة؛ حاول تاني.",invalidEntry:"راجع حجم البيانات المدخلة.",
       appTitle:"مساعد موظف ويستمورلاند", enterPass:"اكتب كلمة المرور علشان تفتح بياناتك الشخصية.", passphrase:"كلمة المرور", unlock:"فتح", lock:"قفل",
       fastReference:"مساعد الموظف", findSeconds:"هات المعلومة في ثواني.", confirmedOnly:"بياناتي، تدريبي، المزايا، والتصرف السريع في المواقف المهمة.",
       emergency:"طوارئ", fire:"حريق", reference:"المرجع", workDetails:"بيانات الشغل", training:"التدريب", accountHelp:"مساعدة الدخول", benefits:"المزايا", uniformDress:"الزي والمظهر", privateVault:"الخزنة الخاصة",
@@ -832,7 +857,7 @@
       offline:"أوفلاين · المرجع محفوظ على الجهاز", ready:"جاهز"
     },
     en: {
-      logout:"Sign out",apiError:"Unable to open your information. Please try again.",tooMany:"Too many attempts. Please try again later.",conflict:"Your information changed on another device. Reopen the vault before saving.",edit:"Edit",editAccountDetails:"Edit account details",workPin:"Work PIN",thriveUsername:"THRIVE username",importOldVault:"Import old vault",importOldIntro:"Enter the old vault password for this device to import its entries. The old copy will be kept.",oldPassword:"Old password",importEntries:"Import",importDone:"Entries imported and saved.",emptyOldVault:"The old vault has no entries.",importFailed:"Unable to open the old vault. Check its password.",logoutFailed:"Information is locked here. Sign out could not finish; please try again.",saveFailed:"Unable to save. Your entries are still open; please try again.",invalidEntry:"Check the size of the information entered.",
+      returnCompanion:"Return to Staff Companion",logout:"Sign out",apiError:"Unable to open your information. Please try again.",tooMany:"Too many attempts. Please try again later.",conflict:"Your information changed on another device. Reopen the vault before saving.",edit:"Edit",editAccountDetails:"Edit account details",workPin:"Work PIN",thriveUsername:"THRIVE username",importOldVault:"Import old vault",importOldIntro:"Enter the old vault password for this device to import its entries. The old copy will be kept.",oldPassword:"Old password",importEntries:"Import",importDone:"Entries imported and saved.",emptyOldVault:"The old vault has no entries.",importFailed:"Unable to open the old vault. Check its password.",logoutFailed:"Information is locked here. Sign out could not finish; please try again.",saveFailed:"Unable to save. Your entries are still open; please try again.",invalidEntry:"Check the size of the information entered.",
       appTitle:"WF Staff Companion", enterPass:"Enter your password to open your personal information.", passphrase:"Password", unlock:"Unlock", lock:"Lock",
       fastReference:"Staff companion", findSeconds:"Find it in seconds.", confirmedOnly:"My details, training, benefits and fast actions for important situations.",
       emergency:"Emergency", fire:"Fire", reference:"Reference", workDetails:"Work details", training:"Training", accountHelp:"Account help", benefits:"Benefits", uniformDress:"Uniform & dress", privateVault:"Private vault",
@@ -1115,6 +1140,8 @@
         renderPrivateProfile();
         renderVault();
         $("importLegacyBtn").classList.toggle("hidden", !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)));
+        $("previousVaultLink").classList.toggle("hidden", location.origin !== CANONICAL_ORIGIN);
+        $("returnCompanion").classList.toggle("hidden", !migrationMode);
         $("logoutBtn").classList.remove("hidden");
         $("lockScreen").classList.add("hidden");
         $("passInput").value = "";
@@ -1480,6 +1507,7 @@
       if (await persistVault(next)) {
         $("migrationDialog").close();
         message("privateMessage", "importDone");
+        if (migrationMode) location.replace(CANONICAL_ORIGIN + "/#vault");
       }
     } catch (error) { message("migrationError", errorKey(error)); }
     finally { $("oldPass").value = ""; $("migrateVault").disabled = false; }
@@ -1519,8 +1547,8 @@
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=20").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "20";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=21").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "21";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

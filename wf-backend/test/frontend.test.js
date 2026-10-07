@@ -7,14 +7,15 @@ import worker from '../src/index.js';
 import { fixture } from './fixtures.js';
 const html = readFileSync(new URL('../../wf/index.html', import.meta.url), 'utf8');
 
-function device(env, hash = '', legacy = null) {
+function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/') {
   let cookie = '';
   let unavailable = false;
   const errors = [];
+  const navigations = [];
   const console = new VirtualConsole();
-  console.on('jsdomError', error => errors.push(error));
+  console.on('jsdomError', error => { if (error.type === 'not-implemented' && error.message.includes('navigation')) navigations.push(error); else errors.push(error); });
   const dom = new JSDOM(html, {
-    url: 'https://www.elasrag.com/wf/' + hash, runScripts: 'dangerously', virtualConsole: console,
+    url: url + hash, runScripts: 'dangerously', virtualConsole: console,
     beforeParse(window) {
       Object.defineProperty(window, 'crypto', { value: webcrypto });
       window.TextEncoder = TextEncoder; window.TextDecoder = TextDecoder;
@@ -27,7 +28,7 @@ function device(env, hash = '', legacy = null) {
       window.fetch = async (url, options) => {
         assert.equal(options.credentials, 'include'); assert.equal(options.cache, 'no-store');
         if (unavailable) throw new Error('offline fixture');
-        const request = new Request(url, { ...options, headers: { ...options.headers, origin: 'https://www.elasrag.com', ...(cookie ? { cookie } : {}) } });
+        const request = new Request(new URL(url, window.location.origin), { ...options, headers: { ...options.headers, origin: window.location.origin, ...(cookie ? { cookie } : {}) } });
         const response = await worker.fetch(request, env);
         const nextCookie = response.headers.get('set-cookie');
         if (nextCookie) cookie = nextCookie.split(';')[0];
@@ -35,7 +36,7 @@ function device(env, hash = '', legacy = null) {
       };
     },
   });
-  return { dom, window: dom.window, document: dom.window.document, errors, offline: value => unavailable = value };
+  return { dom, window: dom.window, document: dom.window.document, errors, navigations, offline: value => unavailable = value };
 }
 async function until(fn) {
   const start = Date.now();
@@ -114,7 +115,7 @@ test('encrypted legacy import is verified centrally, repeat import deduplicates 
     'wf-vault-meta-v1': JSON.stringify({ salt:b64(salt), verifier:await encrypt('wf-ok-v1') }),
     'wf-vault-data-v1': JSON.stringify(await encrypt(JSON.stringify([{label:'Old entry', value:'old-value', note:''}]))),
   };
-  const d = device(env, '#vault', legacy); t.after(() => d.window.close());
+  const d = device(env, '#vault', legacy, 'https://www.elasrag.com/wf/?migrate=1'); t.after(() => d.window.close());
   await signIn(d);
   click(d, '#importLegacyBtn'); fill(d, 'oldPass', 'wrong'); click(d, '#migrateVault');
   await until(() => d.document.getElementById('migrationError').textContent.length > 0);
@@ -127,5 +128,18 @@ test('encrypted legacy import is verified centrally, repeat import deduplicates 
   await new Promise(resolve => setTimeout(resolve, 1005)); click(d, '#migrateVault');
   await until(() => !d.document.getElementById('migrationDialog').open);
   assert.equal(JSON.parse(kv.get('private-data')).items.length, 1);
+  assert.equal(d.navigations.length, 2);
   assert.deepEqual(d.errors, []);
+});
+
+
+test('the previous address redirects normally and only stays open for an existing local vault import', async t => {
+  const { env } = fixture();
+  const d = device(env, '#training', null, 'https://www.elasrag.com/wf/');
+  t.after(() => d.window.close());
+  assert.equal(d.navigations.length, 1);
+  assert.deepEqual(d.errors, []);
+  const empty = device(env, '#vault', null, 'https://www.elasrag.com/wf/?migrate=1');
+  t.after(() => empty.window.close());
+  assert.equal(empty.navigations.length, 1);
 });
