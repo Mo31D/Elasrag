@@ -85,11 +85,13 @@ test('public access, protected direct routes, translated auth, vault CRUD, anoth
   click(a, '.mini-actions button:nth-child(3)'); fill(a, 'secretValue', 'edited');
   await new Promise(resolve => setTimeout(resolve, 1005)); click(a, '#saveSecret');
   await until(() => a.document.querySelector('.secret').textContent === 'edited');
-  click(a, '#editProfileBtn'); fill(a, 'profile-colleagueNumber', 'fixture-account');
+  click(a, '#editProfileBtn'); fill(a, 'profile-colleagueNumber', 'fixture-account');fill(a,'profile-workPin','fixture-pin');
   await new Promise(resolve => setTimeout(resolve, 1005)); click(a, '#saveProfile');
   await until(() => !a.document.getElementById('profileDialog').open);
   click(a, '[data-page="details"]'); await until(() => active(a, 'details'));
   assert.equal(a.document.querySelector('[data-private="colleagueNumber"]').textContent, 'fixture-account');
+  click(a,'#details-tab-accounts');
+  assert.equal(a.document.querySelector('[data-private="workPin"]').textContent,'fixture-pin');
   click(a, '[data-page="vault"]'); await until(() => active(a, 'vault'));
   await new Promise(resolve => setTimeout(resolve, 1005)); click(a, '.mini-actions button:last-child');
   await until(() => a.document.querySelectorAll('.vault-item').length === 0);
