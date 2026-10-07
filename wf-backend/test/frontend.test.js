@@ -99,7 +99,8 @@ test('public access, protected direct routes, translated auth, vault CRUD, anoth
   assert.equal(a.document.querySelector('[data-private="colleagueNumber"]').textContent, '');
   a.offline(true); fill(a, 'passInput', 'fixture-password-only'); click(a, '#unlockBtn');
   await until(() => /Unable/.test(a.document.getElementById('unlockError').textContent));
-  click(a, '.private-cancel'); click(a, '[data-page="fire"]'); assert.ok(active(a, 'fire'));
+  click(a, '#lockScreen [data-page="fire"]'); assert.ok(active(a, 'fire'));
+  assert.ok(a.document.getElementById("lockScreen").classList.contains("hidden"));
   assert.ok(records.size > 0);
   assert.deepEqual(a.errors, []); assert.deepEqual(b.errors, []);
 });
