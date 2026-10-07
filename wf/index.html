@@ -10,7 +10,7 @@
   <script>
   (() => {
     const previousOrigins = new Set(["https://www.elasrag.com", "https://elasrag.com"]);
-    if (!previousOrigins.has(location.origin)) return;
+    if (!previousOrigins.has(location.origin) || !navigator.onLine) return;
     const migration = new URLSearchParams(location.search).get("migrate") === "1";
     let hasLegacyVault = false;
     let language = "ar";
@@ -713,7 +713,7 @@
   const CANONICAL_ORIGIN = "https://mo.elasrag.com";
   const PREVIOUS_ORIGINS = new Set(["https://www.elasrag.com", "https://elasrag.com"]);
   const migrationMode = PREVIOUS_ORIGINS.has(location.origin) && new URLSearchParams(location.search).get("migrate") === "1";
-  if (PREVIOUS_ORIGINS.has(location.origin) && (!migrationMode || !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)))) return;
+  if (PREVIOUS_ORIGINS.has(location.origin) && navigator.onLine && (!migrationMode || !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)))) return;
   const API_BASE = (location.origin === CANONICAL_ORIGIN ? "" : CANONICAL_ORIGIN) + "/api";
   const PROFILE_KEYS = ["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername"];
   let safeWorkerReady = Promise.resolve(true);

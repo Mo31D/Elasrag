@@ -7,9 +7,9 @@ import worker from '../src/index.js';
 import { fixture } from './fixtures.js';
 const html = readFileSync(new URL('../../wf/index.html', import.meta.url), 'utf8');
 
-function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/') {
+function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false) {
   let cookie = '';
-  let unavailable = false;
+  let unavailable = initiallyOffline;
   const errors = [];
   const navigations = [];
   const console = new VirtualConsole();
@@ -21,6 +21,7 @@ function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/') 
       window.TextEncoder = TextEncoder; window.TextDecoder = TextDecoder;
       window.AbortController = AbortController;
       window.scrollTo = () => {}; window.confirm = () => true;
+      Object.defineProperty(window.navigator, 'onLine', {value:!initiallyOffline,configurable:true});
       window.navigator.clipboard = { writeText: async () => {} };
       window.HTMLDialogElement.prototype.showModal = function () { this.open = true; };
       window.HTMLDialogElement.prototype.close = function () { this.open = false; this.dispatchEvent(new window.Event('close')); };
@@ -142,4 +143,19 @@ test('the previous address redirects normally and only stays open for an existin
   const empty = device(env, '#vault', null, 'https://www.elasrag.com/wf/?migrate=1');
   t.after(() => empty.window.close());
   assert.equal(empty.navigations.length, 1);
+});
+
+
+test('cached public reference remains available at the previous address while offline', async t => {
+  const { env } = fixture();
+  const d = device(env, '#fire', null, 'https://www.elasrag.com/wf/', true);
+  t.after(() => d.window.close());
+  assert.equal(d.navigations.length, 0);
+  assert.ok(active(d, 'fire'));
+  click(d, '[data-page="training"]');
+  assert.ok(active(d, 'training'));
+  click(d, '[data-page="details"]');
+  await until(() => !d.document.getElementById('lockScreen').classList.contains('hidden'));
+  assert.equal(d.document.querySelector('[data-private="colleagueNumber"]').textContent,'');
+  assert.deepEqual(d.errors, []);
 });
