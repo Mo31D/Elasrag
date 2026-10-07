@@ -586,7 +586,7 @@ export const TRANSLATIONS = {
     "add": "Add",
     "addTask": "One task…",
     "newShift": "Reset for a new shift",
-    "findReference": "Find a reference…",
+    "findReference": "Search guidance…",
     "otherAccount": "Another account",
     "ownerAccount": "My existing account",
     "createAccount": "Create account",
