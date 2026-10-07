@@ -311,7 +311,7 @@ function applyChanges(current, changes) {
 
 // One coordinator gives immediate session revocation and serializes private writes.
 export class WFAuthGuard {
-  constructor(state, env) { this.state = state; this.env = env; this.currentData = new Map(); }
+  constructor(state, env) { this.state = state; this.env = env; this.currentData = new Map(); this.pendingMigration = new Map(); this.pendingLegacy = new Set(); }
 
   async fetch(request) {
     return this.state.blockConcurrencyWhile(async () => {
@@ -392,19 +392,28 @@ export class WFAuthGuard {
         if (!data.companion) {
           data = { ...data, profile: userId === "owner" ? { ...OWNER_PROFILE, ...data.profile } : data.profile, companion: initialCompanion(userId === "owner") };
         }
-        if (raw == null || !same(raw, data)) {
-          if (raw != null) {
-            const backupKey = "private-backup:" + base64url(await sha256(JSON.stringify(raw)));
-            if (await this.env.WF_DATA.get(backupKey) == null) await this.env.WF_DATA.put(backupKey, JSON.stringify(raw));
-          }
+        if (raw == null) {
           await this.env.WF_DATA.put(dataKey, JSON.stringify(data));
           await store.put({ [revisionKey]: await revision(data), [writeTimeKey]: Date.now() });
+          if (legacyPending) await store.put("private-legacy-merged", true);
+        } else {
+          if (!same(raw, data)) this.pendingMigration.set(userId, raw);
+          if (legacyPending) this.pendingLegacy.add(userId);
         }
-        if (legacyPending) await store.put("private-legacy-merged", true);
         this.currentData.set(userId, data);
       }
       const current = this.currentData.get(userId);
       const etag = await revision(current);
+      const preserveOriginal = async () => {
+        const original = this.pendingMigration.get(userId);
+        if (original == null) return;
+        const backupKey = "private-backup:" + base64url(await sha256(JSON.stringify(original)));
+        if (await this.env.WF_DATA.get(backupKey) == null) await this.env.WF_DATA.put(backupKey, JSON.stringify(original));
+      };
+      const migrationSaved = () => {
+        this.pendingMigration.delete(userId);
+        this.pendingLegacy.delete(userId);
+      };
       if (body.action === "read") return json({ ok: true, data: current }, 200, null, { etag });
       if (body.action === "change") {
         const applied = applyChanges(current, body.changes);
@@ -412,8 +421,11 @@ export class WFAuthGuard {
         const next = applied.data;
         if (same(next, current)) return json({ ok: true, data: current }, 200, null, { etag });
         const nextRevision = await revision(next);
+        await preserveOriginal();
         await this.env.WF_DATA.put(dataKey, JSON.stringify(next));
         await store.put(revisionKey, nextRevision);
+        if (this.pendingLegacy.has(userId)) await store.put("private-legacy-merged", true);
+        migrationSaved();
         this.currentData.set(userId, next);
         return json({ ok: true, data: next }, 200, null, { etag: nextRevision });
       }
@@ -424,8 +436,11 @@ export class WFAuthGuard {
         if (!validData(body.data)) return json({ error: "Invalid data" }, 400);
         const next = body.data.companion ? body.data : { ...body.data, profile: { ...current.profile, ...body.data.profile }, companion: current.companion };
         const nextRevision = await revision(next);
+        await preserveOriginal();
         await this.env.WF_DATA.put(dataKey, JSON.stringify(next));
         await store.put({ [revisionKey]: nextRevision, [writeTimeKey]: now });
+        if (this.pendingLegacy.has(userId)) await store.put("private-legacy-merged", true);
+        migrationSaved();
         this.currentData.set(userId, next);
         return json({ ok: true, data: next }, 200, null, { etag: nextRevision });
       }
@@ -483,7 +498,7 @@ export default {
     if (request.method === "OPTIONS") return corsPreflight(origin);
     if (apiPath === "/health" && request.method === "GET") {
       const ready = Boolean(env.WF_PASSWORD && env.SESSION_SECRET && env.WF_DATA && env.WF_AUTH && env.ASSETS);
-      return json({ ok: ready, service: "wf-backend", version: 5 }, ready ? 200 : 503, origin);
+      return json({ ok: ready, service: "wf-backend", version: 6 }, ready ? 200 : 503, origin);
     }
     // CORS alone does not prevent cross-origin writes.
     if (origin && !ALLOWED_ORIGINS.has(origin)) return json({ error: "Forbidden" }, 403);
