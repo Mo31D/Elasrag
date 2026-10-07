@@ -96,3 +96,17 @@ export function shiftState(profile, now = new Date()) {
   const next=shifts.find(shift=>shift.start>now);
   return {status:current?'active':next && Math.floor(londonWall(next.start)/86400000)*86400000===today?'today':'off',current,next};
 }
+
+export function upcomingAlerts(profile, courses, now = new Date()) {
+  const alerts=[];
+  const shift=shiftState(profile,now);
+  if(shift.current)alerts.push({kind:'shift-active',when:shift.current.end});
+  else if(shift.next && shift.next.start-now<=24*60*60*1000)alerts.push({kind:'shift-soon',when:shift.next.start});
+  const today=Math.floor(londonWall(now)/86400000)*86400000;
+  for(const course of courses) {
+    if(course.status==='completed' || !/^\d{4}-\d{2}-\d{2}$/.test(course.due||''))continue;
+    const days=Math.round((Date.parse(course.due+'T00:00:00Z')-today)/86400000);
+    if(days<=3)alerts.push({kind:'training',course,days});
+  }
+  return alerts.sort((a,b)=>a.kind==='training' && b.kind==='training'?a.days-b.days:a.kind==='training'?1:b.kind==='training'?-1:0);
+}

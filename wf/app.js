@@ -1,5 +1,5 @@
 import { TRANSLATIONS } from "./content.js";
-import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } from "./model.js";
+import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js";
 (() => {
   if(location.protocol!=="https:")return;
   const META_KEY = "wf-vault-meta-v1";
@@ -61,6 +61,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     renderPrivateProfile();
     renderCompanion();
     document.querySelectorAll("[data-placeholder]").forEach(el => el.placeholder = t(el.dataset.placeholder));
+    $('homeSearch').setAttribute('aria-label',t('findReference'));
     document.querySelectorAll("[data-error-key]").forEach(el => { el.textContent = el.dataset.errorKey ? t(el.dataset.errorKey) : ""; });
     if (focusId && $(focusId)) $(focusId).focus({preventScroll:true});
     $("logoutBtn").setAttribute("aria-label",t("logout"));$("logoutBtn").title=t("logout");
@@ -295,7 +296,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     const changed = activePage !== id;
     activePage = id;
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === ( ["benefits","uniform","access"].includes(id) ? "reference" : id )));
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === (["tasks","training"].includes(id) ? id : "home")));
+    document.querySelector('.emergency-strip').hidden=id==='home';
     if(changed)window.scrollTo({top:0, behavior:"auto"});
     updateBackButton();
   }
@@ -304,7 +306,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     const button=$(activePage)?.querySelector('[data-back]');
     if(!button)return;
     const target=(returnTarget(activePage).route).split('/')[0];
-    const label={home:'home',reference:'reference',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'accountHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
+    const label={home:'home',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'accountHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
     button.textContent=(lang==='ar'?'→ ':'← ')+t(label);
   }
 
@@ -821,7 +823,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     if(!page)return null;
     const line=readingLine();
     let index=0;
-    page.querySelectorAll('h1,h2,p,summary,.value,.task-text,.course-copy,.reference-row,.focus-card').forEach(el=>{if(!el.dataset.readAnchor)el.dataset.readAnchor=page.id+'-read-'+index;index++;});
+    page.querySelectorAll('h1,h2,p,summary,.value,.task-text,.course-copy,.guide-card,.work-overview,.focus-card').forEach(el=>{if(!el.dataset.readAnchor)el.dataset.readAnchor=page.id+'-read-'+index;index++;});
     const blocks=[...page.querySelectorAll('[data-read-anchor]')];
     const el=blocks.find(block=>{const r=block.getBoundingClientRect();return r.height>0 && r.top<=line && r.bottom>line;}) || blocks.find(block=>{const r=block.getBoundingClientRect();return r.height>0 && r.top>=line;});
     if(!el)return {page:page.id,scroll:window.scrollY};
@@ -867,9 +869,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     $('shiftHeadline').textContent=state.current?t('endsAt').replace('{time}',time(state.current.end)):state.next?date(state.next.start):t(state.status==='locked'?'signInShift':'setSchedule');
     $('shiftDetail').textContent=state.current?date(state.current.start):state.next?interval(state.next):'';
     $('shiftCountdown').textContent=state.current?t('timeRemaining').replace('{time}',duration(state.current.end-new Date())):state.next?t('startsIn').replace('{time}',duration(state.next.start-new Date())):'';
-    $('shiftCardLabel').textContent=t(state.current?'nextShift':'shiftDays');
-    $('shiftSummary').textContent=state.current && state.next?date(state.next.start):authenticated?jobValue('shiftDays') || t('setSchedule'):t('workDetails');
-    $('shiftMeta').textContent=state.current && state.next?interval(state.next):authenticated?jobValue('shiftTime'):'';
+    renderAlerts();
   }
   function duration(ms) {
     const total=Math.max(0,Math.ceil(ms/60000));const days=Math.floor(total/1440),hours=Math.floor(total%1440/60),minutes=total%60;
@@ -879,12 +879,27 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   function companionData(){return privateData?.companion || initialCompanion(false);}
   function deadlineText(due) {
     if(!due)return '';
-    const today=new Date();today.setHours(0,0,0,0);
-    const date=new Date(due+'T00:00:00');
-    const diff=Math.round((date-today)/86400000);
+    const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(part=>[part.type,part.value]));
+    const today=Date.UTC(+parts.year,+parts.month-1,+parts.day);
+    const diff=Math.round((Date.parse(due+'T00:00:00Z')-today)/86400000);
     const key=diff===0?'dueToday':diff===1?'daysLeftOne':diff>1?'daysLeftMany':diff===-1?'overdueOne':'overdueMany';
     return t(key).replace('{n}',Math.abs(diff));
   }
+  function renderAlerts() {
+    const alerts=authenticated && privateData?upcomingAlerts(privateData.profile,privateData.companion.courses):[];
+    const badge=$('alertsCount');badge.hidden=!alerts.length;badge.textContent=alerts.length>9?'9+':String(alerts.length);
+    $('alertsBtn').setAttribute('aria-label',t('alertsTitle')+(alerts.length?' · '+alerts.length:''));
+    const list=$('alertsList');list.replaceChildren();
+    if(!alerts.length){const empty=document.createElement('p');empty.className='alerts-empty';empty.textContent=t('noAlerts');list.append(empty);return;}
+    for(const alert of alerts){
+      const button=document.createElement('button');button.type='button';button.className='alert-item';
+      const title=document.createElement('strong');title.textContent=alert.kind==='training'?courseTitle(alert.course):t(alert.kind==='shift-active'?'shiftAlertActive':'shiftAlertSoon');
+      const detail=document.createElement('span');detail.textContent=alert.kind==='training'?deadlineText(alert.course.due):new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{timeZone:'Europe/London',weekday:'long',hour:'2-digit',minute:'2-digit'}).format(alert.when);
+      button.append(title,detail);button.addEventListener('click',()=>{$('alertsDialog').close();showPage(alert.kind==='training'?'training':'details');});list.append(button);
+    }
+  }
+  $('alertsBtn').addEventListener('click',()=>{renderAlerts();$('alertsDialog').showModal();});
+  $('closeAlerts').addEventListener('click',()=>$('alertsDialog').close());
   function renderCompanion() {
     if(!$('courseList'))return;
     const data=companionData();
@@ -977,10 +992,16 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
     try{if(await saveCompanion(next)){editingTaskId=null;$('taskInput').value='';$('taskInput').focus({preventScroll:true});}}catch(error){message('privateMessage',errorKey(error));}finally{submit.disabled=false;}
   });
   $('resetTasks').addEventListener('click',async()=>{if(saving || !authenticated)return;const next=structuredClone(privateData.companion);next.tasks.forEach(task=>task.done=false);try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));}});
-  $('referenceSearch').addEventListener('input',()=>{
+  $('homeSearch').addEventListener('input',()=>{
     const normalize=text=>text.normalize('NFKD').replace(/[\u064b-\u065f]/g,'').replace(/[أإآ]/g,'ا').toLowerCase();
-    const query=normalize($('referenceSearch').value.trim());
-    document.querySelectorAll('[data-search]').forEach(button=>{const key=button.querySelector('[data-i18n]')?.dataset.i18n;const text=button.dataset.search+' '+(T.en[key]||'')+' '+(T.ar[key]||'')+' '+$(button.dataset.page)?.textContent;button.hidden=!normalize(text).includes(query);});
+    const query=normalize($('homeSearch').value.trim());
+    let shown=0;
+    document.querySelectorAll('#home .home-searchable').forEach(button=>{const key=button.querySelector('[data-i18n]')?.dataset.i18n;const text=button.dataset.search+' '+(T.en[key]||'')+' '+(T.ar[key]||'');button.hidden=!!query && !normalize(text).includes(query);if(!button.hidden)shown++;});
+    for(const [title,grid] of [['situationsTitle','situationsGrid'],['guidesTitle','guidesGrid']]){
+      const visible=[...$(grid).querySelectorAll('.home-searchable')].some(button=>!button.hidden);
+      $(title).hidden=!visible;$(grid).hidden=!visible;
+    }
+    $('homeSearchEmpty').hidden=!!shown;
   });
 
   $("otherAccountBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode(authMode==="owner"?"login":"owner" );});
@@ -1000,8 +1021,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState } f
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=28").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "28";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=29").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "29";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

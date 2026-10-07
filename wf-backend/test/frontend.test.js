@@ -62,7 +62,7 @@ test('public access, protected direct routes, translated auth, vault CRUD, anoth
   assert.equal(a.document.documentElement.dir, 'rtl');
   assert.equal(a.document.getElementById('setupMode'), null);
   for (const page of ['fire', 'training', 'benefits', 'uniform', 'access', 'home']) {
-    click(a, page==='benefits'?'#home [data-page="benefits/meals"]':`[data-page="${page}"]`);
+    click(a, page==='benefits'?'#home [data-page="benefits/meals"]':page==='access'?'#home [data-page="access/reset"]':`[data-page="${page}"]`);
     assert.ok(active(a, page));
     assert.ok(a.document.getElementById('lockScreen').classList.contains('hidden'));
   }
@@ -224,6 +224,22 @@ test('section tabs retain their selection when translated and direct tab links w
   assert.deepEqual(d.errors,[]);
 });
 
+test('the alert bell follows saved training dates and keeps its place through translation',async t=>{
+  const {env}=fixture();const d=device(env,'#details');t.after(()=>d.window.close());await signIn(d);
+  click(d,'[data-page="training"]');click(d,'#addCourseBtn');fill(d,'courseEN','Safety reminder');
+  const uk=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(part=>[part.type,part.value]));
+  const due=new Date(Date.UTC(+uk.year,+uk.month-1,+uk.day+2)).toISOString().slice(0,10);
+  fill(d,'courseDue',due);click(d,'#saveCourse');await until(()=>!d.document.getElementById('courseDialog').open);
+  assert.equal(d.document.getElementById('alertsCount').hidden,false);
+  click(d,'#alertsBtn');assert.ok(d.document.getElementById('alertsDialog').open);
+  assert.match(d.document.getElementById('alertsList').textContent,/Safety reminder/);
+  click(d,'#alertsDialog [data-lang="en"]');assert.ok(d.document.getElementById('alertsDialog').open);
+  assert.match(d.document.getElementById('alertsList').textContent,/Safety reminder/);
+  click(d,'#alertsList .alert-item:last-child');assert.ok(active(d,'training'));
+  assert.equal(d.document.getElementById('alertsDialog').open,false);
+  assert.deepEqual(d.errors,[]);
+});
+
 test('an accepted password followed by unavailable data offers a retry without another login',async t=>{
   const f=fixture();f.kv.set('private-data',JSON.stringify({unknownFormat:'preserve'}));const d=device(f.env,'#details');t.after(()=>d.window.close());
   let logins=0;const fetch=d.window.fetch;d.window.fetch=(url,options)=>{if(url.endsWith('/login'))logins++;return fetch(url,options);};
@@ -245,7 +261,7 @@ test('weekday ticks save centrally, survive translation and replace the generic 
  assert.equal(JSON.parse(kv.get('private-data')).profile.shiftDays,'1,5,6');
  assert.ok(!a.document.getElementById('shiftHeadline').textContent.includes('at a glance'));
  assert.match(a.document.querySelector('[data-job="shiftDays"]').textContent,/Monday/);
- assert.ok(a.document.getElementById('shiftMeta').textContent.includes('22:45'));
+ assert.ok(a.document.getElementById('shiftDetail').textContent.length>0);
  assert.deepEqual(a.errors,[]);
 });
 
@@ -324,13 +340,25 @@ test('returning from another page keeps draft inputs and back links return to th
   assert.ok(active(d,'benefits'));assert.equal(d.document.querySelector('#benefits [data-tab="meals"]').getAttribute('aria-selected'),'true');
   assert.match(d.document.querySelector('#benefits [data-back]').textContent,/الرئيسية/);
   click(d,'#benefits [data-back]');assert.ok(active(d,'home'));
-  click(d,'[data-page="reference"]');click(d,'#reference [data-page="benefits/discounts"]');
+  click(d,'#home [data-page="benefits/discounts"]');
   assert.equal(d.document.querySelector('#benefits [data-tab="discounts"]').getAttribute('aria-selected'),'true');
-  assert.match(d.document.querySelector('#benefits [data-back]').textContent,/المرجع/);
-  assert.equal(d.window.history.state.wfFrom,'reference');
+  assert.match(d.document.querySelector('#benefits [data-back]').textContent,/الرئيسية/);
+  assert.equal(d.window.history.state.wfFrom,'home');
   click(d,'#benefits-tab-leisure');
-  assert.equal(d.window.history.state.wfFrom,'reference');
-  click(d,'#benefits [data-back]');assert.ok(active(d,'reference'));
+  assert.equal(d.window.history.state.wfFrom,'home');
+  click(d,'#benefits [data-back]');assert.ok(active(d,'home'));
+  assert.equal(d.document.getElementById('reference'),null);
+  assert.equal(d.document.querySelectorAll('.nav-btn').length,3);
+  fill(d,'homeSearch','وجبات');d.document.getElementById('homeSearch').dispatchEvent(new d.window.Event('input',{bubbles:true}));
+  assert.equal(d.document.querySelector('#home [data-page="benefits/meals"]').hidden,false);
+  assert.equal(d.document.querySelector('#home [data-page="uniform"]').hidden,true);
+  assert.equal(d.document.getElementById('situationsTitle').hidden,true);
+  fill(d,'homeSearch','');d.document.getElementById('homeSearch').dispatchEvent(new d.window.Event('input',{bubbles:true}));
+  assert.equal(d.document.querySelector('#home [data-page="uniform"]').hidden,false);
+  assert.equal(d.document.getElementById('situationsTitle').hidden,false);
+  click(d,'#home [data-page="uniform"]');assert.ok(active(d,'uniform'));
+  assert.equal(d.document.querySelectorAll('#uniform [data-tab]').length,0);
+  assert.equal(d.document.querySelectorAll('#uniform .uniform-guide').length,1);
   assert.deepEqual(d.errors,[]);
 });
 

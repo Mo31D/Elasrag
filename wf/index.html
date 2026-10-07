@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="ar" dir="rtl"><head>
   <meta charset="utf-8">
-  <meta name="wf-build" content="28">
+  <meta name="wf-build" content="29">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
@@ -60,6 +60,7 @@
         <button class="brand brand-home" data-page="home" data-i18n="appTitle"></button>
         <div class="top-actions">
           <button id="accountBtn" class="lock-btn" data-page="details" data-i18n="myProfile"></button>
+          <button id="alertsBtn" class="alerts-btn" type="button" aria-label="التنبيهات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"></path></svg><span id="alertsCount" class="alerts-count" hidden></span></button>
           <button id="logoutBtn" class="lock-btn logout-icon hidden" aria-label="تسجيل الخروج"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M9 5H4v14h5M9 12h12m-4-4 4 4-4 4"></path></svg></button>
           <div class="lang-switch">
             <button class="lang-btn" data-lang="ar">عربي</button>
@@ -73,23 +74,22 @@
     <main>
       <p id="privateMessage" class="error" role="status" aria-live="polite"></p>
       <section id="home" class="page active">
+        <button class="work-overview" data-page="details"><span class="work-overview-icon" aria-hidden="true">◷</span><span><strong data-i18n="workDetails"></strong><small data-i18n="workQuickHint"></small></span><span aria-hidden="true">↗</span></button>
         <button id="shiftHero" class="hero compact-hero shift-hero" data-page="details"><span id="shiftStatus" class="eyebrow"></span><h1 id="shiftHeadline"></h1><span id="shiftDetail" class="tiny"></span><span id="shiftCountdown" class="shift-countdown"></span></button><span id="greeting" hidden></span>
-        <div class="section-title" data-i18n="nowTitle"></div>
-        <div class="focus-grid">
-          <button class="focus-card" data-page="details"><span id="shiftCardLabel" class="key"></span><strong id="shiftSummary" data-i18n="workDetails"></strong><span id="shiftMeta" class="tiny"></span></button>
-          <button class="focus-card" data-page="training"><span class="key" data-i18n="nextLearning"></span><strong id="nextCourseTitle" data-i18n="training"></strong><span id="nextCourseMeta" class="tiny"></span></button>
-        </div>
+        <button class="focus-card home-learning" data-page="training"><span class="key" data-i18n="nextLearning"></span><strong id="nextCourseTitle" data-i18n="training"></strong><span id="nextCourseMeta" class="tiny"></span></button>
         <button class="task-summary" data-page="tasks"><span data-i18n="myTasks"></span><span id="homeTaskCount" class="progress-pill">✓</span></button>
-        <div class="section-title" data-i18n="workGuides"></div>
-        <div class="guide-grid">
-          <button class="guide-card" data-page="fire"><span class="guide-icon fire-icon" aria-hidden="true">!</span><span data-i18n="fireQuick"></span></button>
-          <button class="guide-card" data-page="benefits/meals"><span class="guide-icon" aria-hidden="true">◒</span><span data-i18n="mealGuide"></span></button>
-          <button class="guide-card" data-page="benefits/discounts"><span class="guide-icon" aria-hidden="true">%</span><span data-i18n="discountGuide"></span></button>
-          <button class="guide-card" data-page="access/reset"><span class="guide-icon" aria-hidden="true">⌘</span><span data-i18n="accountHelp"></span></button>
-          <button class="guide-card" data-page="uniform"><span class="guide-icon" aria-hidden="true">◇</span><span data-i18n="uniformDress"></span></button>
-          <button class="guide-card" data-page="benefits/travel"><span class="guide-icon" aria-hidden="true">↗</span><span data-i18n="minibusGuide"></span></button>
+        <input id="homeSearch" class="search-input" type="search" data-placeholder="findReference" autocomplete="off">
+        <div id="situationsTitle" class="section-title" data-i18n="situationsTitle"></div>
+        <div id="situationsGrid" class="guide-grid situations-grid"><button class="guide-card scenario-card home-searchable" data-page="fire" data-search="fire emergency evacuation warden حريق طوارئ اخلاء"><span class="guide-icon fire-icon" aria-hidden="true">!</span><span data-i18n="fireQuick"></span><span aria-hidden="true">↗</span></button></div>
+        <div id="guidesTitle" class="section-title" data-i18n="workGuides"></div>
+        <div id="guidesGrid" class="guide-grid">
+          <button class="guide-card home-searchable" data-page="benefits/meals" data-search="meal food breakfast sandwich till وجبة وجبات أكل ساندوتش"><span class="guide-icon" aria-hidden="true">◒</span><span data-i18n="mealGuide"></span></button>
+          <button class="guide-card home-searchable" data-page="benefits/discounts" data-search="discount benefits hotel cinema خصم خصومات مزايا فندق سينما"><span class="guide-icon" aria-hidden="true">%</span><span data-i18n="discountGuide"></span></button>
+          <button class="guide-card home-searchable" data-page="access/reset" data-search="account password login reset help PeopleXD كلمة مرور باسورد دخول حساب"><span class="guide-icon" aria-hidden="true">⌘</span><span data-i18n="accountHelp"></span></button>
+          <button class="guide-card home-searchable" data-page="uniform" data-search="uniform dress clothes safety PPE shoes زي ملابس مظهر حذاء"><span class="guide-icon" aria-hidden="true">◇</span><span data-i18n="uniformDress"></span></button>
+          <button class="guide-card home-searchable" data-page="benefits/travel" data-search="minibus kendal route bus مواصلات ميني باص كندال"><span class="guide-icon" aria-hidden="true">↗</span><span data-i18n="minibusGuide"></span></button>
         </div>
-        <button class="reference-link" data-page="reference"><span data-i18n="allReference"></span><span aria-hidden="true">↗</span></button>
+        <p id="homeSearchEmpty" class="tiny" data-i18n="nothingFound" hidden></p>
         <div class="section-title" data-i18n="workTools"></div>
         <div class="grid">
           <a class="quick access" href="https://mywestmorland.com" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>PeopleXD</span></a>
@@ -102,20 +102,6 @@
         <div class="check-head"><h1 data-i18n="myTasks"></h1><span id="taskProgress" class="progress-pill"></span></div>
         <form id="taskForm" class="inline-form"><input id="taskInput" maxlength="300" autocomplete="off" data-placeholder="addTask"><button class="primary" type="submit" data-i18n="add"></button></form>
         <div class="card"><ul id="personalTasks" class="task-list"></ul><button id="resetTasks" class="reset-checklist" data-i18n="newShift"></button></div>
-      </section>
-      <section id="reference" class="page">
-        <button class="back" data-back></button>
-        <h1 data-i18n="reference"></h1>
-        <input id="referenceSearch" class="search-input" type="search" data-placeholder="findReference" autocomplete="off">
-        <div class="reference-list">
-          <button class="reference-row" data-page="benefits/meals" data-search="meal food breakfast sandwich till وجبة وجبات أكل ساندوتش"><span data-i18n="mealGuide"></span><span aria-hidden="true">↗</span></button>
-          <button class="reference-row" data-page="benefits/discounts" data-search="discount benefits hotel cinema خصم خصومات مزايا فندق سينما"><span data-i18n="discountGuide"></span><span aria-hidden="true">↗</span></button>
-          <button class="reference-row" data-page="benefits/travel" data-search="minibus kendal route bus مواصلات ميني باص كندال"><span data-i18n="minibusGuide"></span><span aria-hidden="true">↗</span></button>
-          <button class="reference-row" data-page="uniform" data-search="uniform dress clothes safety PPE shoes زي ملابس مظهر حذاء"><span data-i18n="uniformDress"></span><span aria-hidden="true">↗</span></button>
-          <button class="reference-row" data-page="access" data-search="account password login reset help PeopleXD كلمة مرور باسورد دخول حساب"><span data-i18n="accountHelp"></span><span aria-hidden="true">↗</span></button>
-          <button class="reference-row" data-page="fire" data-search="fire emergency evacuation warden حريق طوارئ اخلاء"><span data-i18n="fire"></span><span aria-hidden="true">↗</span></button>
-          <button class="reference-row" data-page="details" data-search="work shift pay profile شغل شفت اجر بيانات"><span data-i18n="workDetails"></span><span aria-hidden="true">↗</span></button>
-        </div>
       </section>
       <section id="fire" class="page">
         <button class="back" data-back data-back-fire=""></button>
@@ -267,18 +253,8 @@
         </div></div></section>
 
       <section id="uniform" class="page">
-        <button class="back" data-back></button><h1 data-i18n="uniformDress"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="daily" data-i18n="dailyTab" aria-selected="true" id="uniform-tab-daily" aria-controls="uniform-panel-daily" tabindex="0"></button><button type="button" role="tab" data-tab="food" data-i18n="foodTab" aria-selected="false" id="uniform-tab-food" aria-controls="uniform-panel-food" tabindex="-1"></button><button type="button" role="tab" data-tab="issued" data-i18n="issuedTab" aria-selected="false" id="uniform-tab-issued" aria-controls="uniform-panel-issued" tabindex="-1"></button></div>
-
-
-
-
-
-
-
-
-
-
-      <div data-tab-panel="daily" role="tabpanel" id="uniform-panel-daily" aria-labelledby="uniform-tab-daily"><div class="card">
+        <button class="back" data-back></button><h1 data-i18n="uniformDress"></h1>
+        <div class="card uniform-guide">
           <h2 data-i18n="appearanceTitle"></h2>
           <ul class="checklist">
             <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="appearance1"></span></li>
@@ -286,19 +262,16 @@
             <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="appearance3"></span></li>
             <li><span class="policy-dot" aria-hidden="true">•</span><span data-i18n="appearance4"></span></li>
           </ul>
-        </div><div class="card warning">
-          <h2 data-i18n="ppeTitle"></h2>
-          <p data-i18n="ppeValue"></p>
-        </div></div><div data-tab-panel="food" role="tabpanel" id="uniform-panel-food" aria-labelledby="uniform-tab-food" hidden=""><div class="card">
-          <h2 data-i18n="foodAppearanceTitle"></h2>
-          <p data-i18n="foodAppearanceValue"></p>
-        </div></div><div data-tab-panel="issued" role="tabpanel" id="uniform-panel-issued" aria-labelledby="uniform-tab-issued" hidden=""><div class="card">
-          <h2 data-i18n="uniformTitle"></h2>
-          <div class="row"><div><div class="key" data-i18n="uniformProvided"></div><div class="value" data-i18n="uniformProvidedValue"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="ownItems"></div><div class="value" data-i18n="ownItemsValue"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="replacement"></div><div class="value" data-i18n="replacementValue"></div></div></div>
-          <div class="row"><div><div class="key" data-i18n="outsideWork"></div><div class="value" data-i18n="outsideWorkValue"></div></div></div>
-        </div></div><div class="status" data-i18n="uniformPolicyDate"></div></section>
+          <div class="uniform-sub"><h2 data-i18n="foodAppearanceTitle"></h2><p data-i18n="foodAppearanceValue"></p></div>
+          <div class="uniform-sub"><h2 data-i18n="ppeTitle"></h2><p data-i18n="ppeValue"></p></div>
+          <div class="uniform-sub"><h2 data-i18n="uniformTitle"></h2>
+            <div class="row"><div><div class="key" data-i18n="uniformProvided"></div><div class="value" data-i18n="uniformProvidedValue"></div></div></div>
+            <div class="row"><div><div class="key" data-i18n="ownItems"></div><div class="value" data-i18n="ownItemsValue"></div></div></div>
+            <div class="row"><div><div class="key" data-i18n="replacement"></div><div class="value" data-i18n="replacementValue"></div></div></div>
+            <div class="row"><div><div class="key" data-i18n="outsideWork"></div><div class="value" data-i18n="outsideWorkValue"></div></div></div>
+          </div>
+        </div><div class="status" data-i18n="uniformPolicyDate"></div>
+      </section>
 
       <section id="benefits" class="page">
         <button class="back" data-back></button><h1 data-i18n="benefits"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="meals" data-i18n="mealsTab" aria-selected="true" id="benefits-tab-meals" aria-controls="benefits-panel-meals" tabindex="0"></button><button type="button" role="tab" data-tab="discounts" data-i18n="discountsTab" aria-selected="false" id="benefits-tab-discounts" aria-controls="benefits-panel-discounts" tabindex="-1"></button><button type="button" role="tab" data-tab="travel" data-i18n="travelTab" aria-selected="false" id="benefits-tab-travel" aria-controls="benefits-panel-travel" tabindex="-1"></button><button type="button" role="tab" data-tab="leisure" data-i18n="leisureTab" aria-selected="false" id="benefits-tab-leisure" aria-controls="benefits-panel-leisure" tabindex="-1"></button></div>
@@ -398,11 +371,11 @@
         <button class="nav-btn active" data-page="home"><span aria-hidden="true">⌂</span><span data-i18n="home"></span></button>
         <button class="nav-btn" data-page="tasks"><span aria-hidden="true">✓</span><span data-i18n="myTasks"></span></button>
         <button class="nav-btn" data-page="training"><span aria-hidden="true">◷</span><span data-i18n="trainingNav"></span></button>
-        <button class="nav-btn" data-page="reference"><span aria-hidden="true">≡</span><span data-i18n="reference"></span></button>
       </div>
     </nav>
   </div>
 
+  <dialog id="alertsDialog" class="alerts-dialog"><div class="lang-switch dialog-lang"><button type="button" class="lang-btn" data-lang="ar">عربي</button><button type="button" class="lang-btn" data-lang="en">English</button></div><div class="check-head"><h2 data-i18n="alertsTitle"></h2><button id="closeAlerts" class="close-alerts" type="button" data-i18n="done"></button></div><div id="alertsList" class="alerts-list"></div></dialog>
   <dialog id="recoveryDialog"><div class="lang-switch dialog-lang"><button type="button" class="lang-btn" data-lang="ar">عربي</button><button type="button" class="lang-btn" data-lang="en">English</button></div><h3 data-i18n="recoveryCode"></h3><p class="tiny" data-i18n="keepRecovery"></p><input id="newRecoveryCode" readonly="" dir="ltr"><div class="dialog-actions"><button id="copyRecovery" class="secondary" data-i18n="copy"></button><button id="closeRecovery" class="primary" data-i18n="done"></button></div></dialog>
   <dialog id="courseDialog"><div class="lang-switch dialog-lang"><button type="button" class="lang-btn" data-lang="ar">عربي</button><button type="button" class="lang-btn" data-lang="en">English</button></div><h3 data-i18n="training"></h3>
     <div class="field"><label for="courseEN" data-i18n="courseTitle"></label><input id="courseEN" maxlength="300" autocomplete="off"></div>
