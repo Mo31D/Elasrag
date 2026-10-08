@@ -176,3 +176,24 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
   #fire .fire-advice-item{padding:12px}
 }
 @media(prefers-reduced-motion:reduce){#fire .fire-role-chevron{transition:none}}
+
+/* Concise, mobile-first PPE checks and safety-sign reference. */
+#uniform .ppe-action-guide{margin-top:12px;padding:12px;border-radius:12px;background:#f3f8f5;border:1px solid #d9e8df}
+#uniform .ppe-action-guide h3{margin:0 0 8px;font-size:14px;line-height:1.4}
+#uniform .ppe-mini-list{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+#uniform .ppe-mini-list li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:9px;align-items:start;font-size:13px;line-height:1.55}
+#uniform .ppe-mini-list svg{width:20px;height:20px;padding:3px;border-radius:50%;color:#146748;background:#ddede4}
+#safety .safety-sign-card>h2{font-size:16px;margin-bottom:4px}
+#safety .safety-sign-card>p{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.55}
+#safety .safety-sign-grid{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#safety .safety-sign-tile{border:1px solid var(--line);border-radius:12px;background:#fbfcfb;padding:11px 8px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;min-width:0}
+#safety .safety-sign-pictogram{width:54px;height:54px;flex:none}
+#safety .safety-sign-copy{display:grid;gap:2px;min-width:0}
+#safety .safety-sign-copy strong{font-size:13px;line-height:1.35}
+#safety .safety-sign-copy span{font-size:12px;line-height:1.45;color:var(--muted)}
+#safety .coshh-urgent h2{display:flex;align-items:center;gap:9px;color:#8c2a23;font-size:16px}
+#safety .coshh-urgent-icon{width:25px;height:25px;flex:0 0 25px}
+#safety .coshh-urgent p{margin:6px 0 10px;line-height:1.65}
+#safety .coshh-urgent>a{display:inline-block;min-height:38px;padding:7px 0;color:#8c2a23;font-size:13px;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+@media(min-width:560px){#safety .safety-sign-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:350px){#safety .safety-sign-tile{padding:9px 5px}#safety .safety-sign-pictogram{width:48px;height:48px}#safety .safety-sign-copy strong{font-size:12px}}
