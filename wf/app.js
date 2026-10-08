@@ -1,5 +1,5 @@
-import { TRANSLATIONS } from "./content.js?v=46";
-import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js?v=46";
+import { TRANSLATIONS } from "./content.js?v=47";
+import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js?v=47";
 (() => {
   if(location.protocol!=="https:")return;
   const META_KEY = "wf-vault-meta-v1";
@@ -1139,7 +1139,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     const appWorker = worker => worker && new URL(worker.scriptURL).pathname === new URL("./sw.js", location.href).pathname;
     const retiredController = () => !workers.controller || (appWorker(workers.controller) && new URL(workers.controller.scriptURL).searchParams.get("v") === "45");
     if (appWorker(workers.controller) && !retiredController()) {
-      safeWorkerReady = workers.register("./sw.js?v=46", {updateViaCache:"none"}).then(() => {
+      safeWorkerReady = workers.register("./sw.js?v=47", {updateViaCache:"none"}).then(() => {
         if (retiredController()) return true;
         return new Promise(resolve => {
           const finish = value => { clearTimeout(timer); workers.removeEventListener("controllerchange", changed); resolve(value); };
