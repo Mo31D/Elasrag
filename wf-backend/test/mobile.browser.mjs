@@ -119,6 +119,15 @@ try {
     await page.locator('#safety-panel-hazards .risk-report-button').click();
     await page.locator('#incident.active').waitFor();
     assert.equal(await page.locator('#incident .incident-steps > li').count(),5);
+    // Immediate action must precede definitions; details remain keyboard accessible.
+    assert.equal(await page.locator('#incident .incident-classification').getAttribute('open'),null);
+    assert.ok(await page.locator('#incident .incident-urgent').evaluate(el=>el.compareDocumentPosition(document.querySelector('#incident .incident-response')) & Node.DOCUMENT_POSITION_FOLLOWING));
+    await page.locator('#incident .incident-classification summary').focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#incident .incident-classification').evaluate(el=>el.open),true);
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#incident .incident-classification').evaluate(el=>el.open),false);
+    assert.ok(await page.locator('#safety-panel-hazards').evaluate(el=>el.firstElementChild.querySelector('[data-i18n="hazardTitle"]')!==null));
     assert.match(await page.locator('#incident .incident-system-path').textContent(),/Alert65.*Accidents & Incidents/);
     assert.match(await page.locator('#incident-heading').textContent(),/الإبلاغ/);
     await page.locator('#incident .incident-record summary').click();
