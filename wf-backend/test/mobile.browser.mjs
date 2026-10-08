@@ -88,6 +88,33 @@ try {
         assert.equal(await tab.getAttribute('aria-selected'),'true');
       }
     }
+    // Safety quick actions should be reachable and readable on every supported viewport.
+    await page.goto('https://mo.elasrag.com/#actions');
+    await page.locator('#actions.active').waitFor();
+    await page.locator('#actions [data-page="safety/substances"]').click();
+    await page.locator('#safety.active').waitFor();
+    const firstChemical = page.locator('#safety-panel-substances > .coshh-urgent');
+    assert.equal(await firstChemical.isVisible(), true);
+    assert.match(await firstChemical.textContent(), /لو حد ابتلع مادة تنظيف|If someone swallows a cleaning chemical/);
+    await noOverflow();
+    await page.locator('#safety-tab-hazards').click();
+    assert.equal(await page.locator('#safety-panel-hazards > .ppe-action-guide').isVisible(), true);
+    assert.equal(await page.locator('#safety-panel-hazards .ppe-mini-list li').count(),3);
+    assert.equal(await page.locator('#safety-panel-hazards .safety-sign-tile').count(),4);
+    await noOverflow();
+    await page.locator('header [data-lang="en"]').click();
+    assert.match(await page.locator('#safety-panel-hazards .ppe-action-guide').textContent(),/Before using protective equipment/);
+    await noOverflow();
+    await page.locator('header [data-lang="ar"]').click();
+    assert.match(await page.locator('#safety-panel-hazards .ppe-action-guide').textContent(),/قبل استخدام معدات الوقاية/);
+    await noOverflow();
+    await page.goto('https://mo.elasrag.com/#uniform');
+    await page.locator('#uniform.active').waitFor();
+    assert.equal(await page.locator('#uniform .ppe-action-guide').count(),0);
+    await page.locator('#uniform .ppe-open-link').click();
+    await page.locator('#safety.active').waitFor();
+    assert.equal(await page.locator('#safety-panel-hazards').isVisible(),true);
+    await noOverflow();
     await page.locator('#logoutBtn').click();
     await page.locator('#home.active').waitFor();
     assert.deepEqual(errors, []);
