@@ -400,7 +400,7 @@ export class WFAuthGuard {
       if(body.action==='deleteAccount'){
         if(userId==='owner')return json({error:'Unavailable for owner'},403);
         if(!this.env.WF_DATA)return json({error:'Unavailable'},503);
-        if(body.confirmation!==session.username || typeof body.password!=='string' || body.password.length>1024)return json({error:'Invalid confirmation'},400);
+        if(username(body.confirmation)!==session.username || typeof body.password!=='string' || body.password.length>1024)return json({error:'Invalid confirmation'},400);
         const user=await store.get('user:'+session.username);
         const hash=await passwordHash(body.password,user.salt);
         if(!constantTimeEqual(fromBase64url(hash),fromBase64url(user.hash)))return json({error:'Invalid credentials'},401);
@@ -539,7 +539,7 @@ export default {
         const headers = new Headers(response.headers);
         headers.set("cache-control", "no-store");
         headers.set("strict-transport-security", "max-age=31536000");
-        headers.set("x-wf-build", "42");
+        headers.set("x-wf-build", "43");
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");

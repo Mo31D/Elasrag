@@ -1094,21 +1094,22 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   $('deleteAccountBtn').addEventListener('click',()=>{
     if(!authenticated || guestMode || account?.id==='owner' || saving)return;
     $('deleteAccountName').value='';$('deleteAccountPassword').value='';message('deleteAccountError','');
-    $('deleteAccountName').placeholder=account.username;
+    $('deleteAccountName').placeholder=account.username;$('deleteAccountExpectedName').textContent=account.username;
     $('deleteAccountDialog').showModal();$('deleteAccountName').focus();
   });
   $('cancelDeleteAccount').addEventListener('click',()=>{if(!$('confirmDeleteAccount').disabled)$('deleteAccountDialog').close();});
   $('deleteAccountDialog').addEventListener('cancel',event=>{if($('confirmDeleteAccount').disabled)event.preventDefault();});
-  $('deleteAccountDialog').addEventListener('close',()=>{$('deleteAccountName').value='';$('deleteAccountName').placeholder='';$('deleteAccountPassword').value='';});
+  $('deleteAccountDialog').addEventListener('close',()=>{$('deleteAccountName').value='';$('deleteAccountName').placeholder='';$('deleteAccountExpectedName').textContent='';$('deleteAccountPassword').value='';});
   $('deleteAccountForm').addEventListener('submit',async event=>{
     event.preventDefault();
     if(!authenticated || guestMode || account?.id==='owner' || saving || $('confirmDeleteAccount').disabled)return;
-    if($('deleteAccountName').value.trim()!==account.username)return message('deleteAccountError','accountNameMismatch');
+    const confirmation=$('deleteAccountName').value.trim().toLowerCase();
+    if(confirmation!==account.username){message('deleteAccountError','accountNameMismatch');$('deleteAccountName').focus();return;}
     if(!$('deleteAccountPassword').value)return;
     const deletingAccount=account.id;
     $('confirmDeleteAccount').disabled=true;saving=true;message('deleteAccountError','');
     try{
-      await api('/account/delete',{method:'POST',body:JSON.stringify({confirmation:$('deleteAccountName').value.trim(),password:$('deleteAccountPassword').value})});
+      await api('/account/delete',{method:'POST',body:JSON.stringify({confirmation,password:$('deleteAccountPassword').value})});
       if(account?.id!==deletingAccount)return;
       navigationVersion++;pendingDraft=null;serverSessionKnown=false;localStorage.removeItem('wf-account-hint');authMode='owner';
       clearPrivateData();renderPrivateProfile();returnTargets.clear();readingPositions.clear();
@@ -1134,8 +1135,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=42").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "42";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=43").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "43";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

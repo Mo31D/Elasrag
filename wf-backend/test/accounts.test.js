@@ -107,7 +107,7 @@ test('self deletion requires the exact account and password, revokes every sessi
   assert.equal((await erase({confirmation:'john',password:'wrong'})).status,401);
   assert.equal(f.kv.has('private:'+johnId),true);
   assert.equal((await erase({confirmation:'owner',password:f.env.WF_PASSWORD},ownerCookie)).status,403);
-  const deleted=await erase({confirmation:'john',password:'fixture-new-password'});
+  const deleted=await erase({confirmation:' John ',password:'fixture-new-password'});
   assert.equal(deleted.status,200);assert.match(deleted.headers.get('set-cookie'),/Max-Age=0/);
   assert.equal(f.records.has('user:john'),false);assert.equal(f.kv.has('private:'+johnId),false);assert.equal(f.guard.currentData.has(johnId),false);
   for(const cookie of [a.cookie,cookieOf(second)])assert.equal((await worker.fetch(request('/private','GET',null,cookie),f.env)).status,401);

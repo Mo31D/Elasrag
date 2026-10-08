@@ -138,11 +138,11 @@ test('a registered user confirms self deletion, wrong credentials preserve data 
   await until(()=>!d.document.getElementById('lockScreen').classList.contains('hidden'));
   click(d,'#registerBtn');fill(d,'usernameInput','john');fill(d,'passInput','12');click(d,'#unlockBtn');await until(()=>active(d,'details'));click(d,'#closeRecovery');
   assert.equal(d.document.getElementById('accountSettings').hidden,false);
-  click(d,'#deleteAccountBtn');assert.equal(d.document.getElementById('deleteAccountDialog').open,true);
+  click(d,'#deleteAccountBtn');assert.equal(d.document.getElementById('deleteAccountDialog').open,true);assert.equal(d.document.getElementById('deleteAccountExpectedName').textContent,'john');
   click(d,'#languageToggle');assert.match(d.document.querySelector('#deleteAccountDialog h3').textContent,/حذف/);click(d,'#languageToggle');
   const submit=()=>d.document.getElementById('deleteAccountForm').dispatchEvent(new d.window.Event('submit',{cancelable:true}));
-  fill(d,'deleteAccountName','someone-else');fill(d,'deleteAccountPassword','12');submit();assert.match(d.document.getElementById('deleteAccountError').textContent,/exactly/);
-  const before=JSON.stringify([...kv]);fill(d,'deleteAccountName','john');fill(d,'deleteAccountPassword','wrong');submit();
+  fill(d,'deleteAccountName','someone-else');fill(d,'deleteAccountPassword','12');submit();assert.match(d.document.getElementById('deleteAccountError').textContent,/sign-in username shown/);
+  const before=JSON.stringify([...kv]);fill(d,'deleteAccountName',' John ');fill(d,'deleteAccountPassword','wrong');submit();
   await until(()=>d.document.getElementById('deleteAccountError').textContent.includes('sign-in'));
   assert.equal(JSON.stringify([...kv]),before);assert.equal(d.document.getElementById('deleteAccountDialog').open,true);
   fill(d,'deleteAccountPassword','12');submit();await until(()=>active(d,'home') && d.document.getElementById('privateMessage').textContent.includes('deleted'));
