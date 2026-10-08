@@ -1,5 +1,5 @@
-import { TRANSLATIONS } from "./content.js?v=44";
-import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js?v=44";
+import { TRANSLATIONS } from "./content.js?v=45";
+import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js?v=45";
 (() => {
   if(location.protocol!=="https:")return;
   const META_KEY = "wf-vault-meta-v1";
@@ -367,7 +367,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     const button=$(activePage)?.querySelector('[data-back]');
     if(!button)return;
     const target=(returnTarget(activePage).route).split('/')[0];
-    const label={home:'home',actions:'quickAction',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'peopleXDHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
+    const label={home:'home',actions:'quickAction',safety:'safetyQuick',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'peopleXDHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
     button.textContent=(lang==='ar'?'→ ':'← ')+t(label);
   }
 
@@ -1137,9 +1137,9 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   if ("serviceWorker" in navigator) {
     const workers = navigator.serviceWorker;
     const appWorker = worker => worker && new URL(worker.scriptURL).pathname === new URL("./sw.js", location.href).pathname;
-    const retiredController = () => !workers.controller || (appWorker(workers.controller) && new URL(workers.controller.scriptURL).searchParams.get("v") === "44");
+    const retiredController = () => !workers.controller || (appWorker(workers.controller) && new URL(workers.controller.scriptURL).searchParams.get("v") === "45");
     if (appWorker(workers.controller) && !retiredController()) {
-      safeWorkerReady = workers.register("./sw.js?v=44", {updateViaCache:"none"}).then(() => {
+      safeWorkerReady = workers.register("./sw.js?v=45", {updateViaCache:"none"}).then(() => {
         if (retiredController()) return true;
         return new Promise(resolve => {
           const finish = value => { clearTimeout(timer); workers.removeEventListener("controllerchange", changed); resolve(value); };

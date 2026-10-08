@@ -7,7 +7,7 @@ import worker from '../src/index.js';
 import { fixture } from './fixtures.js';
 const source = name => readFileSync(new URL('../../wf/' + name, import.meta.url), 'utf8');
 const bundled = ['content.js','model.js','app.js'].map(name=>source(name).replace(/^import .*;$/gm,'').replace(/export (const|function) /g,'$1 ')).join('\n');
-const html = source('index.html').replace('<script type="module" src="./app.js?v=44"></script>',()=>'<script>'+bundled+'</script>');
+const html = source('index.html').replace('<script type="module" src="./app.js?v=45"></script>',()=>'<script>'+bundled+'</script>');
 
 function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false, serviceWorker = null, language = 'ar', options = {}) {
   let cookie = options.cookie || '';
@@ -519,10 +519,23 @@ test('Quick Action is public and routes to the existing procedures with contextu
   const strip=d.document.querySelector('.action-strip');
   assert.deepEqual([...strip.querySelectorAll('[data-page]')].map(button=>button.dataset.page),['fire','actions']);
   click(d,'.action-hub-strip');assert.ok(active(d,'actions'));
-  assert.equal(d.document.querySelectorAll('#actions .action-hub-card').length,3);
+  assert.equal(d.document.querySelectorAll('#actions .action-hub-card').length,4);
   click(d,'#actions [data-page="fire"]');assert.ok(active(d,'fire'));
   assert.match(d.document.querySelector('#fire [data-back]').textContent,/Quick Action/);
   click(d,'#fire [data-back]');await until(()=>active(d,'actions'));
+  click(d,'#actions [data-page="safety/burns"]');assert.ok(active(d,'safety'));
+  assert.equal(d.document.querySelector('#safety-panel-burns').hidden,false);
+  assert.match(d.document.querySelector('#safety-panel-burns').textContent,/20 minutes/);
+  assert.match(d.document.querySelector('#safety [data-back]').textContent,/Quick Action/);
+  for(const name of ['hazards','lifting','substances']){
+    click(d,'#safety-tab-'+name);
+    assert.equal(d.document.querySelector('#safety-panel-'+name).hidden,false);
+    assert.equal(d.document.querySelector('#safety-tab-'+name).getAttribute('aria-selected'),'true');
+  }
+  click(d,'#languageToggle');assert.equal(d.document.querySelector('#safety h1').textContent,'سلامة الشغل');
+  assert.ok([...d.document.querySelectorAll('#safety [data-i18n]')].every(el=>el.textContent.trim()));
+  click(d,'#languageToggle');
+  click(d,'#safety [data-back]');await until(()=>active(d,'actions'));
   click(d,'#actions [data-page="access/reset"]');assert.ok(active(d,'access'));
   assert.match(d.document.querySelector('#access [data-back]').textContent,/Quick Action/);
   click(d,'#access [data-back]');await until(()=>active(d,'actions'));
@@ -573,8 +586,8 @@ test('fresh visits sign in without installing or waiting for an offline worker',
 test('an old controlling worker is replaced with the network-only retirement before private requests',async t=>{
   const {env}=fixture();let replaced=false;
   const sw={controller:{scriptURL:'https://mo.elasrag.com/sw.js?v=19'},register:async(url,options)=>{
-    assert.equal(url,'./sw.js?v=44');assert.equal(options.updateViaCache,'none');
-    sw.controller={scriptURL:'https://mo.elasrag.com/sw.js?v=44'};replaced=true;
+    assert.equal(url,'./sw.js?v=45');assert.equal(options.updateViaCache,'none');
+    sw.controller={scriptURL:'https://mo.elasrag.com/sw.js?v=45'};replaced=true;
   }};
   const d=device(env,'#details',null,'https://mo.elasrag.com/',false,sw);t.after(()=>d.window.close());
   await signIn(d);assert.equal(replaced,true);assert.ok(active(d,'details'));assert.deepEqual(d.errors,[]);

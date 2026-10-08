@@ -66,3 +66,5 @@
 .guest-private-panel{display:none!important}
 html[data-guest="true"] .task-actions,html[data-guest="true"] .course-edit{display:none}
 html[data-guest="true"] .task-check:disabled{opacity:1;cursor:default}
+
+#safety .section-tabs{flex-wrap:wrap}#safety .section-tabs button{flex:1;min-width:70px;font-size:14px}#safety .task{display:block}#safety .task-text{font-size:16px}#safety p+p,#fire .card p+p{margin-top:10px}#fire details p{margin-top:10px}#safety .button-link{display:inline-block;margin-top:12px}

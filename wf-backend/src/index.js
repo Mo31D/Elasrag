@@ -544,7 +544,7 @@ export default {
         headers.set("cdn-cache-control", "no-store");
         headers.set("cloudflare-cdn-cache-control", "no-store");
         headers.set("strict-transport-security", "max-age=31536000");
-        headers.set("x-wf-build", "44");
+        headers.set("x-wf-build", "45");
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");

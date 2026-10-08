@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head>
   <meta charset="utf-8">
-  <meta name="wf-build" content="44">
+  <meta name="wf-build" content="45">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
@@ -26,7 +26,7 @@
     location.replace(destination.href);
   })();
   </script>
-  <link rel="stylesheet" href="./styles.css?v=44">
+  <link rel="stylesheet" href="./styles.css?v=45">
 </head>
 <body>
   <section id="lockScreen" class="lock hidden" aria-label="Private access">
@@ -105,6 +105,7 @@
         <h1 data-i18n="quickAction"></h1>
         <div class="action-hub-list">
           <button class="action-hub-card action-hub-fire" data-page="fire"><span class="action-hub-icon" aria-hidden="true">!</span><span><strong data-i18n="fireQuick"></strong><small data-i18n="fireHeadline"></small></span><span aria-hidden="true">↗</span></button>
+          <button class="action-hub-card" data-page="safety/burns"><span class="action-hub-icon" aria-hidden="true">+</span><span><strong data-i18n="safetyQuick"></strong><small data-i18n="safetyQuickHint"></small></span><span aria-hidden="true">↗</span></button>
           <button class="action-hub-card" data-page="access/reset"><span class="action-hub-icon" aria-hidden="true">?</span><span><strong data-i18n="peopleXDRecoveryAction"></strong><small data-i18n="resetTab"></small></span><span aria-hidden="true">↗</span></button>
           <button class="action-hub-card" data-page="benefits/meals"><span class="action-hub-icon" aria-hidden="true">✓</span><span><strong data-i18n="mealAction"></strong><small data-i18n="mealRuleAction"></small></span><span aria-hidden="true">↗</span></button>
         </div>
@@ -113,11 +114,15 @@
         <button class="back" data-back data-back-fire=""></button>
         <div class="card critical">
           <div class="big" data-i18n="fireHeadline"></div>
+          <p data-i18n="fireRaise"></p>
           <ul class="task-list" data-checklist="fire-evacuation">
             <li class="task"><input class="task-check" type="checkbox" data-check="fire-evacuation-1"><span class="task-text" data-i18n="evacuationExit"></span></li>
             <li class="task"><input class="task-check" type="checkbox" data-check="fire-evacuation-2"><span class="task-text" data-i18n="evacuationAssembly"></span></li>
           </ul><div class="check-head"><span class="progress-pill" data-check-progress="fire-evacuation">0 / 2</span><button class="reset-checklist" data-reset-checklist="fire-evacuation" data-i18n="newIncident"></button></div>
         </div>
+
+        <div class="card"><p data-i18n="fireLeave"></p><p data-i18n="fireStop"></p><p data-i18n="fireContact"></p></div>
+        <details class="card"><summary data-i18n="firePassTitle"></summary><p data-i18n="firePassGuard"></p><p data-i18n="firePass"></p></details>
 
         <div class="card fire-card" data-checklist="fire-forecourt">
           <div class="check-head">
@@ -146,6 +151,8 @@
 <div class="check-head"><span class="progress-pill" data-check-progress="fire-warden">0 / 6</span><button class="reset-checklist" data-reset-checklist="fire-warden" data-i18n="newIncident"></button></div>
         </details>
       </section>
+
+      <section id="safety" class="page"><button class="back" data-back></button><h1 data-i18n="safetyQuick"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="burns" id="safety-tab-burns" aria-controls="safety-panel-burns" aria-selected="true" tabindex="0" data-i18n="burnTab"></button><button type="button" role="tab" data-tab="hazards" id="safety-tab-hazards" aria-controls="safety-panel-hazards" aria-selected="false" tabindex="-1" data-i18n="hazardTab"></button><button type="button" role="tab" data-tab="lifting" id="safety-tab-lifting" aria-controls="safety-panel-lifting" aria-selected="false" tabindex="-1" data-i18n="liftingTab"></button><button type="button" role="tab" data-tab="substances" id="safety-tab-substances" aria-controls="safety-panel-substances" aria-selected="false" tabindex="-1" data-i18n="substanceTab"></button></div><div role="tabpanel" id="safety-panel-burns" aria-labelledby="safety-tab-burns" data-tab-panel="burns"><div class="card "><h2 data-i18n="burnTitle"></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="burn1"></span></li><li class="task"><span class="task-text" data-i18n="burn2"></span></li><li class="task"><span class="task-text" data-i18n="burn3"></span></li><li class="task"><span class="task-text" data-i18n="burn4"></span></li></ul></div><div class="card warning"><h2 data-i18n="burnUrgentTitle"></h2><p data-i18n="burnUrgent"></p><p class="muted" data-i18n="burnScope"></p><a class="button-link secondary" href="https://www.nhs.uk/conditions/burns-and-scalds/" target="_blank" rel="noopener" data-i18n="nhsBurnGuide"></a></div></div><div role="tabpanel" id="safety-panel-hazards" aria-labelledby="safety-tab-hazards" data-tab-panel="hazards" hidden><div class="card "><h2 data-i18n="hazardTitle"></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="hazard1"></span></li><li class="task"><span class="task-text" data-i18n="hazard2"></span></li><li class="task"><span class="task-text" data-i18n="hazard3"></span></li></ul></div><div class="card "><h2 data-i18n="wetFloorTitle"></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="wetFloor1"></span></li><li class="task"><span class="task-text" data-i18n="wetFloor2"></span></li><li class="task"><span class="task-text" data-i18n="wetFloor3"></span></li></ul></div></div><div role="tabpanel" id="safety-panel-lifting" aria-labelledby="safety-tab-lifting" data-tab-panel="lifting" hidden><div class="card "><h2 data-i18n="liftingTitle"></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="lifting1"></span></li><li class="task"><span class="task-text" data-i18n="lifting2"></span></li><li class="task"><span class="task-text" data-i18n="lifting3"></span></li><li class="task"><span class="task-text" data-i18n="lifting4"></span></li></ul></div></div><div role="tabpanel" id="safety-panel-substances" aria-labelledby="safety-tab-substances" data-tab-panel="substances" hidden><div class="card "><h2 data-i18n="substanceTitle"></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="substance1"></span></li><li class="task"><span class="task-text" data-i18n="substance2"></span></li><li class="task"><span class="task-text" data-i18n="substance3"></span></li><li class="task"><span class="task-text" data-i18n="substance4"></span></li></ul></div></div></section>
 
       <section id="details" class="page">
         <button class="back" data-back></button>
@@ -421,7 +428,7 @@
     </div>
   </dialog>
 
-<script type="module" src="./app.js?v=44"></script>
+<script type="module" src="./app.js?v=45"></script>
 
 
 </body></html>
