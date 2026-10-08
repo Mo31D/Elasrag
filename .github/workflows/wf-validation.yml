@@ -1,0 +1,53 @@
+name: WF Companion validation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'wf/**'
+      - 'wf-backend/**'
+      - '.github/workflows/wf-validation.yml'
+  pull_request:
+    paths:
+      - 'wf/**'
+      - 'wf-backend/**'
+      - '.github/workflows/wf-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wf-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  wf-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: wf-backend/package-lock.json
+      - name: Install test dependencies
+        run: npm ci --prefix wf-backend
+      - name: Backend, frontend and hosting tests
+        run: npm --prefix wf-backend run check
+      - name: Find headless browser
+        id: browser
+        shell: bash
+        run: |
+          BROWSER="$(command -v chromium || command -v chromium-browser || command -v google-chrome || command -v google-chrome-stable || true)"
+          if [ -z "$BROWSER" ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y chromium
+            BROWSER="$(command -v chromium)"
+          fi
+          echo "path=$BROWSER" >> "$GITHUB_OUTPUT"
+      - name: Mobile layout and bilingual safety flows
+        env:
+          WF_TEST_CHROMIUM: ${{ steps.browser.outputs.path }}
+        run: npm --prefix wf-backend run test:mobile
