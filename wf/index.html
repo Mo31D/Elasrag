@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head>
   <meta charset="utf-8">
-  <meta name="wf-build" content="46">
+  <meta name="wf-build" content="47">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
@@ -26,7 +26,7 @@
     location.replace(destination.href);
   })();
   </script>
-  <link rel="stylesheet" href="./styles.css?v=46">
+  <link rel="stylesheet" href="./styles.css?v=47">
 </head>
 <body>
   <section id="lockScreen" class="lock hidden" aria-label="Private access">
@@ -110,50 +110,104 @@
 
         </div>
       </section>
-      <section id="fire" class="page">
-        <button class="back" data-back data-back-fire=""></button>
-        <div class="card critical">
-          <div class="emergency-heading"><svg class="emergency-symbol" viewBox="0 0 64 64" aria-hidden="true"><path d="M34 4c3 12-3 17-1 25 6-3 8-9 8-14 13 12 19 23 13 35-5 10-15 14-25 12C12 59 6 46 13 32c3-6 7-11 12-17-1 9 0 14 4 18 1-10 2-18 5-29Z" fill="currentColor"/></svg><div class="big" data-i18n="fireHeadline"></div></div>
-          <p data-i18n="fireRaise"></p>
-          <ul class="task-list" data-checklist="fire-evacuation">
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-evacuation-1"><span class="task-text" data-i18n="evacuationExit"></span></li>
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-evacuation-2"><span class="task-text" data-i18n="evacuationAssembly"></span></li>
-          </ul><div class="check-head"><span class="progress-pill" data-check-progress="fire-evacuation">0 / 2</span><button class="reset-checklist" data-reset-checklist="fire-evacuation" data-i18n="newIncident"></button></div>
+      <section id="fire" class="page fire-page">
+  <button class="back" data-back data-back-fire></button>
+  <div class="fire-page-title">
+    <span class="fire-eyebrow" data-i18n="fireGuideLabel"></span>
+    <h1 data-i18n="fireQuick"></h1>
+  </div>
+
+  <div class="card fire-emergency-card" aria-labelledby="fire-alert-heading">
+    <div class="fire-alert-heading">
+      <svg class="fire-alert-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22a8 8 0 0 0 8-8c0-4-2-6-6-10 .3 4-2 5-3 7C10 8 9 6 8 4c-2 3-4 7-4 10a8 8 0 0 0 8 8Z"/><path d="M12 22c2.2 0 4-1.8 4-4 0-1.8-1-3-3-5 0 2-2 3-3 5a4 4 0 0 0 2 4Z"/></svg>
+      <div><span class="fire-priority-label" data-i18n="firePriorityLabel"></span><h2 id="fire-alert-heading" data-i18n="fireHeadline"></h2></div>
+    </div>
+
+    <div class="fire-discovery">
+      <svg class="fire-discovery-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a7 7 0 0 0-7 7v4l-2 3h18l-2-3v-4a7 7 0 0 0-7-7Zm-2 18h4"/></svg>
+      <div><strong data-i18n="fireDiscoveredTitle"></strong><p data-i18n="fireRaise"></p></div>
+    </div>
+
+    <div class="fire-evac-panel" data-checklist="fire-evacuation">
+      <h3 class="fire-evac-title"><svg class="fire-heading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H5v16h6M12 12h9m-4-4 4 4-4 4"/><path d="M5 4h7v16H5"/></svg><span data-i18n="fireEvacTitle"></span></h3>
+      <ul class="task-list fire-emergency-list">
+        <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-evacuation-1"><span class="task-text"><span data-i18n="evacuationExit"></span></span></label></li>
+        <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-evacuation-2"><span class="task-text"><span data-i18n="evacuationAssembly"></span></span></label></li>
+      </ul>
+      <div class="fire-check-footer">
+        <span class="progress-pill" data-check-progress="fire-evacuation">0 / 2</span>
+        <button type="button" class="reset-checklist" data-reset-checklist="fire-evacuation" data-i18n="newIncident"></button>
+      </div>
+    </div>
+    <p class="fire-check-hint" data-i18n="fireChecklistHint"></p>
+  </div>
+
+  <section class="fire-section" aria-labelledby="fire-guidance-title">
+    <div class="fire-section-title"><h2 id="fire-guidance-title" data-i18n="fireGuidanceTitle"></h2></div>
+    <div class="fire-advice-list"><article class="fire-advice-item"><svg class="fire-advice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M4 4l5 5m-4-1a8 8 0 1 1-.8 8.6"/><path d="M13 9v4l3 2"/></svg><div class="fire-advice-copy"><h3 data-i18n="fireNoReturnTitle"></h3><p data-i18n="fireLeave"></p></div></article>
+<article class="fire-advice-item"><svg class="fire-advice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 18h16M5 14c2-2 2-4 0-6m7 6c2-3 2-5 0-8m7 8c2-2 2-4 0-6"/></svg><div class="fire-advice-copy"><h3 data-i18n="fireUnsafeTitle"></h3><p data-i18n="fireStop"></p></div></article>
+<article class="fire-advice-item"><svg class="fire-advice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3H5a2 2 0 0 0-2 2c0 8.8 7.2 16 16 16a2 2 0 0 0 2-2v-2l-5-2-2 2a14 14 0 0 1-7-7l2-2Z"/></svg><div class="fire-advice-copy"><h3 data-i18n="fireReportTitle"></h3><p data-i18n="fireContact"></p></div></article></div>
+  </section>
+
+  <section class="fire-section" aria-labelledby="fire-roles-title">
+    <div class="fire-section-title">
+      <h2 id="fire-roles-title" data-i18n="fireRolesTitle"></h2>
+      <p data-i18n="fireRolesIntro"></p>
+    </div>
+    <details class="fire-role-card" data-checklist="fire-forecourt">
+      <summary class="fire-role-summary"><svg class="fire-role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10h18l-2-6H5l-2 6Zm2 0v10h14V10M9 20v-7h6v7M3 10c1.5 2 3.5 2 5 0 1.5 2 2 4 0s3 .5 4 0 3.5 2 5 0"/></svg><span class="fire-role-copy"><strong data-i18n="forecourtSafe"></strong><small data-i18n="fireForecourtHint"></small></span><svg class="fire-role-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="fire-role-body">
+        <ul class="task-list">
+          <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-forecourt-1"><span class="task-text"><span data-i18n="fireStep1"></span></span></label></li>
+          <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-forecourt-2"><span class="task-text"><span data-i18n="fireStep2"></span></span></label></li>
+          <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-forecourt-3"><span class="task-text"><span data-i18n="fireStep3"></span></span></label></li>
+          <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-forecourt-4"><span class="task-text"><span data-i18n="fireStep4"></span><span class="sub" data-i18n="onlyIfSafe"></span></span></label></li>
+        </ul>
+        <div class="fire-check-footer">
+          <span class="progress-pill" data-check-progress="fire-forecourt">0 / 4</span>
+          <button type="button" class="reset-checklist" data-reset-checklist="fire-forecourt" data-i18n="newIncident"></button>
         </div>
+      </div>
+    </details>
 
-        <div class="card fire-guidance"><p data-i18n="fireLeave"></p><p data-i18n="fireStop"></p><p data-i18n="fireContact"></p></div>
-        <details class="card ext-reference"><summary data-i18n="extVisualTitle"></summary><p data-i18n="extVisualWarning"></p><div class="ext-grid"><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#c62828"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">Water</strong><strong data-lang="ar">مياه</strong><span class="ext-use" data-lang="ar">خشب، ورق، قماش</span><span class="ext-use" data-lang="en">Wood, paper, fabric</span></div><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#20242b"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">CO₂</strong><strong data-lang="ar">ثاني أكسيد الكربون</strong><span class="ext-use" data-lang="ar">أجهزة كهربائية، سوائل قابلة للاشتعال</span><span class="ext-use" data-lang="en">Electrical equipment, flammable liquids</span></div><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#2366c9"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">Dry powder</strong><strong data-lang="ar">بودرة جافة</strong><span class="ext-use" data-lang="ar">مواد صلبة، سوائل، غازات قابلة للاشتعال</span><span class="ext-use" data-lang="en">Solids, flammable liquids and gases</span></div><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#e4c83c"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">Wet chemical</strong><strong data-lang="ar">كيماوي رطب</strong><span class="ext-use" data-lang="ar">زيوت ودهون الطهي</span><span class="ext-use" data-lang="en">Cooking oils and fats</span></div><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#e6d7a4"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">Foam</strong><strong data-lang="ar">رغوة</strong><span class="ext-use" data-lang="ar">مواد صلبة، سوائل قابلة للاشتعال</span><span class="ext-use" data-lang="en">Solids and flammable liquids</span></div></div><p class="muted" data-i18n="extVisualNote"></p></details>
-        <details class="card"><summary data-i18n="firePassTitle"></summary><p data-i18n="firePassGuard"></p><p data-i18n="firePass"></p></details>
-
-        <div class="card fire-card" data-checklist="fire-forecourt">
-          <div class="check-head">
-            <h2 data-i18n="forecourtSafe"></h2>
-            <span class="progress-pill" data-check-progress="fire-forecourt">0 / 4</span>
-          </div>
-          <ul class="task-list">
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-1"><span class="task-text" data-i18n="fireStep1"></span></li>
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-2"><span class="task-text" data-i18n="fireStep2"></span></li>
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-3"><span class="task-text" data-i18n="fireStep3"></span></li>
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-forecourt-4"><span class="task-text"><span data-i18n="fireStep4"></span><span class="sub" data-i18n="onlyIfSafe"></span></span></li>
-          </ul>
-          <button class="reset-checklist" data-reset-checklist="fire-forecourt" data-i18n="newIncident"></button>
+    <details class="fire-role-card" data-checklist="fire-warden">
+      <summary class="fire-role-summary"><svg class="fire-role-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3 8 8 11 5-3 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg><span class="fire-role-copy"><strong data-i18n="wardenTitle"></strong><small data-i18n="fireWardenHint"></small></span><svg class="fire-role-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+      <div class="fire-role-body">
+        <ul class="task-list">
+          <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-warden-1"><span class="task-text"><span data-i18n="warden1"></span></span></label></li>
+<li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-warden-2"><span class="task-text"><span data-i18n="warden2"></span></span></label></li>
+<li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-warden-3"><span class="task-text"><span data-i18n="warden3"></span></span></label></li>
+<li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-warden-4"><span class="task-text"><span data-i18n="warden4"></span></span></label></li>
+<li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-warden-5"><span class="task-text"><span data-i18n="warden5"></span></span></label></li>
+<li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-warden-6"><span class="task-text"><span data-i18n="warden6"></span></span></label></li>
+        </ul>
+        <div class="fire-check-footer">
+          <span class="progress-pill" data-check-progress="fire-warden">0 / 6</span>
+          <button type="button" class="reset-checklist" data-reset-checklist="fire-warden" data-i18n="newIncident"></button>
         </div>
+      </div>
+    </details>
+  </section>
 
-        <details class="card" data-checklist="fire-warden">
-          <summary data-i18n="wardenTitle"></summary>
-          <ul class="task-list">
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-1"><span class="task-text" data-i18n="warden1"></span></li>
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-2"><span class="task-text" data-i18n="warden2"></span></li>
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-3"><span class="task-text" data-i18n="warden3"></span></li>
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-4"><span class="task-text" data-i18n="warden4"></span></li>
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-5"><span class="task-text" data-i18n="warden5"></span></li>
-            <li class="task"><input class="task-check" type="checkbox" data-check="fire-warden-6"><span class="task-text" data-i18n="warden6"></span></li>
-          </ul>
-<div class="check-head"><span class="progress-pill" data-check-progress="fire-warden">0 / 6</span><button class="reset-checklist" data-reset-checklist="fire-warden" data-i18n="newIncident"></button></div>
-        </details>
-      </section>
+  <section class="fire-section" aria-labelledby="fire-reference-title">
+    <div class="fire-section-title">
+      <h2 id="fire-reference-title" data-i18n="fireReferenceTitle"></h2>
+      <p data-i18n="fireReferenceIntro"></p>
+    </div>
+    <div class="card fire-equipment-card">
+      <h3 class="fire-equipment-title"><svg class="fire-heading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5h8M12 5V3h6l2 2M6 21V11a5 5 0 0 1 10 0v10H6Zm0-5h10M9 8V5"/></svg><span data-i18n="extVisualTitle"></span></h3>
+      <p class="fire-equipment-notice" data-i18n="extVisualWarning"></p>
+      <div class="ext-grid"><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#c62828"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">Water</strong><strong data-lang="ar">مياه</strong><span class="ext-use" data-lang="ar">خشب، ورق، قماش</span><span class="ext-use" data-lang="en">Wood, paper, fabric</span></div><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#20242b"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">CO₂</strong><strong data-lang="ar">ثاني أكسيد الكربون</strong><span class="ext-use" data-lang="ar">أجهزة كهربائية، سوائل قابلة للاشتعال</span><span class="ext-use" data-lang="en">Electrical equipment, flammable liquids</span></div><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#2366c9"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">Dry powder</strong><strong data-lang="ar">بودرة جافة</strong><span class="ext-use" data-lang="ar">مواد صلبة، سوائل، غازات قابلة للاشتعال</span><span class="ext-use" data-lang="en">Solids, flammable liquids and gases</span></div><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#e4c83c"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">Wet chemical</strong><strong data-lang="ar">كيماوي رطب</strong><span class="ext-use" data-lang="ar">زيوت ودهون الطهي</span><span class="ext-use" data-lang="en">Cooking oils and fats</span></div><div class="ext-card"><svg viewBox="0 0 72 118" aria-hidden="true"><path d="M31 18V9h19l7 7" fill="none" stroke="#333" stroke-width="5"/><rect x="25" y="16" width="25" height="9" rx="3" fill="#333"/><rect x="16" y="25" width="44" height="88" rx="12" fill="#c52c2c"/><rect x="17" y="47" width="42" height="30" rx="3" fill="#e6d7a4"/><rect x="23" y="83" width="30" height="20" rx="3" fill="#fff"/><path d="M28 89h20m-20 6h20" stroke="#aaa" stroke-width="2"/></svg><strong data-lang="en">Foam</strong><strong data-lang="ar">رغوة</strong><span class="ext-use" data-lang="ar">مواد صلبة، سوائل قابلة للاشتعال</span><span class="ext-use" data-lang="en">Solids and flammable liquids</span></div></div>
+      <p class="fire-equipment-footnote" data-i18n="extVisualNote"></p>
+    </div>
+    <details class="card fire-pass-panel">
+      <summary class="fire-pass-summary"><svg class="fire-heading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5.5C6 4 9 4 12 6c3-2 6-2 9-.5v14c-3-1.5-6-1.5-9 .5-3-2-6-2-9-.5zM12 6v14"/></svg><span data-i18n="firePassTitle"></span></summary>
+      <div class="fire-pass-body"><p data-i18n="firePassGuard"></p><p data-i18n="firePass"></p></div>
+    </details>
+  </section>
+</section>
 
-      <section id="safety" class="page"><button class="back" data-back></button><h1 data-i18n="safetyQuick"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="burns" id="safety-tab-burns" aria-controls="safety-panel-burns" aria-selected="true" tabindex="0" data-i18n="burnTab"></button><button type="button" role="tab" data-tab="hazards" id="safety-tab-hazards" aria-controls="safety-panel-hazards" aria-selected="false" tabindex="-1" data-i18n="hazardTab"></button><button type="button" role="tab" data-tab="lifting" id="safety-tab-lifting" aria-controls="safety-panel-lifting" aria-selected="false" tabindex="-1" data-i18n="liftingTab"></button><button type="button" role="tab" data-tab="substances" id="safety-tab-substances" aria-controls="safety-panel-substances" aria-selected="false" tabindex="-1" data-i18n="substanceTab"></button></div><div role="tabpanel" id="safety-panel-burns" aria-labelledby="safety-tab-burns" data-tab-panel="burns"><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-13z"/></svg><span data-i18n="burnTitle"></span></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="burn1"></span></li><li class="task"><span class="task-text" data-i18n="burn2"></span></li><li class="task"><span class="task-text" data-i18n="burn3"></span></li><li class="task"><span class="task-text" data-i18n="burn4"></span></li></ul></div><div class="card warning"><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20z"/><path d="M12 9v5m0 3v1"/></svg><span data-i18n="burnUrgentTitle"></span></h2><p data-i18n="burnUrgent"></p><p class="muted" data-i18n="burnScope"></p><a class="button-link secondary" href="https://www.nhs.uk/conditions/burns-and-scalds/" target="_blank" rel="noopener" data-i18n="nhsBurnGuide"></a></div></div><div role="tabpanel" id="safety-panel-hazards" aria-labelledby="safety-tab-hazards" data-tab-panel="hazards" hidden><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20z"/><path d="M12 9v5m0 3v1"/></svg><span data-i18n="hazardTitle"></span></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="hazard1"></span></li><li class="task"><span class="task-text" data-i18n="hazard2"></span></li><li class="task"><span class="task-text" data-i18n="hazard3"></span></li></ul></div><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-13z"/></svg><span data-i18n="wetFloorTitle"></span></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="wetFloor1"></span></li><li class="task"><span class="task-text" data-i18n="wetFloor2"></span></li><li class="task"><span class="task-text" data-i18n="wetFloor3"></span></li></ul></div></div><div role="tabpanel" id="safety-panel-lifting" aria-labelledby="safety-tab-lifting" data-tab-panel="lifting" hidden><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="10" width="18" height="10" rx="2"/><path d="M7 10V6h10v4M12 3v5m-3-3 3-3 3 3"/></svg><span data-i18n="liftingTitle"></span></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="lifting1"></span></li><li class="task"><span class="task-text" data-i18n="lifting2"></span></li><li class="task"><span class="task-text" data-i18n="lifting3"></span></li><li class="task"><span class="task-text" data-i18n="lifting4"></span></li></ul></div></div><div role="tabpanel" id="safety-panel-substances" aria-labelledby="safety-tab-substances" data-tab-panel="substances" hidden><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v7L4 20h16l-6-10V3M7 16h10"/></svg><span data-i18n="substanceTitle"></span></h2><div class="chemical-visual" role="note"><svg viewBox="0 0 74 90" aria-hidden="true"><path d="M27 8h20v12l10 9v48a5 5 0 0 1-5 5H22a5 5 0 0 1-5-5V29l10-9z" fill="#e8f2f0" stroke="#477b70" stroke-width="3"/><path d="M27 8h20v12H27z" fill="#477b70"/><rect x="21" y="38" width="32" height="26" rx="3" fill="#fff" stroke="#477b70"/><text x="37" y="54" text-anchor="middle" font-size="10" fill="#245c52" font-weight="bold">COSHH</text></svg><div><strong data-i18n="chemicalVisualTitle"></strong><p data-i18n="chemicalVisualNote"></p></div></div><ul class="task-list"><li class="task"><span class="task-text" data-i18n="substance1"></span></li><li class="task"><span class="task-text" data-i18n="substance2"></span></li><li class="task"><span class="task-text" data-i18n="substance3"></span></li><li class="task"><span class="task-text" data-i18n="substance4"></span></li></ul></div></div></section>
+<section id="safety" class="page"><button class="back" data-back></button><h1 data-i18n="safetyQuick"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="burns" id="safety-tab-burns" aria-controls="safety-panel-burns" aria-selected="true" tabindex="0" data-i18n="burnTab"></button><button type="button" role="tab" data-tab="hazards" id="safety-tab-hazards" aria-controls="safety-panel-hazards" aria-selected="false" tabindex="-1" data-i18n="hazardTab"></button><button type="button" role="tab" data-tab="lifting" id="safety-tab-lifting" aria-controls="safety-panel-lifting" aria-selected="false" tabindex="-1" data-i18n="liftingTab"></button><button type="button" role="tab" data-tab="substances" id="safety-tab-substances" aria-controls="safety-panel-substances" aria-selected="false" tabindex="-1" data-i18n="substanceTab"></button></div><div role="tabpanel" id="safety-panel-burns" aria-labelledby="safety-tab-burns" data-tab-panel="burns"><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-13z"/></svg><span data-i18n="burnTitle"></span></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="burn1"></span></li><li class="task"><span class="task-text" data-i18n="burn2"></span></li><li class="task"><span class="task-text" data-i18n="burn3"></span></li><li class="task"><span class="task-text" data-i18n="burn4"></span></li></ul></div><div class="card warning"><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20z"/><path d="M12 9v5m0 3v1"/></svg><span data-i18n="burnUrgentTitle"></span></h2><p data-i18n="burnUrgent"></p><p class="muted" data-i18n="burnScope"></p><a class="button-link secondary" href="https://www.nhs.uk/conditions/burns-and-scalds/" target="_blank" rel="noopener" data-i18n="nhsBurnGuide"></a></div></div><div role="tabpanel" id="safety-panel-hazards" aria-labelledby="safety-tab-hazards" data-tab-panel="hazards" hidden><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20z"/><path d="M12 9v5m0 3v1"/></svg><span data-i18n="hazardTitle"></span></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="hazard1"></span></li><li class="task"><span class="task-text" data-i18n="hazard2"></span></li><li class="task"><span class="task-text" data-i18n="hazard3"></span></li></ul></div><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2C9 7 5 11 5 15a7 7 0 0 0 14 0c0-4-4-8-7-13z"/></svg><span data-i18n="wetFloorTitle"></span></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="wetFloor1"></span></li><li class="task"><span class="task-text" data-i18n="wetFloor2"></span></li><li class="task"><span class="task-text" data-i18n="wetFloor3"></span></li></ul></div></div><div role="tabpanel" id="safety-panel-lifting" aria-labelledby="safety-tab-lifting" data-tab-panel="lifting" hidden><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="10" width="18" height="10" rx="2"/><path d="M7 10V6h10v4M12 3v5m-3-3 3-3 3 3"/></svg><span data-i18n="liftingTitle"></span></h2><ul class="task-list"><li class="task"><span class="task-text" data-i18n="lifting1"></span></li><li class="task"><span class="task-text" data-i18n="lifting2"></span></li><li class="task"><span class="task-text" data-i18n="lifting3"></span></li><li class="task"><span class="task-text" data-i18n="lifting4"></span></li></ul></div></div><div role="tabpanel" id="safety-panel-substances" aria-labelledby="safety-tab-substances" data-tab-panel="substances" hidden><div class="card "><h2 class="illustrated-heading"><svg class="section-pictogram" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6M10 3v7L4 20h16l-6-10V3M7 16h10"/></svg><span data-i18n="substanceTitle"></span></h2><div class="chemical-visual" role="note"><svg viewBox="0 0 74 90" aria-hidden="true"><path d="M27 8h20v12l10 9v48a5 5 0 0 1-5 5H22a5 5 0 0 1-5-5V29l10-9z" fill="#e8f2f0" stroke="#477b70" stroke-width="3"/><path d="M27 8h20v12H27z" fill="#477b70"/><rect x="21" y="38" width="32" height="26" rx="3" fill="#fff" stroke="#477b70"/><text x="37" y="54" text-anchor="middle" font-size="10" fill="#245c52" font-weight="bold">COSHH</text></svg><div><strong data-i18n="chemicalVisualTitle"></strong><p data-i18n="chemicalVisualNote"></p></div></div><ul class="task-list"><li class="task"><span class="task-text" data-i18n="substance1"></span></li><li class="task"><span class="task-text" data-i18n="substance2"></span></li><li class="task"><span class="task-text" data-i18n="substance3"></span></li><li class="task"><span class="task-text" data-i18n="substance4"></span></li></ul></div></div></section>
 
       <section id="details" class="page">
         <button class="back" data-back></button>
@@ -429,7 +483,7 @@
     </div>
   </dialog>
 
-<script type="module" src="./app.js?v=46"></script>
+<script type="module" src="./app.js?v=47"></script>
 
 
 </body></html>
