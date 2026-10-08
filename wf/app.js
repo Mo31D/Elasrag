@@ -332,7 +332,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     const password = $("passInput").value;
     const name = $("usernameInput").value.trim().toLowerCase();
     if (!serverSessionKnown && authMode !== "owner" && !/^[a-z0-9][a-z0-9._-]{2,39}$/.test(name)) return message("unlockError", "accountNameHint");
-    if (!serverSessionKnown && ["register","recover"].includes(authMode) && password.length < 12) return message("unlockError", "newPasswordHint");
+    if (!serverSessionKnown && ["register","recover"].includes(authMode) && password.length < 2) return message("unlockError", "newPasswordHint");
     message("unlockError", ""); $("unlockBtn").disabled = true;
     try {
       const path = authMode === "register" ? "/register" : authMode === "recover" ? "/recover" : "/login";
@@ -1106,8 +1106,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=40").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "40";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=41").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "41";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

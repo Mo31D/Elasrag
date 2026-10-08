@@ -360,7 +360,7 @@ export class WFAuthGuard {
           if (!account || !constantTimeEqual(fromBase64url(hash), fromBase64url(account.hash))) return json({ error: "Invalid credentials" }, 401);
           return json({ userId: account.id, username: name });
         }
-        if (typeof body.password !== "string" || body.password.length < 12 || body.password.length > 1024) return json({ error: "Password too short" }, 400);
+        if (typeof body.password !== "string" || body.password.length < 2 || body.password.length > 1024) return json({ error: "Password too short" }, 400);
         if (body.action === "register" && account) return json({ error: "Account unavailable" }, 409);
         if (body.action === "recover") {
           if (!account || typeof body.recoveryCode !== "string" || !constantTimeEqual(await sha256(body.recoveryCode), fromBase64url(account.recoveryHash))) return json({ error: "Invalid recovery" }, 401);
@@ -491,7 +491,7 @@ export default {
         const headers = new Headers(response.headers);
         headers.set("cache-control", "no-store");
         headers.set("strict-transport-security", "max-age=31536000");
-        headers.set("x-wf-build", "40");
+        headers.set("x-wf-build", "41");
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");

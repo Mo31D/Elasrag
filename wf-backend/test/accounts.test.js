@@ -59,7 +59,7 @@ test('recovery rotates the code, revokes previous sessions and keeps saved data'
 test('registration throttling, reserved owner, short password and invalid companion schema',async()=>{
   const {env}=fixture();
   assert.equal((await worker.fetch(request('/register','POST',{username:'owner',password:'fixture-new-password'}),env)).status,400);
-  assert.equal((await worker.fetch(request('/register','POST',{username:'short-password',password:'short'}),env)).status,400);
+  assert.equal((await worker.fetch(request('/register','POST',{username:'short-password',password:'a'}),env)).status,400);
   const a=await register(env,'valid-user');
   assert.equal((await worker.fetch(request('/register','POST',{username:'valid-user',password:'fixture-new-password'}),env)).status,409);
   await register(env,'last-user');
@@ -76,4 +76,19 @@ test('logging into another account cannot reset the victim account brute-force l
   for(let i=0;i<10;i++)assert.equal((await worker.fetch(request('/login','POST',{username:'victim-fixture',password:'wrong'}),env)).status,401);
   assert.equal((await worker.fetch(request('/login','POST',{username:'attacker-fixture',password:'fixture-new-password'}),env)).status,200);
   assert.equal((await worker.fetch(request('/login','POST',{username:'victim-fixture',password:'wrong'}),env)).status,429);
+});
+
+test('two-character letters or digits work for registration and recovery while incorrect passwords fail',async()=>{
+  for(const password of ['ab','12']) {
+    const {env}=fixture();const username='short-valid';
+    const registered=await worker.fetch(request('/register','POST',{username,password}),env);
+    assert.equal(registered.status,200);const {recoveryCode}=await registered.json();
+    assert.equal((await worker.fetch(request('/login','POST',{username,password}),env)).status,200);
+    assert.equal((await worker.fetch(request('/login','POST',{username,password:'xx'}),env)).status,401);
+    const replacement=password==='ab'?'34':'cd';
+    const recovered=await worker.fetch(request('/recover','POST',{username,password:replacement,recoveryCode}),env);
+    assert.equal(recovered.status,200);
+    assert.equal((await worker.fetch(request('/login','POST',{username,password:replacement}),env)).status,200);
+    assert.equal((await worker.fetch(request('/login','POST',{username,password}),env)).status,401);
+  }
 });

@@ -247,7 +247,7 @@ test('cached public reference remains available at the previous address while of
 test('new account UI, editable profile, task and course changes synchronize without inheriting owner history',async t=>{
   const {env}=fixture();const a=device(env,'#tasks');t.after(()=>a.window.close());
   await until(()=>!a.document.getElementById('lockScreen').classList.contains('hidden'));
-  click(a,'#registerBtn');fill(a,'usernameInput','ui-colleague');fill(a,'passInput','fixture-ui-password');click(a,'#unlockBtn');
+  click(a,'#registerBtn');fill(a,'usernameInput','ui-colleague');fill(a,'passInput','12');click(a,'#unlockBtn');
   await until(()=>active(a,'tasks') && a.document.getElementById('recoveryDialog').open);
   assert.ok(a.document.getElementById('newRecoveryCode').value);click(a,'#closeRecovery');
   assert.equal(a.document.getElementById('completedCount').textContent,'0');
@@ -265,7 +265,7 @@ test('new account UI, editable profile, task and course changes synchronize with
   await until(()=>!a.document.getElementById('profileDialog').open);
   assert.match(a.document.querySelector('[data-job="weeklyGross"]').textContent,/240|٢٤٠/);
   const b=device(env,'#tasks');t.after(()=>b.window.close());await until(()=>!b.document.getElementById('lockScreen').classList.contains('hidden'));
-  click(b,'#otherAccountBtn');fill(b,'usernameInput','ui-colleague');fill(b,'passInput','fixture-ui-password');click(b,'#unlockBtn');
+  click(b,'#otherAccountBtn');fill(b,'usernameInput','ui-colleague');fill(b,'passInput','12');click(b,'#unlockBtn');
   await until(()=>active(b,'tasks'));
   assert.equal(b.document.querySelector('.personal-task .task-text').textContent,'Edited task');assert.equal(b.document.getElementById('completedCount').textContent,'1');
   click(a,'[data-page="training"]');click(a,'#completedCourses .course-edit');click(a,'#deleteCourse');await until(()=>a.document.getElementById('completedCount').textContent==='0');
