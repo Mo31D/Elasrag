@@ -108,6 +108,33 @@ try {
     await page.locator('#languageToggle').click();
     assert.match(await page.locator('#safety-panel-hazards .ppe-action-guide').textContent(),/قبل استخدام معدات الوقاية/);
     await noOverflow();
+
+    // Incident reporting and risk hierarchy from training — concise, routed and bilingual.
+    assert.equal(await page.locator('#safety-panel-hazards .risk-steps li').count(),3);
+    await page.locator('#safety-panel-hazards .risk-control-details summary').click();
+    assert.equal(await page.locator('#safety-panel-hazards .risk-control-list li').count(),5);
+    await page.locator('#safety-panel-hazards .safety-scenario summary').first().click();
+    assert.match(await page.locator('#safety-panel-hazards .safety-scenario').first().textContent(),/سكينة/);
+    await noOverflow();
+    await page.locator('#safety-panel-hazards .risk-report-button').click();
+    await page.locator('#incident.active').waitFor();
+    assert.equal(await page.locator('#incident .incident-steps > li').count(),5);
+    assert.match(await page.locator('#incident .incident-system-path').textContent(),/Alert65.*Accidents & Incidents/);
+    assert.match(await page.locator('#incident-heading').textContent(),/الإبلاغ/);
+    await page.locator('#incident .incident-record summary').click();
+    assert.equal(await page.locator('#incident .incident-record-grid li').count(),4);
+    await noOverflow();
+    await page.locator('#languageToggle').click();
+    assert.match(await page.locator('#incident-heading').textContent(),/Report an accident or near miss/);
+    assert.match(await page.locator('#incident .incident-step-no').last().textContent(),/5/);
+    await noOverflow();
+    await page.locator('#incident [data-back]').click();
+    await page.locator('#safety.active').waitFor();
+    assert.equal(await page.locator('#safety-panel-hazards').isVisible(),true);
+    await page.goto('https://mo.elasrag.com/#actions');
+    await page.locator('#actions [data-page="incident"]').click();
+    await page.locator('#incident.active').waitFor();
+    await noOverflow();
     await page.goto('https://mo.elasrag.com/#uniform');
     await page.locator('#uniform.active').waitFor();
     assert.equal(await page.locator('#uniform .ppe-action-guide').count(),0);
