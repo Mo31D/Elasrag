@@ -20,7 +20,7 @@ export function fixture() {
       return new Response(request.method === 'HEAD' ? null : readFileSync(new URL('../../wf' + path, import.meta.url)), { headers: {'content-type': path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html'} });
     } },
     WF_PASSWORD: 'fixture-password-only', SESSION_SECRET: 'fixture-signing-key-only',
-    WF_DATA: { async get(key) { return kv.has(key) ? JSON.parse(kv.get(key)) : null; }, async put(key, value) { kv.set(key, value); } },
+    WF_DATA: { async get(key) { return kv.has(key) ? JSON.parse(kv.get(key)) : null; }, async put(key, value) { kv.set(key, value); }, async delete(key) { kv.delete(key); } },
   };
   const guard = new WFAuthGuard(state, env);
   env.WF_AUTH = { idFromName: name => name, get: () => guard };

@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head>
   <meta charset="utf-8">
-  <meta name="wf-build" content="41">
+  <meta name="wf-build" content="42">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
@@ -214,7 +214,7 @@
           <div class="row"><div><div class="key" data-i18n="workspace"></div><div class="value">westmorland</div></div><button class="copy" data-copy="westmorland" data-i18n="copy"></button></div>
           <div class="row"><div><div class="key" data-i18n="username"></div><div class="value" data-private="thriveUsername"></div></div><button class="copy" data-private-copy="thriveUsername" data-i18n="copy"></button></div>
           <a class="action" href="https://apps.apple.com/app/id1539428355" target="_blank" rel="noopener" data-i18n="openThrive"></a>
-        </div></div></section>
+        </div></div><div id="accountSettings" class="card" hidden><h2 data-i18n="companionAccount"></h2><button id="deleteAccountBtn" type="button" class="text-button danger-text" data-i18n="deleteAccount"></button></div></section>
 
       <section id="access" class="page">
         <button class="back" data-back></button><h1 data-i18n="peopleXDHelp"></h1><div class="section-tabs" role="tablist"><button type="button" role="tab" data-tab="reset" data-i18n="resetTab" aria-selected="true" id="access-tab-reset" aria-controls="access-panel-reset" tabindex="0"></button><button type="button" role="tab" data-tab="username" data-i18n="usernameTab" aria-selected="false" id="access-tab-username" aria-controls="access-panel-username" tabindex="-1"></button><button type="button" role="tab" data-tab="app" data-i18n="appTab" aria-selected="false" id="access-tab-app" aria-controls="access-panel-app" tabindex="-1"></button></div>
@@ -382,6 +382,11 @@
   </div>
 
   <dialog id="alertsDialog" class="alerts-dialog"><div class="check-head"><h2 data-i18n="alertsTitle"></h2><button id="closeAlerts" class="close-alerts" type="button" data-i18n="done"></button></div><div id="alertsList" class="alerts-list"></div></dialog>
+  <dialog id="deleteAccountDialog"><h3 data-i18n="deleteAccount"></h3><p class="tiny" data-i18n="deleteAccountWarning"></p>
+    <form id="deleteAccountForm"><div class="field"><label for="deleteAccountName" data-i18n="confirmAccountName"></label><input id="deleteAccountName" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="40" dir="ltr" required></div>
+    <div class="field"><label for="deleteAccountPassword" data-i18n="passphrase"></label><input id="deleteAccountPassword" type="password" autocomplete="current-password" maxlength="1024" required></div>
+    <div id="deleteAccountError" class="error" role="status"></div><div class="dialog-actions"><button id="cancelDeleteAccount" type="button" class="secondary" data-i18n="cancel"></button><button id="confirmDeleteAccount" type="submit" class="primary" data-i18n="deleteAccountConfirm"></button></div></form>
+  </dialog>
   <dialog id="recoveryDialog"><h3 data-i18n="recoveryCode"></h3><p class="tiny" data-i18n="keepRecovery"></p><input id="newRecoveryCode" readonly="" dir="ltr"><div class="dialog-actions"><button id="copyRecovery" class="secondary" data-i18n="copy"></button><button id="closeRecovery" class="primary" data-i18n="done"></button></div></dialog>
   <dialog id="courseDialog"><h3 data-i18n="training"></h3>
     <div class="field"><label for="courseEN" data-i18n="courseTitle"></label><input id="courseEN" maxlength="300" autocomplete="off"></div>

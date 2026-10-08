@@ -134,11 +134,12 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     editingIndex = null; editingTaskId = null;
     conflictedEditors.clear();
     $("vaultList").replaceChildren();
+    $("accountSettings").hidden=true;
     $('addWorkPin').hidden=true;
     document.querySelectorAll("[data-private]").forEach(el => { el.textContent = ""; el.closest(".row").hidden = true; });
     document.querySelectorAll("[data-private-copy]").forEach(el => delete el.dataset.copy);
-    ["secretDialog", "profileDialog", "migrationDialog", "courseDialog", "recoveryDialog"].forEach(id => { if ($(id).open) $(id).close(); });
-    ["secretLabel", "secretValue", "secretNote", "oldPass", "passInput", "courseEN", "courseAR", "courseDue", "newRecoveryCode", "taskInput"].forEach(id => $(id).value = "");
+    ["secretDialog", "profileDialog", "migrationDialog", "courseDialog", "recoveryDialog", "deleteAccountDialog"].forEach(id => { if ($(id).open) $(id).close(); });
+    ["secretLabel", "secretValue", "secretNote", "oldPass", "passInput", "courseEN", "courseAR", "courseDue", "newRecoveryCode", "taskInput", "deleteAccountName", "deleteAccountPassword"].forEach(id => $(id).value = "");
     $("profileFields").replaceChildren();
     document.querySelectorAll("[data-private-card]").forEach(el => el.hidden = true);
     document.querySelectorAll("[data-job]").forEach(el => { el.textContent = ""; const row = el.closest(".row"); if (row) row.hidden = true; });
@@ -240,6 +241,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
 
   function renderPrivateProfile() {
+    $("accountSettings").hidden=!authenticated || account?.id==='owner';
     $('addWorkPin').hidden=!authenticated || Boolean(privateData?.profile?.workPin);
     document.querySelectorAll("[data-private]").forEach(el => {
       const value = privateData?.profile?.[el.dataset.private] || (el.dataset.private === "thriveUsername" ? privateData?.profile?.colleagueNumber : "") || "";
@@ -1089,6 +1091,32 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     try{if(await saveCompanion(next)){editingTaskId=null;$('taskInput').value='';$('taskInput').focus({preventScroll:true});}}catch(error){message('privateMessage',errorKey(error));}finally{submit.disabled=false;}
   });
   $('resetTasks').addEventListener('click',async()=>{if(saving || !authenticated)return;const next=structuredClone(privateData.companion);next.tasks.forEach(task=>task.done=false);try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));}});
+  $('deleteAccountBtn').addEventListener('click',()=>{
+    if(!authenticated || guestMode || account?.id==='owner' || saving)return;
+    $('deleteAccountName').value='';$('deleteAccountPassword').value='';message('deleteAccountError','');
+    $('deleteAccountName').placeholder=account.username;
+    $('deleteAccountDialog').showModal();$('deleteAccountName').focus();
+  });
+  $('cancelDeleteAccount').addEventListener('click',()=>{if(!$('confirmDeleteAccount').disabled)$('deleteAccountDialog').close();});
+  $('deleteAccountDialog').addEventListener('cancel',event=>{if($('confirmDeleteAccount').disabled)event.preventDefault();});
+  $('deleteAccountDialog').addEventListener('close',()=>{$('deleteAccountName').value='';$('deleteAccountName').placeholder='';$('deleteAccountPassword').value='';});
+  $('deleteAccountForm').addEventListener('submit',async event=>{
+    event.preventDefault();
+    if(!authenticated || guestMode || account?.id==='owner' || saving || $('confirmDeleteAccount').disabled)return;
+    if($('deleteAccountName').value.trim()!==account.username)return message('deleteAccountError','accountNameMismatch');
+    if(!$('deleteAccountPassword').value)return;
+    const deletingAccount=account.id;
+    $('confirmDeleteAccount').disabled=true;saving=true;message('deleteAccountError','');
+    try{
+      await api('/account/delete',{method:'POST',body:JSON.stringify({confirmation:$('deleteAccountName').value.trim(),password:$('deleteAccountPassword').value})});
+      if(account?.id!==deletingAccount)return;
+      navigationVersion++;pendingDraft=null;serverSessionKnown=false;localStorage.removeItem('wf-account-hint');authMode='owner';
+      clearPrivateData();renderPrivateProfile();returnTargets.clear();readingPositions.clear();
+      $('lockScreen').classList.add('hidden');$('privacyShield').classList.add('hidden');displayPage('home');history.replaceState(null,'',location.pathname+location.search);
+      message('privateMessage','accountDeleted');
+    }catch(error){message('deleteAccountError',errorKey(error));}
+    finally{saving=false;$('confirmDeleteAccount').disabled=false;$('deleteAccountPassword').value='';}
+  });
   $("otherAccountBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode(authMode==="owner"?"login":"owner" );});
   $("registerBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode("register" );});
   $("recoverBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode("recover" );});
@@ -1106,8 +1134,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=41").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "41";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=42").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "42";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

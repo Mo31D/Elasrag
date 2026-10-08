@@ -133,6 +133,25 @@ test('guest share link and remembered preview never request private data even wi
   assert.equal(unauthorized.status,401);assert.equal(JSON.stringify([...kv]),before);
 });
 
+test('a registered user confirms self deletion, wrong credentials preserve data and successful deletion clears the UI',async t=>{
+  const {env,kv}=fixture();const d=device(env,'#details',null,'https://mo.elasrag.com/',false,null,'en');t.after(()=>d.window.close());
+  await until(()=>!d.document.getElementById('lockScreen').classList.contains('hidden'));
+  click(d,'#registerBtn');fill(d,'usernameInput','john');fill(d,'passInput','12');click(d,'#unlockBtn');await until(()=>active(d,'details'));click(d,'#closeRecovery');
+  assert.equal(d.document.getElementById('accountSettings').hidden,false);
+  click(d,'#deleteAccountBtn');assert.equal(d.document.getElementById('deleteAccountDialog').open,true);
+  click(d,'#languageToggle');assert.match(d.document.querySelector('#deleteAccountDialog h3').textContent,/حذف/);click(d,'#languageToggle');
+  const submit=()=>d.document.getElementById('deleteAccountForm').dispatchEvent(new d.window.Event('submit',{cancelable:true}));
+  fill(d,'deleteAccountName','someone-else');fill(d,'deleteAccountPassword','12');submit();assert.match(d.document.getElementById('deleteAccountError').textContent,/exactly/);
+  const before=JSON.stringify([...kv]);fill(d,'deleteAccountName','john');fill(d,'deleteAccountPassword','wrong');submit();
+  await until(()=>d.document.getElementById('deleteAccountError').textContent.includes('sign-in'));
+  assert.equal(JSON.stringify([...kv]),before);assert.equal(d.document.getElementById('deleteAccountDialog').open,true);
+  fill(d,'deleteAccountPassword','12');submit();await until(()=>active(d,'home') && d.document.getElementById('privateMessage').textContent.includes('deleted'));
+  assert.equal(d.document.getElementById('deleteAccountDialog').open,false);assert.equal(d.document.getElementById('deleteAccountPassword').value,'');
+  assert.equal(d.document.getElementById('accountSettings').hidden,true);assert.equal(d.window.localStorage.getItem('wf-account-hint'),null);
+  assert.equal(kv.size,0);assert.deepEqual(d.errors,[]);
+  const owner=device(env,'#details');t.after(()=>owner.window.close());await signIn(owner);assert.equal(owner.document.getElementById('accountSettings').hidden,true);
+});
+
 test('public access, protected direct routes, translated auth, vault CRUD, another device, XSS and offline failure', async t => {
   const { env, records } = fixture();
   const a = device(env); const b = device(env, '#vault');

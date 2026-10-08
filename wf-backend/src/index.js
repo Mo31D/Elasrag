@@ -137,7 +137,7 @@ function clearSessionCookie() {
   return "wf_session=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0";
 }
 
-const API_PATHS = new Set(["/health", "/login", "/register", "/recover", "/session", "/logout", "/private", "/private/changes"]);
+const API_PATHS = new Set(["/health", "/login", "/register", "/recover", "/session", "/logout", "/private", "/private/changes", "/account/delete"]);
 const MAX_BYTES = 100000;
 const PROFILE_FIELDS = new Set(["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername", "displayName", "role", "site", "manager", "managerEmail", "startDate", "shiftDays", "shiftStart", "shiftEnd", "hours", "hourlyRate", "paidBreak", "annualHoliday", "minibusNote", "firstDayTime", "firstDayLocation", "firstDayPostcode"]);
 
@@ -335,7 +335,7 @@ export class WFAuthGuard {
         if (!record || record.until <= now) record = { count: 0, until: now + (registering ? 60 : 15) * 60 * 1000 };
         record.count++;
         await store.put(key, record);
-        await store.setAlarm(now + 12 * 60 * 60 * 1000);
+        await this.scheduleAlarm(now + 12 * 60 * 60 * 1000);
         let globalAllowed = true;
         if (!registering) {
           const globalKey="attempt:global:"+body.ip;
@@ -354,6 +354,7 @@ export class WFAuthGuard {
         if (!/^[a-z0-9][a-z0-9._-]{2,39}$/.test(name) || name === "owner") return json({ error: "Invalid account" }, 400);
         const key = "user:" + name;
         const account = await store.get(key);
+        if(account && await store.get('deletion:'+account.id))return json({error:'Account unavailable'},401);
         if (body.action === "authenticate") {
           const salt = account?.salt || "MDEyMzQ1Njc4OWFiY2RlZg";
           const hash = await passwordHash(body.password, salt);
@@ -375,9 +376,13 @@ export class WFAuthGuard {
         return json({ userId, username: name, recoveryCode });
       }
       if (body.action === "create") {
+        if(body.userId!=='owner'){
+          const user=await store.get('user:'+body.username);
+          if(!user || user.id!==body.userId || await store.get('deletion:'+body.userId))return json({error:'Unauthorized'},401);
+        }
         await store.put("session:" + body.nonce, { until: now + 12 * 60 * 60 * 1000, userId: body.userId, username: body.username });
         await store.delete("attempt:" + body.ip + ":" + body.username);
-        await store.setAlarm(now + 12 * 60 * 60 * 1000);
+        await this.scheduleAlarm(now + 12 * 60 * 60 * 1000);
         return json({ ok: true });
       }
       if (body.action === "revoke") {
@@ -387,7 +392,23 @@ export class WFAuthGuard {
       const session = await store.get("session:" + body.nonce);
       if (!session || session.until <= now) return json({ authenticated: false }, 401);
       const userId = session.userId || "owner";
+      if(userId!=='owner'){
+        const user=await store.get('user:'+session.username);
+        if(!user || user.id!==userId || await store.get('deletion:'+userId))return json({authenticated:false},401);
+      }
       if (body.action === "check") return json({ authenticated: true, account: { id: userId, username: session.username || "owner" } });
+      if(body.action==='deleteAccount'){
+        if(userId==='owner')return json({error:'Unavailable for owner'},403);
+        if(!this.env.WF_DATA)return json({error:'Unavailable'},503);
+        if(body.confirmation!==session.username || typeof body.password!=='string' || body.password.length>1024)return json({error:'Invalid confirmation'},400);
+        const user=await store.get('user:'+session.username);
+        const hash=await passwordHash(body.password,user.salt);
+        if(!constantTimeEqual(fromBase64url(hash),fromBase64url(user.hash)))return json({error:'Invalid credentials'},401);
+        await store.put('deletion:'+userId,{username:session.username,nextAttempt:now+60000});
+        await this.scheduleAlarm(now+60000);
+        try{await this.purgeAccount(userId,session.username);}catch{}
+        return json({ok:true});
+      }
       if (!this.env.WF_DATA) return json({ error: "Unavailable" }, 503);
       const dataKey = userId === "owner" ? "private-data" : "private:" + userId;
       const revisionKey = userId === "owner" ? "private-revision" : "private-revision:" + userId;
@@ -458,17 +479,44 @@ export class WFAuthGuard {
     });
   }
 
+  async scheduleAlarm(time) {
+    const jobs=await this.state.storage.list({prefix:'deletion:'});
+    for(const [key,job] of jobs)if(key.startsWith('deletion:'))time=Math.min(time,job.nextAttempt || Date.now()+60000);
+    await this.state.storage.setAlarm(time);
+  }
+
+  async purgeAccount(userId, name) {
+    const store=this.state.storage;
+    const user=await store.get('user:'+name);
+    if(user?.id===userId)await store.delete('user:'+name);
+    const sessions=await store.list({prefix:'session:'});
+    const keys=[...sessions].filter(([key,value])=>key.startsWith('session:') && value.userId===userId).map(([key])=>key);
+    keys.push('private-revision:'+userId,'private-write-time:'+userId);
+    await store.delete(keys);
+    this.currentData.delete(userId);this.pendingMigration.delete(userId);this.pendingLegacy.delete(userId);
+    await this.env.WF_DATA.delete('private:'+userId);
+    await store.delete('deletion:'+userId);
+  }
+
   async alarm() {
+    return this.state.blockConcurrencyWhile(async()=>{
     const records = await this.state.storage.list();
     const expired = [];
     let next = Infinity;
     for (const [key, value] of records) {
+      if(key.startsWith('deletion:')){
+        try{await this.purgeAccount(key.slice(9),value.username);}catch{
+          const nextAttempt=Date.now()+60000;await this.state.storage.put(key,{...value,nextAttempt});next=Math.min(next,nextAttempt);
+        }
+        continue;
+      }
       if (!key.startsWith("session:") && !key.startsWith("attempt:")) continue;
       if (value.until <= Date.now()) expired.push(key);
       else next = Math.min(next, value.until);
     }
     if (expired.length) await this.state.storage.delete(expired);
     if (Number.isFinite(next)) await this.state.storage.setAlarm(next);
+    });
   }
 }
 
@@ -491,7 +539,7 @@ export default {
         const headers = new Headers(response.headers);
         headers.set("cache-control", "no-store");
         headers.set("strict-transport-security", "max-age=31536000");
-        headers.set("x-wf-build", "41");
+        headers.set("x-wf-build", "42");
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");
@@ -525,7 +573,8 @@ export default {
         const identity = await result.json();
         if (!result.ok) return json(identity, result.status, origin);
         const nonce = crypto.randomUUID();
-        await guard(env, { action: "create", nonce, ip, userId: identity.userId, username: identity.username });
+        const created=await guard(env, { action: "create", nonce, ip, userId: identity.userId, username: identity.username });
+        if(!created.ok)return json({error:'Unauthorized'},created.status,origin);
         const token = await makeSession(env.SESSION_SECRET, nonce);
         return json({ ok: true, ...(identity.recoveryCode ? { recoveryCode: identity.recoveryCode } : {}) }, 200, origin, { "set-cookie": sessionCookie(token) });
       }
@@ -554,6 +603,19 @@ export default {
         const body = await readJson(request);
         const response = await guard(env, { action: "change", nonce: payload.nonce, changes: body?.changes });
         return json(await response.json(), response.status, origin, response.headers.has("etag") ? { etag: response.headers.get("etag") } : {});
+      }
+      if(apiPath==='/account/delete' && request.method==='POST'){
+        if(!payload)return json({error:'Unauthorized'},401,origin);
+        const current=await guard(env,{action:'check',nonce:payload.nonce});
+        if(!current.ok)return json({error:'Unauthorized'},401,origin);
+        const identity=await current.json();
+        if(identity.account.id==='owner')return json({error:'Unavailable for owner'},403,origin);
+        const body=await readJson(request,4096);
+        const ip=base64url(await sha256(request.headers.get('cf-connecting-ip') || 'unknown'));
+        const attempt=await (await guard(env,{action:'attempt',ip,kind:'login',account:identity.account.username})).json();
+        if(!attempt.allowed)return json({error:'Try again later'},429,origin);
+        const response=await guard(env,{action:'deleteAccount',nonce:payload.nonce,password:body?.password,confirmation:body?.confirmation});
+        return json(await response.json(),response.status,origin,response.ok?{'set-cookie':clearSessionCookie()}:{});
       }
       return json({ error: "Not found" }, 404, origin);
     } catch (error) {

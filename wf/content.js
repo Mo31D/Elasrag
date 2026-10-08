@@ -1,5 +1,13 @@
 export const TRANSLATIONS = {
   "ar": {
+    "companionAccount": "حساب المساعد",
+    "deleteAccount": "حذف حسابي",
+    "deleteAccountWarning": "هيتم حذف بياناتك ومهامك وسجل تدريبك والخزنة الخاصة نهائيًا، وخروجك من كل الأجهزة. مش هتقدر ترجع البيانات بعد الحذف.",
+    "confirmAccountName": "اكتب اسم حسابك للتأكيد",
+    "deleteAccountConfirm": "حذف الحساب نهائيًا",
+    "accountNameMismatch": "اكتب اسم حسابك زي ما هو ظاهر بالظبط.",
+    "accountDeleted": "تم حذف حسابك.",
+
     "continueGuest": "دخول كضيف",
     "guestPreview": "معاينة كضيف",
     "guestReadOnly": "للمعاينة بس · أمثلة للمهام والتدريب",
@@ -340,6 +348,14 @@ export const TRANSLATIONS = {
     "retryIntro": "حاول فتح بياناتك تاني."
   },
   "en": {
+    "companionAccount": "Companion account",
+    "deleteAccount": "Delete my account",
+    "deleteAccountWarning": "This permanently deletes your profile, tasks, training records and Private Vault, and signs you out on every device. This cannot be undone.",
+    "confirmAccountName": "Type your account name to confirm",
+    "deleteAccountConfirm": "Permanently delete account",
+    "accountNameMismatch": "Enter your account name exactly as shown.",
+    "accountDeleted": "Your account has been deleted.",
+
     "continueGuest": "Continue as guest",
     "guestPreview": "Guest preview",
     "guestReadOnly": "Read only · Sample tasks and training",

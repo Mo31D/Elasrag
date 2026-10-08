@@ -92,3 +92,47 @@ test('two-character letters or digits work for registration and recovery while i
     assert.equal((await worker.fetch(request('/login','POST',{username,password}),env)).status,401);
   }
 });
+
+test('self deletion requires the exact account and password, revokes every session and preserves other accounts',async()=>{
+  const f=fixture();const a=await register(f.env,'john');const b=await register(f.env,'another-user');
+  const second=await worker.fetch(request('/login','POST',{username:'john',password:'fixture-new-password'}),f.env);
+  const owner=await worker.fetch(request('/login','POST',{password:f.env.WF_PASSWORD}),f.env);
+  const ownerCookie=cookieOf(owner);
+  for(const cookie of [a.cookie,b.cookie,ownerCookie])assert.equal((await worker.fetch(request('/private','GET',null,cookie),f.env)).status,200);
+  const johnId=f.records.get('user:john').id;const otherBefore=JSON.stringify([...f.kv].filter(([key])=>key!=='private:'+johnId));
+  const erase=(body,cookie=a.cookie,extra={})=>worker.fetch(request('/account/delete','POST',body,cookie,extra),f.env);
+  assert.equal((await erase({confirmation:'john',password:'fixture-new-password'},null)).status,401);
+  assert.equal((await erase({confirmation:'john',password:'fixture-new-password'},a.cookie,{origin:'https://untrusted.example'})).status,403);
+  assert.equal((await erase({confirmation:'another-user',password:'fixture-new-password'})).status,400);
+  assert.equal((await erase({confirmation:'john',password:'wrong'})).status,401);
+  assert.equal(f.kv.has('private:'+johnId),true);
+  assert.equal((await erase({confirmation:'owner',password:f.env.WF_PASSWORD},ownerCookie)).status,403);
+  const deleted=await erase({confirmation:'john',password:'fixture-new-password'});
+  assert.equal(deleted.status,200);assert.match(deleted.headers.get('set-cookie'),/Max-Age=0/);
+  assert.equal(f.records.has('user:john'),false);assert.equal(f.kv.has('private:'+johnId),false);assert.equal(f.guard.currentData.has(johnId),false);
+  for(const cookie of [a.cookie,cookieOf(second)])assert.equal((await worker.fetch(request('/private','GET',null,cookie),f.env)).status,401);
+  assert.equal((await worker.fetch(request('/login','POST',{username:'john',password:'fixture-new-password'}),f.env)).status,401);
+  assert.equal(JSON.stringify([...f.kv]),otherBefore);
+  const replacement=await register(f.env,'john');assert.notEqual(f.records.get('user:john').id,johnId);
+  const data=(await (await worker.fetch(request('/private','GET',null,replacement.cookie),f.env)).json()).data;
+  assert.deepEqual(data.profile,{});assert.deepEqual(data.items,[]);assert.deepEqual(data.companion.tasks,[]);
+});
+
+test('pending deletion blocks access immediately and cleanup survives a storage outage and reused name',async()=>{
+  const f=fixture();const a=await register(f.env,'cleanup-user');await worker.fetch(request('/private','GET',null,a.cookie),f.env);
+  const id=f.records.get('user:cleanup-user').id;const originalDelete=f.env.WF_DATA.delete;
+  let scheduled;f.state.storage.setAlarm=async time=>{scheduled=time;};
+  f.env.WF_DATA.delete=async()=>{throw new Error('fixture outage');};
+  const deleted=await worker.fetch(request('/account/delete','POST',{confirmation:'cleanup-user',password:'fixture-new-password'},a.cookie),f.env);
+  assert.equal(deleted.status,200);assert.ok(f.records.has('deletion:'+id));
+  const cleanupTime=scheduled;
+  assert.equal((await worker.fetch(request('/private','GET',null,a.cookie),f.env)).status,401);
+  const replacement=await register(f.env,'cleanup-user');const newId=f.records.get('user:cleanup-user').id;assert.notEqual(newId,id);
+  assert.equal(scheduled,cleanupTime);
+  await f.guard.alarm();assert.ok(f.records.has('deletion:'+id));
+  f.env.WF_DATA.delete=originalDelete;await f.guard.alarm();assert.equal(f.records.has('deletion:'+id),false);assert.equal(f.kv.has('private:'+id),false);
+  assert.equal(f.records.get('user:cleanup-user').id,newId);
+  assert.equal((await worker.fetch(request('/private','GET',null,replacement.cookie),f.env)).status,200);
+  const stale=await f.guard.fetch(new Request('https://internal/',{method:'POST',body:JSON.stringify({action:'create',nonce:'stale-login',username:'cleanup-user',userId:id,ip:'fixture'})}));
+  assert.equal(stale.status,401);
+});
