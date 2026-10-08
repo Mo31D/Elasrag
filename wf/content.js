@@ -1,5 +1,8 @@
 export const TRANSLATIONS = {
   "ar": {
+    "ppeActionLink": "افتح خطوات فحص معدات الوقاية في سلامة الشغل",
+    "poisonQuick": "ابتلاع مادة تنظيف",
+    "poisonQuickHint": "تصرف فورًا عند الاشتباه بالتسمم",
     "ppeActionHeading": "قبل استخدام معدات الوقاية",
     "ppeActionCheck": "اعرف معدات الحماية المطلوبة للمهمة وطريقة استخدامها.",
     "ppeActionFault": "افحص المعدات. لو ناقصة أو تالفة، ما تبدأش المهمة وبلّغ المشرف.",
@@ -428,6 +431,9 @@ export const TRANSLATIONS = {
     "retryIntro": "حاول فتح بياناتك تاني."
   },
   "en": {
+    "ppeActionLink": "Open PPE safety checks",
+    "poisonQuick": "Cleaning chemical swallowed",
+    "poisonQuickHint": "Act immediately if poisoning is suspected",
     "ppeActionHeading": "Before using protective equipment",
     "ppeActionCheck": "Know which PPE the task requires and how to use it.",
     "ppeActionFault": "Inspect it. If missing or damaged, do not start the task; tell your supervisor.",
