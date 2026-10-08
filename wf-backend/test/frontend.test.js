@@ -7,7 +7,7 @@ import worker from '../src/index.js';
 import { fixture } from './fixtures.js';
 const source = name => readFileSync(new URL('../../wf/' + name, import.meta.url), 'utf8');
 const bundled = ['content.js','model.js','app.js'].map(name=>source(name).replace(/^import .*;$/gm,'').replace(/export (const|function) /g,'$1 ')).join('\n');
-const html = source('index.html').replace('<script type="module" src="./app.js"></script>',()=>'<script>'+bundled+'</script>');
+const html = source('index.html').replace('<script type="module" src="./app.js?v=44"></script>',()=>'<script>'+bundled+'</script>');
 
 function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false, serviceWorker = null, language = 'ar', options = {}) {
   let cookie = options.cookie || '';
@@ -561,4 +561,21 @@ test('a session renewal restores unsaved task and profile edits for the same acc
   assert.equal(JSON.parse(kv.get('private-data')).profile.site,'Other tab site');
   assert.equal(JSON.parse(kv.get('private-data')).profile.manager,'Draft manager');
   assert.deepEqual(d.errors,[]);assert.deepEqual(other.errors,[]);
+});
+
+test('fresh visits sign in without installing or waiting for an offline worker', async t => {
+  const {env}=fixture();let registrations=0;
+  const sw={controller:null,register:async()=>{registrations++;throw new Error('must not install');},getRegistration:async()=>undefined};
+  const d=device(env,'#details',null,'https://mo.elasrag.com/',false,sw);t.after(()=>d.window.close());
+  await signIn(d);assert.equal(registrations,0);assert.ok(active(d,'details'));assert.deepEqual(d.errors,[]);
+});
+
+test('an old controlling worker is replaced with the network-only retirement before private requests',async t=>{
+  const {env}=fixture();let replaced=false;
+  const sw={controller:{scriptURL:'https://mo.elasrag.com/sw.js?v=19'},register:async(url,options)=>{
+    assert.equal(url,'./sw.js?v=44');assert.equal(options.updateViaCache,'none');
+    sw.controller={scriptURL:'https://mo.elasrag.com/sw.js?v=44'};replaced=true;
+  }};
+  const d=device(env,'#details',null,'https://mo.elasrag.com/',false,sw);t.after(()=>d.window.close());
+  await signIn(d);assert.equal(replaced,true);assert.ok(active(d,'details'));assert.deepEqual(d.errors,[]);
 });

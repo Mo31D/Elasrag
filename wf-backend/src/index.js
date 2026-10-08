@@ -535,11 +535,16 @@ export default {
       try {
         const assetUrl = new URL(request.url);
         if (assetUrl.pathname === "/") assetUrl.pathname = "/index.html";
-        const response = await env.ASSETS.fetch(new Request(assetUrl, request));
+        const assetRequest = new Request(assetUrl, request);
+        assetRequest.headers.delete("if-none-match");
+        assetRequest.headers.delete("if-modified-since");
+        const response = await env.ASSETS.fetch(assetRequest);
         const headers = new Headers(response.headers);
         headers.set("cache-control", "no-store");
+        headers.set("cdn-cache-control", "no-store");
+        headers.set("cloudflare-cdn-cache-control", "no-store");
         headers.set("strict-transport-security", "max-age=31536000");
-        headers.set("x-wf-build", "43");
+        headers.set("x-wf-build", "44");
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");

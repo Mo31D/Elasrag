@@ -1,5 +1,5 @@
-import { TRANSLATIONS } from "./content.js";
-import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js";
+import { TRANSLATIONS } from "./content.js?v=44";
+import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js?v=44";
 (() => {
   if(location.protocol!=="https:")return;
   const META_KEY = "wf-vault-meta-v1";
@@ -1135,18 +1135,27 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=43").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "43";
-      if (safeController()) return true;
-      return new Promise(resolve => {
-        const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
-        const changed = () => { if (safeController()) finish(true); };
-        const timer = setTimeout(() => finish(!navigator.serviceWorker.controller), 15000);
-        navigator.serviceWorker.addEventListener("controllerchange", changed);
-        changed();
-      });
-    }).catch(() => !navigator.serviceWorker.controller);
+    const workers = navigator.serviceWorker;
+    const appWorker = worker => worker && new URL(worker.scriptURL).pathname === new URL("./sw.js", location.href).pathname;
+    const retiredController = () => !workers.controller || (appWorker(workers.controller) && new URL(workers.controller.scriptURL).searchParams.get("v") === "44");
+    if (appWorker(workers.controller) && !retiredController()) {
+      safeWorkerReady = workers.register("./sw.js?v=44", {updateViaCache:"none"}).then(() => {
+        if (retiredController()) return true;
+        return new Promise(resolve => {
+          const finish = value => { clearTimeout(timer); workers.removeEventListener("controllerchange", changed); resolve(value); };
+          const changed = () => { if (retiredController()) finish(true); };
+          const timer = setTimeout(() => finish(retiredController()), 10000);
+          workers.addEventListener("controllerchange", changed);
+          changed();
+        });
+      }).catch(() => retiredController());
+    } else if (workers.getRegistration) {
+      workers.getRegistration(new URL("./", location.href).href).then(registration => {
+        if (registration && [registration.active, registration.waiting, registration.installing].some(appWorker)) return registration.unregister();
+      }).catch(() => {});
+    }
   }
+  if ("caches" in window) caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith("wf-quick-reference-")).map(key => caches.delete(key)))).catch(() => {});
 
   const sizeHeader=()=>document.documentElement.style.setProperty("--header-height",document.querySelector("header").offsetHeight+"px");
   if(window.ResizeObserver)new ResizeObserver(sizeHeader).observe(document.querySelector("header"));
