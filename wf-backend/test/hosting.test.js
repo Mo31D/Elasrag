@@ -24,7 +24,7 @@ test('canonical origin serves native app assets publicly, independent of authent
   const sw = await worker.fetch(req('/sw.js?v=29'), env);
   assert.equal(sw.status, 200);
   assert.match(sw.headers.get('content-type'), /javascript/);
-  assert.match(await sw.text(), /wf-quick-reference-v38/);
+  assert.match(await sw.text(), /wf-quick-reference-v39/);
   assert.equal((await worker.fetch(req('/index.html', 'HEAD'), env)).body, null);
   assert.equal((await worker.fetch(req('/unknown'), env)).status, 404);
   const redirected = await worker.fetch(req('/wf/'), env);
@@ -72,6 +72,6 @@ test('HTTP routes redirect to HTTPS and public assets identify the current build
     assert.equal(response.status,308);assert.ok(response.headers.get('location').startsWith('https://mo.elasrag.com'));
   }
   const response=await worker.fetch(req('/'),env);
-  assert.equal(response.headers.get('x-wf-build'),'38');
+  assert.equal(response.headers.get('x-wf-build'),'39');
   assert.equal(response.headers.get('strict-transport-security'),'max-age=31536000');
 });

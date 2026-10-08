@@ -432,6 +432,25 @@ test('induction stays inside work details and missing work PIN can be added with
   assert.deepEqual(d.errors,[]);
 });
 
+test('Quick Action is public and routes to the existing procedures with contextual return',async t=>{
+  const {env}=fixture();const d=device(env,'',null,'https://mo.elasrag.com/',false,null,null);t.after(()=>d.window.close());
+  const strip=d.document.querySelector('.action-strip');
+  assert.deepEqual([...strip.querySelectorAll('[data-page]')].map(button=>button.dataset.page),['fire','actions']);
+  click(d,'.action-hub-strip');assert.ok(active(d,'actions'));
+  assert.equal(d.document.querySelectorAll('#actions .action-hub-card').length,3);
+  click(d,'#actions [data-page="fire"]');assert.ok(active(d,'fire'));
+  assert.match(d.document.querySelector('#fire [data-back]').textContent,/Quick Action/);
+  click(d,'#fire [data-back]');await until(()=>active(d,'actions'));
+  click(d,'#actions [data-page="access/reset"]');assert.ok(active(d,'access'));
+  assert.match(d.document.querySelector('#access [data-back]').textContent,/Quick Action/);
+  click(d,'#access [data-back]');await until(()=>active(d,'actions'));
+  click(d,'#actions [data-page="benefits/meals"]');assert.ok(active(d,'benefits'));
+  click(d,'#benefits [data-back]');await until(()=>active(d,'actions'));
+  click(d,'#languageToggle');assert.equal(d.document.querySelector('#actions h1').textContent,'تصرف سريع');
+  assert.equal(d.document.querySelector('#actions [data-page="fire"] strong').textContent,'الحريق والإخلاء');
+  assert.deepEqual(d.errors,[]);
+});
+
 test('a session renewal restores unsaved task and profile edits for the same account',async t=>{
   const {env,kv}=fixture();const d=device(env,'#tasks');t.after(()=>d.window.close());
   await signIn(d);

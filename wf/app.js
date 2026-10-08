@@ -318,7 +318,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     const button=$(activePage)?.querySelector('[data-back]');
     if(!button)return;
     const target=(returnTarget(activePage).route).split('/')[0];
-    const label={home:'home',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'peopleXDHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
+    const label={home:'home',actions:'quickAction',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'peopleXDHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
     button.textContent=(lang==='ar'?'→ ':'← ')+t(label);
   }
 
@@ -1044,8 +1044,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=38").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "38";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=39").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "39";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

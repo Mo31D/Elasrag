@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head>
   <meta charset="utf-8">
-  <meta name="wf-build" content="35">
+  <meta name="wf-build" content="39">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
@@ -62,7 +62,10 @@
           <button id="languageToggle" class="language-toggle" type="button" aria-label="Switch to Arabic">ع</button>
         </div>
       </div>
-      <button class="emergency-strip" data-page="fire"><span aria-hidden="true">!</span><span data-i18n="fireQuick"></span><span aria-hidden="true">↗</span></button>
+      <div class="action-strip">
+        <button class="emergency-strip" data-page="fire"><span aria-hidden="true">!</span><span data-i18n="fireQuick"></span><span aria-hidden="true">↗</span></button>
+        <button class="action-hub-strip" data-page="actions"><span aria-hidden="true">↯</span><span data-i18n="quickAction"></span><span aria-hidden="true">↗</span></button>
+      </div>
     </header>
 
     <main>
@@ -93,6 +96,15 @@
         <div class="check-head"><h1 data-i18n="myTasks"></h1><span id="taskProgress" class="progress-pill"></span></div>
         <form id="taskForm" class="inline-form"><input id="taskInput" maxlength="300" autocomplete="off" data-placeholder="addTask"><button class="primary" type="submit" data-i18n="add"></button></form>
         <div class="card"><ul id="personalTasks" class="task-list"></ul><button id="resetTasks" class="reset-checklist" data-i18n="newShift"></button></div>
+      </section>
+      <section id="actions" class="page">
+        <button class="back" data-back></button>
+        <h1 data-i18n="quickAction"></h1>
+        <div class="action-hub-list">
+          <button class="action-hub-card action-hub-fire" data-page="fire"><span class="action-hub-icon" aria-hidden="true">!</span><span><strong data-i18n="fireQuick"></strong><small data-i18n="fireHeadline"></small></span><span aria-hidden="true">↗</span></button>
+          <button class="action-hub-card" data-page="access/reset"><span class="action-hub-icon" aria-hidden="true">?</span><span><strong data-i18n="peopleXDRecoveryAction"></strong><small data-i18n="resetTab"></small></span><span aria-hidden="true">↗</span></button>
+          <button class="action-hub-card" data-page="benefits/meals"><span class="action-hub-icon" aria-hidden="true">✓</span><span><strong data-i18n="mealAction"></strong><small data-i18n="mealRuleAction"></small></span><span aria-hidden="true">↗</span></button>
+        </div>
       </section>
       <section id="fire" class="page">
         <button class="back" data-back data-back-fire=""></button>
