@@ -1,5 +1,6 @@
-import { TRANSLATIONS } from "./content.js?v=48";
-import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js?v=48";
+import { TRANSLATIONS } from "./content.js";
+import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js";
+import { WF_BUILD } from "./build.js";
 (() => {
   if(location.protocol!=="https:")return;
   const META_KEY = "wf-vault-meta-v1";
@@ -43,6 +44,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
 
   const T = TRANSLATIONS;
   const $ = id => document.getElementById(id);
+  document.querySelector('meta[name="wf-build"]')?.setAttribute("content", WF_BUILD);
   const t = key => (T[lang] && T[lang][key]) || key;
   const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
 
@@ -1137,9 +1139,14 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   if ("serviceWorker" in navigator) {
     const workers = navigator.serviceWorker;
     const appWorker = worker => worker && new URL(worker.scriptURL).pathname === new URL("./sw.js", location.href).pathname;
-    const retiredController = () => !workers.controller || (appWorker(workers.controller) && new URL(workers.controller.scriptURL).searchParams.get("v") === "45");
+    const retiredController = () => {
+      if (!workers.controller) return true;
+      if (!appWorker(workers.controller)) return false;
+      const v = Number(new URL(workers.controller.scriptURL).searchParams.get("v"));
+      return v >= 45; // v45+ are the network-only retirement workers; legacy versions require migration.
+    };
     if (appWorker(workers.controller) && !retiredController()) {
-      safeWorkerReady = workers.register("./sw.js?v=48", {updateViaCache:"none"}).then(() => {
+      safeWorkerReady = workers.register("./sw.js?v=" + WF_BUILD, {updateViaCache:"none"}).then(() => {
         if (retiredController()) return true;
         return new Promise(resolve => {
           const finish = value => { clearTimeout(timer); workers.removeEventListener("controllerchange", changed); resolve(value); };
