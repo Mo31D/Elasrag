@@ -1,5 +1,5 @@
-const CACHE = "wf-quick-reference-v35";
-const CORE = ["./", "./index.html", "./styles.css", "./app.js", "./content.js", "./model.js"];
+const CACHE = "wf-quick-reference-v36";
+const CORE = ["./", "./index.html", "./styles.css", "./app.js", "./content.js", "./model.js", "./tasks.js"];
 
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)));
