@@ -1,4 +1,5 @@
 import { OWNER_PROFILE, initialCompanion } from "./defaults.js";
+import { WF_BUILD } from "../../wf/build.js";
 const ALLOWED_ORIGINS = new Set([
   "https://mo.elasrag.com",
   "https://www.elasrag.com",
@@ -530,7 +531,7 @@ export default {
     const url = new URL(request.url);
     if(url.protocol==="http:"){url.protocol="https:";return Response.redirect(url.href,308);}
     const origin = request.headers.get("origin");
-    if (["GET", "HEAD"].includes(request.method) && ["/", "/index.html", "/sw.js", "/content.js", "/app.js", "/model.js", "/styles.css", "/WF-Training-Reference.md"].includes(url.pathname)) {
+    if (["GET", "HEAD"].includes(request.method) && ["/", "/index.html", "/sw.js", "/content.js", "/app.js", "/model.js", "/build.js", "/styles.css", "/WF-Training-Reference.md"].includes(url.pathname)) {
       if (!env.ASSETS) return new Response("Service unavailable", { status: 503, headers: { "cache-control": "no-store" } });
       try {
         const assetUrl = new URL(request.url);
@@ -544,7 +545,7 @@ export default {
         headers.set("cdn-cache-control", "no-store");
         headers.set("cloudflare-cdn-cache-control", "no-store");
         headers.set("strict-transport-security", "max-age=31536000");
-        headers.set("x-wf-build", "45");
+        headers.set("x-wf-build", WF_BUILD);
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");
