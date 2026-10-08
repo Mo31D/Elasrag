@@ -58,12 +58,18 @@ jobs:
         if: always()
         shell: bash
         run: |
-          EXPECTED="$(sed -n 's/.*WF_BUILD = "\\([^"]*\\)".*/\\1/p' wf/build.js)"
+          EXPECTED="$(node --input-type=module -e 'import { WF_BUILD } from "./wf/build.js"; process.stdout.write(WF_BUILD)')"
           HEADERS="$(curl -fsSIL --max-time 15 https://mo.elasrag.com/ || true)"
           LIVE="$(printf '%s\n' "$HEADERS" | tr -d '\r' | awk -F': *' 'tolower($1)=="x-wf-build" {print $2}' | tail -1)"
-          if [ -n "$LIVE" ] && [ "$LIVE" = "$EXPECTED" ]; then
-            echo "Cloudflare origin version matches repository: $LIVE" >> "$GITHUB_STEP_SUMMARY"
+          LIVE_HTML="$(curl -fsSL --max-time 15 https://mo.elasrag.com/ || true)"
+          LIVE_BUILD_JS="$(curl -fsSL --max-time 15 https://mo.elasrag.com/build.js || true)"
+          HTML_OK=false
+          BUILD_OK=false
+          if printf '%s' "$LIVE_HTML" | grep -Fq 'data-page="safety/substances"'; then HTML_OK=true; fi
+          if printf '%s' "$LIVE_BUILD_JS" | grep -Fq "WF_BUILD = \"$EXPECTED\""; then BUILD_OK=true; fi
+          if [ -n "$LIVE" ] && [ "$LIVE" = "$EXPECTED" ] && [ "$HTML_OK" = true ] && [ "$BUILD_OK" = true ]; then
+            echo "Cloudflare origin verified: build $LIVE, latest HTML quick action and build.js all match." >> "$GITHUB_STEP_SUMMARY"
           else
-            echo "::warning::Live Cloudflare version not confirmed: expected $EXPECTED, observed ${LIVE:-unavailable}. GitHub Pages success does not deploy Worker assets."
-            echo "Live Cloudflare build not confirmed; expected $EXPECTED, observed ${LIVE:-unavailable}." >> "$GITHUB_STEP_SUMMARY"
+            echo "::warning::Live Cloudflare build or contents not confirmed: expected $EXPECTED, observed ${LIVE:-unavailable}, html=$HTML_OK, build.js=$BUILD_OK."
+            echo "Live Cloudflare validation mismatch: expected $EXPECTED, observed ${LIVE:-unavailable}, html=$HTML_OK, build.js=$BUILD_OK." >> "$GITHUB_STEP_SUMMARY"
           fi
