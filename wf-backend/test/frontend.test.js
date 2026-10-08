@@ -410,6 +410,28 @@ test('primary navigation returns home and keeps task drafts and page reading pos
   assert.deepEqual(d.errors,[]);
 });
 
+test('induction stays inside work details and missing work PIN can be added without changing other data',async t=>{
+  const {env,kv}=fixture();const d=device(env,'#details/arrival');t.after(()=>d.window.close());
+  await signIn(d);
+  assert.equal(d.document.querySelectorAll('#details [data-tab]').length,2);
+  assert.equal(d.document.querySelector('#details-panel-shift #inductionHistory').open,true);
+  assert.equal(d.document.getElementById('details-tab-shift').getAttribute('aria-selected'),'true');
+  click(d,'#details-tab-accounts');
+  const pin=d.document.querySelector('[data-private="workPin"]');
+  assert.equal(pin.closest('.row').hidden,true);
+  assert.equal(d.document.getElementById('addWorkPin').hidden,false);
+  click(d,'#addWorkPin');
+  const input=d.document.getElementById('profile-workPin');
+  assert.equal(input.closest('details').open,true);
+  assert.equal(d.document.activeElement,input);
+  fill(d,'profile-workPin','fixture-only-pin');click(d,'#saveProfile');
+  await until(()=>!d.document.getElementById('profileDialog').open);
+  assert.equal(pin.textContent,'fixture-only-pin');assert.equal(pin.closest('.row').hidden,false);
+  assert.equal(d.document.getElementById('addWorkPin').hidden,true);
+  assert.equal(JSON.parse(kv.get('private-data')).profile.workPin,'fixture-only-pin');
+  assert.deepEqual(d.errors,[]);
+});
+
 test('a session renewal restores unsaved task and profile edits for the same account',async t=>{
   const {env,kv}=fixture();const d=device(env,'#tasks');t.after(()=>d.window.close());
   await signIn(d);

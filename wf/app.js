@@ -131,6 +131,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     editingIndex = null; editingTaskId = null;
     conflictedEditors.clear();
     $("vaultList").replaceChildren();
+    $('addWorkPin').hidden=true;
     document.querySelectorAll("[data-private]").forEach(el => { el.textContent = ""; el.closest(".row").hidden = true; });
     document.querySelectorAll("[data-private-copy]").forEach(el => delete el.dataset.copy);
     ["secretDialog", "profileDialog", "migrationDialog", "courseDialog", "recoveryDialog"].forEach(id => { if ($(id).open) $(id).close(); });
@@ -194,6 +195,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
 
   function renderPrivateProfile() {
+    $('addWorkPin').hidden=!authenticated || Boolean(privateData?.profile?.workPin);
     document.querySelectorAll("[data-private]").forEach(el => {
       const value = privateData?.profile?.[el.dataset.private] || (el.dataset.private === "thriveUsername" ? privateData?.profile?.colleagueNumber : "") || "";
       el.textContent = value;
@@ -338,7 +340,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
   document.addEventListener("keydown",event=>{const tab=event.target.closest?.("[data-tab]");if(!tab || !["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;event.preventDefault();const tabs=[...tab.parentElement.querySelectorAll("[data-tab]")].filter(button=>!button.hidden && !button.disabled);let index=tabs.indexOf(tab);if(event.key==="Home")index=0;else if(event.key==="End")index=tabs.length-1;else index=(index+(event.key==="ArrowRight"?(lang==="ar"?-1:1):(lang==="ar"?1:-1))+tabs.length)%tabs.length;tabs[index].click();tabs[index].focus();});
   async function showPage(id, historyMode = "push", primaryNavigation = false) {
-    const [routePage,routeTab]=String(id).split("/");id=routePage;
+    let [routePage,routeTab]=String(id).split("/");id=routePage;
+    if(id==='details' && routeTab==='arrival'){routeTab='shift';$('inductionHistory').open=true;}
     if (!$(id)?.classList.contains("page")) id = "home";
     const source=activePage;
     const selected=$(source)?.querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;
@@ -753,6 +756,13 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
   $("editProfileBtn").addEventListener("click",editProfile);
   document.querySelectorAll("[data-edit-profile]").forEach(button=>button.addEventListener("click",editProfile));
+  document.querySelectorAll('[data-edit-profile-field]').forEach(button=>button.addEventListener('click',()=>{
+    editProfile();
+    const input=$('profile-'+button.dataset.editProfileField);
+    if(!input)return;
+    input.closest('details').open=true;
+    input.focus();
+  }));
   $("cancelProfile").addEventListener("click", () => $("profileDialog").close());
   $("profileDialog").addEventListener("close", () => $("profileFields").replaceChildren());
   $("saveProfile").addEventListener("click",async()=>{
@@ -835,7 +845,14 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   addEventListener("pagehide",conceal);
   setInterval(checkActiveSession, 60000);
 
-  function readingLine(){const header=document.querySelector("header")?.getBoundingClientRect().bottom || 0;const tabs=$(activePage)?.querySelector(".section-tabs")?.getBoundingClientRect();return (tabs && tabs.top<=header+4 && tabs.bottom>header ? tabs.bottom : header)+12;}
+  function readingLine(){
+    let line=document.querySelector('header')?.getBoundingClientRect().bottom || 0;
+    for(const selector of ['[data-back]','.section-tabs']){
+      const rect=$(activePage)?.querySelector(selector)?.getBoundingClientRect();
+      if(rect && rect.top<=line+4 && rect.bottom>line)line=rect.bottom;
+    }
+    return line+12;
+  }
   function captureReadingPosition() {
     const page=document.querySelector('.page.active');
     if(!page)return null;
@@ -938,7 +955,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
         const copy=document.createElement('div');
         const title=document.createElement('label');check.id='course-check-'+course.id;title.htmlFor=check.id;title.className='course-copy';title.textContent=courseTitle(course);title.dataset.readAnchor='course-'+course.id;copy.append(title);
         const meta=document.createElement('div');meta.className='course-meta';
-        if(course.due){const due=document.createElement('span');due.textContent=new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{day:'numeric',month:'short'}).format(new Date(course.due+'T12:00:00'))+' · '+deadlineText(course.due);due.className=new Date(course.due+'T23:59:59')<new Date()?'overdue':'urgent';meta.append(due);}
+        if(course.due && course.status!=='completed'){const due=document.createElement('span');due.textContent=new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{day:'numeric',month:'short'}).format(new Date(course.due+'T12:00:00'))+' · '+deadlineText(course.due);due.className=new Date(course.due+'T23:59:59')<new Date()?'overdue':'urgent';meta.append(due);}
         const state=document.createElement('span');state.textContent=t(course.status==='completed'?'completed':course.status==='in-progress'?'inProgress':'notStarted');if(authenticated && course.status==='in-progress')meta.append(state);
         if(!course.required && course.status!=='completed'){const optional=document.createElement('span');optional.textContent=t('optionalLearning');meta.append(optional);}
         copy.append(meta);
@@ -1027,8 +1044,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=37").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "37";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=38").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "38";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
