@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import worker from '../src/index.js';
+import { WF_BUILD } from '../../wf/build.js';
 import { fixture } from './fixtures.js';
 
 const origin = 'https://mo.elasrag.com';
@@ -18,8 +19,9 @@ test('canonical origin serves native app assets publicly, independent of authent
   assert.equal(home.headers.get('cache-control'), 'no-store');
   assert.equal(home.headers.get('x-frame-options'), 'DENY');
   const html = await home.text();
+  assert.match(html, /<meta name="wf-build" content="">/);
   assert.match(html, /data-staff-profile="personal"/);
-  assert.match(html, /src=".\/app.js\?v=45"/);
+  assert.match(html, /src="\.\/app.js"/);
   assert.match(await (await worker.fetch(req("/app.js"),env)).text(), /const API_BASE = .*"\/api"/);
   const sw = await worker.fetch(req('/sw.js?v=29'), env);
   assert.equal(sw.status, 200);
@@ -72,7 +74,7 @@ test('HTTP routes redirect to HTTPS and public assets identify the current build
     assert.equal(response.status,308);assert.ok(response.headers.get('location').startsWith('https://mo.elasrag.com'));
   }
   const response=await worker.fetch(req('/'),env);
-  assert.equal(response.headers.get('x-wf-build'),'45');
+  assert.equal(response.headers.get('x-wf-build'),WF_BUILD);
   assert.equal(response.headers.get('strict-transport-security'),'max-age=31536000');
 });
 
@@ -83,7 +85,7 @@ test('all shell assets bypass browser and CDN caches and never forward stale con
     assert.equal(request.headers.has('if-modified-since'),false);
     return original(request);
   };
-  for(const path of ['/','/index.html','/app.js?v=45','/content.js?v=45','/model.js?v=45','/styles.css?v=45','/sw.js?v=19']){
+  for(const path of ['/','/index.html','/app.js','/content.js','/model.js','/build.js','/styles.css','/sw.js?v=19']){
     const response=await worker.fetch(new Request(origin+path,{headers:{'if-none-match':'old-build','if-modified-since':'Wed, 07 Oct 2026 00:00:00 GMT'}}),env);
     assert.equal(response.status,200,path);
     for(const header of ['cache-control','cdn-cache-control','cloudflare-cdn-cache-control'])assert.equal(response.headers.get(header),'no-store');
