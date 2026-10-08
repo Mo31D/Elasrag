@@ -29,7 +29,7 @@ try {
     assert.ok(await page.evaluate(() => scrollY <= 5),JSON.stringify(await page.evaluate(()=>({scroll:scrollY,focus:document.activeElement.id,hero:document.querySelector('#shiftHero').getBoundingClientRect().toJSON()}))));
     const noOverflow = async () => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Overflow at ${width}px`);
     await noOverflow();
-    await page.locator('header [data-lang="en"]').click();
+    assert.equal(await page.locator('html').getAttribute('lang'),'en');
     await noOverflow();
     await page.locator('#accountBtn').click();
     assert.ok(await page.locator('#passInput').evaluate(el => parseFloat(getComputedStyle(el).fontSize) >= 16));
@@ -65,7 +65,7 @@ try {
     });
     const before = await fraction();
     assert.ok(before >= 0 && before <= 1, `Reading setup at ${width}px: ${before}`);
-    await page.locator('header [data-lang="ar"]').click();
+    await page.locator('#languageToggle').click();
     await page.waitForTimeout(50);
     const after=await fraction();
     assert.ok(Math.abs(after - before) < 0.03, `Reading position at ${width}px: ${before} -> ${after}`);
@@ -83,8 +83,8 @@ try {
       for(const tab of await page.locator('#'+section+' [data-tab]').all()){
         await tab.click();const name=await tab.getAttribute('data-tab');
         assert.equal(await page.locator('#'+section+' [data-tab-panel="'+name+'"]').isVisible(),true);
-        await page.locator('header [data-lang="en"]').click();await noOverflow();
-        await page.locator('header [data-lang="ar"]').click();await noOverflow();
+        await page.locator('#languageToggle').click();await noOverflow();
+        await page.locator('#languageToggle').click();await noOverflow();
         assert.equal(await tab.getAttribute('aria-selected'),'true');
       }
     }
@@ -102,10 +102,10 @@ try {
     assert.equal(await page.locator('#safety-panel-hazards .ppe-mini-list li').count(),3);
     assert.equal(await page.locator('#safety-panel-hazards .safety-sign-tile').count(),4);
     await noOverflow();
-    await page.locator('header [data-lang="en"]').click();
+    await page.locator('#languageToggle').click();
     assert.match(await page.locator('#safety-panel-hazards .ppe-action-guide').textContent(),/Before using protective equipment/);
     await noOverflow();
-    await page.locator('header [data-lang="ar"]').click();
+    await page.locator('#languageToggle').click();
     assert.match(await page.locator('#safety-panel-hazards .ppe-action-guide').textContent(),/قبل استخدام معدات الوقاية/);
     await noOverflow();
     await page.goto('https://mo.elasrag.com/#uniform');
