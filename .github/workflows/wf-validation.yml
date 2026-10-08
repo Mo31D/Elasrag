@@ -65,8 +65,9 @@ jobs:
           LIVE_BUILD_JS="$(curl -fsSL --max-time 15 https://mo.elasrag.com/build.js || true)"
           HTML_OK=false
           BUILD_OK=false
-          if printf '%s' "$LIVE_HTML" | grep -Fq 'data-page="safety/substances"'; then HTML_OK=true; fi
-          if printf '%s' "$LIVE_BUILD_JS" | grep -Fq "WF_BUILD = \"$EXPECTED\""; then BUILD_OK=true; fi
+          if [[ "$LIVE_HTML" == *'data-page="safety/substances"'* ]]; then HTML_OK=true; fi
+          if [[ "$LIVE_BUILD_JS" == *"WF_BUILD = \"$EXPECTED\""* ]]; then BUILD_OK=true; fi
+          echo "Live probe: expected=$EXPECTED observed=${LIVE:-unavailable} html_bytes=${#LIVE_HTML} html=$HTML_OK build_module=$BUILD_OK" >> "$GITHUB_STEP_SUMMARY"
           if [ -n "$LIVE" ] && [ "$LIVE" = "$EXPECTED" ] && [ "$HTML_OK" = true ] && [ "$BUILD_OK" = true ]; then
             echo "Cloudflare origin verified: build $LIVE, latest HTML quick action and build.js all match." >> "$GITHUB_STEP_SUMMARY"
           else
