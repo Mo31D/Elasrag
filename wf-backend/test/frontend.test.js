@@ -543,8 +543,10 @@ test('Quick Action is public and routes to the existing procedures with contextu
   click(d,'#actions [data-page="access/reset"]');assert.ok(active(d,'access'));
   assert.match(d.document.querySelector('#access [data-back]').textContent,/Quick Action/);
   click(d,'#access [data-back]');await until(()=>active(d,'actions'));
-  click(d,'#actions [data-page="benefits/meals"]');assert.ok(active(d,'benefits'));
-  click(d,'#benefits [data-back]');await until(()=>active(d,'actions'));
+  click(d,'#actions [data-page="safety/substances"]');assert.ok(active(d,'safety'));
+  assert.equal(d.document.querySelector('#safety-panel-substances').hidden,false);
+  assert.ok(d.document.querySelector('#safety-panel-substances > .coshh-urgent'));
+  click(d,'#safety [data-back]');await until(()=>active(d,'actions'));
   click(d,'#languageToggle');assert.equal(d.document.querySelector('#actions h1').textContent,'تصرف سريع');
   assert.equal(d.document.querySelector('#actions [data-page="fire"] strong').textContent,'الحريق والإخلاء');
   assert.deepEqual(d.errors,[]);
