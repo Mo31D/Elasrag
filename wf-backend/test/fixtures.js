@@ -16,7 +16,7 @@ export function fixture() {
   const env = {
     ASSETS: { async fetch(request) {
       const path = new URL(request.url).pathname;
-      if (!['/index.html','/sw.js','/app.js','/model.js','/content.js','/styles.css'].includes(path)) return new Response('Not found', {status:404});
+      if (!['/index.html','/sw.js','/app.js','/model.js','/content.js','/styles.css','/WF-Training-Reference.md'].includes(path)) return new Response('Not found', {status:404});
       return new Response(request.method === 'HEAD' ? null : readFileSync(new URL('../../wf' + path, import.meta.url)), { headers: {'content-type': path.endsWith('.js') ? 'text/javascript' : path.endsWith('.css') ? 'text/css' : 'text/html'} });
     } },
     WF_PASSWORD: 'fixture-password-only', SESSION_SECRET: 'fixture-signing-key-only',

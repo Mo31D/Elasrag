@@ -89,3 +89,15 @@ test('all shell assets bypass browser and CDN caches and never forward stale con
     for(const header of ['cache-control','cdn-cache-control','cloudflare-cdn-cache-control'])assert.equal(response.headers.get(header),'no-store');
   }
 });
+
+
+test('training reference downloads publicly as Markdown without accessing private data',async()=>{
+  const {env}=fixture();delete env.WF_PASSWORD;delete env.SESSION_SECRET;
+  const response=await worker.fetch(req('/WF-Training-Reference.md'),env);
+  assert.equal(response.status,200);
+  assert.equal(response.headers.get('content-type'),'text/markdown; charset=utf-8');
+  assert.equal(response.headers.get('content-disposition'),'attachment; filename="WF-Training-Reference.md"');
+  assert.equal(response.headers.get('cache-control'),'no-store');
+  assert.match(await response.text(),/COSHH/);
+  assert.equal((await worker.fetch(req('/WF-Training-Reference.md','HEAD'),env)).body,null);
+});

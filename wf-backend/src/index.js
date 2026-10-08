@@ -530,7 +530,7 @@ export default {
     const url = new URL(request.url);
     if(url.protocol==="http:"){url.protocol="https:";return Response.redirect(url.href,308);}
     const origin = request.headers.get("origin");
-    if (["GET", "HEAD"].includes(request.method) && ["/", "/index.html", "/sw.js", "/content.js", "/app.js", "/model.js", "/styles.css"].includes(url.pathname)) {
+    if (["GET", "HEAD"].includes(request.method) && ["/", "/index.html", "/sw.js", "/content.js", "/app.js", "/model.js", "/styles.css", "/WF-Training-Reference.md"].includes(url.pathname)) {
       if (!env.ASSETS) return new Response("Service unavailable", { status: 503, headers: { "cache-control": "no-store" } });
       try {
         const assetUrl = new URL(request.url);
@@ -548,6 +548,10 @@ export default {
         headers.set("x-content-type-options", "nosniff");
         headers.set("referrer-policy", "same-origin");
         headers.set("x-frame-options", "DENY");
+        if (url.pathname === "/WF-Training-Reference.md") {
+          headers.set("content-type", "text/markdown; charset=utf-8");
+          headers.set("content-disposition", 'attachment; filename="WF-Training-Reference.md"');
+        }
         return new Response(response.body, { status: response.status, headers });
       } catch {
         return new Response("Service unavailable", { status: 503, headers: { "cache-control": "no-store" } });
