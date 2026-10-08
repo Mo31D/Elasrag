@@ -80,7 +80,9 @@ test('guest entry preserves KV, hides personal sections and disables all mutatio
   const before=JSON.stringify([...kv]);
   const d=device(env,'#details',null,'https://mo.elasrag.com/',false,null,'en');t.after(()=>d.window.close());
   await until(()=>!d.document.getElementById('lockScreen').classList.contains('hidden'));
+  fill(d,'usernameInput','previous-account');fill(d,'recoveryInput','previous-recovery');
   click(d,'#guestBtn');await until(()=>active(d,'details'));
+  assert.equal(d.document.getElementById('usernameInput').value,'');assert.equal(d.document.getElementById('recoveryInput').value,'');
   const requests=d.requests.length;
   assert.equal(d.window.sessionStorage.getItem('wf-guest-preview'),'1');
   assert.equal(d.document.getElementById('guestNotice').hidden,false);

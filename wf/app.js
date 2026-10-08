@@ -183,6 +183,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     navigationVersion++;guestMode=true;sessionStorage.setItem('wf-guest-preview','1');
     pendingDraft=null;serverSessionKnown=false;returnTargets.clear();readingPositions.clear();
     clearPrivateData();$('privacyShield').classList.add('hidden');$('lockScreen').classList.add('hidden');
+    $('usernameInput').value='';$('recoveryInput').value='';
     document.querySelectorAll('[data-check]').forEach(box=>box.checked=false);
     document.querySelectorAll('[data-checklist]').forEach(card=>updateChecklistProgress(card.dataset.checklist));
     renderPrivateProfile();renderVault();renderCompanion();showPage(destination,'replace');
