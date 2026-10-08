@@ -86,3 +86,92 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 .illustrated-summary{display:flex;align-items:center;gap:9px}
 .illustrated-summary span{min-width:0}
 
+/* Fire & evacuation: emergency first, supporting guidance second. Scoped to #fire. */
+#fire.fire-page{max-width:800px;margin-inline:auto;padding-bottom:20px}
+#fire .fire-page-title{margin:0 0 14px}
+#fire .fire-eyebrow{display:block;margin:0 0 3px;color:var(--accent);font-size:11px;line-height:1.45;font-weight:800;letter-spacing:.035em}
+#fire .fire-page-title h1{margin:0;font-size:24px;line-height:1.3;letter-spacing:-.025em}
+#fire .fire-emergency-card{background:#fff7f5;border:1.5px solid #e7bdb8;border-top:5px solid #a9342a;padding:17px;border-radius:16px;box-shadow:0 4px 16px #6327180b}
+#fire .fire-alert-heading{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+#fire .fire-alert-heading>div{min-width:0}
+#fire .fire-alert-icon{width:48px;height:48px;flex:0 0 48px;padding:9px;border-radius:14px;background:#fce5e0;color:#ac372d}
+#fire .fire-priority-label{display:block;font-size:11px;color:#9c3830;font-weight:800;line-height:1.3;letter-spacing:.025em}
+#fire .fire-alert-heading h2{margin:3px 0 0;color:#852920;font-size:19px;line-height:1.35;font-weight:800}
+#fire .fire-discovery{display:grid;grid-template-columns:32px minmax(0,1fr);align-items:start;gap:10px;padding:12px 13px;background:#fff;border:1px solid #eed8d4;border-radius:12px}
+#fire .fire-discovery-icon{width:29px;height:29px;color:#b63b31;padding:3px}
+#fire .fire-discovery strong{display:block;margin-bottom:3px;font-size:14px;line-height:1.45;color:#852920}
+#fire .fire-discovery p{margin:0;color:var(--ink);font-size:14px;line-height:1.65}
+#fire .fire-evac-panel{margin-top:12px;background:#fff;border:1px solid #e7d4d0;border-radius:12px;padding:13px}
+#fire .fire-evac-title{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:16px;font-weight:750;line-height:1.5;color:#892f27}
+#fire .fire-heading-icon{width:23px;height:23px;flex:none;color:var(--accent)}
+#fire .fire-evac-title .fire-heading-icon{color:#b2382d}
+#fire .fire-emergency-list{display:grid;gap:7px}
+#fire .fire-emergency-list .task{display:block;border:0;padding:0;min-height:0}
+#fire .fire-check-row{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:11px;width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer}
+#fire .fire-check-row:hover{background:#f8faf9}
+#fire .fire-check-row:has(.task-check:checked){border-color:#b9d9c7;background:#f0f8f3}
+#fire .fire-check-row:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+#fire .fire-check-row .task-text{min-height:34px;font-size:14px;line-height:1.5;font-weight:600}
+#fire .fire-check-row .task-check{width:32px;height:32px}
+#fire .fire-check-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px}
+#fire .fire-check-footer .reset-checklist{margin:0;min-height:36px;font-size:12px}
+#fire .fire-check-footer .progress-pill{font-size:12px;padding:6px 10px}
+#fire .fire-check-hint{margin:11px 2px 0;color:#765652;font-size:12px;line-height:1.55}
+#fire .fire-section{margin-top:24px}
+#fire .fire-section-title{margin:0 1px 12px}
+#fire .fire-section-title h2{margin:0;color:var(--ink);font-size:18px;line-height:1.4;font-weight:800}
+#fire .fire-section-title p{margin:5px 0 0;color:var(--muted);font-size:13px;line-height:1.6}
+#fire .fire-advice-list{overflow:hidden;border:1px solid var(--line);border-radius:14px;background:#fff}
+#fire .fire-advice-item{display:grid;grid-template-columns:36px minmax(0,1fr);align-items:start;gap:12px;padding:15px;border-top:1px solid var(--line)}
+#fire .fire-advice-item:first-child{border-top:0}
+#fire .fire-advice-icon{width:36px;height:36px;padding:8px;flex:none;border-radius:10px;background:#f0f3f1;color:var(--accent)}
+#fire .fire-advice-item:first-child .fire-advice-icon,#fire .fire-advice-item:nth-child(2) .fire-advice-icon{background:#fff1ed;color:#ad4131}
+#fire .fire-advice-copy{min-width:0}
+#fire .fire-advice-copy h3{margin:0 0 3px;font-size:14px;line-height:1.5;font-weight:750}
+#fire .fire-advice-copy p{margin:0;font-size:13px;line-height:1.65;color:#3f5350}
+#fire .fire-role-card{overflow:hidden;margin-bottom:10px;border:1px solid var(--line);border-radius:13px;background:#fff}
+#fire .fire-role-summary{display:flex;align-items:center;gap:10px;min-height:72px;padding:12px 14px;list-style:none;cursor:pointer}
+#fire .fire-role-summary::-webkit-details-marker{display:none}
+#fire .fire-role-summary::marker{content:""}
+#fire .fire-role-icon{width:38px;height:38px;flex:0 0 38px;padding:9px;border-radius:11px;background:#ecf4ee;color:var(--accent)}
+#fire .fire-role-copy{display:grid;gap:4px;min-width:0;flex:1}
+#fire .fire-role-copy strong{font-size:14px;line-height:1.4;color:var(--ink);font-weight:750}
+#fire .fire-role-copy small{font-size:12px;line-height:1.45;color:var(--muted)}
+#fire .fire-role-chevron{width:19px;height:19px;flex:0 0 19px;color:var(--muted);transition:transform .18s ease}
+#fire .fire-role-card[open] .fire-role-chevron{transform:rotate(180deg)}
+#fire .fire-role-summary:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}
+#fire .fire-role-body{padding:0 14px 14px;border-top:1px solid var(--line)}
+#fire .fire-role-body .task{display:block;padding:0;border-top:1px solid var(--line)}
+#fire .fire-role-body .task:first-child{border-top:0}
+#fire .fire-role-body .fire-check-row{border:0;padding:12px 2px;border-radius:0}
+#fire .fire-role-body .fire-check-row:has(.task-check:checked){background:#f0f8f3}
+#fire .fire-role-body .fire-check-row .task-text{font-weight:500}
+#fire .fire-role-body .task-text .sub{margin-top:3px}
+#fire .fire-equipment-card{padding:16px}
+#fire .fire-equipment-title{display:flex;align-items:center;gap:9px;margin:0 0 9px;font-size:16px;line-height:1.45;font-weight:750}
+#fire .fire-equipment-notice{padding:10px 12px;background:#fff7ec;border-inline-start:3px solid #c28331;border-radius:8px;color:#67502c;font-size:13px;line-height:1.6}
+#fire .ext-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:14px 0}
+#fire .ext-card{padding:12px 8px;min-height:190px;background:#fafcfb;border:1px solid #dfe8e3;border-radius:12px}
+#fire .ext-card svg{width:65px;height:92px}
+#fire .ext-card strong{font-size:14px;line-height:1.4;color:var(--ink);font-weight:750;margin-top:4px}
+#fire .ext-card .ext-use{font-size:13px;line-height:1.5;color:#455b55;font-weight:500;margin-top:5px;max-width:100%;overflow-wrap:break-word}
+#fire .fire-equipment-footnote{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.65}
+#fire .fire-pass-panel{padding:0;border-radius:12px}
+#fire .fire-pass-summary{display:flex;align-items:center;gap:10px;padding:12px 15px;min-height:52px;line-height:1.5}
+#fire .fire-pass-body{padding:0 15px 14px}
+#fire .fire-pass-body p{margin:9px 0 0;font-size:13px;line-height:1.65}
+@media(min-width:580px){
+  #fire .ext-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  #fire .fire-advice-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  #fire .fire-advice-item{grid-template-columns:1fr;gap:9px;border-top:0;border-inline-start:1px solid var(--line)}
+  #fire .fire-advice-item:first-child{border-inline-start:0}
+}
+@media(max-width:350px){
+  #fire .fire-emergency-card{padding:12px}
+  #fire .fire-alert-icon{width:42px;height:42px;flex-basis:42px}
+  #fire .fire-alert-heading h2{font-size:17px}
+  #fire .fire-check-row{padding:9px 7px;gap:8px}
+  #fire .fire-role-summary{padding:11px 10px}
+  #fire .fire-advice-item{padding:12px}
+}
+@media(prefers-reduced-motion:reduce){#fire .fire-role-chevron{transition:none}}
