@@ -21,6 +21,11 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   let editingCourseId = null;
   let editingTaskId = null;
   const returnTargets = new Map();
+  const readingPositions = new Map();
+  function currentRoute() {
+    const tab=$(activePage)?.querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;
+    return activePage+(tab?'/'+tab:'');
+  }
   let privateData = null;
   let navigationVersion = 0;
   let activePage = "home";
@@ -321,17 +326,24 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
 
   function selectTab(page,name,updateHistory=false){
     if(!page?.querySelector(`[data-tab="${name}"]`))return;
+    if(updateHistory && page.id===activePage)readingPositions.set(currentRoute(),captureReadingPosition());
     page.querySelectorAll("[data-tab]").forEach(button=>{const selected=button.dataset.tab===name;button.setAttribute("aria-selected",String(selected));button.tabIndex=selected?0:-1;});
     page.querySelectorAll("[data-tab-panel]").forEach(panel=>panel.hidden=panel.dataset.tabPanel!==name);
-    if(updateHistory)history.replaceState(history.state,"","#"+page.id+"/"+name);
+    if(updateHistory){
+      history.replaceState(history.state,"","#"+page.id+"/"+name);
+      const reading=readingPositions.get(currentRoute());
+      if(reading)restoreReadingPosition(reading);
+      else window.scrollTo({top:0,behavior:'auto'});
+    }
   }
   document.addEventListener("keydown",event=>{const tab=event.target.closest?.("[data-tab]");if(!tab || !["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;event.preventDefault();const tabs=[...tab.parentElement.querySelectorAll("[data-tab]")].filter(button=>!button.hidden && !button.disabled);let index=tabs.indexOf(tab);if(event.key==="Home")index=0;else if(event.key==="End")index=tabs.length-1;else index=(index+(event.key==="ArrowRight"?(lang==="ar"?-1:1):(lang==="ar"?1:-1))+tabs.length)%tabs.length;tabs[index].click();tabs[index].focus();});
-  async function showPage(id, historyMode = "push") {
+  async function showPage(id, historyMode = "push", primaryNavigation = false) {
     const [routePage,routeTab]=String(id).split("/");id=routePage;
     if (!$(id)?.classList.contains("page")) id = "home";
     const source=activePage;
     const selected=$(source)?.querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;
     const previous={route:source+(selected?'/'+selected:''),reading:captureReadingPosition()};
+    readingPositions.set(previous.route,previous.reading);
     const version = ++navigationVersion;
     message("privateMessage", "");
     if (PROTECTED_PAGES.has(id)) {
@@ -349,12 +361,13 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     } else { $("lockScreen").classList.add("hidden"); pendingPrivatePage = null; }
     displayPage(id);
     if(routeTab)selectTab($(id),routeTab);
-    if(historyMode==='push' && id!==source) returnTargets.set(id,previous);
+    if(historyMode==='push' && id!==source) returnTargets.set(id,primaryNavigation ? {route:'home',reading:readingPositions.get('home')} : previous);
     updateBackButton();
     const tab=$(id).querySelector('[data-tab][aria-selected="true"]')?.dataset.tab;const hash=id==="home"?"":"#"+id+(tab?"/"+tab:"");
     if(location.hash!==hash)history[historyMode === "replace" ? "replaceState" : "pushState"](
-      historyMode==='push' ? {wfPage:id,wfFrom:previous.route} : history.state?.wfPage===id ? history.state : null,
+      historyMode==='push' ? {wfPage:id,wfFrom:primaryNavigation?'home':previous.route} : history.state?.wfPage===id ? history.state : null,
       "",hash || location.pathname+location.search);
+    if(id!==source || routeTab)restoreReadingPosition(readingPositions.get(currentRoute()));
   }
 
   function privateChanges(before, proposed) {
@@ -652,7 +665,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     const tab=e.target.closest("[data-tab]");if(tab){selectTab(tab.closest(".page"),tab.dataset.tab,true);return;}
     const target = e.target.closest("[data-page]");
     if (target) {
-      showPage(target.dataset.page);
+      showPage(target.dataset.page,'push',Boolean(target.closest('nav')));
     }
     const copy = e.target.closest("[data-copy]");
     if (copy) {
@@ -1014,8 +1027,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=35").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "35";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=37").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "37";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };

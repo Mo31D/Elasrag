@@ -387,6 +387,29 @@ test('returning from another page keeps draft inputs and back links return to th
   assert.deepEqual(d.errors,[]);
 });
 
+test('primary navigation returns home and keeps task drafts and page reading positions',async t=>{
+  const {env}=fixture();const d=device(env,'#tasks');t.after(()=>d.window.close());
+  await signIn(d);
+  let scroll=0;
+  Object.defineProperty(d.window,'scrollY',{get:()=>scroll});
+  d.window.scrollTo=options=>{scroll=options.top;};
+  fill(d,'taskInput','Keep this draft');
+  scroll=180;
+  click(d,'nav [data-page="training"]');
+  assert.ok(active(d,'training'));
+  assert.match(d.document.querySelector('#training [data-back]').textContent,/الرئيسية/);
+  assert.equal(d.window.history.state.wfFrom,'home');
+  click(d,'nav [data-page="tasks"]');
+  assert.ok(active(d,'tasks'));assert.equal(scroll,180);
+  assert.equal(d.document.getElementById('taskInput').value,'Keep this draft');
+  assert.match(d.document.querySelector('#tasks [data-back]').textContent,/الرئيسية/);
+  click(d,'nav [data-page="home"]');click(d,'#home [data-page="benefits"]');
+  scroll=260;click(d,'#benefits-tab-discounts');assert.equal(scroll,0);
+  scroll=90;click(d,'#benefits-tab-meals');assert.equal(scroll,260);
+  click(d,'#benefits-tab-discounts');assert.equal(scroll,90);
+  assert.deepEqual(d.errors,[]);
+});
+
 test('a session renewal restores unsaved task and profile edits for the same account',async t=>{
   const {env,kv}=fixture();const d=device(env,'#tasks');t.after(()=>d.window.close());
   await signIn(d);
