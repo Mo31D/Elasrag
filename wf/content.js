@@ -1,5 +1,11 @@
 export const TRANSLATIONS = {
   "ar": {
+    "extVisualTitle": "التعرّف على أنواع الطفايات",
+    "extVisualWarning": "مرجع تعليمي فقط: الإخلاء أولًا. استخدام الطفاية فقط للمتدرّب والمصرّح له ومع وجود طريق هروب آمن. اقرأ ملصق الطفاية الفعلية.",
+    "extVisualNote": "الألوان المعروضة للتعرّف على الأنواع الشائعة، وليست تأكيدًا للمعدات الموجودة في موقع العمل. راجع الملصق وخطة الحريق.",
+    "chemicalVisualTitle": "راجع ملصق عبوة التنظيف الفعلية",
+    "chemicalVisualNote": "لازم نتأكد من اسم المنتج وكوده ومعدات الحماية من ملصق الموقع ونشرة بيانات السلامة. منتج D10 غير مؤكّد حتى الآن.",
+
     "safetyQuick": "سلامة الشغل",
     "safetyQuickHint": "حروق · مخاطر · رفع أحمال · مواد خطرة",
     "burnTab": "حروق",
@@ -389,6 +395,12 @@ export const TRANSLATIONS = {
     "retryIntro": "حاول فتح بياناتك تاني."
   },
   "en": {
+    "extVisualTitle": "Identify extinguisher types",
+    "extVisualWarning": "Training reference only: evacuate first. Only trained, authorised staff with a safe escape route may consider using an extinguisher. Read the actual unit label.",
+    "extVisualNote": "Colours illustrate common extinguisher identification, not verified equipment at this workplace. Check the label and fire plan.",
+    "chemicalVisualTitle": "Check the actual cleaning product label",
+    "chemicalVisualNote": "Verify product name, code and PPE against the workplace label and safety data sheet. No D10 product has been confirmed yet.",
+
     "safetyQuick": "Workplace safety",
     "safetyQuickHint": "Burns · hazards · lifting · substances",
     "burnTab": "Burns",
