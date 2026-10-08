@@ -36,6 +36,9 @@ jobs:
         run: npm ci --prefix wf-backend
       - name: Backend, frontend and hosting tests
         run: npm --prefix wf-backend run check
+      - name: Bundle Cloudflare Worker without publishing
+        working-directory: wf-backend
+        run: npx wrangler deploy --dry-run --outdir /tmp/wf-build-check
       - name: Find headless browser
         id: browser
         shell: bash
@@ -51,3 +54,16 @@ jobs:
         env:
           WF_TEST_CHROMIUM: ${{ steps.browser.outputs.path }}
         run: npm --prefix wf-backend run test:mobile
+      - name: Compare public Cloudflare build with repository
+        if: always()
+        shell: bash
+        run: |
+          EXPECTED="$(sed -n 's/.*WF_BUILD = "\\([^"]*\\)".*/\\1/p' wf/build.js)"
+          HEADERS="$(curl -fsSIL --max-time 15 https://mo.elasrag.com/ || true)"
+          LIVE="$(printf '%s\n' "$HEADERS" | tr -d '\r' | awk -F': *' 'tolower($1)=="x-wf-build" {print $2}' | tail -1)"
+          if [ -n "$LIVE" ] && [ "$LIVE" = "$EXPECTED" ]; then
+            echo "Cloudflare origin version matches repository: $LIVE" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::Live Cloudflare version not confirmed: expected $EXPECTED, observed ${LIVE:-unavailable}. GitHub Pages success does not deploy Worker assets."
+            echo "Live Cloudflare build not confirmed; expected $EXPECTED, observed ${LIVE:-unavailable}." >> "$GITHUB_STEP_SUMMARY"
+          fi
