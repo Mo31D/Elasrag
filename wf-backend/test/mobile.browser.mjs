@@ -51,7 +51,7 @@ try {
     await page.locator('#courseList .course-row').first().waitFor();
     await noOverflow();
     await page.locator('header [data-page="fire"]').click();
-    await page.locator('[data-checklist="fire-warden"] summary').click();
+    await page.locator('[data-checklist="fire-forecourt"] summary').click();
     const label = page.locator('label[for="fire-forecourt-1"]');
     await label.click();
     assert.equal(await page.locator('#fire-forecourt-1').isChecked(), true);
