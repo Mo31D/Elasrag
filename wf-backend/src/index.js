@@ -160,7 +160,15 @@ function validCompanion(value) {
   if (!Array.isArray(value.tasks) || value.tasks.length > 100 || !Array.isArray(value.courses) || value.courses.length > 100) return false;
   const ids = new Set();
   const validId = id => typeof id === "string" && /^[a-zA-Z0-9-]{1,80}$/.test(id) && !ids.has(id) && !!ids.add(id);
-  if (!value.tasks.every(task => task && Object.keys(task).every(key => ["id", "label", "done"].includes(key)) && validId(task.id) && typeof task.label === "string" && task.label.trim() && task.label.length <= 300 && typeof task.done === "boolean")) return false;
+  const validDate = date => typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date) && !Number.isNaN(Date.parse(date)) && new Date(date).toISOString().slice(0,10) === date;
+  if (!value.tasks.every(task => task && !Array.isArray(task) && Object.keys(task).every(key => ["id", "label", "done", "due", "repeat", "reminder", "lastCompleted"].includes(key)) &&
+    validId(task.id) && typeof task.label === "string" && task.label.trim() && task.label.length <= 300 && typeof task.done === "boolean" &&
+    (task.due === undefined || task.due === "" || validDate(task.due)) &&
+    (task.repeat === undefined || ["none", "daily", "weekly", "monthly"].includes(task.repeat)) &&
+    (task.reminder === undefined || ["none", "on-day", "day-before"].includes(task.reminder)) &&
+    (task.lastCompleted === undefined || task.lastCompleted === "" || validDate(task.lastCompleted)) &&
+    (!["daily", "weekly", "monthly"].includes(task.repeat) || validDate(task.due)) &&
+    (!["on-day", "day-before"].includes(task.reminder) || validDate(task.due)))) return false;
   return value.courses.every(course => course && Object.keys(course).every(key => ["id", "titleEN", "titleAR", "due", "status", "required"].includes(key)) && validId(course.id) && typeof course.titleEN === "string" && course.titleEN.trim() && course.titleEN.length <= 300 && typeof course.titleAR === "string" && course.titleAR.length <= 300 && ["not-started", "in-progress", "completed"].includes(course.status) && typeof course.required === "boolean" && (course.due === "" || (typeof course.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(course.due) && !Number.isNaN(Date.parse(course.due)) && new Date(course.due).toISOString().slice(0,10) === course.due)));
 }
 
@@ -242,7 +250,7 @@ async function revision(data) {
 }
 
 const RECORD_FIELDS = {
-  tasks: new Set(["label", "done"]),
+  tasks: new Set(["label", "done", "due", "repeat", "reminder", "lastCompleted"]),
   courses: new Set(["titleEN", "titleAR", "due", "status", "required"]),
 };
 const same = (left, right) => JSON.stringify(left) === JSON.stringify(right);
@@ -302,8 +310,10 @@ function applyChanges(current, changes) {
     if (!change.fields || typeof change.fields !== "object" || Array.isArray(change.fields) || !Object.keys(change.fields).length) return { status: 400 };
     for (const [key, field] of Object.entries(change.fields)) {
       if (!RECORD_FIELDS[change.section].has(key) || !field || typeof field !== "object" || !own(field, "before") || !own(field, "after")) return { status: 400 };
-      if (!same(records[index][key], field.before)) return { status: 409 };
-      records[index][key] = field.after;
+      const current = own(records[index], key) ? records[index][key] : null;
+      if (!same(current, field.before)) return { status: 409 };
+      if (field.after === null) delete records[index][key];
+      else records[index][key] = field.after;
     }
   }
   return validData(next) && encoder.encode(JSON.stringify(next)).byteLength <= MAX_BYTES ? { data: next } : { status: 400 };
