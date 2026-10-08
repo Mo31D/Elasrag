@@ -203,3 +203,57 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 #actions .action-hub-chemical .action-hub-icon{color:#9b2c24;background:#fae8e5}
 #safety .ppe-action-guide{margin-bottom:12px}
 #safety .coshh-urgent{margin-bottom:12px}
+
+/* Incident reporting and risk-awareness: concise, mobile-first reference. */
+#incident .incident-intro{margin:0 0 13px;color:var(--muted);font-size:14px;line-height:1.6}
+#incident .card>h2,#safety .risk-assessment-card>h2{font-size:17px;line-height:1.4;margin:0 0 10px}
+#incident .incident-types{display:grid;gap:9px}
+#incident .incident-type{display:grid;grid-template-columns:31px minmax(0,1fr);gap:10px;align-items:start;padding:12px;border:1px solid #d6e2dc;background:#f3f7f4;border-radius:12px}
+#incident .incident-type-accident{border-color:#eed5ce;background:#fdf5f2}
+#incident .incident-type-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font-size:19px;font-weight:750;background:#dbe8e2;color:#255c49}
+#incident .incident-type-accident .incident-type-icon{background:#f6e0da;color:#913d34}
+#incident .incident-type h3{margin:1px 0 4px;font-size:14px;line-height:1.4}
+#incident .incident-type p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+#incident .incident-urgent{margin:12px 0 0;border-inline-start:3px solid #bc5548;padding:8px 10px;background:#fcf3f0;color:#87372f;font-size:13px;line-height:1.55}
+#incident .incident-steps{list-style:none;padding:0;margin:0;display:grid}
+#incident .incident-steps li{display:grid;grid-template-columns:32px minmax(0,1fr);gap:11px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+#incident .incident-steps li:first-child{border-top:0;padding-top:2px}
+#incident .incident-step-no{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:#e3f0e8;color:#195b44;font-size:16px;font-weight:800;font-variant-numeric:tabular-nums}
+#incident .incident-steps strong{display:block;font-size:14px;line-height:1.4}
+#incident .incident-steps p{margin:3px 0 0;font-size:13px;line-height:1.55;color:var(--muted)}
+#incident .incident-record{border-top:1px solid var(--line);padding-top:8px}
+#incident .incident-record summary{color:var(--accent);font-size:13px;padding:8px 0}
+#incident .incident-record-grid{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:7px}
+#incident .incident-record-grid li{padding:8px 10px;border-radius:8px;background:#f3f6f4;font-size:13px;line-height:1.5}
+#incident .incident-alert65>p{font-size:13px;line-height:1.6}
+#incident .incident-system-path{padding:11px;border:1px solid #dce5df;border-radius:9px;background:#f3f7f4;font-size:12px;line-height:1.8;font-weight:700;text-align:left;overflow-wrap:anywhere}
+#incident .incident-system-path span{padding:0 3px;color:var(--accent)}
+#incident .incident-report-notes{margin:10px 0;padding-inline-start:19px}
+#incident .incident-report-notes li{margin:8px 0;font-size:13px;line-height:1.65}
+#incident .incident-alert65 .incident-example{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
+#actions .action-hub-incident{border-color:#c9ddd2;background:#f1f7f3}
+#actions .action-hub-incident .action-hub-icon{color:#145b43;background:#dcefe4}
+#safety .risk-assessment-card{border-color:#d5e2d9}
+#safety .risk-assessment-card .risk-intro{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 9px}
+#safety .risk-steps{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+#safety .risk-steps li{display:grid;grid-template-columns:25px minmax(0,1fr);gap:9px;align-items:start;padding:9px 10px;background:#f3f7f4;border:1px solid #e2eae5;border-radius:9px}
+#safety .risk-steps li>span{display:grid;place-items:center;border-radius:7px;background:#dcefe4;color:#1c6046;font-weight:750;font-size:13px;width:24px;height:24px}
+#safety .risk-steps strong{display:block;font-size:13px;line-height:1.35}
+#safety .risk-steps small{display:block;margin-top:3px;color:var(--muted);font-size:12px;line-height:1.5}
+#safety .risk-control-details{border-top:1px solid var(--line);margin-top:11px;padding-top:6px}
+#safety .risk-control-details summary{font-size:13px;color:var(--accent);padding:8px 0}
+#safety .risk-control-details>p{font-size:12px;color:var(--muted)}
+#safety .risk-control-list{margin:8px 0;padding-inline-start:24px}
+#safety .risk-control-list li{font-size:13px;line-height:1.5;padding:3px 0}
+#safety .risk-report-button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:46px;margin-top:12px;padding:10px 12px;border:1px solid #c6d9cf;border-radius:10px;background:#eaf4ee;color:#185841;font-size:13px;font-weight:700;line-height:1.5;text-align:start;cursor:pointer}
+#safety .risk-report-button>span:last-child{flex:none}
+#safety .safety-scenario-folds{display:grid;gap:8px;margin-bottom:12px}
+#safety .safety-scenario{margin:0;padding:9px 14px!important}
+#safety .safety-scenario summary{min-height:44px;display:list-item;align-content:center;font-size:14px}
+#safety .safety-scenario p{font-size:13px;line-height:1.6;color:var(--muted)}
+@media(min-width:680px){
+  #incident .incident-types{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #incident .incident-record-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #safety .risk-steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){#incident *,#safety .risk-assessment-card *{scroll-behavior:auto}}
