@@ -70,8 +70,9 @@ html[data-guest="true"] .task-check:disabled{opacity:1;cursor:default}
 #safety .section-tabs{flex-wrap:wrap}#safety .section-tabs button{flex:1;min-width:70px;font-size:14px}#safety .task{display:block}#safety .task-text{font-size:16px}#safety p+p,#fire .card p+p{margin-top:10px}#fire details p{margin-top:10px}#safety .button-link{display:inline-block;margin-top:12px}
 
 /* Visual-guides: emergency, safety, uniform and benefits */
-/* Compact incident-first presentation; scoped to existing fire page */
-#fire .emergency-heading{display:flex;align-items:center;gap:12px;margin-bottom:12px}#fire .emergency-symbol{width:38px;height:38px;flex:none;color:#b83227}#fire .fire-guidance p{padding:10px 0;border-bottom:1px solid var(--line);line-height:1.55}#fire .fire-guidance p:last-child{border-bottom:0}#fire .task-list .task{min-height:48px}#actions .action-hub-list{gap:10px}@media(max-width:400px){#fire .emergency-symbol{width:30px;height:30px}}
+/* Existing fire checklist and quick-action interaction styles */
+#fire .task-list .task{min-height:48px}
+#actions .action-hub-list{gap:10px}
 
 
 .ext-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:10px;margin:14px 0}.ext-card{border:1px solid var(--line);border-radius:12px;padding:9px 4px;text-align:center;display:flex;align-items:center;flex-direction:column;gap:3px;min-width:0}.ext-card svg{height:96px;width:65px}.ext-card strong{font-size:13px}.ext-card span{font-size:11px;color:var(--muted)}.ext-reference p{margin:12px 0;line-height:1.55}.chemical-visual{display:flex;align-items:center;gap:12px;padding:12px;border-radius:12px;background:#eef7f4;margin:12px 0}.chemical-visual svg{width:58px;height:75px;flex:none}.chemical-visual p{font-size:13px;margin-top:4px}
