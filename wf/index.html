@@ -92,18 +92,7 @@
         <button class="back" data-back></button>
         <div class="check-head"><h1 data-i18n="myTasks"></h1><span id="taskProgress" class="progress-pill"></span></div>
         <form id="taskForm" class="inline-form"><input id="taskInput" maxlength="300" autocomplete="off" data-placeholder="addTask"><button class="primary" type="submit" data-i18n="add"></button></form>
-        <details id="taskOptions" class="task-options">
-          <summary data-i18n="taskOptions"></summary>
-          <div class="task-option-grid">
-            <div class="field"><label for="taskDue" data-i18n="taskDue"></label><input id="taskDue" type="date"></div>
-            <div class="field"><label for="taskRepeat" data-i18n="taskRepeat"></label><select id="taskRepeat"><option value="none" data-i18n="repeatNone"></option><option value="daily" data-i18n="repeatDaily"></option><option value="weekly" data-i18n="repeatWeekly"></option><option value="monthly" data-i18n="repeatMonthly"></option></select></div>
-            <div class="field"><label for="taskReminder" data-i18n="taskReminder"></label><select id="taskReminder"><option value="none" data-i18n="remindNone"></option><option value="on-day" data-i18n="remindOnDay"></option><option value="day-before" data-i18n="remindDayBefore"></option></select></div>
-          </div>
-          <p class="tiny" data-i18n="taskReminderInfo"></p>
-          <button type="button" id="cancelTaskEdit" class="secondary" hidden data-i18n="cancelEdit"></button>
-        </details>
-        <p id="taskError" class="error" role="status"></p>
-        <div class="card"><ul id="personalTasks" class="task-list"></ul><button id="resetTasks" class="reset-checklist" data-i18n="resetTaskProgress"></button></div>
+        <div class="card"><ul id="personalTasks" class="task-list"></ul><button id="resetTasks" class="reset-checklist" data-i18n="newShift"></button></div>
       </section>
       <section id="fire" class="page">
         <button class="back" data-back data-back-fire=""></button>

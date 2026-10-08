@@ -1,6 +1,5 @@
 import { TRANSLATIONS } from "./content.js";
 import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, upcomingAlerts } from "./model.js";
-import { taskToday, taskValidDate, taskOccurrence, taskDisplayDate, taskReminderAlert } from "./tasks.js";
 (() => {
   if(location.protocol!=="https:")return;
   const META_KEY = "wf-vault-meta-v1";
@@ -130,8 +129,7 @@ import { taskToday, taskValidDate, taskOccurrence, taskDisplayDate, taskReminder
     document.querySelectorAll("[data-private]").forEach(el => { el.textContent = ""; el.closest(".row").hidden = true; });
     document.querySelectorAll("[data-private-copy]").forEach(el => delete el.dataset.copy);
     ["secretDialog", "profileDialog", "migrationDialog", "courseDialog", "recoveryDialog"].forEach(id => { if ($(id).open) $(id).close(); });
-    ["secretLabel", "secretValue", "secretNote", "oldPass", "passInput", "courseEN", "courseAR", "courseDue", "newRecoveryCode", "taskInput", "taskDue"].forEach(id => $(id).value = "");
-    $("taskRepeat").value="none"; $("taskReminder").value="none"; $("taskOptions").open=false; $("cancelTaskEdit").hidden=true;
+    ["secretLabel", "secretValue", "secretNote", "oldPass", "passInput", "courseEN", "courseAR", "courseDue", "newRecoveryCode", "taskInput"].forEach(id => $(id).value = "");
     $("profileFields").replaceChildren();
     document.querySelectorAll("[data-private-card]").forEach(el => el.hidden = true);
     document.querySelectorAll("[data-job]").forEach(el => { el.textContent = ""; const row = el.closest(".row"); if (row) row.hidden = true; });
@@ -372,12 +370,7 @@ import { taskToday, taskValidDate, taskOccurrence, taskDisplayDate, taskReminder
         const next=updated.find(item=>item.id===old.id);
         if(!next){changes.push({section,type:'remove',id:old.id,before:old});continue;}
         const fields={};
-        for(const key of new Set([...Object.keys(old),...Object.keys(next)])){
-          if(key==='id')continue;
-          const before=Object.hasOwn(old,key)?old[key]:null;
-          const after=Object.hasOwn(next,key)?next[key]:null;
-          if(!same(before,after))fields[key]={before,after};
-        }
+        for(const key of Object.keys(old))if(key!=='id' && !same(old[key],next[key]))fields[key]={before:old[key],after:next[key]};
         if(Object.keys(fields).length)changes.push({section,type:'update',id:old.id,fields});
       }
       for(const item of updated.filter(item=>!original.some(old=>old.id===item.id)))changes.push({section,type:'add',after:item});
@@ -898,19 +891,16 @@ import { taskToday, taskValidDate, taskOccurrence, taskDisplayDate, taskReminder
     return t(key).replace('{n}',Math.abs(diff));
   }
   function renderAlerts() {
-    const alerts=authenticated && privateData?[
-      ...upcomingAlerts(privateData.profile,privateData.companion.courses),
-      ...privateData.companion.tasks.map(task=>taskReminderAlert(task)).filter(Boolean)
-    ]:[];
+    const alerts=authenticated && privateData?upcomingAlerts(privateData.profile,privateData.companion.courses):[];
     const badge=$('alertsCount');badge.hidden=!alerts.length;badge.textContent=alerts.length>9?'9+':String(alerts.length);
     $('alertsBtn').setAttribute('aria-label',t('alertsTitle')+(alerts.length?' · '+alerts.length:''));
     const list=$('alertsList');list.replaceChildren();
     if(!alerts.length){const empty=document.createElement('p');empty.className='alerts-empty';empty.textContent=t('noAlerts');list.append(empty);return;}
     for(const alert of alerts){
       const button=document.createElement('button');button.type='button';button.className='alert-item';
-      const title=document.createElement('strong');title.textContent=alert.kind==='task'?alert.task.label:alert.kind==='training'?courseTitle(alert.course):t(alert.kind==='shift-active'?'shiftAlertActive':'shiftAlertSoon');
-      const detail=document.createElement('span');detail.textContent=alert.kind==='task'?t('taskDueSoon')+' · '+deadlineText(alert.due):alert.kind==='training'?deadlineText(alert.course.due):new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{timeZone:'Europe/London',weekday:'long',hour:'2-digit',minute:'2-digit'}).format(alert.when);
-      button.append(title,detail);button.addEventListener('click',()=>{$('alertsDialog').close();showPage(alert.kind==='task'?'tasks':alert.kind==='training'?'training':'details');});list.append(button);
+      const title=document.createElement('strong');title.textContent=alert.kind==='training'?courseTitle(alert.course):t(alert.kind==='shift-active'?'shiftAlertActive':'shiftAlertSoon');
+      const detail=document.createElement('span');detail.textContent=alert.kind==='training'?deadlineText(alert.course.due):new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{timeZone:'Europe/London',weekday:'long',hour:'2-digit',minute:'2-digit'}).format(alert.when);
+      button.append(title,detail);button.addEventListener('click',()=>{$('alertsDialog').close();showPage(alert.kind==='training'?'training':'details');});list.append(button);
     }
   }
   $('alertsBtn').addEventListener('click',()=>{renderAlerts();$('alertsDialog').showModal();});
@@ -951,63 +941,25 @@ import { taskToday, taskValidDate, taskOccurrence, taskDisplayDate, taskReminder
     $('greeting').textContent=authenticated?(privateData.profile.displayName || account.username):'';
     renderShift();
     $('accountBtn').textContent=authenticated?(privateData.profile.displayName || t('myProfile')):t('myProfile');
-    const today=taskToday();
     $('personalTasks').replaceChildren();
-    const scheduleText=task=>{
-      const state=taskOccurrence(task,today);
-      const date=taskDisplayDate(task,today);
-      const parts=[];
-      if(date){
-        const formatted=new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{day:'numeric',month:'short'}).format(new Date(date+'T12:00:00'));
-        parts.push(t(state.completed&&task.repeat&&task.repeat!=='none'?'taskNext':'taskDueOn')+' '+formatted);
-      }
-      if(task.repeat&&task.repeat!=='none')parts.push(t(({daily:'repeatDaily',weekly:'repeatWeekly',monthly:'repeatMonthly'})[task.repeat]));
-      if(task.reminder&&task.reminder!=='none')parts.push(t(({'on-day':'remindOnDay','day-before':'remindDayBefore'})[task.reminder]));
-      return parts.join(' · ');
-    };
-    const ordered=[...data.tasks].sort((a,b)=>{
-      const sa=taskOccurrence(a,today),sb=taskOccurrence(b,today);
-      return Number(sa.completed)-Number(sb.completed)||(taskDisplayDate(a,today)||'9999-99-99').localeCompare(taskDisplayDate(b,today)||'9999-99-99');
-    });
-    ordered.forEach(task=>{
-      const state=taskOccurrence(task,today);
-      const row=document.createElement('li');row.className='task personal-task'+(state.completed?' task-done':'');
-      const check=document.createElement('input');check.type='checkbox';check.className='task-check';check.checked=state.completed;check.setAttribute('aria-label',task.label);
-      const label=document.createElement('label');check.id='personal-check-'+task.id;label.htmlFor=check.id;label.className='task-text';
-      const text=document.createElement('span');text.textContent=task.label;label.append(text);
-      const schedule=scheduleText(task);
-      if(schedule){const meta=document.createElement('small');meta.className='task-schedule';meta.textContent=schedule;label.append(meta);}
+    data.tasks.forEach(task=>{
+      const row=document.createElement('li');row.className='task personal-task'+(task.done?' task-done':'');
+      const check=document.createElement('input');check.type='checkbox';check.className='task-check';check.checked=task.done;check.setAttribute('aria-label',task.label);
+      const label=document.createElement('label');check.id='personal-check-'+task.id;label.htmlFor=check.id;label.className='task-text';label.textContent=task.label;label.dataset.readAnchor='task-'+task.id;
       check.addEventListener('change',async()=>{
-        if(saving){check.checked=state.completed;return;}
-        check.disabled=true;
-        const next=structuredClone(privateData.companion);
-        const current=next.tasks.find(item=>item.id===task.id);
-        if(current.repeat&&current.repeat!=='none'){
-          current.lastCompleted=check.checked?taskOccurrence(current,taskToday()).due:'';
-          current.done=false;
-        }else current.done=check.checked;
-        try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));check.checked=state.completed;}finally{check.disabled=false;}
+        if(saving){check.checked=task.done;return;}
+        check.disabled=true;const next=structuredClone(privateData.companion);next.tasks.find(item=>item.id===task.id).done=check.checked;
+        try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));check.checked=task.done;}finally{check.disabled=false;}
       });
       const del=document.createElement('button');del.className='course-edit danger-text';del.textContent='×';del.setAttribute('aria-label',t('delete')+' — '+task.label);
-      del.addEventListener('click',async()=>{if(saving||!confirm(t('deleteTaskConfirm')))return;const next=structuredClone(privateData.companion);next.tasks=next.tasks.filter(item=>item.id!==task.id);try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));}});
-      const actions=document.createElement('div');actions.className='task-actions';const edit=document.createElement('button');edit.textContent='⋯';edit.setAttribute('aria-label',t('edit')+' — '+task.label);edit.addEventListener('click',()=>{
-        editingTaskId=task.id;
-        $('taskInput').value=task.label;
-        $('taskDue').value=task.due||'';
-        $('taskRepeat').value=task.repeat||'none';
-        $('taskReminder').value=task.reminder||'none';
-        $('taskOptions').open=true;
-        $('cancelTaskEdit').hidden=false;
-        message('taskError','');
-        $('taskInput').focus({preventScroll:true});
-      });actions.append(edit,del);row.append(check,label,actions);$('personalTasks').append(row);
+      del.addEventListener('click',async()=>{if(saving || !confirm(t('deleteTaskConfirm')))return;const next=structuredClone(privateData.companion);next.tasks=next.tasks.filter(item=>item.id!==task.id);try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));}});
+      const actions=document.createElement('div');actions.className='task-actions';const edit=document.createElement('button');edit.textContent='⋯';edit.setAttribute('aria-label',t('edit')+' — '+task.label);edit.addEventListener('click',()=>{editingTaskId=task.id;$('taskInput').value=task.label;$('taskInput').focus();});actions.append(edit,del);row.append(check,label,actions);$('personalTasks').append(row);
     });
     if(!data.tasks.length){const empty=document.createElement('li');empty.className='empty-personal';empty.textContent=t('addFirstTask');$('personalTasks').append(empty);}
-    const done=data.tasks.filter(task=>taskOccurrence(task,today).completed).length;
+    const done=data.tasks.filter(task=>task.done).length;
     $('homeTaskCount').textContent=done+' / '+data.tasks.length;
     $('taskProgress').textContent=done+' / '+data.tasks.length;
-    $('resetTasks').hidden=done===0;
-    renderAlerts();
+    $('resetTasks').hidden=!data.tasks.some(task=>task.done);
   }
   async function saveCompanion(next){return persistVault(vaultItems,privateData.profile,next);}
   function openCourse(id=null){
@@ -1036,42 +988,15 @@ import { taskToday, taskValidDate, taskOccurrence, taskDisplayDate, taskReminder
     const next=structuredClone(privateData.companion);next.courses=next.courses.filter(item=>item.id!==editingCourseId);
     try{if(await saveCompanion(next))$('courseDialog').close();}catch(error){message('courseError',errorKey(error));}
   });
-  function clearTaskEditor(){
-    editingTaskId=null;
-    $('taskInput').value='';
-    $('taskDue').value='';
-    $('taskRepeat').value='none';
-    $('taskReminder').value='none';
-    $('taskOptions').open=false;
-    $('cancelTaskEdit').hidden=true;
-    message('taskError','');
-  }
-  $('cancelTaskEdit').addEventListener('click',clearTaskEditor);
   $('taskForm').addEventListener('submit',async event=>{
     event.preventDefault();
     if(!authenticated)return openPrivateGate('tasks');
     if(saving || !$('taskInput').value.trim())return;
-    const due=$('taskDue').value,repeat=$('taskRepeat').value,reminder=$('taskReminder').value;
-    if(((repeat!=='none'||reminder!=='none')&&!taskValidDate(due))||(due&&!taskValidDate(due))){
-      $('taskOptions').open=true;message('taskError','taskDateRequired');return;
-    }
-    message('taskError','');
-    const next=structuredClone(privateData.companion);
-    const existing=next.tasks.find(task=>task.id===editingTaskId);
-    const values={label:$('taskInput').value.trim(),due,repeat,reminder};
-    if(existing){
-      const oldDue=existing.due||'',oldRepeat=existing.repeat||'none';
-      Object.assign(existing,values);
-      if(repeat==='none'){delete existing.lastCompleted;}
-      else {
-        existing.done=false;
-        if(oldDue!==due||oldRepeat!==repeat)existing.lastCompleted='';
-      }
-    }else next.tasks.push({id:crypto.randomUUID(),done:false,...values,lastCompleted:''});
+    const next=structuredClone(privateData.companion);const existing=next.tasks.find(task=>task.id===editingTaskId);if(existing)existing.label=$('taskInput').value.trim();else next.tasks.push({id:crypto.randomUUID(),label:$('taskInput').value.trim(),done:false});
     const submit=$('taskForm').querySelector('button');submit.disabled=true;
-    try{if(await saveCompanion(next)){clearTaskEditor();$('taskInput').focus({preventScroll:true});}}catch(error){message('privateMessage',errorKey(error));}finally{submit.disabled=false;}
+    try{if(await saveCompanion(next)){editingTaskId=null;$('taskInput').value='';$('taskInput').focus({preventScroll:true});}}catch(error){message('privateMessage',errorKey(error));}finally{submit.disabled=false;}
   });
-  $('resetTasks').addEventListener('click',async()=>{if(saving||!authenticated)return;const next=structuredClone(privateData.companion);next.tasks.forEach(task=>{task.done=false;if(task.lastCompleted)task.lastCompleted='';});try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));}});
+  $('resetTasks').addEventListener('click',async()=>{if(saving || !authenticated)return;const next=structuredClone(privateData.companion);next.tasks.forEach(task=>task.done=false);try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));}});
   $("otherAccountBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode(authMode==="owner"?"login":"owner" );});
   $("registerBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode("register" );});
   $("recoverBtn").addEventListener("click",()=>{serverSessionKnown=false;setAuthMode("recover" );});
@@ -1081,16 +1006,16 @@ import { taskToday, taskValidDate, taskOccurrence, taskDisplayDate, taskReminder
   $("recoveryDialog").addEventListener("close",()=>{$("newRecoveryCode").value="";$("copyRecovery").textContent=t("copy");});
   addEventListener("online", updateOnline);
   addEventListener("offline", updateOnline);
-  addEventListener("focus", () => {renderShift();if(authenticated)renderCompanion();});
+  addEventListener("focus", renderShift);
   const tickShift=()=>{renderShift();setTimeout(tickShift,60000-Date.now()%60000);};
   setTimeout(tickShift,60000-Date.now()%60000);
   addEventListener("focus", refreshTrainingDateIfNeeded);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) {refreshTrainingDateIfNeeded();renderShift();if(authenticated)renderCompanion();} });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) {refreshTrainingDateIfNeeded();renderShift();} });
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=36").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "36";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=35").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "35";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
