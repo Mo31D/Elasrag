@@ -6,8 +6,12 @@ import { JSDOM, VirtualConsole } from 'jsdom';
 import worker from '../src/index.js';
 import { fixture } from './fixtures.js';
 const source = name => readFileSync(new URL('../../wf/' + name, import.meta.url), 'utf8');
-const bundled = ['content.js','model.js','app.js'].map(name=>source(name).replace(/^import .*;$/gm,'').replace(/export (const|function) /g,'$1 ')).join('\n');
-const html = source('index.html').replace('<script type="module" src="./app.js?v=45"></script>',()=>'<script>'+bundled+'</script>');
+import { WF_BUILD } from '../../wf/build.js';
+const bundled = ['build.js','content.js','model.js','app.js'].map(name=>source(name).replace(/^import .*;$/gm,'').replace(/export (const|function) /g,'$1 ')).join('\n');
+const shell = source('index.html');
+const appScriptTag = '<script type="module" src="./app.js"></script>';
+assert.ok(shell.includes(appScriptTag), 'frontend test harness must find the actual application script');
+const html = shell.replace(appScriptTag,()=>'<script>'+bundled+'</script>');
 
 function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false, serviceWorker = null, language = 'ar', options = {}) {
   let cookie = options.cookie || '';
@@ -586,9 +590,71 @@ test('fresh visits sign in without installing or waiting for an offline worker',
 test('an old controlling worker is replaced with the network-only retirement before private requests',async t=>{
   const {env}=fixture();let replaced=false;
   const sw={controller:{scriptURL:'https://mo.elasrag.com/sw.js?v=19'},register:async(url,options)=>{
-    assert.equal(url,'./sw.js?v=45');assert.equal(options.updateViaCache,'none');
-    sw.controller={scriptURL:'https://mo.elasrag.com/sw.js?v=45'};replaced=true;
+    assert.equal(url,'./sw.js?v='+WF_BUILD);assert.equal(options.updateViaCache,'none');
+    sw.controller={scriptURL:'https://mo.elasrag.com/sw.js?v='+WF_BUILD};replaced=true;
   }};
   const d=device(env,'#details',null,'https://mo.elasrag.com/',false,sw);t.after(()=>d.window.close());
   await signIn(d);assert.equal(replaced,true);assert.ok(active(d,'details'));assert.deepEqual(d.errors,[]);
+});
+
+test('essential safety shortcuts, PPE checklist and emergency copy work in both languages', async t => {
+  for(const [language,expectedPPE,expectedPoison,expectedLink] of [
+    ['en',/Before using protective equipment/,/If someone swallows a cleaning chemical/,/Open PPE safety checks/],
+    ['ar',/قبل استخدام معدات الوقاية/,/لو حد ابتلع مادة تنظيف/,/افتح خطوات فحص معدات الوقاية/],
+  ]) {
+    const {env} = fixture();
+    const d = device(env,'#actions',null,'https://mo.elasrag.com/',false,null,language);
+    t.after(()=>d.window.close());
+    assert.ok(active(d,'actions'));
+    assert.equal(d.document.querySelectorAll('#actions [data-page="safety/substances"]').length,1);
+    click(d,'#actions [data-page="safety/substances"]');
+    assert.ok(active(d,'safety'));
+    assert.equal(d.document.querySelector('#safety-panel-substances').hidden,false);
+    const urgent=d.document.querySelector('#safety-panel-substances > .coshh-urgent');
+    assert.ok(urgent);
+    assert.equal(d.document.querySelector('#safety-panel-substances').firstElementChild,urgent);
+    assert.match(urgent.textContent,expectedPoison);
+    assert.match(urgent.textContent,/999/);
+    assert.equal(urgent.querySelector('a')?.getAttribute('rel'),'noopener');
+    click(d,'#safety-tab-hazards');
+    const ppe=d.document.querySelector('#safety-panel-hazards > .ppe-action-guide');
+    assert.ok(ppe);
+    assert.match(ppe.textContent,expectedPPE);
+    assert.equal(ppe.querySelectorAll('.ppe-mini-list li').length,3);
+    assert.equal(d.document.querySelectorAll('.ppe-action-guide').length,1);
+    assert.equal(d.document.querySelectorAll('.safety-sign-tile').length,4);
+    assert.deepEqual(
+      [...d.document.querySelectorAll('#safety .safety-sign-tile strong')].map(x=>x.textContent.trim()).every(Boolean),true
+    );
+    click(d,'#safety [data-back]');
+    await until(()=>active(d,'actions'));
+    click(d,'nav [data-page="home"]');
+    assert.ok(active(d,'home'));
+    click(d,'#home [data-page="uniform"]');
+    assert.ok(active(d,'uniform'));
+    assert.equal(d.document.querySelectorAll('#uniform .ppe-action-guide').length,0);
+    const link=d.document.querySelector('#uniform .ppe-open-link');
+    assert.ok(link);assert.match(link.textContent,expectedLink);
+    click(d,'#uniform .ppe-open-link');
+    assert.ok(active(d,'safety'));
+    assert.equal(d.document.querySelector('#safety-panel-hazards').hidden,false);
+    click(d,'#languageToggle');
+    assert.equal(d.document.querySelector('#safety-panel-hazards').hidden,false);
+    assert.equal(d.document.querySelector('#safety-tab-hazards').getAttribute('aria-selected'),'true');
+    assert.deepEqual(d.errors,[]);
+  }
+});
+
+test('the build ID comes from one module and public assets have no duplicated URL version strings',()=>{
+  const shell=source('index.html');
+  const appCode=source('app.js');
+  const workerSource=readFileSync(new URL('../src/index.js',import.meta.url),'utf8');
+  assert.match(shell, /<meta name="wf-build" content="">/);
+  assert.match(shell, /src="\.\/app\.js"/);
+  assert.match(shell, /href="\.\/styles\.css"/);
+  assert.doesNotMatch(shell,/\?v=\d+/);
+  assert.doesNotMatch(appCode,/\?v=\d+/);
+  assert.match(appCode, /import \{ WF_BUILD \} from "\.\/build\.js"/);
+  assert.match(workerSource, /import \{ WF_BUILD \} from "\.\.\/\.\.\/wf\/build\.js"/);
+  assert.match(WF_BUILD,/^\d+$/);
 });
