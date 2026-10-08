@@ -9,8 +9,9 @@ const source = name => readFileSync(new URL('../../wf/' + name, import.meta.url)
 const bundled = ['content.js','model.js','app.js'].map(name=>source(name).replace(/^import .*;$/gm,'').replace(/export (const|function) /g,'$1 ')).join('\n');
 const html = source('index.html').replace('<script type="module" src="./app.js"></script>',()=>'<script>'+bundled+'</script>');
 
-function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false, serviceWorker = null, language = 'ar') {
-  let cookie = '';
+function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', initiallyOffline = false, serviceWorker = null, language = 'ar', options = {}) {
+  let cookie = options.cookie || '';
+  const requests = [];
   let unavailable = initiallyOffline;
   const errors = [];
   const navigations = [];
@@ -30,7 +31,9 @@ function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', 
       window.HTMLDialogElement.prototype.close = function () { this.open = false; this.dispatchEvent(new window.Event('close')); };
       if (language) window.localStorage.setItem('wf-language-v1', language);
       if (legacy) Object.entries(legacy).forEach(([key, value]) => window.localStorage.setItem(key, value));
+      if(options.guest)window.sessionStorage.setItem('wf-guest-preview','1');
       window.fetch = async (url, options) => {
+        requests.push({url:String(url),method:options.method || 'GET'});
         assert.equal(options.credentials, 'include'); assert.equal(options.cache, 'no-store');
         if (unavailable) throw new Error('offline fixture');
         const request = new Request(new URL(url, window.location.origin), { ...options, headers: { ...options.headers, origin: window.location.origin, ...(cookie ? { cookie } : {}) } });
@@ -41,7 +44,7 @@ function device(env, hash = '', legacy = null, url = 'https://mo.elasrag.com/', 
       };
     },
   });
-  return { dom, window: dom.window, document: dom.window.document, errors, navigations, offline: value => unavailable = value };
+  return { dom, window: dom.window, document: dom.window.document, errors, navigations, requests, offline: value => unavailable = value };
 }
 async function until(fn) {
   const start = Date.now();
@@ -68,6 +71,64 @@ test('first visit opens in English and one compact control shows the other langu
   const saved=device(env,'',null,'https://mo.elasrag.com/?lang=ar',false,null,'en');t.after(()=>saved.window.close());
   assert.equal(saved.document.documentElement.lang,'en');
   assert.deepEqual(fresh.errors,[]);assert.deepEqual(saved.errors,[]);
+});
+
+test('guest entry preserves KV, hides personal sections and disables all mutations through navigation and translation',async t=>{
+  const {env,kv}=fixture();const owner=device(env,'#tasks');t.after(()=>owner.window.close());await signIn(owner);
+  fill(owner,'taskInput','owner-confidential-task');owner.document.getElementById('taskForm').dispatchEvent(new owner.window.Event('submit',{cancelable:true}));
+  await until(()=>owner.document.getElementById('taskProgress').textContent==='0 / 1');
+  const before=JSON.stringify([...kv]);
+  const d=device(env,'#details',null,'https://mo.elasrag.com/',false,null,'en');t.after(()=>d.window.close());
+  await until(()=>!d.document.getElementById('lockScreen').classList.contains('hidden'));
+  click(d,'#guestBtn');await until(()=>active(d,'details'));
+  const requests=d.requests.length;
+  assert.equal(d.window.sessionStorage.getItem('wf-guest-preview'),'1');
+  assert.equal(d.document.getElementById('guestNotice').hidden,false);
+  assert.equal(d.document.querySelectorAll('[data-private-copy][data-copy]').length,0);
+  for(const el of d.document.querySelectorAll('[data-private],[data-job]'))assert.equal(el.textContent,'');
+  assert.equal(d.document.getElementById('profileFields').children.length,0);
+  assert.ok(d.document.getElementById('details-panel-shift').classList.contains('guest-private-panel'));
+  click(d,'[data-edit-profile]');assert.equal(d.document.getElementById('profileDialog').open,false);
+  for(const page of ['tasks','training','fire','actions','benefits','uniform','access','home','vault']) {
+    d.window.location.hash='#'+page;await until(()=>active(d,page));
+    assert.ok(d.document.getElementById('lockScreen').classList.contains('hidden'));
+    click(d,'#languageToggle');click(d,'#languageToggle');
+  }
+  assert.equal(d.document.getElementById('taskForm').hidden,true);
+  assert.equal(d.document.getElementById('taskProgress').textContent,'1 / 2');
+  assert.equal(d.document.body.textContent.includes('owner-confidential-task'),false);
+  for(const el of d.document.querySelectorAll('#personalTasks input,#courseList input,[data-check]'))assert.equal(el.disabled,true);
+  const check=d.document.querySelector('#courseList input');check.checked=true;check.dispatchEvent(new d.window.Event('change'));assert.equal(check.checked,false);
+  const task=d.document.querySelector('#personalTasks input');task.checked=true;task.dispatchEvent(new d.window.Event('change'));assert.equal(task.checked,false);
+  fill(d,'taskInput','not-saved');d.document.getElementById('taskForm').dispatchEvent(new d.window.Event('submit',{cancelable:true}));
+  click(d,'#addSecretBtn');assert.equal(d.document.getElementById('secretDialog').open,false);
+  click(d,'#addCourseBtn');assert.equal(d.document.getElementById('courseDialog').open,false);
+  assert.equal(d.requests.length,requests);assert.equal(JSON.stringify([...kv]),before);
+  click(d,'#guestSignIn');await signIn(d);assert.ok(active(d,'vault'));
+  assert.equal(d.document.getElementById('guestNotice').hidden,true);assert.equal(d.document.getElementById('taskForm').hidden,false);
+  assert.equal(d.document.querySelector('#courseList input').disabled,false);
+  assert.equal(d.window.sessionStorage.getItem('wf-guest-preview'),null);
+  assert.deepEqual(d.errors,[]);
+});
+
+test('guest share link and remembered preview never request private data even with a valid owner cookie',async t=>{
+  const {env,kv}=fixture();
+  const login=await worker.fetch(new Request('https://mo.elasrag.com/api/login',{method:'POST',headers:{origin:'https://mo.elasrag.com','content-type':'application/json'},body:JSON.stringify({password:'fixture-password-only'})}),env);
+  const cookie=login.headers.get('set-cookie').split(';')[0];
+  const before=JSON.stringify([...kv]);
+  for(const options of [{cookie},{cookie,guest:true}]) {
+    const url=options.guest?'https://mo.elasrag.com/':'https://mo.elasrag.com/?guest=1';
+    const d=device(env,'#vault',null,url,false,null,'en',options);t.after(()=>d.window.close());
+    await until(()=>active(d,'vault'));
+    assert.equal(d.requests.length,0);assert.equal(d.document.querySelectorAll('.vault-item').length,0);
+    assert.equal(d.document.getElementById('guestNotice').hidden,false);
+    assert.equal(d.document.getElementById('shiftDetail').textContent,'Personal schedules stay private');
+    click(d,'#logoutBtn');assert.equal(d.document.getElementById('guestNotice').hidden,true);
+    assert.equal(d.requests.length,0);assert.equal(d.window.location.search,'');
+    assert.deepEqual(d.errors,[]);
+  }
+  const unauthorized=await worker.fetch(new Request('https://mo.elasrag.com/api/private',{headers:{origin:'https://mo.elasrag.com'}}),env);
+  assert.equal(unauthorized.status,401);assert.equal(JSON.stringify([...kv]),before);
 });
 
 test('public access, protected direct routes, translated auth, vault CRUD, another device, XSS and offline failure', async t => {

@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en" dir="ltr"><head>
   <meta charset="utf-8">
-  <meta name="wf-build" content="39">
+  <meta name="wf-build" content="40">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
@@ -21,6 +21,7 @@
     if (migration && hasLegacyVault) return;
     const destination = new URL("https://mo.elasrag.com/");
     destination.searchParams.set("lang", language);
+    if(new URLSearchParams(location.search).get('guest')==='1')destination.searchParams.set('guest','1');
     destination.hash = location.hash;
     location.replace(destination.href);
   })();
@@ -41,6 +42,7 @@
         <div id="recoveryField" class="field hidden"><label for="recoveryInput" data-i18n="recoveryCode"></label><input id="recoveryInput" type="text" autocomplete="off" dir="ltr"></div>
         <div id="passwordField" class="field"><label for="passInput" data-i18n="passphrase"></label><input id="passInput" type="password" autocomplete="current-password"></div>
         <button id="unlockBtn" class="primary" data-i18n="unlock"></button>
+        <button id="guestBtn" class="secondary primary" type="button" data-i18n="continueGuest"></button>
         <button class="secondary primary private-cancel" type="button" data-i18n="cancel"></button>
         <button class="text-button emergency-link" type="button" data-page="fire" data-i18n="fireQuick"></button>
         <div id="unlockError" class="error" role="status"></div>
@@ -69,6 +71,7 @@
     </header>
 
     <main>
+      <aside id="guestNotice" class="guest-notice" hidden aria-label="Guest preview"><span><strong data-i18n="guestPreview"></strong><small data-i18n="guestReadOnly"></small></span><button id="guestSignIn" class="secondary" type="button" data-i18n="unlock"></button></aside>
       <p id="privateMessage" class="error" role="status" aria-live="polite"></p>
       <section id="home" class="page active">
         <button id="shiftHero" class="hero compact-hero shift-hero" data-page="details"><span id="shiftStatus" class="eyebrow"></span><h1 id="shiftHeadline"></h1><span id="shiftDetail" class="tiny"></span><span id="shiftCountdown" class="shift-countdown"></span></button><span id="greeting" hidden></span>

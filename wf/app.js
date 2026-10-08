@@ -15,6 +15,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   const PROFILE_KEYS = ["colleagueNumber", "kioskId", "kioskPin", "workPin", "thriveUsername", "displayName", "role", "site", "manager", "managerEmail", "startDate", "shiftDays", "shiftStart", "shiftEnd", "hours", "hourlyRate", "paidBreak", "annualHoliday", "minibusNote"];
   let safeWorkerReady = Promise.resolve(true);
   let authenticated = false;
+  let guestMode = new URLSearchParams(location.search).get('guest') === '1' || sessionStorage.getItem('wf-guest-preview') === '1';
   let serverSessionKnown = false;
   let account = null;
   let authMode = localStorage.getItem("wf-account-hint") ? "login" : "owner";
@@ -75,7 +76,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     document.querySelectorAll("[data-placeholder]").forEach(el => el.placeholder = t(el.dataset.placeholder));
     document.querySelectorAll("[data-error-key]").forEach(el => { el.textContent = el.dataset.errorKey ? t(el.dataset.errorKey) : ""; });
     if (focusId && $(focusId)) $(focusId).focus({preventScroll:true});
-    $("logoutBtn").setAttribute("aria-label",t("logout"));$("logoutBtn").title=t("logout");
+    $("logoutBtn").setAttribute("aria-label",t(guestMode?"exitGuest":"logout"));$("logoutBtn").title=t(guestMode?"exitGuest":"logout");
     $("otherAccountBtn").textContent=t(authMode==="owner"?"otherAccount":"ownerAccount");
     updateBackButton();
     restoreReadingPosition(reading);
@@ -109,7 +110,9 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
 
   async function api(path, options = {}) {
+    if (guestMode) throw Object.assign(new Error(), {stage:'guest'});
     if (!(await safeWorkerReady)) throw new Error();
+    if (guestMode) throw Object.assign(new Error(), {stage:'guest'});
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 15000);
     try {
@@ -145,6 +148,47 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     renderCompanion();
     $("logoutBtn").classList.add("hidden");
   }
+
+  function renderGuestMode() {
+    document.documentElement.dataset.guest = String(guestMode);
+    $('guestNotice').hidden = !guestMode;
+    const controls = '[data-edit-profile],[data-edit-profile-field],#editProfileBtn,#addSecretBtn,#addCourseBtn,#importLegacyBtn,#previousVaultLink,#returnCompanion,#taskForm,[data-reset-checklist]';
+    document.querySelectorAll(controls).forEach(el => {
+      if (guestMode) { if (!el.hasAttribute('data-before-guest-hidden')) el.dataset.beforeGuestHidden=String(el.hidden); el.hidden=true; }
+      else if (el.hasAttribute('data-before-guest-hidden')) { el.hidden=el.dataset.beforeGuestHidden==='true';delete el.dataset.beforeGuestHidden; }
+    });
+    document.querySelectorAll('[data-check]').forEach(box => { box.disabled=guestMode; });
+    if (guestMode) {
+      $('logoutBtn').classList.remove('hidden');
+      $('logoutBtn').setAttribute('aria-label',t('exitGuest'));$('logoutBtn').title=t('exitGuest');
+    }
+    $('details-panel-shift').classList.toggle('guest-private-panel',guestMode);
+    $('details-panel-accounts').classList.toggle('guest-private-panel',guestMode);
+    let notice=$('guestDetails');
+    if (!notice) { notice=document.createElement('div');notice.id='guestDetails';notice.className='card guest-private-note';$('details').append(notice); }
+    notice.hidden=!guestMode;notice.textContent=t('guestPrivateDetails');
+    if(guestMode) $('vaultList').textContent=t('guestPrivateVault');
+    $('vault').querySelector('[data-i18n="vaultNote"]').textContent=t(guestMode?'guestPrivateVault':'vaultNote');
+    $('resetTasks').hidden=guestMode || !companionData().tasks.some(task=>task.done);
+  }
+
+  function leaveGuest() {
+    guestMode=false;sessionStorage.removeItem('wf-guest-preview');
+    const url=new URL(location.href);url.searchParams.delete('guest');history.replaceState(null,'',url.pathname+url.search+url.hash);
+    renderGuestMode();restoreChecklists();renderPrivateProfile();renderVault();renderCompanion();
+  }
+
+  function enterGuest() {
+    const destination=pendingPrivatePage || 'home';
+    navigationVersion++;guestMode=true;sessionStorage.setItem('wf-guest-preview','1');
+    pendingDraft=null;serverSessionKnown=false;returnTargets.clear();readingPositions.clear();
+    clearPrivateData();$('privacyShield').classList.add('hidden');$('lockScreen').classList.add('hidden');
+    document.querySelectorAll('[data-check]').forEach(box=>box.checked=false);
+    document.querySelectorAll('[data-checklist]').forEach(card=>updateChecklistProgress(card.dataset.checklist));
+    renderPrivateProfile();renderVault();renderCompanion();showPage(destination,'replace');
+  }
+  $('guestBtn').addEventListener('click',enterGuest);
+  $('guestSignIn').addEventListener('click',()=>{const destination=PROTECTED_PAGES.has(activePage)?activePage:'details';leaveGuest();navigationVersion++;openPrivateGate(destination);});
 
   function rememberDraft() {
     if(!authenticated || !account)return;
@@ -219,6 +263,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
 
   function openPrivateGate(pageId) {
+    if(guestMode)return;
     pendingPrivatePage = pageId || "details";
     rememberDraft();
     clearPrivateData();
@@ -258,12 +303,13 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
 
   async function loadPrivateSession(version = navigationVersion) {
+    if (guestMode) return false;
     const session = await api("/session");
-    if (version !== navigationVersion) return false;
+    if (guestMode || version !== navigationVersion) return false;
     serverSessionKnown=Boolean(session.body.authenticated);
     if (!serverSessionKnown) return false;
     let loaded;try{loaded=await api("/private");}catch(error){error.stage="data";throw error;}
-    if (version !== navigationVersion) return false;
+    if (guestMode || version !== navigationVersion) return false;
     if (!loaded.body.data?.companion || !loaded.revision || !session.body.account) throw new Error();
     privateData = loaded.body.data;
     account = session.body.account;
@@ -349,7 +395,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     readingPositions.set(previous.route,previous.reading);
     const version = ++navigationVersion;
     message("privateMessage", "");
-    if (PROTECTED_PAGES.has(id)) {
+    if (PROTECTED_PAGES.has(id) && !guestMode) {
       try {
         if (!authenticated && !(await loadPrivateSession(version))) {
           if (version === navigationVersion) openPrivateGate(id);
@@ -452,6 +498,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
 
   async function logout() {
+    if(guestMode){leaveGuest();navigationVersion++;clearPrivateData();displayPage('home');history.replaceState(null,'',location.pathname+location.search);return;}
     serverSessionKnown=false;
     navigationVersion++;
     pendingDraft=null;
@@ -540,6 +587,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   const CHECK_PREFIX = "wf-check-";
 
   function checklistState(id) {
+    if(guestMode)return {};
     try {
       const raw = localStorage.getItem(CHECK_PREFIX + id);
       if (!raw) return {};
@@ -567,6 +615,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
 
   function saveChecklist(id) {
+    if(guestMode)return;
     const card = document.querySelector('[data-checklist="' + id + '"]');
     if (!card) return;
     const items = {};
@@ -587,6 +636,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   }
 
   function resetChecklist(id) {
+    if(guestMode)return;
     const card = document.querySelector('[data-checklist="' + id + '"]');
     if (!card) return;
     card.querySelectorAll("[data-check]").forEach(box => box.checked = false);
@@ -683,6 +733,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   document.addEventListener("change", e => {
     const box = e.target.closest("[data-check]");
     if (!box) return;
+    if(guestMode){box.checked=false;return;}
     const card = box.closest("[data-checklist]");
     if (card) saveChecklist(card.dataset.checklist);
   });
@@ -721,6 +772,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   $("logoutBtn").addEventListener("click", logout);
 
   function editProfile() {
+    if(guestMode)return;
     if (!authenticated) return openPrivateGate("details");
     if (saving) return;
     conflictedEditors.delete('profile');
@@ -887,14 +939,16 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     if(key==='shiftDays'){const days=shiftDays(profile.shiftDays);if(days.length)return days.map(day=>WEEKDAYS[day][lang==='ar'?1:0]).join(lang==='ar'?'، ':', ');}
     const value=profile[key] || '';
     if(!value)return '';
-    const translated={role:'roleValue',shiftDays:'regularShiftsValue',paidBreak:'breakValue',minibusNote:'nightMinibusNote',firstDayLocation:'inductionLocation'};
-    if(account?.id==='owner' && translated[key] && value===({role:'Team Member – Filling Station (Nights)',shiftDays:'Friday & Saturday',paidBreak:'Paid',minibusNote:'Minibus unavailable for Friday/Saturday night shifts.',firstDayLocation:'Westmorland Hotel, Northbound'})[key])return t(translated[key]);
+    const translated={role:'roleValue',paidBreak:'breakValue',minibusNote:'nightMinibusNote',firstDayLocation:'inductionLocation'};
+    if(account?.id==='owner' && key==='minibusNote' && /^Minibus unavailable for /i.test(value))return t('nightMinibusNote');
+    if(account?.id==='owner' && translated[key] && value===({role:'Team Member – Filling Station (Nights)',paidBreak:'Paid',firstDayLocation:'Westmorland Hotel, Northbound'})[key])return t(translated[key]);
     if(key==='startDate' && /^\d{4}-\d{2}-\d{2}$/.test(value))return new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{dateStyle:'medium'}).format(new Date(value+'T12:00:00'));
     if(key==='hourlyRate' && Number.isFinite(Number(value)))return new Intl.NumberFormat(lang==='ar'?'ar-EG':'en-GB',{style:'currency',currency:'GBP'}).format(Number(value));
     if(key==='hours')return value+' '+t('hoursUnit');
     return value;
   }
   function renderShift() {
+    if(guestMode){$('shiftHero').dataset.shiftStatus='guest';$('shiftStatus').textContent=t('guestPreview');$('shiftHeadline').textContent=t('guestShift');$('shiftDetail').textContent=t('guestSchedule');$('shiftCountdown').textContent='';renderAlerts();return;}
     const time=date=>new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'}).format(date);
     const date=date=>new Intl.DateTimeFormat(lang==='ar'?'ar-EG':'en-GB',{timeZone:'Europe/London',weekday:'long',day:'numeric',month:'short'}).format(date);
     const interval=shift=>time(shift.start)+' – '+time(shift.end);
@@ -911,7 +965,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     const parts=[];if(days)parts.push(days+' '+t('durationDays'));if(hours)parts.push(hours+' '+t('durationHours'));if(!days && (minutes || !parts.length))parts.push(minutes+' '+t('durationMinutes'));return parts.join(lang==='ar'?' و ':' ');
   }
   function courseTitle(course){return lang==='ar'?(course.titleAR || course.titleEN):course.titleEN;}
-  function companionData(){return privateData?.companion || initialCompanion(false);}
+  function companionData(){return guestMode?{tasks:[{id:'guest-task-1',label:t('guestTaskOne'),done:false},{id:'guest-task-2',label:t('guestTaskTwo'),done:true}],courses:initialCompanion().courses}:privateData?.companion || initialCompanion(false);}
   function deadlineText(due) {
     if(!due)return '';
     const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()).map(part=>[part.type,part.value]));
@@ -945,7 +999,9 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
       courses.forEach(course=>{
         const row=document.createElement('div');row.className='course-row';row.dataset.course=course.id;
         const check=document.createElement('input');check.type='checkbox';check.className='task-check';check.checked=course.status==='completed';check.setAttribute('aria-label',t('completed')+' — '+courseTitle(course));
+        check.disabled=guestMode;
         check.addEventListener('change',async()=>{
+          if(guestMode){check.checked=course.status==='completed';return;}
           if(!authenticated){check.checked=false;openPrivateGate('training');return;}
           if(saving){check.checked=course.status==='completed';return;}
           check.disabled=true;
@@ -960,7 +1016,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
         if(!course.required && course.status!=='completed'){const optional=document.createElement('span');optional.textContent=t('optionalLearning');meta.append(optional);}
         copy.append(meta);
         const edit=document.createElement('button');edit.className='course-edit';edit.textContent='⋯';edit.setAttribute('aria-label',t('edit')+' — '+courseTitle(course));edit.addEventListener('click',()=>openCourse(course.id));
-        row.append(check,copy,edit);host.append(row);
+        edit.hidden=guestMode;row.append(check,copy,edit);host.append(row);
       });
     }
     $('completedCount').textContent=String(completed.length);$('training-tab-completed').hidden=!completed.length;if(!completed.length && $('training-tab-completed').getAttribute('aria-selected')==='true')selectTab($('training'),'pending');
@@ -970,29 +1026,33 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
     $('nextCourseMeta').textContent=next?.due?deadlineText(next.due):t(authenticated?'myProgress':'requiredTraining');
     $('greeting').textContent=authenticated?(privateData.profile.displayName || account.username):'';
     renderShift();
-    $('accountBtn').textContent=authenticated?(privateData.profile.displayName || t('myProfile')):t('myProfile');
+    $('accountBtn').textContent=guestMode?t('guestLabel'):authenticated?(privateData.profile.displayName || t('myProfile')):t('myProfile');
     $('personalTasks').replaceChildren();
     data.tasks.forEach(task=>{
       const row=document.createElement('li');row.className='task personal-task'+(task.done?' task-done':'');
       const check=document.createElement('input');check.type='checkbox';check.className='task-check';check.checked=task.done;check.setAttribute('aria-label',task.label);
       const label=document.createElement('label');check.id='personal-check-'+task.id;label.htmlFor=check.id;label.className='task-text';label.textContent=task.label;label.dataset.readAnchor='task-'+task.id;
+      check.disabled=guestMode;
       check.addEventListener('change',async()=>{
+        if(guestMode){check.checked=task.done;return;}
         if(saving){check.checked=task.done;return;}
         check.disabled=true;const next=structuredClone(privateData.companion);next.tasks.find(item=>item.id===task.id).done=check.checked;
         try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));check.checked=task.done;}finally{check.disabled=false;}
       });
       const del=document.createElement('button');del.className='course-edit danger-text';del.textContent='×';del.setAttribute('aria-label',t('delete')+' — '+task.label);
-      del.addEventListener('click',async()=>{if(saving || !confirm(t('deleteTaskConfirm')))return;const next=structuredClone(privateData.companion);next.tasks=next.tasks.filter(item=>item.id!==task.id);try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));}});
-      const actions=document.createElement('div');actions.className='task-actions';const edit=document.createElement('button');edit.textContent='⋯';edit.setAttribute('aria-label',t('edit')+' — '+task.label);edit.addEventListener('click',()=>{editingTaskId=task.id;$('taskInput').value=task.label;$('taskInput').focus();});actions.append(edit,del);row.append(check,label,actions);$('personalTasks').append(row);
+      del.addEventListener('click',async()=>{if(guestMode || saving || !confirm(t('deleteTaskConfirm')))return;const next=structuredClone(privateData.companion);next.tasks=next.tasks.filter(item=>item.id!==task.id);try{await saveCompanion(next);}catch(error){message('privateMessage',errorKey(error));}});
+      const actions=document.createElement('div');actions.className='task-actions';const edit=document.createElement('button');edit.textContent='⋯';edit.setAttribute('aria-label',t('edit')+' — '+task.label);edit.addEventListener('click',()=>{if(guestMode)return;editingTaskId=task.id;$('taskInput').value=task.label;$('taskInput').focus();});actions.hidden=guestMode;actions.append(edit,del);row.append(check,label,actions);$('personalTasks').append(row);
     });
     if(!data.tasks.length){const empty=document.createElement('li');empty.className='empty-personal';empty.textContent=t('addFirstTask');$('personalTasks').append(empty);}
     const done=data.tasks.filter(task=>task.done).length;
     $('homeTaskCount').textContent=done+' / '+data.tasks.length;
     $('taskProgress').textContent=done+' / '+data.tasks.length;
-    $('resetTasks').hidden=!data.tasks.some(task=>task.done);
+    $('resetTasks').hidden=guestMode || !data.tasks.some(task=>task.done);
+    renderGuestMode();
   }
   async function saveCompanion(next){return persistVault(vaultItems,privateData.profile,next);}
   function openCourse(id=null){
+    if(guestMode)return;
     if(!authenticated)return openPrivateGate('training');
     if(saving)return;
     conflictedEditors.delete('course');
@@ -1020,6 +1080,7 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   });
   $('taskForm').addEventListener('submit',async event=>{
     event.preventDefault();
+    if(guestMode)return;
     if(!authenticated)return openPrivateGate('tasks');
     if(saving || !$('taskInput').value.trim())return;
     const next=structuredClone(privateData.companion);const existing=next.tasks.find(task=>task.id===editingTaskId);if(existing)existing.label=$('taskInput').value.trim();else next.tasks.push({id:crypto.randomUUID(),label:$('taskInput').value.trim(),done:false});
@@ -1044,8 +1105,8 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   setInterval(refreshTrainingDateIfNeeded, 10 * 60 * 1000);
 
   if ("serviceWorker" in navigator) {
-    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=39").then(() => {
-      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "39";
+    safeWorkerReady = navigator.serviceWorker.register("./sw.js?v=40").then(() => {
+      const safeController = () => navigator.serviceWorker.controller && new URL(navigator.serviceWorker.controller.scriptURL).searchParams.get("v") === "40";
       if (safeController()) return true;
       return new Promise(resolve => {
         const finish = value => { clearTimeout(timer); navigator.serviceWorker.removeEventListener("controllerchange", changed); resolve(value); };
@@ -1063,9 +1124,10 @@ import { REQUIRED_COURSES, initialCompanion, WEEKDAYS, shiftDays, shiftState, up
   applyLanguage(lang,false);
   refreshTrainingDateIfNeeded();
   document.querySelectorAll('[data-check]').forEach(check=>{check.id=check.dataset.check;const text=check.closest('.task').querySelector('.task-text');const label=document.createElement('label');label.className=text.className;if(text.dataset.i18n)label.dataset.i18n=text.dataset.i18n;label.htmlFor=check.id;while(text.firstChild)label.append(text.firstChild);text.replaceWith(label);});
+  if(guestMode)sessionStorage.setItem('wf-guest-preview','1');
   restoreChecklists();
   $("lockScreen").classList.add("hidden");
   const initialPage=location.hash.slice(1)||"home";
   showPage(initialPage,"replace");
-  if(!PROTECTED_PAGES.has(initialPage.split("/")[0]))loadPrivateSession().catch(()=>{});
+  if(!guestMode && !PROTECTED_PAGES.has(initialPage.split("/")[0]))loadPrivateSession().catch(()=>{});
 })();
