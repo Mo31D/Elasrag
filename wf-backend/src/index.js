@@ -173,7 +173,7 @@ function validCompanion(value) {
   if (value.shiftDuties && !value.shiftDuties.every(item =>
     item && !Array.isArray(item) && Object.keys(item).every(key => ["id","label","time","night","doneOn"].includes(key)) &&
     validId(item.id) && typeof item.label === "string" && item.label.trim() && item.label.length <= 300 &&
-    typeof item.time === "string" && (item.time === "" || /^([01]\\d|2[0-3]):[0-5]\\d$/.test(item.time)) &&
+    typeof item.time === "string" && (item.time === "" || /^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(item.time)) &&
     typeof item.night === "string" && (item.night === "" || validDate(item.night)) &&
     typeof item.doneOn === "string" && (item.doneOn === "" || validDate(item.doneOn)))) return false;
   return value.courses.every(course => course && Object.keys(course).every(key => ["id", "titleEN", "titleAR", "due", "status", "required"].includes(key)) && validId(course.id) && typeof course.titleEN === "string" && course.titleEN.trim() && course.titleEN.length <= 300 && typeof course.titleAR === "string" && course.titleAR.length <= 300 && ["not-started", "in-progress", "completed"].includes(course.status) && typeof course.required === "boolean" && (course.due === "" || (typeof course.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(course.due) && !Number.isNaN(Date.parse(course.due)) && new Date(course.due).toISOString().slice(0,10) === course.due)));
