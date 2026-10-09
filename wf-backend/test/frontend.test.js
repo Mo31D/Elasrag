@@ -428,33 +428,53 @@ test('two signed-in tabs save across sections without false conflicts and protec
   assert.deepEqual(a.errors,[]);assert.deepEqual(b.errors,[]);
 });
 
-test('Benefits & guidance shares the homepage section grid, not a separate banner or block',async t=>{
+test('home groups every tabbed topic in compact direct-link sections',async t=>{
   const {env}=fixture();
   const d=device(env,'',null,'https://mo.elasrag.com/',false,null,'en');
   t.after(()=>d.window.close());
   const home=d.document.getElementById('home');
-  const focus=home.querySelector('.home-focus');
-  assert.deepEqual([...focus.children].map(el=>el.dataset.page),['details','training','benefits','uniform']);
-  for(const card of focus.children){
-    assert.ok(card.classList.contains('focus-card'),'All homepage section tiles must share the same visual component');
+  assert.deepEqual([...home.querySelectorAll('.home-focus .focus-card')].map(el=>el.dataset.page),['details','training']);
+  const expected={
+    safety:['safety/burns','safety/hazards','safety/lifting','safety/substances'],
+    food:['food/allergens','food/temperatures','food/hygiene','food/reporting'],
+    firstaid:['firstaid/cpr','firstaid/choking','firstaid/recovery','firstaid/injuries'],
+    benefits:['benefits/meals','benefits/discounts','benefits/travel','benefits/leisure','uniform'],
+    details:['details/shift','details/accounts'],
+    training:['training/pending','training/completed'],
+    access:['access/reset','access/username','access/app']
+  };
+  assert.deepEqual([...home.querySelectorAll('.home-topic')].map(el=>el.dataset.topic),Object.keys(expected));
+  for(const [topic,routes] of Object.entries(expected)){
+    const section=home.querySelector(`[data-topic="${topic}"]`);
+    assert.equal(section.querySelector('.home-topic-heading').dataset.page,topic);
+    assert.deepEqual([...section.querySelectorAll('.home-topic-link')].map(el=>el.dataset.page),routes);
   }
+  assert.equal(home.querySelectorAll('.home-topic-link').length,24);
   assert.equal(home.querySelectorAll('[data-page="benefits"]').length,1);
   assert.equal(home.querySelectorAll('[data-page="uniform"]').length,1);
-  assert.equal(home.querySelector('#guidesTitle'),null);
-  assert.equal(home.querySelector('#guidesGrid'),null);
-  assert.equal(focus.nextElementSibling.classList.contains('task-summary'),true);
-  assert.match(home.querySelector('.home-benefits .key').textContent,/Benefits & guidance/);
-  assert.match(home.querySelector('.home-uniform .key').textContent,/Uniform & dress/);
+  assert.equal(home.querySelectorAll('#guidesGrid, #guidesTitle, .home-benefits, .home-uniform').length,0);
+  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(el=>el.dataset.page),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances']);
+  const publicTopics=['safety','food','firstaid','benefits','access','training'];
+  for(const topic of publicTopics){
+    for(const route of expected[topic]){
+      click(d,`#home [data-topic="${topic}"] [data-page="${route}"]`);
+      const [page,tab]=route.split('/');
+      assert.ok(active(d,page),route);
+      if(tab)assert.equal(d.document.querySelector(`#${page} [data-tab="${tab}"]`).getAttribute('aria-selected'),'true',route);
+      click(d,`#${page} [data-back]`);
+      assert.ok(active(d,'home'),route);
+    }
+  }
+  click(d,'#home [data-topic="details"] [data-page="details/accounts"]');
+  await signIn(d);
+  assert.ok(active(d,'details'));
+  assert.equal(d.document.querySelector('#details [data-tab="accounts"]').getAttribute('aria-selected'),'true');
+  click(d,'#details [data-back]');
+  assert.ok(active(d,'home'));
   click(d,'#languageToggle');
-  assert.match(home.querySelector('.home-benefits .key').textContent,/مزايا وإرشادات/);
-  click(d,'#home .home-benefits');
-  assert.ok(active(d,'benefits'));
-  click(d,'#benefits [data-back]');
-  assert.ok(active(d,'home'));
-  click(d,'#home .home-uniform');
-  assert.ok(active(d,'uniform'));
-  click(d,'#uniform [data-back]');
-  assert.ok(active(d,'home'));
+  assert.match(home.querySelector('[data-topic="benefits"] .home-topic-heading').textContent,/مزايا وإرشادات/);
+  assert.match(home.querySelector('[data-topic="safety"] .home-topic-heading').textContent,/سلامة الشغل/);
+  assert.match(home.querySelector('#homeBrowseTitle').textContent,/الأقسام والإرشادات/);
   assert.deepEqual(d.errors,[]);
 });
 
@@ -478,8 +498,8 @@ test('returning from another page keeps draft inputs and back links return to th
   click(d,'#benefits-tab-discounts');
   click(d,'#benefits [data-back]');assert.ok(active(d,'home'));
   assert.equal(d.document.querySelectorAll('#home [data-page="benefits"]').length,1);
-  assert.equal(d.document.querySelectorAll('#home [data-page^="benefits/"]').length,0);
-  assert.equal(d.document.querySelectorAll('#home .company-tools [data-page="access/reset"]').length,1);
+  assert.equal(d.document.querySelectorAll('#home [data-topic="benefits"] [data-page^="benefits/"]').length,4);
+  assert.equal(d.document.querySelectorAll('#home [data-topic="access"] [data-page="access/reset"]').length,1);
   click(d,'#home [data-page="benefits"]');
   assert.equal(d.document.querySelector('#benefits [data-tab="discounts"]').getAttribute('aria-selected'),'true');
   assert.match(d.document.querySelector('#benefits [data-back]').textContent,/الرئيسية/);
@@ -493,8 +513,8 @@ test('returning from another page keeps draft inputs and back links return to th
   assert.equal(d.document.querySelector('.emergency-strip').hidden,false);
   assert.equal(d.document.querySelectorAll('#home [data-page="fire"]').length,0);
   assert.ok(d.document.querySelector('#home .shift-hero').compareDocumentPosition(d.document.querySelector('#home .home-focus')) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
-  assert.equal(d.document.querySelectorAll('#home .home-focus .focus-card').length,4);
-  click(d,'#home .company-tools [data-page="access/reset"]');assert.ok(active(d,'access'));
+  assert.equal(d.document.querySelectorAll('#home .home-focus .focus-card').length,2);
+  click(d,'#home [data-topic="access"] [data-page="access/reset"]');assert.ok(active(d,'access'));
   assert.equal(d.document.querySelector('#access [data-tab="reset"]').getAttribute('aria-selected'),'true');
   click(d,'#access [data-back]');assert.ok(active(d,'home'));
   click(d,'#home [data-page="uniform"]');assert.ok(active(d,'uniform'));
@@ -644,7 +664,7 @@ test('Quick Action is public and routes to the existing procedures with contextu
   const strip=d.document.querySelector('.action-strip');
   assert.deepEqual([...strip.querySelectorAll('[data-page]')].map(button=>button.dataset.page),['fire','actions']);
   click(d,'.action-hub-strip');assert.ok(active(d,'actions'));
-  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances','access/reset']);
+  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances']);
   click(d,'#actions [data-page="fire"]');assert.ok(active(d,'fire'));
   assert.match(d.document.querySelector('#fire [data-back]').textContent,/Quick Action/);
   click(d,'#fire [data-back]');await until(()=>active(d,'actions'));
