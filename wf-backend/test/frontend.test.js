@@ -577,7 +577,10 @@ test('primary navigation returns home and keeps task drafts and page reading pos
   assert.ok(active(d,'training'));
   assert.match(d.document.querySelector('#training [data-back]').textContent,/الرئيسية/);
   assert.equal(d.window.history.state.wfFrom,'home');
-  click(d,'nav [data-page="tasks"]');
+  click(d,'nav [data-page="shiftDuties"]');
+  assert.ok(active(d,'shiftDuties'));
+  click(d,'nav [data-page="home"]');
+  click(d,'#home .task-summary[data-page="tasks"]');
   assert.ok(active(d,'tasks'));assert.equal(scroll,180);
   assert.equal(d.document.getElementById('taskInput').value,'Keep this draft');
   assert.match(d.document.querySelector('#tasks [data-back]').textContent,/الرئيسية/);
