@@ -146,3 +146,16 @@
 - إصلاح اختبار Quick Action ليتحقق من المسارات الخمسة الفعلية بدل العدد القديم، وإضافة اختبارات ترتيب المحتوى والقسم المطوي.
 - نجحت الاختبارات المحلية 50/50، واختبارات Chromium بعروض 320 و390 و768 بكسل. تم فحص العرض العربي والإنجليزي. هذه اختبارات محلية وليست إثباتًا للنشر الحي.
 - لا صور جديدة: يظل إجمالي المرجع 217 صورة فريدة ونسخة مكررة وملف PDF. التحقق من GitHub CI والنشر بعد رفع v51 مطلوب؛ مراجعة v50 الحية كانت محجوبة باستجابة 403 من بيئة المراجعة.
+
+## تحديث تشغيلي v52 — 9 أكتوبر 2026
+
+- المرجع الأساسي لهذا التحديث هو نسخة GitHub عند b6d5a67349e611d34d0629fac5629457da52c034، لا النسخة المحلية الأقدم.
+- صفحة عامة `#firstaid/cpr` من «تصرف سريع»: تبويبات الإنعاش/AED، الاختناق، وضع الإفاقة، النزيف/الإصابات. زر اتصال 999، خطوات مرقمة، وإصابات بسيطة ومراجع داخل أقسام مطوية. روابط للحروق الموجودة وللإبلاغ بعد تأمين الحالة؛ لا تكرار لدليل الحروق.
+- تطبيق تصحيحات المرجع: ضغطات البالغ 5–6 سم و100–120/دقيقة؛ التنفس الطبيعي شرط التفريق؛ AED متاح للأطفال؛ لا نقل لأخطاء ABC أو RICE من الاختبار إلى التعليمات. تعليمات CPR والاختناق هنا للبالغين مع توجيه الأطفال/الرضع والحامل إلى 999 والبروتوكول المناسب.
+- تحديث الحروق الحالي: لا ثلج، لا cling film على الوجه، والحفاظ على دفء باقي الجسم.
+- لا اختراع مواقع AED أو حقائب إسعاف أو أسماء مسعفين؛ يُسأل مسؤول الفرع. لا تعديل بيانات الحسابات أو نتائج التدريب.
+- مصادر المراجعة: [RCUK BLS 2025](https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/adult-basic-life-support-guidelines)، [RCUK First Aid 2025](https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/first-aid-guidelines)، [RCUK Paediatric 2025](https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/paediatric-basic-life-support-guidelines)، [NHS cuts](https://www.nhs.uk/conditions/cuts-and-grazes/)، [NHS head injury](https://www.nhs.uk/conditions/head-injury-and-concussion/)، [NHS broken arm](https://www.nhs.uk/conditions/broken-arm-or-wrist/)، [NHS sprains](https://www.nhs.uk/conditions/sprains-and-strains/)، [St John recovery position](https://www.sja.org.uk/first-aid-advice/recovery-position/).
+- التحقق المحلي: 51/51 اختبارًا، واختبارات Chromium بعروض 320 و390 و768، وفحص صور عربي/إنجليزي، وتجهيز Worker تجريبي ناجح. يُتحقق من CI والنشر بعد الرفع؛ النجاح المحلي وحده لا يثبت النشر.
+
+### لقطة متابعة IMG_5278.jpeg
+الصورة المرفقة تعرض صفحة Health & Safety Training: أقسام ظاهرة بعلامات اكتمال Introduction 1/1، Health & Safety Law 3/3، Manual Handling 2/2، Slips, Trips & Falls 3/3، Display Screen Equipment 2/2. الأرقام تقدم أقسام، وليست درجات اختبارات. لا يوجد سؤال جديد في اللقطة. صرّح المستخدم بانتهاء كورساته حاليًا؛ لا نعدّ الصورة شهادة إسعاف مهنية أو إثباتًا لجميع أقسام THRIVE غير الظاهرة. لا نسجل نتائج شخصية تلقائيًا.

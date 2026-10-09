@@ -90,6 +90,27 @@ try {
     }
     // Safety quick actions should be reachable and readable on every supported viewport.
     await page.goto('https://mo.elasrag.com/#actions');
+    await page.locator('#actions [data-page="firstaid/cpr"]').click();
+    await page.locator('#firstaid.active').waitFor();
+    assert.equal(await page.locator('#firstaid .aid-call').getAttribute('href'),'tel:999');
+    for(const name of ['cpr','choking','recovery','injuries']){
+      await page.locator('#firstaid-tab-'+name).click();
+      assert.equal(await page.locator('#firstaid [data-tab-panel]:visible').count(),1);
+      await noOverflow();
+      await page.locator('#languageToggle').click();
+      assert.equal(await page.locator('#firstaid-panel-'+name).isVisible(),true);
+      await noOverflow();
+      await page.locator('#languageToggle').click();
+    }
+    await page.locator('#firstaid-panel-injuries details summary').first().focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#firstaid-panel-injuries details').first().evaluate(el=>el.open),true);
+    await noOverflow();
+    await page.locator('#firstaid [data-page="safety/burns"]').click();
+    await page.locator('#safety.active').waitFor();
+    await page.locator('#safety [data-back]').click();
+    await page.locator('#firstaid-panel-injuries').waitFor();
+    await page.goto('https://mo.elasrag.com/#actions');
     await page.locator('#actions.active').waitFor();
     await page.locator('#actions [data-page="safety/substances"]').click();
     await page.locator('#safety.active').waitFor();

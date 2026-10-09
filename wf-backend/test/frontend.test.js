@@ -518,12 +518,37 @@ test('induction stays inside work details and missing work PIN can be added with
   assert.deepEqual(d.errors,[]);
 });
 
+test('first aid is public, bilingual and preserves the incident and burns return routes',async t=>{
+  const {env,kv}=fixture();const d=device(env,'',null,'https://mo.elasrag.com/?guest=1#firstaid/choking',false,null,null);t.after(()=>d.window.close());
+  await until(()=>active(d,'firstaid'));
+  assert.equal(d.document.querySelector('#firstaid-panel-choking').hidden,false);
+  assert.equal(d.document.querySelector('#firstaid .aid-call').getAttribute('href'),'tel:999');
+  const saved=[...kv.entries()];
+  for(const tab of ['cpr','choking','recovery','injuries']){
+    click(d,'#firstaid-tab-'+tab);
+    assert.equal(d.document.querySelectorAll('#firstaid [data-tab-panel]:not([hidden])').length,1);
+    for(let n=0;n<2;n++){
+      click(d,'#languageToggle');
+      assert.equal(d.document.querySelector('#firstaid-panel-'+tab).hidden,false);
+      for(const el of d.document.querySelectorAll('#firstaid [data-i18n]')) assert.notEqual(el.textContent,el.dataset.i18n);
+    }
+  }
+  click(d,'#firstaid [data-page="safety/burns"]');assert.ok(active(d,'safety'));
+  assert.match(d.document.querySelector('#safety [data-back]').textContent,/First aid/);
+  click(d,'#safety [data-back]');await until(()=>active(d,'firstaid'));
+  assert.equal(d.document.querySelector('#firstaid-panel-injuries').hidden,false);
+  click(d,'#firstaid [data-page="incident"]');assert.ok(active(d,'incident'));
+  click(d,'#incident [data-back]');await until(()=>active(d,'firstaid'));
+  assert.deepEqual([...kv.entries()],saved);
+  assert.deepEqual(d.errors,[]);
+});
+
 test('Quick Action is public and routes to the existing procedures with contextual return',async t=>{
   const {env}=fixture();const d=device(env,'',null,'https://mo.elasrag.com/',false,null,null);t.after(()=>d.window.close());
   const strip=d.document.querySelector('.action-strip');
   assert.deepEqual([...strip.querySelectorAll('[data-page]')].map(button=>button.dataset.page),['fire','actions']);
   click(d,'.action-hub-strip');assert.ok(active(d,'actions'));
-  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','incident','safety/burns','safety/substances','access/reset']);
+  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','firstaid/cpr','incident','safety/burns','safety/substances','access/reset']);
   click(d,'#actions [data-page="fire"]');assert.ok(active(d,'fire'));
   assert.match(d.document.querySelector('#fire [data-back]').textContent,/Quick Action/);
   click(d,'#fire [data-back]');await until(()=>active(d,'actions'));

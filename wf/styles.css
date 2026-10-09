@@ -259,3 +259,25 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
   #safety .risk-steps{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){#incident *,#safety .risk-assessment-card *{scroll-behavior:auto}}
+
+/* First aid: existing routing and language model, no saved emergency checkboxes. */
+#firstaid .aid-emergency{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #edc7bf;border-radius:14px;background:#fff0ec;margin-bottom:14px;color:#80362c}
+#firstaid .aid-emergency p{margin:0;font-size:14px;line-height:1.55;flex:1}
+#firstaid .aid-call{display:grid;place-items:center;min-height:48px;padding:10px 14px;border-radius:10px;background:#943f32;color:#fff;font-weight:750;text-decoration:none;flex-shrink:0}
+#firstaid .aid-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;overflow:visible}
+#firstaid .aid-tabs button{white-space:normal;min-height:48px;font-size:13px;line-height:1.35}
+#firstaid .card h2{font-size:18px;line-height:1.45;margin:0 0 12px}
+#firstaid p{font-size:14px;line-height:1.65}
+#firstaid .aid-scope{color:var(--muted);font-size:13px;margin:10px 0}
+#firstaid .aid-steps{counter-reset:aid;list-style:none;padding:0;margin:0}
+#firstaid .aid-steps li{counter-increment:aid;position:relative;padding:14px 0;padding-inline-start:40px;border-bottom:1px solid var(--line)}
+#firstaid .aid-steps li:first-child{padding-top:4px}
+#firstaid .aid-steps li:last-child{border-bottom:0}
+#firstaid .aid-steps li:before{content:counter(aid);position:absolute;inset-inline-start:0;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:#e6f0ea;color:var(--accent);font-weight:750}
+#firstaid .aid-steps strong{font-size:15px}
+#firstaid .aid-steps p{margin:5px 0 0}
+#firstaid .aid-note{border-inline-start:3px solid #bb6954;background:#fff7f1;padding:12px;border-radius:4px}
+.aid-link{width:100%;min-height:48px;padding:12px;margin:0 0 14px;white-space:normal;line-height:1.5}
+#firstaid summary{min-height:44px;align-content:center;cursor:pointer;font-weight:700;font-size:15px;color:var(--accent)}
+#firstaid .aid-sources li{margin:10px 0;overflow-wrap:anywhere}
+@media(max-width:360px){#firstaid .aid-emergency{display:block}#firstaid .aid-call{margin-top:10px}#firstaid .aid-steps li{padding-inline-start:34px}}

@@ -105,6 +105,7 @@
         <h1 data-i18n="quickAction"></h1>
         <div class="action-hub-list">
           <button class="action-hub-card action-hub-fire" data-page="fire"><span class="action-hub-icon" aria-hidden="true">!</span><span><strong data-i18n="fireQuick"></strong><small data-i18n="fireHeadline"></small></span><span aria-hidden="true">↗</span></button>
+          <button class="action-hub-card action-hub-chemical" data-page="firstaid/cpr"><span class="action-hub-icon" aria-hidden="true">+</span><span><strong data-i18n="faTitle"></strong><small data-i18n="faHint"></small></span><span aria-hidden="true">↗</span></button>
           <button class="action-hub-card action-hub-incident" data-page="incident"><span class="action-hub-icon" aria-hidden="true">↗</span><span><strong data-i18n="incidentQuick"></strong><small data-i18n="incidentQuickHint"></small></span><span aria-hidden="true">↗</span></button>
           <button class="action-hub-card" data-page="safety/burns"><span class="action-hub-icon" aria-hidden="true">+</span><span><strong data-i18n="safetyQuick"></strong><small data-i18n="safetyQuickHint"></small></span><span aria-hidden="true">↗</span></button>
           <button class="action-hub-card action-hub-chemical" data-page="safety/substances"><span class="action-hub-icon" aria-hidden="true">!</span><span><strong data-i18n="poisonQuick"></strong><small data-i18n="poisonQuickHint"></small></span><span aria-hidden="true">↗</span></button>
@@ -210,10 +211,34 @@
 </section>
 
 
+
+<section id="firstaid" class="page" aria-labelledby="firstaid-heading">
+<button class="back" data-back></button>
+<h1 id="firstaid-heading" data-i18n="faTitle"></h1>
+<div class="aid-emergency"><p data-i18n="faEmergency"></p><a class="aid-call" href="tel:999" data-i18n="faCall"></a></div>
+<div class="section-tabs aid-tabs" role="tablist"><button type="button" role="tab" id="firstaid-tab-cpr" data-tab="cpr" aria-controls="firstaid-panel-cpr" aria-selected="true" tabindex="0" data-i18n="faCprTab"></button><button type="button" role="tab" id="firstaid-tab-choking" data-tab="choking" aria-controls="firstaid-panel-choking" aria-selected="false" tabindex="-1" data-i18n="faChokeTab"></button><button type="button" role="tab" id="firstaid-tab-recovery" data-tab="recovery" aria-controls="firstaid-panel-recovery" aria-selected="false" tabindex="-1" data-i18n="faRecoveryTab"></button><button type="button" role="tab" id="firstaid-tab-injuries" data-tab="injuries" aria-controls="firstaid-panel-injuries" aria-selected="false" tabindex="-1" data-i18n="faInjuriesTab"></button></div>
+<div id="firstaid-panel-cpr" role="tabpanel" aria-labelledby="firstaid-tab-cpr" data-tab-panel="cpr"><p class="aid-scope" data-i18n="faAdult"></p><div class="card "><h2 data-i18n="faCprTitle"></h2><ol class="aid-steps"><li><strong data-i18n="faCheckTitle"></strong><p data-i18n="faCheck"></p></li><li><strong data-i18n="fa999Title"></strong><p data-i18n="fa999"></p></li><li><strong data-i18n="faPressTitle"></strong><p data-i18n="faPress"></p></li></ol><p class="aid-note" data-i18n="faBreaths"></p><p data-i18n="faContinue"></p></div><div class="card "><h2 data-i18n="faAedTitle"></h2><p data-i18n="faAed"></p><p class="aid-note" data-i18n="faAedClear"></p><p data-i18n="faChildAed"></p></div></div>
+<div id="firstaid-panel-choking" role="tabpanel" aria-labelledby="firstaid-tab-choking" data-tab-panel="choking" hidden><p class="aid-scope" data-i18n="faAdult"></p><div class="card "><h2 data-i18n="faChokeTitle"></h2><p class="aid-note" data-i18n="faChokeWarning"></p><ol class="aid-steps"><li><strong data-i18n="faCoughTitle"></strong><p data-i18n="faCough"></p></li><li><strong data-i18n="faBackTitle"></strong><p data-i18n="faBack"></p></li><li><strong data-i18n="faThrustTitle"></strong><p data-i18n="faThrust"></p></li></ol><p class="aid-note" data-i18n="faChokeNext"></p><p data-i18n="faChokeAfter"></p><button type="button" class="secondary aid-link" data-page="firstaid/cpr" data-i18n="faCprTab"></button></div></div>
+<div id="firstaid-panel-recovery" role="tabpanel" aria-labelledby="firstaid-tab-recovery" data-tab-panel="recovery" hidden><div class="card "><h2 data-i18n="faRecoveryTitle"></h2><p class="aid-note" data-i18n="faRecoveryWarning"></p><ol class="aid-steps"><li><p data-i18n="faRecovery1"></p></li><li><p data-i18n="faRecovery2"></p></li><li><p data-i18n="faRecovery3"></p></li></ol><button type="button" class="secondary aid-link" data-page="firstaid/cpr" data-i18n="faCprTab"></button></div></div>
+<div id="firstaid-panel-injuries" role="tabpanel" aria-labelledby="firstaid-tab-injuries" data-tab-panel="injuries" hidden><div class="card "><h2 data-i18n="faBleedTitle"></h2><ol class="aid-steps"><li><p data-i18n="faBleed1"></p></li><li><p data-i18n="faBleed2"></p></li></ol><p class="aid-note" data-i18n="faShock"></p></div><div class="card "><h2 data-i18n="faBonesTitle"></h2><p data-i18n="faBones"></p><p data-i18n="faHead"></p></div><details class="card"><summary data-i18n="faCutsTitle"></summary><p data-i18n="faCuts"></p></details><details class="card"><summary data-i18n="faSprainTitle"></summary><p data-i18n="faSprain"></p></details><button type="button" class="secondary aid-link" data-page="safety/burns" data-i18n="faBurnLink"></button></div>
+<button type="button" class="secondary aid-link" data-page="incident" data-i18n="faReportLink"></button>
+<details class="card"><summary data-i18n="faWorkTitle"></summary><p data-i18n="faWork"></p></details>
+<details class="card aid-sources"><summary data-i18n="faSources"></summary><p data-i18n="faSourceNote"></p><ul>
+<li><a href="https://www.resus.org.uk/public-resource/how-do-cpr" target="_blank" rel="noopener">Resuscitation Council UK — CPR</a></li>
+<li><a href="https://www.resus.org.uk/professional-library/2025-resuscitation-guidelines/first-aid-guidelines" target="_blank" rel="noopener">Resuscitation Council UK — First aid</a></li>
+<li><a href="https://www.sja.org.uk/first-aid-advice/recovery-position/" target="_blank" rel="noopener">St John Ambulance — Recovery position</a></li>
+<li><a href="https://www.nhs.uk/conditions/cuts-and-grazes/" target="_blank" rel="noopener">NHS — Cuts and grazes</a></li>
+<li><a href="https://www.nhs.uk/conditions/head-injury-and-concussion/" target="_blank" rel="noopener">NHS — Head injury</a></li>
+<li><a href="https://www.nhs.uk/conditions/broken-arm-or-wrist/" target="_blank" rel="noopener">NHS — Broken arm or wrist</a></li>
+<li><a href="https://www.nhs.uk/conditions/sprains-and-strains/" target="_blank" rel="noopener">NHS — Sprains and strains</a></li>
+</ul></details>
+</section>
+
 <section id="incident" class="page" aria-labelledby="incident-heading">
   <button class="back" data-back></button>
   <h1 id="incident-heading" data-i18n="incidentTitle"></h1>
   <p class="incident-urgent" role="note" data-i18n="incidentEscalate"></p>
+  <button type="button" class="secondary aid-link" data-page="firstaid/cpr" data-i18n="faHelpLink"></button>
   <div class="card incident-response">
     <h2 data-i18n="incidentStepsTitle"></h2>
     <ol class="incident-steps"><li><span class="incident-step-no" aria-hidden="true">1</span><div><strong data-i18n="incidentStep1Title"></strong><p data-i18n="incidentStep1Desc"></p></div></li>
