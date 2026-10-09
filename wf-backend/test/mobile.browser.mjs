@@ -33,32 +33,40 @@ try {
     await noOverflow();
     // Public high-priority actions must be reachable from the home screen on all mobile widths.
     assert.deepEqual(await page.locator('#home .home-safety-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['incident','safety/hazards','food/allergens']);
-    const guidePlacement=await page.locator('#home .home-focus').evaluate(grid=>{
-      const cards=[...grid.children];
-      const rects=cards.map(el=>el.getBoundingClientRect());
-      return {
-        routes: cards.map(el=>el.dataset.page),
-        sameClass:cards.every(el=>el.classList.contains('focus-card')),
-        sameRadius: getComputedStyle(cards[1]).borderRadius===getComputedStyle(cards[2]).borderRadius,
-        row2BelowRow1: rects[2].top>rects[0].top && rects[3].top>rects[1].top,
-        matchingWidths:Math.abs(rects[0].width-rects[2].width)<2 && Math.abs(rects[1].width-rects[3].width)<2,
-      };
+    assert.deepEqual(await page.locator('#home .home-focus .focus-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['details','training']);
+    assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits','details','training','access']);
+    assert.equal(await page.locator('#home .home-topic-link').count(),24);
+    const groupsLayout=await page.locator('#home .home-topic-grid').evaluate(grid=>{
+      const sections=[...grid.children];
+      const a=sections[0].getBoundingClientRect();
+      const b=sections[1].getBoundingClientRect();
+      return {columns:getComputedStyle(grid).gridTemplateColumns.split(' ').length,firstWidth:a.width,secondWidth:b.width,firstX:a.x,secondX:b.x};
     });
-    assert.deepEqual(guidePlacement.routes,['details','training','benefits','uniform']);
-    assert.ok(guidePlacement.sameClass && guidePlacement.sameRadius && guidePlacement.row2BelowRow1 && guidePlacement.matchingWidths,JSON.stringify(guidePlacement));
-    assert.equal(await page.locator('#home #guidesGrid').count(),0);
-    assert.match(await page.locator('#home .home-benefits .key').textContent(),/Benefits & guidance/);
-    await page.locator('#home .home-benefits').click();
-    await page.locator('#benefits.active').waitFor();
-    await page.locator('#benefits [data-back]').click();
-    await page.locator('#home.active').waitFor();
-    await page.locator('#home .home-uniform').click();
-    await page.locator('#uniform.active').waitFor();
-    await page.locator('#uniform [data-back]').click();
-    await page.locator('#home.active').waitFor();
-    await noOverflow();
+    assert.equal(groupsLayout.columns,width>=620?2:1,JSON.stringify(groupsLayout));
+    assert.ok(Math.abs(groupsLayout.firstWidth-groupsLayout.secondWidth)<2,JSON.stringify(groupsLayout));
+    if(width>=620)assert.ok(groupsLayout.firstX!==groupsLayout.secondX);
+    else assert.ok(Math.abs(groupsLayout.firstX-groupsLayout.secondX)<2);
+    for(const [route,pageId,selectedTab] of [
+      ['safety/lifting','safety','lifting'],
+      ['food/temperatures','food','temperatures'],
+      ['firstaid/choking','firstaid','choking'],
+      ['benefits/leisure','benefits','leisure'],
+      ['uniform','uniform',null],
+      ['training/completed','training','completed'],
+      ['access/username','access','username']
+    ]){
+      await page.locator(`#home .home-topic-link[data-page="${route}"]`).click();
+      await page.locator(`#${pageId}.active`).waitFor();
+      if(selectedTab)assert.equal(await page.locator(`#${pageId} [data-tab="${selectedTab}"]`).getAttribute('aria-selected'),'true',route);
+      await noOverflow();
+      await page.locator(`#${pageId} [data-back]`).click();
+      await page.locator('#home.active').waitFor();
+    }
     await page.locator('#languageToggle').click();
-    assert.match(await page.locator('#home .home-benefits .key').textContent(),/مزايا وإرشادات/);
+    assert.match(await page.locator('#home [data-topic="benefits"] .home-topic-heading').textContent(),/مزايا وإرشادات/);
+    assert.match(await page.locator('#home [data-topic="safety"] .home-topic-heading').textContent(),/سلامة الشغل/);
+    assert.match(await page.locator('#homeBrowseTitle').textContent(),/الأقسام والإرشادات/);
+    await noOverflow();
 
     assert.match(await page.locator('#home .home-safety-incident strong').textContent(),/حادث/);
     await noOverflow();
