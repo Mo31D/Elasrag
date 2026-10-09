@@ -342,3 +342,27 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 #training .food-signoff p{font-size:13px;line-height:1.65}
 @media(min-width:680px){#food .food-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:350px){#food .food-metrics{grid-template-columns:1fr}}
+
+/* One-screen shift checklist: not a second task dashboard. */
+#shiftDuties .shift-duties-head{align-items:center;gap:12px}
+#shiftDuties .shift-duties-head h1{margin:0}
+#shiftDuties .shift-duty-night{color:var(--muted);font-size:13px;margin:5px 0 13px;font-variant-numeric:tabular-nums}
+#shiftDuties .shift-duty-list{padding:0;margin:0 0 14px;list-style:none;border-top:1px solid var(--line)}
+#shiftDuties .shift-duty-row{display:grid;grid-template-columns:25px 68px minmax(0,1fr) 32px;align-items:center;gap:10px;min-height:60px;padding:9px 2px;border-bottom:1px solid var(--line)}
+#shiftDuties .shift-duty-row .task-check{width:23px;height:23px;margin:0}
+#shiftDuties .shift-duty-clock{direction:ltr;text-align:center;color:var(--muted);font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+#shiftDuties .shift-duty-text{font-size:15px;line-height:1.5;min-width:0;overflow-wrap:anywhere;cursor:pointer}
+#shiftDuties .shift-duty-row.is-done .shift-duty-text{text-decoration:line-through;color:var(--muted)}
+#shiftDuties .shift-duty-edit{border:0;background:transparent;color:var(--muted);font-size:23px;min-width:36px;min-height:44px;border-radius:9px;cursor:pointer}
+#shiftDuties .shift-duty-edit:hover,#shiftDuties .shift-duty-edit:focus-visible{background:var(--surface, #edf2ef)}
+#shiftDuties .shift-duty-add{display:block;width:100%;border:1px dashed var(--accent);color:var(--accent);background:transparent;border-radius:12px;min-height:46px;font-size:15px;font-weight:700;cursor:pointer}
+#shiftDuties .shift-duty-form{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:9px;align-items:center;padding:12px 0}
+#shiftDuties .shift-duty-form[hidden],#shiftDuties .shift-duty-add[hidden]{display:none!important}
+#shiftDuties .shift-duty-form input[type="text"],#shiftDuties .shift-duty-form input[type="time"]{width:100%;min-width:0;box-sizing:border-box;margin:0}
+#shiftDuties .shift-duty-form input[type="time"]{direction:ltr}
+#shiftDuties .shift-duty-once{display:flex;align-items:center;gap:9px;min-height:40px;font-size:14px;color:var(--muted)}
+#shiftDuties .shift-duty-once input{width:18px;height:18px;margin:0}
+#shiftDuties .shift-duty-form-actions{display:flex;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+#shiftDuties .shift-duty-form-actions button{min-height:40px;padding-inline:13px}
+#shiftDuties .error:empty{display:none}
+@media(max-width:370px){#shiftDuties .shift-duty-row{grid-template-columns:24px 55px minmax(0,1fr) 32px;gap:7px}#shiftDuties .shift-duty-form{grid-template-columns:minmax(0,1fr) 108px}}
