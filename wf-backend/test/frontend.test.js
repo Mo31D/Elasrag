@@ -636,30 +636,35 @@ test('first aid is public, bilingual and preserves the incident and burns return
   assert.deepEqual(d.errors,[]);
 });
 
-test('homepage places incidents and hazards within one tap, with correct bilingual return routes',async t=>{
-  for(const [language,incidentLabel,hazardLabel] of [
-    ['en',/Accident or near miss/,/Safety concern or hazard/],
-    ['ar',/حادث أو حادث وشيك/,/خطر أو وضع غير آمن/],
+test('homepage has no duplicate Quick Access section; urgent routes remain in Quick Action',async t=>{
+  for(const [language,quickLabel] of [
+    ['en',/Quick Action/],
+    ['ar',/تصرف سريع/],
   ]){
     const {env}=fixture();
     const d=device(env,'#home',null,'https://mo.elasrag.com/',false,null,language);
     t.after(()=>d.window.close());
-    const cards=[...d.document.querySelectorAll('#home .home-safety-card')];
-    assert.equal(cards.length,3);
-    assert.deepEqual(cards.map(card=>card.dataset.page),['incident','safety/hazards','food/allergens']);
-    assert.match(cards[0].textContent,incidentLabel);
-    assert.match(cards[1].textContent,hazardLabel);
-    assert.equal(d.document.querySelectorAll('#home #guidesGrid [data-page="food/allergens"]').length,0);
-    assert.equal(d.document.querySelector('#food-panel-reporting [data-page="incident"]'),null);
+    assert.equal(d.document.querySelector('#homeSafetyTitle'),null);
+    assert.equal(d.document.querySelector('#home .home-safety-grid'),null);
+    assert.ok(d.document.querySelector('#home .home-focus'));
+    assert.ok(d.document.querySelector('#home .home-topic-grid'));
+    assert.ok(d.document.querySelector('#home .company-tools'));
     assert.equal(d.document.querySelectorAll('header [data-page="fire"]').length,1);
-    click(d,'#home .home-safety-incident');assert.ok(active(d,'incident'));
-    assert.match(d.document.querySelector('#incident [data-back]').textContent,language==='en'?/Home/:/الرئيسية/);
-    click(d,'#incident [data-back]');await until(()=>active(d,'home'));
-    click(d,'#home .home-safety-hazard');assert.ok(active(d,'safety'));
-    assert.equal(d.document.querySelector('#safety-panel-hazards').hidden,false);
-    click(d,'#safety [data-back]');await until(()=>active(d,'home'));
-    click(d,'#home .home-safety-food');assert.ok(active(d,'food'));
-    click(d,'#food [data-back]');await until(()=>active(d,'home'));
+    const quick=d.document.querySelector('header [data-page="actions"]');
+    assert.ok(quick);
+    assert.match(quick.textContent,quickLabel);
+    click(d,'header [data-page="actions"]');assert.ok(active(d,'actions'));
+    for(const [destination,target,tab] of [
+      ['incident','incident',null],
+      ['safety/hazards','safety','hazards'],
+      ['food/allergens','food','allergens']
+    ]){
+      click(d,`#actions [data-page="${destination}"]`);assert.ok(active(d,target));
+      if(tab)assert.equal(d.document.querySelector(`#${target}-tab-${tab}`).getAttribute('aria-selected'),'true');
+      assert.match(d.document.querySelector(`#${target} [data-back]`).textContent,quickLabel);
+      click(d,`#${target} [data-back]`);await until(()=>active(d,'actions'));
+    }
+    click(d,'nav [data-page="home"]');await until(()=>active(d,'home'));
     assert.deepEqual(d.errors,[]);
   }
 });
