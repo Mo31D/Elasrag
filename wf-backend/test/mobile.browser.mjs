@@ -128,7 +128,7 @@ try {
     await page.locator('#shiftDutyList .shift-duty-row').nth(2).waitFor();
     assert.equal(await page.locator('#shiftDutyList .shift-duty-row').count(),3);
     await page.locator('#shiftDutyList [data-duty="shift-arrival"] .task-check').check();
-    await page.locator('#shiftDutyProgress').getByText('1 / 3').waitFor();
+    await page.waitForFunction(() => document.getElementById('shiftDutyProgress').textContent === '1 / 3');
     await page.locator('#languageToggle').click();
     assert.match(await page.locator('#shiftDutyList [data-duty="shift-arrival"] .shift-duty-text').textContent(),/الوصول/);
     await noOverflow();
