@@ -428,6 +428,36 @@ test('two signed-in tabs save across sections without false conflicts and protec
   assert.deepEqual(a.errors,[]);assert.deepEqual(b.errors,[]);
 });
 
+test('Benefits & guidance shares the homepage section grid, not a separate banner or block',async t=>{
+  const {env}=fixture();
+  const d=device(env,'',null,'https://mo.elasrag.com/',false,null,'en');
+  t.after(()=>d.window.close());
+  const home=d.document.getElementById('home');
+  const focus=home.querySelector('.home-focus');
+  assert.deepEqual([...focus.children].map(el=>el.dataset.page),['details','training','benefits','uniform']);
+  for(const card of focus.children){
+    assert.ok(card.classList.contains('focus-card'),'All homepage section tiles must share the same visual component');
+  }
+  assert.equal(home.querySelectorAll('[data-page="benefits"]').length,1);
+  assert.equal(home.querySelectorAll('[data-page="uniform"]').length,1);
+  assert.equal(home.querySelector('#guidesTitle'),null);
+  assert.equal(home.querySelector('#guidesGrid'),null);
+  assert.equal(focus.nextElementSibling.classList.contains('task-summary'),true);
+  assert.match(home.querySelector('.home-benefits .key').textContent,/Benefits & guidance/);
+  assert.match(home.querySelector('.home-uniform .key').textContent,/Uniform & dress/);
+  click(d,'#languageToggle');
+  assert.match(home.querySelector('.home-benefits .key').textContent,/مزايا وإرشادات/);
+  click(d,'#home .home-benefits');
+  assert.ok(active(d,'benefits'));
+  click(d,'#benefits [data-back]');
+  assert.ok(active(d,'home'));
+  click(d,'#home .home-uniform');
+  assert.ok(active(d,'uniform'));
+  click(d,'#uniform [data-back]');
+  assert.ok(active(d,'home'));
+  assert.deepEqual(d.errors,[]);
+});
+
 test('returning from another page keeps draft inputs and back links return to their actual source',async t=>{
   const {env}=fixture();const d=device(env,'#tasks');t.after(()=>d.window.close());
   await signIn(d);
@@ -463,7 +493,7 @@ test('returning from another page keeps draft inputs and back links return to th
   assert.equal(d.document.querySelector('.emergency-strip').hidden,false);
   assert.equal(d.document.querySelectorAll('#home [data-page="fire"]').length,0);
   assert.ok(d.document.querySelector('#home .shift-hero').compareDocumentPosition(d.document.querySelector('#home .home-focus')) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
-  assert.equal(d.document.querySelectorAll('#home .home-focus .focus-card').length,2);
+  assert.equal(d.document.querySelectorAll('#home .home-focus .focus-card').length,4);
   click(d,'#home .company-tools [data-page="access/reset"]');assert.ok(active(d,'access'));
   assert.equal(d.document.querySelector('#access [data-tab="reset"]').getAttribute('aria-selected'),'true');
   click(d,'#access [data-back]');assert.ok(active(d,'home'));

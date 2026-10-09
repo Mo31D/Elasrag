@@ -2,7 +2,6 @@
 
 .shift-hero{display:flex;flex-direction:column;align-items:flex-start;width:100%;text-align:start;border:0;gap:8px;cursor:pointer}.shift-hero h1{margin:0}.shift-countdown{font-size:14px;color:#d3e6dc}.shift-hero[data-shift-status="active"]{background:#245c4d}.weekday-picker{border:0;padding:0;margin:12px 0 18px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.weekday-picker legend{font-size:14px;margin-bottom:8px}.weekday-picker label{display:flex;align-items:center;gap:9px;min-height:44px;padding:8px;border:1px solid #dce4e1;border-radius:10px;font-size:14px;cursor:pointer}.weekday-picker label:has(input:checked){background:#eaf3ed;border-color:#38705d}.weekday-picker input{width:20px;height:20px;min-height:20px;flex:none;accent-color:#38705d;margin:0}.weekday-picker span{overflow-wrap:anywhere}
 .privacy-shield{position:fixed;inset:0;z-index:1200;background:var(--nav)}
-.guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.guide-card{display:flex;align-items:center;gap:10px;min-height:70px;width:100%;padding:11px;text-align:start;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font-size:13px;font-weight:650;line-height:1.4}.guide-card>span:last-child{min-width:0;overflow-wrap:anywhere}.guide-icon{flex:0 0 26px;display:grid;place-items:center;width:26px;height:26px;background:#edf5f0;border-radius:8px;color:var(--accent);font-size:16px}.guide-card:focus-visible{outline:3px solid #70ae99;outline-offset:2px}
 .home-focus{align-items:stretch}
 .home-focus .focus-card{min-height:112px;padding:12px;gap:5px}
 .home-focus .focus-card strong{font-size:14px;line-height:1.35}
@@ -13,8 +12,6 @@
 #home .shift-hero h1{font-size:22px}
 #home .section-title{margin:14px 0 7px}
 #home .task-summary{margin-top:10px;padding:10px 12px;min-height:46px}
-#home .guide-card{min-height:54px;padding:8px 10px;gap:8px}
-#home .guide-icon{flex-basis:24px;width:24px;height:24px;font-size:14px}
 #home .quick{min-height:54px;padding:9px 10px}
 .company-help{grid-column:1/-1;background:#f8faf9;min-height:48px!important}
 .company-help>span:nth-child(2){flex:1}
