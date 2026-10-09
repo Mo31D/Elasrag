@@ -110,7 +110,7 @@ test('shift duties replace bottom tasks link and persist across sign-ins without
   click(fresh,'#shiftDutyList [data-duty]:not([data-duty="shift-arrival"]):not([data-duty="shift-departure"]) .shift-duty-edit');
   fill(fresh,'shiftDutyInput','Manager follow-up');
   fresh.document.getElementById('shiftDutyForm').dispatchEvent(new fresh.window.Event('submit',{cancelable:true}));
-  await until(()=>fresh.document.querySelector('#shiftDutyList .shift-duty-text').textContent.includes('Manager follow-up'));
+  await until(()=>[...fresh.document.querySelectorAll('#shiftDutyList .shift-duty-text')].some(el=>el.textContent.includes('Manager follow-up')));
   assert.deepEqual(fresh.errors,[]);
 });
 
