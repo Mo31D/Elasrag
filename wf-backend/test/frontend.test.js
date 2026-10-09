@@ -537,7 +537,7 @@ test('fire guide foregrounds evacuation, keeps drills optional and the five exti
     assert.equal(practice.open,false);
     assert.equal(equipment.open,false);
     assert.match(practice.querySelector('.fire-practice-summary').textContent,practiceText);
-    assert.equal(practice.querySelectorAll('[data-check]'),2);
+    assert.equal(practice.querySelectorAll('[data-check]').length,2);
     assert.equal(equipment.querySelectorAll('.ext-card').length,5);
     assert.ok(main.compareDocumentPosition(practice) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
     assert.ok(practice.compareDocumentPosition(equipment) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
