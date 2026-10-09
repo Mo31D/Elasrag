@@ -21,25 +21,22 @@
 #home .home-topic-link:last-child:nth-child(odd){grid-column:1/-1}
 @media(min-width:620px){#home .home-topic-grid{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}}
 
-/* Company apps and sign-in support: visually separate from reference topics. */
-#home .company-hub{margin-top:23px;padding:14px;border:1px solid #ccdce3;border-inline-start:3px solid #557d8b;border-radius:15px;background:#edf3f6}
-#home .company-hub-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-#home .company-hub-symbol{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#dce8ee;color:#3e6373}
-#home .company-hub-symbol svg{width:22px;height:22px}
+/* Compact company apps and sign-in support, distinct from the guidance cards. */
+#home .company-hub{margin-top:36px;padding:12px;border:1px solid #ccdce3;border-inline-start:3px solid #557d8b;border-radius:15px;background:#edf3f6}
+#home .company-hub-header{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+#home .company-hub-symbol{flex:none;display:grid;place-items:center;width:29px;height:29px;border-radius:8px;background:#dce8ee;color:#3e6373}
+#home .company-hub-symbol svg{width:18px;height:18px}
 #home .company-hub-header>div{min-width:0}
 #home .company-hub-header h2{margin:0;font-size:15px;line-height:1.3;font-weight:750}
-#home .company-hub-header p{margin:3px 0 0;color:#536b76;font-size:12px;line-height:1.45}
-#home .company-hub-apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-#home .company-hub-app{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;min-height:50px;padding:10px 12px;border:1px solid #cbdae1;border-radius:10px;background:#fff;color:var(--ink);font-size:14px;font-weight:700;text-decoration:none}
-#home .company-hub-arrow{flex:none;color:#426f81;font-size:17px}
-#home .company-hub-help{margin-top:12px;padding-top:10px;border-top:1px solid #cfdee5}
-#home .company-hub-help-title{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:38px;padding:3px 1px 5px;border:0;background:transparent;color:var(--ink);font-size:13px;font-weight:750;text-align:start}
-#home .company-hub-help-title span:last-child{flex:none;color:#426f81;font-size:16px}
-#home .company-hub-help-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:5px}
-#home .company-hub-help-link{min-width:0;min-height:44px;padding:8px 10px;border:1px solid #d2e0e6;border-radius:9px;background:#f9fcfd;color:var(--ink);font-size:12px;font-weight:650;line-height:1.4;text-align:center;overflow-wrap:anywhere}
-#home .company-hub-help-link:last-child:nth-child(odd){grid-column:1/-1}
+#home .company-hub-apps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#home .company-hub-app{display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;min-height:44px;padding:8px 10px;border:1px solid #cbdae1;border-radius:9px;background:#fff;color:var(--ink);font-size:13px;font-weight:700;text-decoration:none}
+#home .company-hub-arrow{flex:none;color:#426f81;font-size:16px}
+#home .company-hub-help{margin-top:9px;padding-top:7px;border-top:1px solid #cfdee5}
+#home .company-hub-help-title{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:28px;padding:2px 1px;border:0;background:transparent;color:var(--ink);font-size:12px;font-weight:750;text-align:start}
+#home .company-hub-help-title span:last-child{flex:none;color:#426f81;font-size:15px}
+#home .company-hub-help-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:4px}
+#home .company-hub-help-link{min-width:0;min-height:44px;padding:5px 4px;border:1px solid #d2e0e6;border-radius:8px;background:#f9fcfd;color:var(--ink);font-size:12px;font-weight:650;line-height:1.3;text-align:center;overflow-wrap:anywhere}
 #home .company-hub-app:hover,#home .company-hub-help-link:hover{border-color:#9cb9c7;background:#fff}
-@media(min-width:540px){#home .company-hub-help-links{grid-template-columns:repeat(3,minmax(0,1fr))}#home .company-hub-help-link:last-child:nth-child(odd){grid-column:auto}}
 #home .quick{min-height:54px;padding:9px 10px}
 .uniform-sub{border-top:1px solid var(--line);margin-top:16px;padding-top:16px}.uniform-sub h2{margin-bottom:7px}.uniform-sub .row:last-child{padding-bottom:0}.nav-inner{grid-template-columns:repeat(3,minmax(0,1fr))}.alerts-btn{position:relative;display:grid;place-items:center;width:38px;height:40px;border:1px solid #ffffff35;border-radius:9px;background:none;color:white;flex:none}.alerts-btn svg{width:20px;height:20px}.alerts-count{position:absolute;top:-5px;inset-inline-end:-5px;min-width:18px;height:18px;padding:0 3px;border-radius:10px;background:#d65b42;color:#fff;font-size:10px;font-weight:800;line-height:18px}.alerts-dialog{width:min(420px,calc(100% - 24px))}.alerts-list{display:grid;gap:8px}.alert-item{display:grid;gap:4px;width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:11px;background:#fff;text-align:start;color:var(--ink)}.alert-item strong{font-size:14px}.alert-item span,.alerts-empty{font-size:12px;color:var(--muted)}.close-alerts{border:0;background:#edf2ef;color:var(--accent);border-radius:8px;min-height:40px;padding:8px 12px}.alerts-dialog .check-head{margin-bottom:12px}@media(max-width:370px){.brand{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}#accountBtn{max-width:58px}.alerts-btn{width:34px}.topbar{gap:4px}}
 .page:not(#home) .card{padding:14px}
