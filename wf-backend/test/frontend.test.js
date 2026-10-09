@@ -518,6 +518,44 @@ test('induction stays inside work details and missing work PIN can be added with
   assert.deepEqual(d.errors,[]);
 });
 
+test('fire guide foregrounds evacuation, keeps drills optional and the five extinguisher examples collapsed',async t=>{
+  for(const [language,evacuateMessage,practiceText] of [
+    ['en',/start evacuating immediately/,/drills or review only/i],
+    ['ar',/ابدأ الإخلاء فورًا/,/للتدريب أو المراجعة/],
+  ]){
+    const {env}=fixture();
+    const d=device(env,'#fire',null,'https://mo.elasrag.com/',false,null,language);
+    t.after(()=>d.window.close());
+    assert.ok(active(d,'fire'));
+    const main=d.document.querySelector('#fire .fire-emergency-card');
+    assert.ok(main && main.querySelector('#fire-alert-heading'));
+    assert.match(main.querySelector('.fire-now-message').textContent,evacuateMessage);
+    assert.equal(main.querySelectorAll('.fire-direction-list > li').length,2);
+    assert.equal(main.querySelectorAll('[data-check]').length,0,'Emergency steps must not be checkboxes');
+    const practice=d.document.querySelector('#fire .fire-practice-panel');
+    const equipment=d.document.querySelector('#fire .fire-equipment-card');
+    assert.equal(practice.open,false);
+    assert.equal(equipment.open,false);
+    assert.match(practice.querySelector('.fire-practice-summary').textContent,practiceText);
+    assert.equal(practice.querySelectorAll('[data-check]').length,2);
+    assert.equal(equipment.querySelectorAll('.ext-card').length,5);
+    assert.ok(main.compareDocumentPosition(practice) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
+    assert.ok(practice.compareDocumentPosition(equipment) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
+    assert.equal(d.document.querySelector('#fire .fire-call-link').getAttribute('href'),'tel:999');
+    click(d,'#fire .fire-practice-summary');
+    assert.equal(practice.open,true);
+    click(d,'#fire [data-check="fire-evacuation-1"]');
+    assert.equal(practice.querySelector('[data-check="fire-evacuation-1"]').checked,true);
+    click(d,'#fire .fire-equipment-title');
+    assert.equal(equipment.open,true);
+    click(d,'#languageToggle');
+    assert.equal(practice.open,true);
+    assert.equal(equipment.open,true);
+    assert.equal(practice.querySelector('[data-check="fire-evacuation-1"]').checked,true);
+    assert.deepEqual(d.errors,[]);
+  }
+});
+
 test('first aid is public, bilingual and preserves the incident and burns return routes',async t=>{
   const {env,kv}=fixture();const d=device(env,'',null,'https://mo.elasrag.com/?guest=1#firstaid/choking',false,null,null);t.after(()=>d.window.close());
   await until(()=>active(d,'firstaid'));
