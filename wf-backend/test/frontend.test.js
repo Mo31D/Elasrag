@@ -548,7 +548,7 @@ test('Quick Action is public and routes to the existing procedures with contextu
   const strip=d.document.querySelector('.action-strip');
   assert.deepEqual([...strip.querySelectorAll('[data-page]')].map(button=>button.dataset.page),['fire','actions']);
   click(d,'.action-hub-strip');assert.ok(active(d,'actions'));
-  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','firstaid/cpr','incident','safety/burns','safety/substances','access/reset']);
+  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','firstaid/cpr','food/allergens','incident','safety/burns','safety/substances','access/reset']);
   click(d,'#actions [data-page="fire"]');assert.ok(active(d,'fire'));
   assert.match(d.document.querySelector('#fire [data-back]').textContent,/Quick Action/);
   click(d,'#fire [data-back]');await until(()=>active(d,'actions'));
