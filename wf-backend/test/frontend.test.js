@@ -548,7 +548,7 @@ test('Quick Action is public and routes to the existing procedures with contextu
   const strip=d.document.querySelector('.action-strip');
   assert.deepEqual([...strip.querySelectorAll('[data-page]')].map(button=>button.dataset.page),['fire','actions']);
   click(d,'.action-hub-strip');assert.ok(active(d,'actions'));
-  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','firstaid/cpr','incident','safety/burns','safety/substances','access/reset']);
+  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','firstaid/cpr','food/allergens','incident','safety/burns','safety/substances','access/reset']);
   click(d,'#actions [data-page="fire"]');assert.ok(active(d,'fire'));
   assert.match(d.document.querySelector('#fire [data-back]').textContent,/Quick Action/);
   click(d,'#fire [data-back]');await until(()=>active(d,'actions'));
@@ -684,4 +684,20 @@ test('the build ID comes from one module and public assets have no duplicated UR
   assert.match(appCode, /import \{ WF_BUILD \} from "\.\/build\.js"/);
   assert.match(workerSource, /import \{ WF_BUILD \} from "\.\.\/\.\.\/wf\/build\.js"/);
   assert.match(WF_BUILD,/^\d+$/);
+});
+
+test('food safety tabs work in Arabic and English without touching user training',async t=>{
+  for(const [language,word] of [['ar',/الحساسية/],['en',/allergy/i]]){
+    const {env}=fixture();const d=device(env,'#food/allergens',null,'https://mo.elasrag.com/',false,null,language);t.after(()=>d.window.close());
+    assert.ok(active(d,'food'));
+    assert.match(d.document.querySelector('#food-heading').textContent,/سلامة|Food/);
+    assert.equal(d.document.querySelector('#food .food-steps li')!==null,true);
+    assert.equal(d.document.querySelector('#food .food-call').getAttribute('href'),'tel:999');
+    for(const tab of ['temperatures','hygiene','reporting','allergens']){
+      click(d,'#food-tab-'+tab);assert.equal(d.document.querySelector('#food-panel-'+tab).hidden,false);
+      assert.equal(d.document.querySelectorAll('#food [role="tabpanel"]:not([hidden])').length,1);
+    }
+    click(d,'#languageToggle');assert.equal(d.document.querySelector('#food-panel-allergens').hidden,false);
+    click(d,'#food [data-page="firstaid/cpr"]');assert.ok(active(d,'firstaid'));assert.deepEqual(d.errors,[]);
+  }
 });
