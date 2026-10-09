@@ -403,14 +403,14 @@ import { WF_BUILD } from "./build.js";
     if (PROTECTED_PAGES.has(id) && !guestMode) {
       try {
         if (!authenticated && !(await loadPrivateSession(version))) {
-          if (version === navigationVersion) openPrivateGate(id);
+          if (version === navigationVersion) openPrivateGate(id+(routeTab?'/'+routeTab:''));
           return;
         }
         if (version !== navigationVersion) return;
         $("lockScreen").classList.add("hidden"); $("passInput").value = ""; pendingPrivatePage = null;
       } catch (error) {
         if (version !== navigationVersion) return;
-        openPrivateGate(id); message("unlockError", error.status === 401 ? "" : errorKey(error)); return;
+        openPrivateGate(id+(routeTab?'/'+routeTab:'')); message("unlockError", error.status === 401 ? "" : errorKey(error)); return;
       }
     } else { $("lockScreen").classList.add("hidden"); pendingPrivatePage = null; }
     displayPage(id);
