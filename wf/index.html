@@ -85,15 +85,74 @@
         <div class="focus-grid home-focus">
           <button class="focus-card home-work" data-page="details"><span class="key" data-i18n="workDetails"></span><strong data-i18n="workQuickHint"></strong></button>
           <button class="focus-card home-learning" data-page="training"><span class="key" data-i18n="nextLearning"></span><strong id="nextCourseTitle" data-i18n="training"></strong><span id="nextCourseMeta" class="tiny"></span></button>
-          <button class="focus-card home-benefits" data-page="benefits"><span class="key" data-i18n="workGuides"></span><strong data-i18n="benefitsTitle"></strong></button>
-          <button class="focus-card home-uniform" data-page="uniform"><span class="key" data-i18n="uniformDress"></span><strong data-i18n="appearanceTitle"></strong></button>
         </div>
         <button class="task-summary" data-page="tasks"><span data-i18n="myTasks"></span><span id="homeTaskCount" class="progress-pill">✓</span></button>
+        <div id="homeBrowseTitle" class="section-title" data-i18n="homeBrowse"></div>
+        <div class="home-topic-grid" role="group" aria-labelledby="homeBrowseTitle">
+          <section class="home-topic" data-topic="safety">
+            <button type="button" class="home-topic-heading" data-page="safety"><span data-i18n="safetyQuick"></span><span aria-hidden="true">↗</span></button>
+            <div class="home-topic-links">
+              <button type="button" class="home-topic-link" data-page="safety/burns" data-i18n="burnTab"></button>
+              <button type="button" class="home-topic-link" data-page="safety/hazards" data-i18n="hazardTab"></button>
+              <button type="button" class="home-topic-link" data-page="safety/lifting" data-i18n="liftingTab"></button>
+              <button type="button" class="home-topic-link" data-page="safety/substances" data-i18n="substanceTab"></button>
+            </div>
+          </section>
+          <section class="home-topic" data-topic="food">
+            <button type="button" class="home-topic-heading" data-page="food"><span data-i18n="foodGuideTitle"></span><span aria-hidden="true">↗</span></button>
+            <div class="home-topic-links">
+              <button type="button" class="home-topic-link" data-page="food/allergens" data-i18n="foodAllergensTab"></button>
+              <button type="button" class="home-topic-link" data-page="food/temperatures" data-i18n="foodTempsTab"></button>
+              <button type="button" class="home-topic-link" data-page="food/hygiene" data-i18n="foodHygieneTab"></button>
+              <button type="button" class="home-topic-link" data-page="food/reporting" data-i18n="foodPestsTab"></button>
+            </div>
+          </section>
+          <section class="home-topic" data-topic="firstaid">
+            <button type="button" class="home-topic-heading" data-page="firstaid"><span data-i18n="faTitle"></span><span aria-hidden="true">↗</span></button>
+            <div class="home-topic-links">
+              <button type="button" class="home-topic-link" data-page="firstaid/cpr" data-i18n="faCprTab"></button>
+              <button type="button" class="home-topic-link" data-page="firstaid/choking" data-i18n="faChokeTab"></button>
+              <button type="button" class="home-topic-link" data-page="firstaid/recovery" data-i18n="faRecoveryTab"></button>
+              <button type="button" class="home-topic-link" data-page="firstaid/injuries" data-i18n="faInjuriesTab"></button>
+            </div>
+          </section>
+          <section class="home-topic" data-topic="benefits">
+            <button type="button" class="home-topic-heading" data-page="benefits"><span data-i18n="workGuides"></span><span aria-hidden="true">↗</span></button>
+            <div class="home-topic-links">
+              <button type="button" class="home-topic-link" data-page="benefits/meals" data-i18n="mealsTab"></button>
+              <button type="button" class="home-topic-link" data-page="benefits/discounts" data-i18n="discountsTab"></button>
+              <button type="button" class="home-topic-link" data-page="benefits/travel" data-i18n="travelTab"></button>
+              <button type="button" class="home-topic-link" data-page="benefits/leisure" data-i18n="leisureTab"></button>
+              <button type="button" class="home-topic-link" data-page="uniform" data-i18n="uniformDress"></button>
+            </div>
+          </section>
+          <section class="home-topic" data-topic="details">
+            <button type="button" class="home-topic-heading" data-page="details"><span data-i18n="workDetails"></span><span aria-hidden="true">↗</span></button>
+            <div class="home-topic-links">
+              <button type="button" class="home-topic-link" data-page="details/shift" data-i18n="shiftTab"></button>
+              <button type="button" class="home-topic-link" data-page="details/accounts" data-i18n="accountsTab"></button>
+            </div>
+          </section>
+          <section class="home-topic" data-topic="training">
+            <button type="button" class="home-topic-heading" data-page="training"><span data-i18n="trainingNav"></span><span aria-hidden="true">↗</span></button>
+            <div class="home-topic-links">
+              <button type="button" class="home-topic-link" data-page="training/pending" data-i18n="pendingTab"></button>
+              <button type="button" class="home-topic-link" data-page="training/completed" data-i18n="completedLearning"></button>
+            </div>
+          </section>
+          <section class="home-topic" data-topic="access">
+            <button type="button" class="home-topic-heading" data-page="access"><span data-i18n="peopleXDHelp"></span><span aria-hidden="true">↗</span></button>
+            <div class="home-topic-links">
+              <button type="button" class="home-topic-link" data-page="access/reset" data-i18n="resetTab"></button>
+              <button type="button" class="home-topic-link" data-page="access/username" data-i18n="usernameTab"></button>
+              <button type="button" class="home-topic-link" data-page="access/app" data-i18n="appTab"></button>
+            </div>
+          </section>
+        </div>
         <div class="section-title" data-i18n="workTools"></div>
         <div class="grid company-tools">
           <a class="quick access" href="https://mywestmorland.com" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>PeopleXD</span></a>
           <a class="quick access" href="https://westmorland.learn.link" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>THRIVE</span></a>
-          <button class="quick company-help" data-page="access/reset"><span class="icon" aria-hidden="true">?</span><span data-i18n="peopleXDHelp"></span><span aria-hidden="true">↗</span></button>
         </div>
         <div class="status" id="offlineStatus"></div>
       </section>
@@ -114,7 +173,6 @@
           <button class="action-hub-card action-hub-food" data-page="food/allergens"><span class="action-hub-icon" aria-hidden="true">✓</span><span><strong data-i18n="foodGuideTitle"></strong><small data-i18n="foodGuideHint"></small></span><span aria-hidden="true">↗</span></button>
           <button class="action-hub-card" data-page="safety/burns"><span class="action-hub-icon" aria-hidden="true">+</span><span><strong data-i18n="burnTab"></strong><small data-i18n="safetyQuickHint"></small></span><span aria-hidden="true">↗</span></button>
           <button class="action-hub-card action-hub-chemical" data-page="safety/substances"><span class="action-hub-icon" aria-hidden="true">!</span><span><strong data-i18n="poisonQuick"></strong><small data-i18n="poisonQuickHint"></small></span><span aria-hidden="true">↗</span></button>
-          <button class="action-hub-card" data-page="access/reset"><span class="action-hub-icon" aria-hidden="true">?</span><span><strong data-i18n="peopleXDRecoveryAction"></strong><small data-i18n="resetTab"></small></span><span aria-hidden="true">↗</span></button>
         </div>
       </section>
       <section id="fire" class="page fire-page">
