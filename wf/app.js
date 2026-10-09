@@ -1060,8 +1060,8 @@ import { WF_BUILD } from "./build.js";
     renderGuestMode();
   }
 
-  // A shift is anchored to its 22:45 Europe/London start, so midnight
-  // and the following morning belong to the same checklist.
+  // After 07:15 Europe/London, prepare for tonight; 00:00–07:15
+  // remains part of the shift that began the previous evening.
   const FIXED_SHIFT_DUTIES = [
     { id:"shift-arrival", label:"Arrive at work", time:"22:45", night:"", doneOn:"" },
     { id:"shift-departure", label:"Leave work", time:"07:15", night:"", doneOn:"" }
@@ -1074,7 +1074,7 @@ import { WF_BUILD } from "./build.js";
     }).formatToParts(now).map(part=>[part.type,part.value]));
     const day=Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day));
     const minute=Number(parts.hour)*60+Number(parts.minute);
-    return new Date(day-(minute<22*60+45?86400000:0)).toISOString().slice(0,10);
+    return new Date(day-(minute<=7*60+15?86400000:0)).toISOString().slice(0,10);
   }
   function shiftDutyList(night) {
     const saved=guestMode?[]:(companionData().shiftDuties || []);
