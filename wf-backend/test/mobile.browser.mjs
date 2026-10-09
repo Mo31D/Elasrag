@@ -136,6 +136,19 @@ try {
     assert.equal(await page.locator('#safety-panel-hazards .risk-control-list li').count(),5);
     await page.locator('#safety-panel-hazards .safety-scenario summary').first().click();
     assert.match(await page.locator('#safety-panel-hazards .safety-scenario').first().textContent(),/سكينة/);
+    assert.equal(await page.locator('#safety-panel-hazards .safety-scenario').count(),4);
+    for (const [guide, ar, en] of [['lone', /الشغل لوحدك/, /Working alone/], ['dse', /العمل على شاشة/, /Screen work/]]) {
+      const detail = page.locator('#safety-panel-hazards [data-guide="'+guide+'"]');
+      await detail.locator('summary').click();
+      assert.equal(await detail.evaluate(el => el.open), true);
+      assert.match(await detail.textContent(), ar);
+      await noOverflow();
+      await page.locator('#languageToggle').click();
+      assert.match(await detail.textContent(), en);
+      await noOverflow();
+      await page.locator('#languageToggle').click();
+      await detail.locator('summary').click();
+    }
     await noOverflow();
     await page.locator('#safety-panel-hazards .risk-report-button').click();
     await page.locator('#incident.active').waitFor();
