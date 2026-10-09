@@ -64,8 +64,8 @@ try {
     // Training remains reachable from the primary card instead of a duplicate Browse tile.
     await page.locator('#home .home-learning').click();
     await page.locator('#training.active').waitFor();
-    await page.locator('#training-tab-completed').click();
-    assert.equal(await page.locator('#training-tab-completed').getAttribute('aria-selected'),'true');
+    // Completed learning is private until signed in; the public overview card must still navigate.
+    assert.equal(await page.locator('#training-tab-completed').isVisible(),false);
     await page.locator('#training [data-back]').click();
     await page.locator('#home.active').waitFor();
     await noOverflow();
