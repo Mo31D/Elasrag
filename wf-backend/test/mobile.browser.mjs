@@ -31,8 +31,11 @@ try {
     await noOverflow();
     assert.equal(await page.locator('html').getAttribute('lang'),'en');
     await noOverflow();
-    // Public high-priority actions must be reachable from the home screen on all mobile widths.
-    assert.deepEqual(await page.locator('#home .home-safety-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['incident','safety/hazards','food/allergens']);
+    // Emergency routes remain in the header's Quick Action, not duplicated on Home.
+    assert.equal(await page.locator('#home .home-safety-grid').count(),0);
+    assert.equal(await page.locator('#home #homeSafetyTitle').count(),0);
+    assert.deepEqual(await page.locator('header .action-strip [data-page]').evaluateAll(els=>els.map(el=>el.dataset.page)),['fire','actions']);
+    assert.deepEqual(await page.locator('#actions .action-hub-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances']);
     assert.deepEqual(await page.locator('#home .home-focus .focus-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['details','training']);
     assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits','access']);
     assert.equal(await page.locator('#home .home-topic-link').count(),20);
@@ -75,24 +78,22 @@ try {
     assert.match(await page.locator('#homeBrowseTitle').textContent(),/الأقسام والإرشادات/);
     await noOverflow();
 
-    assert.match(await page.locator('#home .home-safety-incident strong').textContent(),/حادث/);
+    assert.match(await page.locator('header .action-hub-strip').textContent(),/تصرف سريع/);
     await noOverflow();
     await page.locator('#languageToggle').click();
-    await page.locator('#home .home-safety-incident').click();
-    await page.locator('#incident.active').waitFor();
-    await noOverflow();
-    await page.locator('#incident [data-back]').click();
-    await page.locator('#home.active').waitFor();
-    await page.locator('#home .home-safety-hazard').click();
-    await page.locator('#safety.active').waitFor();
-    assert.equal(await page.locator('#safety-panel-hazards').isVisible(),true);
-    await noOverflow();
-    await page.locator('#safety [data-back]').click();
-    await page.locator('#home.active').waitFor();
-    await page.locator('#home .home-safety-food').click();
-    await page.locator('#food.active').waitFor();
-    await noOverflow();
-    await page.locator('#food [data-back]').click();
+    await page.locator('header .action-hub-strip').click();
+    await page.locator('#actions.active').waitFor();
+    for(const [route,target] of [
+      ['incident','incident'],['safety/hazards','safety'],['food/allergens','food']
+    ]){
+      await page.locator(`#actions [data-page="${route}"]`).click();
+      await page.locator(`#${target}.active`).waitFor();
+      if(target==='safety')assert.equal(await page.locator('#safety-panel-hazards').isVisible(),true);
+      await noOverflow();
+      await page.locator(`#${target} [data-back]`).click();
+      await page.locator('#actions.active').waitFor();
+    }
+    await page.locator('nav [data-page="home"]').click();
     await page.locator('#home.active').waitFor();
     await noOverflow();
     await page.locator('#accountBtn').click();
