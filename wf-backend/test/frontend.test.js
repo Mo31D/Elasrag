@@ -77,6 +77,43 @@ test('first visit opens in English and one compact control shows the other langu
   assert.deepEqual(fresh.errors,[]);assert.deepEqual(saved.errors,[]);
 });
 
+
+test('shift duties replace bottom tasks link and persist across sign-ins without mixing general tasks',async t=>{
+  const {env}=fixture();
+  const d=device(env,'#shiftDuties',null,'https://mo.elasrag.com/',false,null,'en');t.after(()=>d.window.close());
+  await signIn(d);await until(()=>active(d,'shiftDuties'));
+  assert.equal(d.document.querySelector('nav [data-page="tasks"]'),null);
+  assert.ok(d.document.querySelector('#home .task-summary[data-page="tasks"]'));
+  assert.ok(d.document.querySelector('nav [data-page="shiftDuties"]'));
+  assert.deepEqual([...d.document.querySelectorAll('#shiftDutyList .shift-duty-clock')].map(x=>x.textContent),['22:45','07:15']);
+  assert.equal(d.document.querySelector('#shiftDutyProgress').textContent,'0 / 2');
+  click(d,'#addShiftDuty');
+  fill(d,'shiftDutyInput','Night manager request');
+  fill(d,'shiftDutyTime','02:30');
+  d.document.getElementById('shiftDutyOnce').checked=true;
+  d.document.getElementById('shiftDutyForm').dispatchEvent(new d.window.Event('submit',{cancelable:true}));
+  await until(()=>d.document.querySelectorAll('#shiftDutyList .shift-duty-row').length===3);
+  assert.deepEqual([...d.document.querySelectorAll('#shiftDutyList .shift-duty-clock')].map(x=>x.textContent),['22:45','02:30','07:15']);
+  click(d,'#shiftDutyList [data-duty="shift-arrival"] input');
+  await until(()=>d.document.getElementById('shiftDutyProgress').textContent==='1 / 3');
+  const night=d.document.querySelector('#shiftDutyNight').textContent;
+  click(d,'#languageToggle');
+  assert.match(d.document.querySelector('#shiftDutyList [data-duty="shift-arrival"] .shift-duty-text').textContent,/الوصول/);
+  assert.equal(d.document.querySelector('#shiftDutyProgress').textContent,'1 / 3');
+  assert.equal(d.document.querySelector('#shiftDutyNight').textContent.includes('22:45'),true);
+  assert.deepEqual(d.errors,[]);
+  const fresh=device(env,'#shiftDuties',null,'https://mo.elasrag.com/',false,null,'en');t.after(()=>fresh.window.close());
+  await signIn(fresh);await until(()=>active(fresh,'shiftDuties'));
+  assert.equal(fresh.document.getElementById('shiftDutyProgress').textContent,'1 / 3');
+  assert.equal(fresh.document.querySelector('#shiftDutyList [data-duty="shift-arrival"] input').checked,true);
+  assert.ok(fresh.document.querySelector('#shiftDutyList .shift-duty-text').textContent.includes('Arrive'));
+  click(fresh,'#shiftDutyList [data-duty]:not([data-duty="shift-arrival"]):not([data-duty="shift-departure"]) .shift-duty-edit');
+  fill(fresh,'shiftDutyInput','Manager follow-up');
+  fresh.document.getElementById('shiftDutyForm').dispatchEvent(new fresh.window.Event('submit',{cancelable:true}));
+  await until(()=>fresh.document.querySelector('#shiftDutyList .shift-duty-text').textContent.includes('Manager follow-up'));
+  assert.deepEqual(fresh.errors,[]);
+});
+
 test('guest entry preserves KV, hides personal sections and disables all mutations through navigation and translation',async t=>{
   const {env,kv}=fixture();const owner=device(env,'#tasks');t.after(()=>owner.window.close());await signIn(owner);
   fill(owner,'taskInput','owner-confidential-task');owner.document.getElementById('taskForm').dispatchEvent(new owner.window.Event('submit',{cancelable:true}));
