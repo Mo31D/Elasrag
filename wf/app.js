@@ -37,7 +37,7 @@ import { WF_BUILD } from "./build.js";
   let pendingPrivatePage = null;
   let pendingDraft = null;
   const conflictedEditors = new Set();
-  const PROTECTED_PAGES = new Set(["details","vault","tasks"]);
+  const PROTECTED_PAGES = new Set(["details","vault","tasks","shiftDuties"]);
   const savedLanguage = localStorage.getItem(LANG_KEY);
   const linkedLanguage = new URLSearchParams(location.search).get("lang");
   let lang = savedLanguage === "ar" || savedLanguage === "en" ? savedLanguage : linkedLanguage === "ar" ? "ar" : "en";
@@ -76,6 +76,7 @@ import { WF_BUILD } from "./build.js";
     renderPrivateProfile();
     renderCompanion();
     document.querySelectorAll("[data-placeholder]").forEach(el => el.placeholder = t(el.dataset.placeholder));
+    document.querySelectorAll("[data-aria]").forEach(el => el.setAttribute("aria-label", t(el.dataset.aria)));
     document.querySelectorAll("[data-error-key]").forEach(el => { el.textContent = el.dataset.errorKey ? t(el.dataset.errorKey) : ""; });
     if (focusId && $(focusId)) $(focusId).focus({preventScroll:true});
     $("logoutBtn").setAttribute("aria-label",t(guestMode?"exitGuest":"logout"));$("logoutBtn").title=t(guestMode?"exitGuest":"logout");
@@ -134,6 +135,8 @@ import { WF_BUILD } from "./build.js";
     privateData = null;
     vaultItems = [];
     editingIndex = null; editingTaskId = null;
+    closeShiftDutyForm();
+    message("shiftDutyError", "");
     conflictedEditors.clear();
     $("vaultList").replaceChildren();
     $("accountSettings").hidden=true;
@@ -360,7 +363,7 @@ import { WF_BUILD } from "./build.js";
     const changed = activePage !== id;
     activePage = id;
     document.querySelectorAll(".page").forEach(p => p.classList.toggle("active", p.id === id));
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === (["tasks","training"].includes(id) ? id : "home")));
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.toggle("active", b.dataset.page === (["shiftDuties","training"].includes(id) ? id : "home")));
     if(changed)window.scrollTo({top:0, behavior:"auto"});
     updateBackButton();
   }
@@ -369,7 +372,7 @@ import { WF_BUILD } from "./build.js";
     const button=$(activePage)?.querySelector('[data-back]');
     if(!button)return;
     const target=(returnTarget(activePage).route).split('/')[0];
-    const label={home:'home',actions:'quickAction',firstaid:'faTitle',incident:'incidentTitle',food:'foodGuideTitle',safety:'safetyQuick',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'peopleXDHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
+    const label={home:'home',actions:'quickAction',firstaid:'faTitle',incident:'incidentTitle',food:'foodGuideTitle',safety:'safetyQuick',training:'trainingNav',tasks:'myTasks',shiftDuties:'shiftDutiesNav',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'peopleXDHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
     button.textContent=(lang==='ar'?'→ ':'← ')+t(label);
   }
 
@@ -431,8 +434,8 @@ import { WF_BUILD } from "./build.js";
       const old=before.profile[key]??null, after=proposed.profile[key]??null;
       if(old!==after)changes.push({section:'profile',key,before:old,after});
     }
-    for(const section of ['tasks','courses']) {
-      const original=before.companion[section], updated=proposed.companion[section];
+    for(const section of ['tasks','courses','shiftDuties']) {
+      const original=before.companion[section] || [], updated=proposed.companion[section] || [];
       for(const old of original) {
         const next=updated.find(item=>item.id===old.id);
         if(!next){changes.push({section,type:'remove',id:old.id,before:old});continue;}
@@ -1053,8 +1056,138 @@ import { WF_BUILD } from "./build.js";
     $('homeTaskCount').textContent=done+' / '+data.tasks.length;
     $('taskProgress').textContent=done+' / '+data.tasks.length;
     $('resetTasks').hidden=guestMode || !data.tasks.some(task=>task.done);
+    renderShiftDuties();
     renderGuestMode();
   }
+
+  // After 07:15 Europe/London, prepare for tonight; 00:00–07:15
+  // remains part of the shift that began the previous evening.
+  const FIXED_SHIFT_DUTIES = [
+    { id:"shift-arrival", label:"Arrive at work", time:"22:45", night:"", doneOn:"" },
+    { id:"shift-departure", label:"Leave work", time:"07:15", night:"", doneOn:"" }
+  ];
+  let editingShiftDutyId = null;
+  function currentDutyNight(now = new Date()) {
+    const parts=Object.fromEntries(new Intl.DateTimeFormat("en-GB",{
+      timeZone:"Europe/London",year:"numeric",month:"2-digit",day:"2-digit",
+      hour:"2-digit",minute:"2-digit",hourCycle:"h23"
+    }).formatToParts(now).map(part=>[part.type,part.value]));
+    const day=Date.UTC(Number(parts.year),Number(parts.month)-1,Number(parts.day));
+    const minute=Number(parts.hour)*60+Number(parts.minute);
+    return new Date(day-(minute<=7*60+15?86400000:0)).toISOString().slice(0,10);
+  }
+  function shiftDutyList(night) {
+    const saved=guestMode?[]:(companionData().shiftDuties || []);
+    const lookup=new Map(saved.map(item=>[item.id,item]));
+    const fixed=FIXED_SHIFT_DUTIES.map(item=>({...item,...lookup.get(item.id),
+      label:t(item.id==="shift-arrival"?"shiftArrival":"shiftDeparture")}));
+    const customs=saved.filter(item=>!FIXED_SHIFT_DUTIES.some(base=>base.id===item.id) && (!item.night || item.night===night));
+    const score=item=>{
+      if(item.id==="shift-arrival")return -1;
+      if(item.id==="shift-departure")return 2000;
+      if(!item.time)return 1000;
+      const n=Number(item.time.slice(0,2))*60+Number(item.time.slice(3));
+      return (n-(22*60+45)+1440)%1440;
+    };
+    return [...fixed,...customs].sort((a,b)=>score(a)-score(b));
+  }
+  function renderShiftDuties() {
+    const night=currentDutyNight();
+    const date=new Intl.DateTimeFormat(lang==="ar"?"ar-EG":"en-GB",{
+      timeZone:"UTC",weekday:"short",day:"numeric",month:"short"
+    }).format(new Date(night+"T12:00:00Z"));
+    $("shiftDutyNight").textContent=t("shiftDutyNightLabel")+" · "+date+" · 22:45–07:15";
+    const items=shiftDutyList(night);
+    const list=$("shiftDutyList");list.replaceChildren();
+    for(const item of items) {
+      const fixed=item.id==="shift-arrival" || item.id==="shift-departure";
+      const done=item.doneOn===night;
+      const row=document.createElement("li");row.className="shift-duty-row"+(done?" is-done":"");
+      row.dataset.duty=item.id;
+      const checkbox=document.createElement("input");checkbox.type="checkbox";checkbox.className="task-check";
+      checkbox.checked=done;checkbox.disabled=guestMode || !authenticated;
+      checkbox.id="duty-"+item.id;checkbox.setAttribute("aria-label",item.label);
+      checkbox.addEventListener("change",async()=>{
+        if(!authenticated || guestMode || saving){checkbox.checked=done;return;}
+        checkbox.disabled=true;
+        const next=structuredClone(privateData.companion);
+        const duties=next.shiftDuties ||= [];
+        let existing=duties.find(duty=>duty.id===item.id);
+        if(!existing){existing={...FIXED_SHIFT_DUTIES.find(duty=>duty.id===item.id)};duties.push(existing);}
+        existing.doneOn=checkbox.checked?night:"";
+        try{await saveCompanion(next);}catch(error){checkbox.checked=done;message("shiftDutyError",errorKey(error));}
+        finally{checkbox.disabled=false;}
+      });
+      const body=document.createElement("label");body.className="shift-duty-text";body.htmlFor=checkbox.id;body.textContent=item.label;
+      const time=document.createElement("span");time.className="shift-duty-clock";time.textContent=item.time || "—";
+      row.append(checkbox,time,body);
+      if(!fixed && !guestMode){
+        const edit=document.createElement("button");edit.type="button";edit.className="shift-duty-edit";
+        edit.textContent="⋯";edit.setAttribute("aria-label",t("shiftDutyEdit")+" — "+item.label);
+        edit.addEventListener("click",()=>openShiftDutyForm(item));row.append(edit);
+      }
+      list.append(row);
+    }
+    const count=items.filter(item=>item.doneOn===night).length;
+    $("shiftDutyProgress").textContent=count+" / "+items.length;
+    $("addShiftDuty").hidden=guestMode || !$("shiftDutyForm").hidden;
+  }
+  function openShiftDutyForm(item=null) {
+    if(guestMode)return;
+    if(!authenticated)return openPrivateGate("shiftDuties");
+    editingShiftDutyId=item?.id || null;
+    $("shiftDutyInput").value=item?.label || "";
+    $("shiftDutyTime").value=item?.time || "";
+    $("shiftDutyOnce").checked=Boolean(item?.night);
+    $("deleteShiftDuty").hidden=!item;
+    $("shiftDutyForm").hidden=false;
+    $("addShiftDuty").hidden=true;
+    message("shiftDutyError","");
+    $("shiftDutyInput").focus({preventScroll:true});
+  }
+  function closeShiftDutyForm() {
+    editingShiftDutyId=null;
+    $("shiftDutyForm").reset();$("shiftDutyForm").hidden=true;
+    $("deleteShiftDuty").hidden=true;
+    $("addShiftDuty").hidden=guestMode;
+  }
+  $("addShiftDuty").addEventListener("click",()=>openShiftDutyForm());
+  $("cancelShiftDuty").addEventListener("click",closeShiftDutyForm);
+  $("deleteShiftDuty").addEventListener("click",async()=>{
+    if(!editingShiftDutyId || saving || !authenticated || guestMode || !confirm(t("shiftDutyDeleteConfirm")))return;
+    const next=structuredClone(privateData.companion);
+    next.shiftDuties=(next.shiftDuties||[]).filter(item=>item.id!==editingShiftDutyId);
+    const btn=$("deleteShiftDuty");btn.disabled=true;
+    try{if(await saveCompanion(next))closeShiftDutyForm();}
+    catch(error){message("shiftDutyError",errorKey(error));}
+    finally{btn.disabled=false;}
+  });
+  $("shiftDutyForm").addEventListener("submit",async event=>{
+    event.preventDefault();
+    const label=$("shiftDutyInput").value.trim();
+    if(!label || saving || !authenticated || guestMode)return;
+    const night=currentDutyNight();
+    const next=structuredClone(privateData.companion);
+    const duties=next.shiftDuties ||= [];
+    const old=duties.find(item=>item.id===editingShiftDutyId);
+    const item={
+      id:old?.id || crypto.randomUUID(),label,
+      time:$("shiftDutyTime").value || "",
+      night:$("shiftDutyOnce").checked?night:"",
+      doneOn:old?.doneOn || ""
+    };
+    if(old)duties.splice(duties.indexOf(old),1,item);
+    else {
+      // Expired one-night requests are no longer useful and do not use the record quota.
+      next.shiftDuties=duties.filter(duty=>!duty.night || duty.night>=night);
+      next.shiftDuties.push(item);
+    }
+    const btn=$("shiftDutyForm").querySelector('[type="submit"]');btn.disabled=true;
+    try{if(await saveCompanion(next))closeShiftDutyForm();}
+    catch(error){message("shiftDutyError",errorKey(error));}
+    finally{btn.disabled=false;}
+  });
+
   async function saveCompanion(next){return persistVault(vaultItems,privateData.profile,next);}
   function openCourse(id=null){
     if(guestMode)return;
