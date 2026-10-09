@@ -428,7 +428,7 @@ test('two signed-in tabs save across sections without false conflicts and protec
   assert.deepEqual(a.errors,[]);assert.deepEqual(b.errors,[]);
 });
 
-test('home groups every tabbed topic in compact direct-link sections',async t=>{
+test('home groups secondary topics without duplicating work and training shortcuts',async t=>{
   const {env}=fixture();
   const d=device(env,'',null,'https://mo.elasrag.com/',false,null,'en');
   t.after(()=>d.window.close());
@@ -439,8 +439,6 @@ test('home groups every tabbed topic in compact direct-link sections',async t=>{
     food:['food/allergens','food/temperatures','food/hygiene','food/reporting'],
     firstaid:['firstaid/cpr','firstaid/choking','firstaid/recovery','firstaid/injuries'],
     benefits:['benefits/meals','benefits/discounts','benefits/travel','benefits/leisure','uniform'],
-    details:['details/shift','details/accounts'],
-    training:['training/pending','training/completed'],
     access:['access/reset','access/username','access/app']
   };
   assert.deepEqual([...home.querySelectorAll('.home-topic')].map(el=>el.dataset.topic),Object.keys(expected));
@@ -449,12 +447,12 @@ test('home groups every tabbed topic in compact direct-link sections',async t=>{
     assert.equal(section.querySelector('.home-topic-heading').dataset.page,topic);
     assert.deepEqual([...section.querySelectorAll('.home-topic-link')].map(el=>el.dataset.page),routes);
   }
-  assert.equal(home.querySelectorAll('.home-topic-link').length,24);
+  assert.equal(home.querySelectorAll('.home-topic-link').length,20);
   assert.equal(home.querySelectorAll('[data-page="benefits"]').length,1);
   assert.equal(home.querySelectorAll('[data-page="uniform"]').length,1);
   assert.equal(home.querySelectorAll('#guidesGrid, #guidesTitle, .home-benefits, .home-uniform').length,0);
   assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(el=>el.dataset.page),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances']);
-  const publicTopics=['safety','food','firstaid','benefits','access','training'];
+  const publicTopics=['safety','food','firstaid','benefits','access'];
   for(const topic of publicTopics){
     for(const route of expected[topic]){
       click(d,`#home [data-topic="${topic}"] [data-page="${route}"]`);
@@ -465,9 +463,16 @@ test('home groups every tabbed topic in compact direct-link sections',async t=>{
       assert.ok(active(d,'home'),route);
     }
   }
-  click(d,'#home [data-topic="details"] [data-page="details/accounts"]');
+  // Work and Training remain the main overview cards, not duplicated in Browse by topic.
+  assert.equal(home.querySelector('[data-topic="details"], [data-topic="training"]'),null);
+  click(d,'#home .home-learning');
+  assert.ok(active(d,'training'));
+  click(d,'#training [data-back]');
+  assert.ok(active(d,'home'));
+  click(d,'#home .home-work');
   await signIn(d);
   assert.ok(active(d,'details'));
+  click(d,'#details-tab-accounts');
   assert.equal(d.document.querySelector('#details [data-tab="accounts"]').getAttribute('aria-selected'),'true');
   click(d,'#details [data-back]');
   assert.ok(active(d,'home'));
