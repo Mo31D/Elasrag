@@ -57,6 +57,20 @@
 .action-hub-icon{display:grid;place-items:center;width:31px;height:31px;border-radius:9px;background:#eaf3ed;color:var(--accent);font-size:19px;font-weight:700}
 .action-hub-fire{background:var(--red-bg);border-color:#efc9c1}
 .action-hub-fire .action-hub-icon{background:#ffebe7;color:#96342b}
+/* Home: the permanent Fire strip is already visible above; expose the three other urgent routes without duplicating it. */
+#home .home-safety-title{margin-top:4px}
+#home .home-safety-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#home .home-safety-card{display:grid;grid-template-columns:28px minmax(0,1fr) 12px;align-items:center;gap:7px;min-width:0;min-height:98px;padding:11px;text-align:start;border:1px solid #d5e1d9;border-radius:12px;background:#fff;color:var(--ink)}
+#home .home-safety-card>span:nth-child(2){display:grid;gap:3px;min-width:0}
+#home .home-safety-card strong{font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+#home .home-safety-card small{font-size:11px;line-height:1.5;color:var(--muted);overflow-wrap:anywhere}
+#home .home-safety-icon{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:#eaf3ed;color:var(--accent);font-weight:800;font-size:17px}
+#home .home-safety-incident{grid-column:1/-1;min-height:77px;border-color:#e7c8b5;background:#fff7f1}
+#home .home-safety-incident .home-safety-icon{background:#fce4d8;color:#943b27}
+#home .home-safety-hazard{border-color:#e6ddc8;background:#fffcf5}
+#home .home-safety-hazard .home-safety-icon{background:#f7eccc;color:#75541d}
+#home .home-safety-food{border-color:#cbded1;background:#f6faf7}
+@media(max-width:350px){#home .home-safety-grid{gap:6px}#home .home-safety-card{grid-template-columns:24px minmax(0,1fr);padding:9px;gap:6px}#home .home-safety-card>span:last-child{display:none}#home .home-safety-card strong{font-size:12px}#home .home-safety-card small{font-size:10.5px}#home .home-safety-icon{width:24px;height:24px}}
 @media(max-width:370px){.action-strip{gap:5px}.action-strip .emergency-strip,.action-hub-strip{font-size:11px;padding-inline:7px}.action-strip button>span:last-child{display:none}}
 
 .guest-notice{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;margin-bottom:12px;border:1px solid var(--line);border-radius:10px;background:#eaf3ed;font-size:13px}
@@ -235,6 +249,8 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 #incident .incident-alert65 .incident-example{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
 #actions .action-hub-incident{border-color:#c9ddd2;background:#f1f7f3}
 #actions .action-hub-incident .action-hub-icon{color:#145b43;background:#dcefe4}
+#actions .action-hub-hazard{border-color:#e6ddc8;background:#fffcf5}
+#actions .action-hub-hazard .action-hub-icon{color:#75541d;background:#f7eccc}
 #safety .risk-assessment-card{border-color:#d5e2d9}
 #safety .risk-assessment-card .risk-intro{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 9px}
 #safety .risk-steps{list-style:none;padding:0;margin:0;display:grid;gap:8px}
