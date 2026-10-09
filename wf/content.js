@@ -113,7 +113,7 @@ export const TRANSLATIONS = {
     "loneGuide2": "لو حاسس بخطر أو مش قادر توصل للمساعدة أو فيه تهديد، ابعد لمكان آمن واتبع خطة طوارئ فرعك. اتصل بـ999 لو الخطر فوري.",
     "dseGuideTitle": "العمل على شاشة — وضع مريح",
     "dseGuide1": "خلي الشاشة قدامك وعلى بُعد ذراع تقريبًا، وأعلاها عند مستوى العين. اسند أسفل ظهرك، ريّح كتافك وخلي ساعديك أفقيين تقريبًا.",
-    "dseGuide2": "قلّل انعكاس الضوء، وسيب مساحة فاضية لرجليك، وغيّر النشاط أو خد فواصل قصيرة منتظمة. بلّغ لو فيه ألم مستمر أو تجهيز غير مناسب."
+    "dseGuide2": "قلّل انعكاس الضوء، وسيب مساحة فاضية لرجليك، وغيّر النشاط أو خد فواصل قصيرة منتظمة. بلّغ لو فيه ألم مستمر أو تجهيز غير مناسب.",
 
     "ppeActionLink": "افتح خطوات فحص معدات الوقاية في سلامة الشغل",
     "poisonQuick": "ابتلاع مادة تنظيف",
@@ -659,7 +659,7 @@ export const TRANSLATIONS = {
     "loneGuide2": "If you feel unsafe, cannot reach support or face aggression, withdraw if safe and follow your site's emergency plan. Call 999 for immediate danger.",
     "dseGuideTitle": "Screen work — comfortable setup",
     "dseGuide1": "Keep the screen in front of you, about an arm's length away, with its top at eye level. Support your lower back, relax your shoulders and keep forearms roughly horizontal.",
-    "dseGuide2": "Reduce glare, keep leg space clear, and take regular short breaks or changes of task. Report persistent pain or unsuitable equipment."
+    "dseGuide2": "Reduce glare, keep leg space clear, and take regular short breaks or changes of task. Report persistent pain or unsuitable equipment.",
 
     "ppeActionLink": "Open PPE safety checks",
     "poisonQuick": "Cleaning chemical swallowed",
