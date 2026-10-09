@@ -34,8 +34,8 @@ try {
     // Public high-priority actions must be reachable from the home screen on all mobile widths.
     assert.deepEqual(await page.locator('#home .home-safety-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['incident','safety/hazards','food/allergens']);
     assert.deepEqual(await page.locator('#home .home-focus .focus-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['details','training']);
-    assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits','details','training','access']);
-    assert.equal(await page.locator('#home .home-topic-link').count(),24);
+    assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits','access']);
+    assert.equal(await page.locator('#home .home-topic-link').count(),20);
     const groupsLayout=await page.locator('#home .home-topic-grid').evaluate(grid=>{
       const sections=[...grid.children];
       const a=sections[0].getBoundingClientRect();
@@ -52,7 +52,6 @@ try {
       ['firstaid/choking','firstaid','choking'],
       ['benefits/leisure','benefits','leisure'],
       ['uniform','uniform',null],
-      ['training/completed','training','completed'],
       ['access/username','access','username']
     ]){
       await page.locator(`#home .home-topic-link[data-page="${route}"]`).click();
@@ -62,6 +61,14 @@ try {
       await page.locator(`#${pageId} [data-back]`).click();
       await page.locator('#home.active').waitFor();
     }
+    // Training remains reachable from the primary card instead of a duplicate Browse tile.
+    await page.locator('#home .home-learning').click();
+    await page.locator('#training.active').waitFor();
+    await page.locator('#training-tab-completed').click();
+    assert.equal(await page.locator('#training-tab-completed').getAttribute('aria-selected'),'true');
+    await page.locator('#training [data-back]').click();
+    await page.locator('#home.active').waitFor();
+    await noOverflow();
     await page.locator('#languageToggle').click();
     assert.match(await page.locator('#home [data-topic="benefits"] .home-topic-heading').textContent(),/مزايا وإرشادات/);
     assert.match(await page.locator('#home [data-topic="safety"] .home-topic-heading').textContent(),/سلامة الشغل/);
