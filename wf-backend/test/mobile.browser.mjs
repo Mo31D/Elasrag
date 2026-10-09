@@ -33,7 +33,33 @@ try {
     await noOverflow();
     // Public high-priority actions must be reachable from the home screen on all mobile widths.
     assert.deepEqual(await page.locator('#home .home-safety-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['incident','safety/hazards','food/allergens']);
+    const guidePlacement=await page.locator('#home .home-focus').evaluate(grid=>{
+      const cards=[...grid.children];
+      const rects=cards.map(el=>el.getBoundingClientRect());
+      return {
+        routes: cards.map(el=>el.dataset.page),
+        sameClass:cards.every(el=>el.classList.contains('focus-card')),
+        sameRadius: getComputedStyle(cards[1]).borderRadius===getComputedStyle(cards[2]).borderRadius,
+        row2BelowRow1: rects[2].top>rects[0].top && rects[3].top>rects[1].top,
+        matchingWidths:Math.abs(rects[0].width-rects[2].width)<2 && Math.abs(rects[1].width-rects[3].width)<2,
+      };
+    });
+    assert.deepEqual(guidePlacement.routes,['details','training','benefits','uniform']);
+    assert.ok(guidePlacement.sameClass && guidePlacement.sameRadius && guidePlacement.row2BelowRow1 && guidePlacement.matchingWidths,JSON.stringify(guidePlacement));
+    assert.equal(await page.locator('#home #guidesGrid').count(),0);
+    assert.match(await page.locator('#home .home-benefits .key').textContent(),/Benefits & guidance/);
+    await page.locator('#home .home-benefits').click();
+    await page.locator('#benefits.active').waitFor();
+    await page.locator('#benefits [data-back]').click();
+    await page.locator('#home.active').waitFor();
+    await page.locator('#home .home-uniform').click();
+    await page.locator('#uniform.active').waitFor();
+    await page.locator('#uniform [data-back]').click();
+    await page.locator('#home.active').waitFor();
+    await noOverflow();
     await page.locator('#languageToggle').click();
+    assert.match(await page.locator('#home .home-benefits .key').textContent(),/مزايا وإرشادات/);
+
     assert.match(await page.locator('#home .home-safety-incident strong').textContent(),/حادث/);
     await noOverflow();
     await page.locator('#languageToggle').click();
