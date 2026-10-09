@@ -1,6 +1,6 @@
 # WF Staff Companion — مرجع التدريبات
 
-**إضافة أحدث: 9 أكتوبر 2026 — استمرار درس Catering for Allergies: الصورتان IMG_5384(1).png وIMG_5383(1).png تكرران مادتي §56.8 و§56.7، فلا تضيفان محتوى جديدًا. توثيق **8 صور جديدة IMG_5385.png–IMG_5392.png** في §57: مسببات الحساسية المخفية في Bloody Mary (الكرفس، وصلصة Worcestershire التي قد تشمل fish/wheat/soya حسب المنتج)، ومصادر بيانات الحساسية الأربعة (Ingredients lists، Recipe cards، Menu symbols، Allergen matrix)، والتواصل مع العملاء والزملاء. الاحمرار حول خيار Wheat لا يثبت نتيجة صحيحة/خاطئة، ولم تُرسل نتيجة Quiz جديدة. لا تُعمّم أمثلة الوصفات/المشروبات على كل المنتجات. **الإجمالي 378 صورة/لقطة فريدة بالمحتوى، 31 PDF فريدة/70 صفحة ضمن دفعات 9 أكتوبر، 15 فيديو متميزًا بالمحتوى**، إضافة إلى Fire Safety PDF الأقدم. تعديل MD فقط دون موقع أو حساب أو نشر.**
+**إضافة أحدث: 9 أكتوبر 2026 — متابعة Catering for Allergies بعشر صور IMG_5393.png–IMG_5402.png (§58): سيناريو Q1/3 لعميل مصاب بالسيلياك بعد تغيير القائمة (الصحيح تدريبيًا عدم التخمين والرجوع إلى Allergen Matrix)، شاشة Spot on مع قواعد سؤال العميل والتصعيد وعدم التخمين، وشرح Allergen cross-contact من التوصيل إلى التقديم، وخطوات الفصل/الأدوات/التنظيف/غسل اليدين، وختام الوحدة التعليمية وروابط FSA/NHS الظاهرة بلا URLs مؤكدة. الصور IMG_5400–5402 تعرض **مراجعة اختبار من 3 أسئلة: PASSED 3/3 الآن بعد FAILED 1/3 سابقًا**، مع إجابات مصححة: Peanuts/Eggs/Sulphur Dioxide/Sesame؛ نص عن **GF** يختلف عن سياسة الشركة المؤرشفة في §21؛ وإبلاغ Service Leader الذي يساعد العميل في Allergen Portal. **عنوان الاختبار غير ظاهر في صور المراجعة؛ لا ننسبه تلقائيًا إلى تمرين السيناريو أو اختبار Allergy Awareness Recap 8/8 السابق**. **تنبيه مهم:** نص مراجعة GF يقول حرفيًا “GF means non gluten containing ingredients not suitable for coeliacs” لكن سياسة Westmorland المصورة في §21 تميز Gluten Free pre-packed الموسوم عن Made without Gluten غير المناسب للسيلياك؛ يوثّق التضارب ولا يطبّق النص الملتبس دون توضيح المدير. **الإجمالي 388 صورة/لقطة فريدة بالمحتوى، 31 PDF فريدة/70 صفحة ضمن دفعات 9 أكتوبر، 15 فيديو متميزًا بالمحتوى**؛ Fire Safety PDF الأقدم منفصل. تعديل مرجع MD فقط دون تعديل الموقع أو الحساب أو نتيجة المنصة.**
 
 **إضافة أحدث: 9 أكتوبر 2026 — استكمال Food Safety Law Quiz بالصور IMG_5324.png (Q2/2) وIMG_5325.png (Review Attempt #3)، مع إعادة رفع IMG_5323(1).png لسؤال Q1 السابق (نسخة مكررة). ثبت النجاح PASSED 2/2 في المحاولة الثالثة، وتعرض المراجعة نتيجة سابقة FAILED 1/2؛ Q1 مصحَّح بالخيار الثاني، وQ2 موثّق بكل الخيارات دون مراجعة فردية ظاهرة. التفاصيل في §22؛ الإجمالي 323 صورة فريدة، وتُحسب النسخ المكررة منفصلة. وثيقة Food Legislation.pdf صفحتان؛ إجمالي المرفقات في دفعات 9 أكتوبر حتى هذه اللقطة 8 PDF (19 صفحة) وفيديو Knife.mp4، بجانب Fire Safety PDF الأقدم. مرجع MD فقط؛ لا تعديل للموقع ولا نشر.**
 
@@ -67,6 +67,8 @@
 | **Safe Storage and Transportation Quiz** | **PASSED 2/2 (100%)** مثبت بـResults في IMG_5375. يظهر سؤال Q1 (FIFO = First In First Out) سابقًا؛ Q2 وReview الفردية غير ظاهرين | **IMG_5373.png وIMG_5375.png**؛ §55 | نجاح Quiz رسمي، لا افتراض لمفتاح كل سؤال |
 | **Catering for Allergies — Food sensitivity & the 14 allergens** | عدم تحمّل اللاكتوز، الداء البطني المناعي، حساسية الطعام، أعراض Anaphylaxis وضرورة طلب الإسعاف، وفئات **14 مسبّب حساسية**؛ فصل معلومات الشرائح عن التعليمات التشغيلية السابقة | **9 صور IMG_5376–IMG_5384.png**؛ §56 | مواد شرح فقط؛ لا اختبار أو شهادة مصورة |
 | **Catering for Allergies — Hidden allergens & checking information** | تمرين Bloody Mary؛ الأوعية والمكونات المركبة؛ **Ingredients lists / Recipe cards / Menu symbols / Allergen matrix** والتواصل مع الزبائن والزملاء | **8 صور جديدة IMG_5385–IMG_5392.png**؛ §57؛ صورتان معاد رفعهما سبق تسجيلهما §56 | لا شاشة Quiz أو نتيجة مصححة |
+| **Catering for Allergies — scenario, preventing allergen cross-contact, module end** | سؤال السيلياك بعد تغيير القائمة: **راجع Allergen Matrix ولا تخمّن**؛ إبلاغ القائد؛ الفصل والتخزين/الأدوات والتنظيف واليدين؛ شاشة نهاية **الدرس** | **IMG_5393–IMG_5399.png**؛ §58.1–58.5 | 7 صور جديدة؛ لا نتيجة رقمية للسيناريو التفاعلي |
+| **مراجعة اختبار حساسية من 3 أسئلة — الاسم غير ظاهر باللقطات** | **PASSED 3/3** بعد **FAILED 1/3**؛ تصحيح 14 allergens، وGF wording المتضارب مع سياسة §21، و**Notify a Service Leader** مع Allergen Portal | **IMG_5400–IMG_5402.png**؛ §58.6–58.8 | 3 صور مراجعة جديدة؛ لا نخلطه باختبار Allergy Awareness Recap 8/8 |
 
 ### مصادر إضافية مرفوعة — 9 أكتوبر 2026
 
@@ -156,9 +158,15 @@
 | **IMG_5387.png وIMG_5388.png** | **صورتان جديدتان** | **§57.4–57.5** | طرق الحصول على معلومات الحساسية وIngredients lists |
 | **IMG_5389.png وIMG_5390.png** | **صورتان جديدتان** | **§57.6–57.7** | Recipe cards تشمل oils/garnishes/toppings وMenu symbols |
 | **IMG_5391.png وIMG_5392.png** | **صورتان جديدتان** | **§57.8–57.9** | Allergen matrix/product book وختام التواصل والاستعداد للاختبار |
+| **IMG_5393.png** | **صورة جديدة** | **§58.1** | Catering for Allergies — Q1 of 3: coeliac customer with changed menu, correct to check Allergen Matrix |
+| **IMG_5394.png** | **صورة جديدة** | **§58.2** | Spot on! feedback: listen, follow procedure, never guess; check glazes/condiments/garnishes/sauces |
+| **IMG_5395.png وIMG_5396.png** | **صورتان جديدتان** | **§58.3** | Preventing allergenic contamination; cross-contact example shared knife regular/GF bread |
+| **IMG_5397.png وIMG_5398.png** | **صورتان جديدتان** | **§58.4** | Four avoidance measures; never offer food if unable to cater safely; ask manager |
+| **IMG_5399.png** | **صورة جديدة** | **§58.5** | End of Catering for Allergies module with FSA/NHS recommended sources |
+| **IMG_5400.png وIMG_5401.png وIMG_5402.png** | **3 صور جديدة** | **§58.6–58.8** | Quiz review (title not visible), PASSED 3/3 vs FAILED 1/3; Q1 allergens, Q2 misleading GF signage, Q3 Service Leader + portal |
 | **Colleague Induction - Welcome Antlers1(1).pdf** | **نسخة PDF متطابقة بالبايت من نسخة §51** | **§55.2** | SHA-256 متطابق مع Colleague Induction - Welcome Antlers1.pdf، ولا يضاف ملف أو صفحة جديدة |
 
-**الإجمالي الأحدث: 378 صورة/لقطة شاشة فريدة بالمحتوى (370 سابقة + 8 صور IMG_5385.png–IMG_5392.png)، 31 PDF فريدة/70 صفحة ضمن دفعات 9 أكتوبر، 15 فيديو متميزًا بالمحتوى بلا تغيير؛ Fire Safety PDF الأقدم خارج العدد الخاص بهذه الدفعات. صورتا IMG_5384(1).png وIMG_5383(1).png تكرران محتوى §56.8 و§56.7. آخر Quiz مثبت: Safe Storage and Transportation Quiz **PASSED 2/2 (100%)** في IMG_5375؛ لا تظهر نتيجة جديدة لدرس Catering for Allergies. لا تعديل الموقع أو حساب التدريب.**
+**الإجمالي الأحدث: 388 صورة/لقطة شاشة فريدة بالمحتوى (378 سابقة + 10 صور IMG_5393.png–IMG_5402.png)، 31 PDF فريدة/70 صفحة ضمن دفعات 9 أكتوبر، 15 فيديو متميزًا بالمحتوى بلا تغيير؛ Fire Safety PDF الأقدم خارج إحصاء هذه الدفعات. تظهر نهاية Catering for Allergies التعليمية في IMG_5399؛ النتائج في IMG_5400–5402 تؤكد **اختبارًا من 3 أسئلة PASSED 3/3 بعد FAILED 1/3**، لكن عنوان صفحة المراجعة مقطوع ولا يُنسب الاختبار قطعًا للسيناريو التفاعلي. يظل نجاح Allergy Awareness Recap 8/8 في §20 مستقلاً، ونجاح Safe Storage 2/2 في §55 مستقلًا. مراجعة Q2 تتضمن خلاف GF/Made without Gluten مع سياسة §21، محفوظًا كتحذير؛ لا تغيير الموقع أو حساب التدريب.**
 
 ---
 
@@ -3283,6 +3291,8 @@ FSA توصي بمعلومات مسببات الحساسية الدقيقة وت�
 
 **درجة الإثبات:** سؤال 1 **مؤكد بالتصحيح المصوّر**؛ اختبار 5/5 **مؤكد بالصورة**. **الأسئلة 2–5 غير ظاهرة نصًا أو مراجعةً، ولا يجوز اختلاقها**.
 
+**تنبيه مستجد من IMG_5401.png (§58.7):** تظهر مراجعة اختبار لاحق لافتة عبارة **“GF means non gluten containing ingredients not suitable for coeliacs”** مع علامة تصحيح صحيحة من المنصة، وهي **تخلط اصطلاحيًا بين GF وMade without Gluten** وفق شرح السياسة المصورة في §21.1–21.2. يجب **عدم تطبيق صياغة الاختبار على منتج معبأ وموسوم Gluten Free** أو استخدامها كبديل لمراجعة الوضع الحقيقي للعلامة المعروضة وسياسة الفرع مع Service Leader. حُفظ نص الاختبار كما هو دون تغيير نص الوثيقة الأصلية.
+
 ### 21.6 ما يجب حفظه للوردية
 
 - **Gluten Free = pre-packed + labelled** حسب سياسة Westmorland المصوّرة؛ **ليس كل منتج دون القمح ضمن الوصفة Gluten Free**.
@@ -4826,6 +4836,101 @@ FSA توصي بمعلومات مسببات الحساسية الدقيقة وت�
 
 ---
 
+
+## 58. Catering for Allergies — allergy communication, cross-contact and quiz review (9 أكتوبر 2026)
+
+**المصادر:** \`IMG_5393.png\`–\`IMG_5402.png\` (10 صور مختلفة أُرسلت بعد §57)، موقع \`westmorland.learn.link\`. **سبع صور** توضح تمرين خدمة عميل ومنع انتقال مسببات الحساسية ونهاية الوحدة، و**ثلاث صور** تعرض مراجعة اختبار ناجح 3/3. **شاشة المراجعة لا تُظهر عنوان الاختبار في الإطار الحالي**؛ لذلك لا يجوز الجزم بأنه التمرين نفسه من نوع «Question 1 of 3» الذي ظهر عند بداية هذه الدفعة. نحتفظ باختبار **Allergy Awareness Recap Quiz 8/8** القديم (§20) كاختبار مستقل.
+
+### 58.1 Scenario — Question 1 of 3: عميل Coeliac وتغيير القائمة (IMG_5393.png)
+**نص السؤال المصور:**
+> You seat a customer who tells you that they're coeliac and asks what is gluten-free on the menu. The menu has recently changed and now you're not 100% sure. What do you do?
+
+**خيارات السؤال الظاهرة:**
+1. **Guess based on the names of the dishes.** — تخمين مكونات الأطباق من أسمائها.
+2. **Tell them which dishes were gluten-free on the old menu.** — الاستناد إلى قائمة قديمة تغيّرت.
+3. **Say you're not sure and go and check the allergen matrix.** — الإفصاح عن عدم اليقين والرجوع إلى المصفوفة المحدثة.
+
+**الإجابة الآمنة المستنتجة من نص السؤال والدرس هي الخيار الثالث**؛ لا تعتمد على أسماء الوصفات أو معلومة قديمة. عند وجود تغير في القائمة يجب أيضًا الرجوع إلى **البيانات المعتمدة الحالية** و**Allergen Portal / Service Leader** حسب إجراء الموقع في §20 و§21. **لا يظهر في الصورة تحديد خيار صريح أو تصحيح لكل خيار**، لذلك لا ننسب نقرة بعينها للمستخدم.
+
+### 58.2 Spot on! — تغذية راجعة للتعامل مع العميل (IMG_5394.png)
+- عنوان شريحة التعقيب: **Spot on!**، مع طلب مراجعة رموز كل سؤال، لكن لا تظهر هنا نصوص Q2/Q3 للسيناريو التفاعلي أو درجة إجمالية له.
+- **It's good practice to ask a customer if they have any food allergies** — من الجيد سؤال الزبون عن الحساسية، والإصغاء جيدًا إلى التفاصيل.
+- يجب اتباع **Company procedure to the letter**؛ فإذا تطلب النظام إشراك **Manager or Chef** في تلك المرحلة، يجب إشراكه.
+- **Never guess** إذا سُئلت عن مكوّن غير معروف، بل تحقّق وطمئن العميل أنك تتعامل بجدية مع طلبه.
+- قد تسبب **traces of an allergen** مشكلة خطيرة؛ تشمل مصادر الخطر غير الواضحة **glazes، condiments، garnishes، sauces**، حتى لو كانت بقية مكوّنات الطبق خالية من المسبب المطلوب.
+- **Spot on ليست شهادة نجاح رقمية لكل السيناريوهات**، ولا تغني عن سياسة الشركة.
+
+### 58.3 Stopping allergenic contamination — Food contamination (IMG_5395.png، IMG_5396.png)
+- لا تعتمد السلامة على **وصفة المكونات فقط**؛ أسلوب التعامل مع المنتج حتى وصوله للزبون مؤثر على خطر رد فعل تحسسي.
+- **Cross-contamination (لفظ الشريحة)**: انتقال مسببات الحساسية من طعام أو أداة أو سطح إلى طعام آخر أثناء تداول الأطعمة.
+- المثال الواضح: استخدام **نفس السكين** لتقطيع خبز عادي ثم خبز معدّ بلا جلوتين قد يترك آثارًا تجعل الثاني غير مناسب لمن يجب عليه تجنب الجلوتين.
+- الخطر قد يحدث خلال **delivery، storage، preparation، serving**.
+- **توضيح مصطلحي مضاف:** عند الحديث تحديدًا عن انتقال مسبّب الحساسية يُستخدم كثيرًا تعبير **allergen cross-contact**؛ وهو مختلف في آلية الخطر عن **انتقال البكتيريا** وإن تشاركت الحالتان إجراءات الفصل والتنظيف. لا تكفي كلمة *Gluten free* في وصفة لضمان سلامة من يعاني من السيلياك إذا بقي خطر التلامس العرضي.
+
+### 58.4 How to avoid cross-contamination — أربع خطوات (IMG_5397.png)
+1. **Keep allergen-free products separate** — افصل تخزين وعرض المنتجات الخالية من المسبب عن غيرها، وأضف ملصقات واضحة لتجنب الخلط.
+2. **Use separate areas and equipment** — استخدم مكان تحضير منفصلًا حيثما أمكن، وأدوات منفصلة نظيفة حديثًا مثل **knives، chopping boards، serving spoons**.
+3. **Clean and disinfect before and after** — نظف الأدوات والأسطح قبل التحضير وبعده، مع مواد تنظيف مختلفة أو **colour coded** لتقليل انتقال المسببات.
+4. **Wash your hands** — اغسل يديك دوريًا وخاصة قبل التعامل مع مكونات طلب الحساسية وبعد ملامسة الطعام المسبب لها.
+- **توضيح عملي لا اقتباس:** إزالة بروتينات مسببات الحساسية تعتمد على **التنظيف الفعّال بالماء والمنظف المناسب وإزالة البقايا**؛ التعقيم/التطهير وحده **ليس بديلًا عن التنظيف الميكانيكي**، وبعض المطهرات التي تقتل الميكروبات لا تزيل البروتينات المسببة للحساسية.
+- إذا كان احتمال انتقال المسبب لا يمكن السيطرة عليه، **لا تعد العميل بأن الوجبة آمنة**.
+
+### 58.5 You can never be too careful — نهاية الوحدة (IMG_5398.png، IMG_5399.png)
+- **IMG_5398.png:** التأكيد على أن ضمان المعلومات الدقيقة والوقاية مهم **first time, every time**. تقول الشريحة: **Don't offer to cater for a customer with allergies if you can't do so safely**، واستشر المدير عند الشك.
+- **IMG_5399.png:** يظهر نص **You've reached the end of this module on catering for allergies**، ما يوثّق **الوصول إلى نهاية المحتوى التعليمي الظاهر**.
+- تظهر ثلاثة مصادر للقراءة المستمرة: **Food Standards Agency — Food allergy and intolerance** (Website)، و**NHS — Food allergy causes and risk factors** (Website)، و**Food Standards Agency — 14 allergens and where to find them** (PDF).
+- **هذه أسماء روابط معروضة على شريحة**؛ لم تُرسل الروابط النهائية أو ملف PDF نفسه في الدفعة، فلا نضيف ملفًا أو صفحات PDF إلى العداد، ولا نخترع عنوان URL تفصيليًا.
+- نهاية الموديول على الشاشة **ليست شهادة مهنية ولا دليلًا على إكمال كل THRIVE**.
+
+### 58.6 Quiz review — نتيجة موثقة وأسئلة مختلفة عن سيناريو Q1 (IMG_5400.png–IMG_5402.png)
+- الثلاث صور تصور **Current Results: PASSED; Score 3/3** و**Previous Results: FAILED; Score 1/3**.
+- شاشة **Review** تعرض ثلاثة أسئلة مختلفة عن **سيناريو Q1/3 للسيلياك في IMG_5393**. **اسم هذا الاختبار غير ظاهر بسبب تمرير الصفحة**؛ نسميه هنا «اختبار الحساسية ذو 3 أسئلة، اسم غير ظاهر» ولا نسجّل أن سيناريو Q1 مصحح ضمنه.
+- النتيجة الناجحة **100%** (3/3) مثبتة للصورة ذات الـReview فحسب، والمحاولة السابقة **33.3%** (1/3). **رقم المحاولة الحالية غير ظاهر**، فلا نختلقه.
+
+### 58.7 مفاتيح الأسئلة المصححة الظاهرة في مراجعة اختبار 3/3
+
+**Q1 — IMG_5400.png**
+> Which of the following allergens are of the 14 prescribed allergens listed in law we need to be aware of?
+
+**الإجابة مصوّرة بجانبها علامة صح:** **Peanuts, Eggs, Sulphur Dioxide, Sesame**. هي أربعة أمثلة من الفئات القانونية الـ14؛ الاسم الأدق للمجموعة الكيميائية **Sulphur dioxide and sulphites** كما في §19.6. لا تظهر بقية اختيارات السؤال الأصلي هنا.
+
+**Q2 — IMG_5401.png**
+> Which statement is correct regarding our GF (Gluten Free) signage?
+
+**النص الظاهر مع علامة صح حرفيًا:**
+> GF means non gluten containing ingredients not suitable for coeliacs
+
+**تنبيه مهم على تعارض داخلي في مادة التدريب:** هذه العبارة تصف «GF» بأنه مجرد مكونات لا تحتوي جلوتين **وغير مناسب للسيلياك**. لكن سياسة Westmorland المصوّرة **Made without Gluten — Information (March 2025)** والموثقة في **§21.1–21.2** تميّز:
+- **Gluten Free**: منتجات **pre-packed** من مورد وتحمل شعار/وسم Gluten Free بحسب وثيقة الشركة، وهو وصف ينطبق عليه حد **20 ppm**.
+- **Made without Gluten**: أطعمة تحتوي وصفاتها على مكونات **بلا جلوتين مضاف** لكنها قد تتعرض للتلامس العرضي في مطبخ مشترك، ولذلك تقول الوثيقة إنها **غير مناسبة لمرضى السيلياك**.
+- **لذلك تبقى صياغة سؤال Q2 متعارضة أو ملتبسة إذا استُخدمت GF للدلالة على Gluten Free التنظيمي**. يسجل المرجع **النص وموافقة منصة الاختبار عليه** لكنه **لا يساويه بإرشاد صحيح لأي منتج موسوم Gluten Free**؛ يحتاج الموظف إلى التحقق من **أحدث تعليمات الفرع واللافتة المحددة مع Service Leader/Manager**. **لا تصف منتجًا غير موثوق بأنه آمن لمرضى السيلياك ولا تصف جميع المنتجات الحاملة وسم GF بأنها غير مناسبة**.
+- هذه ملاحظة **تحليلية قائمة على مقارنة مصدرَي الشركة**، وليست نصًا من صورة Q2 نفسها.
+
+**Q3 — IMG_5402.png**
+> What is the correct thing to do when a customer says they have an allergy?
+
+**الإجابة المصوّرة بجانبها علامة صح:**
+> Notify a Service Leader. Service Leader to assist the customer with the portal to gain allergen information
+
+- هذا **مفتاح تصحيح مثبت** للاختبار ذي 3 أسئلة. في إجراء سابق (§20.1–20.2)، تقول شريحة **Allergen Process Update** إن **كل الزملاء** يساعدون العميل باستخدام **Allergen Portal**؛ وتصحيح Q3 هنا يؤكد **إبلاغ Service Leader** لمساندة العميل. **اختلاف التركيز بين المصدرين يُراجع مع المشرف**، دون افتراض إلغاء تحديث سابق أو أن زميل الوردية لا يجوز له بدء المساعدة.
+- **الممارسة الآمنة المحفوظة:** استمع، أبلغ Service Leader حسب التعليمات، استخدم أحدث معلومات البوابة للمنتج المحدد، ولا تخمّن ولا تضمن خلو الطبق من خطر التلامس العرضي.
+
+### 58.8 النطاق والعداد
+| بند | القيمة |
+|---|---:|
+| الصور الجديدة | **10** — IMG_5393.png إلى IMG_5402.png |
+| نتائج مصورة | **3/3 PASSED بعد 1/3 FAILED** في صور Review الأخيرة |
+| وصول نهاية الوحدة التعليمية | **نعم** IMG_5399.png |
+| اسم اختبار 3/3 | **غير ظاهر** في اللقطات |
+| ربط نتيجة 3/3 بتمرين سيناريو Q1/3 | **غير مثبت**؛ الأسئلة التي تعرضها المراجعة مختلفة |
+| إجمالي الصور الفريدة بالمحتوى | **388** |
+| ملفات PDF ضمن دفعات 9 أكتوبر | **31 فريدة / 70 صفحة** دون تغيير |
+| الفيديوهات المتميزة بالمحتوى | **15** دون تغيير |
+
+**هذا توثيق لمحتوى ومعايير نجاح مصوّرة، لا تغيير لحساب المستخدم في THRIVE ولا لنظام الموقع أو النشر.**
+
+---
+
 ## سجل التحديثات
 
 - 8 أكتوبر 2026: إنشاء المرجع وتجميع الدفعة الأولى من 9 صور لكورس الحريق. الكورس قيد التجميع، ولم تُجرَ إضافات للموقع.
@@ -4960,6 +5065,8 @@ FSA توصي بمعلومات مسببات الحساسية الدقيقة وت�
 - 9 أكتوبر 2026: **Safe Storage and Transportation Quiz PASSED 2/2 (100%)** مثبت بصورة Results **IMG_5375.png**؛ صورة Q1 السابقة IMG_5373.png تعرض FIFO = First In First Out دون اختيار ظاهر، بينما Q2 وReview الفردية غير مرسلين (§55). توثيق **9 صور IMG_5376–IMG_5384.png** من **Catering for Allergies** (§56): Food sensitivity، وFood intolerance (Lactose)، وCoeliac disease (autoimmune/gluten)، وFood allergy (immune response/trace allergen)، و**Anaphylaxis** (العلامات وضرورة الاتصال بالإسعاف)، وتعريف Allergen، و**القائمة القانونية لـ14 فئة** (celery/gluten cereals/crustaceans/eggs/fish/lupin/milk/molluscs/mustard/peanuts/sesame/soybeans/sulphur dioxide-sulphites/tree nuts). ملاحظات سلامة: حكة الحلق ليست ضمانًا لعدم تحمل بسيط؛ تختلف شدة الحساسية حسب التعرض؛ ولا يفسّر الموظف «لا يوجد علاج» بحكم طبي مطلق. لا نتيجة/شهادة لـCatering for Allergies في هذه الدفعة. العدد **370 صورة فريدة، 31 PDF فريدة/70 صفحة بدفعات 9 أكتوبر، 15 فيديو بالمحتوى**؛ لا تغيير الموقع أو الحساب.
 
 - 9 أكتوبر 2026: 10 صور متابعة Catering for Allergies؛ IMG_5384(1).png وIMG_5383(1).png **تكرار محتوى §56.8 و§56.7**، و8 صور جديدة IMG_5385.png–IMG_5392.png في **§57** عن Hidden allergens في Bloody Mary وWorcestershire sauce (Fish/Wheat/Soya **حسب وصفة المثال، لا تعميم على كل منتج**)، Ingredients lists وRecipe cards تشمل الزيوت والزينة وMenu symbols وAllergen matrix، ثم ضرورة التواصل الدقيق مع العملاء والزملاء. اللون الأحمر لخيار Wheat لا يُعد نتيجة Quiz مؤكدة؛ لا توجد شاشة Results. الإجمالي **378 صورة فريدة بالمحتوى، 31 PDF فريدة/70 صفحة، 15 فيديو**. لم يُعدل الموقع أو الحساب.
+
+- 9 أكتوبر 2026: **10 صور جديدة IMG_5393.png–IMG_5402.png** في §58: مسألة Coeliac Q1/3 عند تغيير القائمة والإجابة الآمنة بالرجوع إلى Allergen Matrix، شريحة Spot on، منع cross-contact من التوصيل إلى التقديم (فصل المعدات والمناطق، تنظيف وإزالة بقايا المسببات، غسل اليدين)، نهاية **Catering for Allergies** وموارد FSA/NHS دون روابط أصلية مصورة. مراجعة اختبار مختلف الأسئلة **PASSED 3/3 بعد FAILED 1/3**، عنوانه غير ظاهر، بإجابات مصححة لـ4 مسببات من الـ14، وGF signage وService Leader + Allergen Portal. ورد **تعارض صياغة GF مع سياسة Made without Gluten المؤرشفة في §21** فسُجل للتحقق من المدير دون تغيير النصوص أو ادعاء سياسة من عندنا. العداد **388 صورة فريدة بالمحتوى، 31 PDF/70 صفحة بدفعات 9 أكتوبر، 15 فيديو**؛ لا تغييرات كود أو حساب أو نشر.
 
 ## مراجعة وإصلاح v51
 
