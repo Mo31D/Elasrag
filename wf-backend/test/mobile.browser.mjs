@@ -37,8 +37,18 @@ try {
     assert.deepEqual(await page.locator('header .action-strip [data-page]').evaluateAll(els=>els.map(el=>el.dataset.page)),['fire','actions']);
     assert.deepEqual(await page.locator('#actions .action-hub-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances']);
     assert.deepEqual(await page.locator('#home .home-focus .focus-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['details','training']);
-    assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits','access']);
-    assert.equal(await page.locator('#home .home-topic-link').count(),20);
+    assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits']);
+    assert.equal(await page.locator('#home .home-topic-link').count(),17);
+    const companyHub=page.locator('#home .company-hub');
+    assert.equal(await companyHub.count(),1);
+    assert.equal(await companyHub.locator('.company-hub-app').count(),2);
+    assert.deepEqual(await companyHub.locator('.company-hub-help-link').evaluateAll(els=>els.map(el=>el.dataset.page)),['access/reset','access/username','access/app']);
+    const separation=await companyHub.evaluate(hub=>{
+      const grid=document.querySelector('#home .home-topic-grid');
+      return hub.getBoundingClientRect().top-grid.getBoundingClientRect().bottom;
+    });
+    assert.ok(separation>=20,`Company tools should remain visually separate at ${width}px: ${separation}px`);
+    await noOverflow();
     const groupsLayout=await page.locator('#home .home-topic-grid').evaluate(grid=>{
       const sections=[...grid.children];
       const a=sections[0].getBoundingClientRect();
@@ -57,7 +67,8 @@ try {
       ['uniform','uniform',null],
       ['access/username','access','username']
     ]){
-      await page.locator(`#home .home-topic-link[data-page="${route}"]`).click();
+      const selector=route.startsWith('access/') ? `#home .company-hub-help-link[data-page="${route}"]` : `#home .home-topic-link[data-page="${route}"]`;
+      await page.locator(selector).click();
       await page.locator(`#${pageId}.active`).waitFor();
       if(selectedTab)assert.equal(await page.locator(`#${pageId} [data-tab="${selectedTab}"]`).getAttribute('aria-selected'),'true',route);
       await noOverflow();
