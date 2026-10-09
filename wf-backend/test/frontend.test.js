@@ -475,8 +475,7 @@ test('home groups secondary topics without duplicating work and training shortcu
     safety:['safety/burns','safety/hazards','safety/lifting','safety/substances'],
     food:['food/allergens','food/temperatures','food/hygiene','food/reporting'],
     firstaid:['firstaid/cpr','firstaid/choking','firstaid/recovery','firstaid/injuries'],
-    benefits:['benefits/meals','benefits/discounts','benefits/travel','benefits/leisure','uniform'],
-    access:['access/reset','access/username','access/app']
+    benefits:['benefits/meals','benefits/discounts','benefits/travel','benefits/leisure','uniform']
   };
   assert.deepEqual([...home.querySelectorAll('.home-topic')].map(el=>el.dataset.topic),Object.keys(expected));
   for(const [topic,routes] of Object.entries(expected)){
@@ -484,12 +483,12 @@ test('home groups secondary topics without duplicating work and training shortcu
     assert.equal(section.querySelector('.home-topic-heading').dataset.page,topic);
     assert.deepEqual([...section.querySelectorAll('.home-topic-link')].map(el=>el.dataset.page),routes);
   }
-  assert.equal(home.querySelectorAll('.home-topic-link').length,20);
+  assert.equal(home.querySelectorAll('.home-topic-link').length,17);
   assert.equal(home.querySelectorAll('[data-page="benefits"]').length,1);
   assert.equal(home.querySelectorAll('[data-page="uniform"]').length,1);
   assert.equal(home.querySelectorAll('#guidesGrid, #guidesTitle, .home-benefits, .home-uniform').length,0);
   assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(el=>el.dataset.page),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances']);
-  const publicTopics=['safety','food','firstaid','benefits','access'];
+  const publicTopics=['safety','food','firstaid','benefits'];
   for(const topic of publicTopics){
     for(const route of expected[topic]){
       click(d,`#home [data-topic="${topic}"] [data-page="${route}"]`);
@@ -499,6 +498,21 @@ test('home groups secondary topics without duplicating work and training shortcu
       click(d,`#${page} [data-back]`);
       assert.ok(active(d,'home'),route);
     }
+  }
+  // PeopleXD help belongs to the separate compact company hub, not the general guidance grid.
+  const companyHub=home.querySelector('.company-hub');
+  assert.ok(companyHub);
+  assert.ok(home.querySelector('.home-topic-grid').compareDocumentPosition(companyHub) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
+  assert.equal(companyHub.querySelector('.company-hub-help-title').dataset.page,'access');
+  assert.deepEqual([...companyHub.querySelectorAll('.company-hub-help-link')].map(el=>el.dataset.page),['access/reset','access/username','access/app']);
+  assert.equal(home.querySelectorAll('[data-page="access"]').length,1);
+  assert.equal(home.querySelectorAll('.home-topic-link[data-page^="access/"]').length,0);
+  for(const route of ['access/reset','access/username','access/app']){
+    click(d,`#home .company-hub [data-page="${route}"]`);
+    assert.ok(active(d,'access'),route);
+    assert.equal(d.document.querySelector(`#access [data-tab="${route.split('/')[1]}"]`).getAttribute('aria-selected'),'true',route);
+    click(d,'#access [data-back]');
+    assert.ok(active(d,'home'),route);
   }
   // Work and Training remain the main overview cards, not duplicated in Browse by topic.
   assert.equal(home.querySelector('[data-topic="details"], [data-topic="training"]'),null);
@@ -541,7 +555,8 @@ test('returning from another page keeps draft inputs and back links return to th
   click(d,'#benefits [data-back]');assert.ok(active(d,'home'));
   assert.equal(d.document.querySelectorAll('#home [data-page="benefits"]').length,1);
   assert.equal(d.document.querySelectorAll('#home [data-topic="benefits"] [data-page^="benefits/"]').length,4);
-  assert.equal(d.document.querySelectorAll('#home [data-topic="access"] [data-page="access/reset"]').length,1);
+  assert.equal(d.document.querySelectorAll('#home .company-hub [data-page="access/reset"]').length,1);
+  assert.equal(d.document.querySelectorAll('#home .company-hub-help-link').length,3);
   click(d,'#home [data-page="benefits"]');
   assert.equal(d.document.querySelector('#benefits [data-tab="discounts"]').getAttribute('aria-selected'),'true');
   assert.match(d.document.querySelector('#benefits [data-back]').textContent,/الرئيسية/);
@@ -556,7 +571,7 @@ test('returning from another page keeps draft inputs and back links return to th
   assert.equal(d.document.querySelectorAll('#home [data-page="fire"]').length,0);
   assert.ok(d.document.querySelector('#home .shift-hero').compareDocumentPosition(d.document.querySelector('#home .home-focus')) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
   assert.equal(d.document.querySelectorAll('#home .home-focus .focus-card').length,2);
-  click(d,'#home [data-topic="access"] [data-page="access/reset"]');assert.ok(active(d,'access'));
+  click(d,'#home .company-hub [data-page="access/reset"]');assert.ok(active(d,'access'));
   assert.equal(d.document.querySelector('#access [data-tab="reset"]').getAttribute('aria-selected'),'true');
   click(d,'#access [data-back]');assert.ok(active(d,'home'));
   click(d,'#home [data-page="uniform"]');assert.ok(active(d,'uniform'));
@@ -688,7 +703,11 @@ test('homepage has no duplicate Quick Access section; urgent routes remain in Qu
     assert.equal(d.document.querySelector('#home .home-safety-grid'),null);
     assert.ok(d.document.querySelector('#home .home-focus'));
     assert.ok(d.document.querySelector('#home .home-topic-grid'));
-    assert.ok(d.document.querySelector('#home .company-tools'));
+    const companyHub=d.document.querySelector('#home .company-hub');
+    assert.ok(companyHub);
+    assert.equal(companyHub.querySelectorAll('.company-hub-app').length,2);
+    assert.equal(companyHub.querySelectorAll('.company-hub-help-link').length,3);
+    assert.ok(d.document.querySelector('#home .home-topic-grid').compareDocumentPosition(companyHub) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
     assert.equal(d.document.querySelectorAll('header [data-page="fire"]').length,1);
     const quick=d.document.querySelector('header [data-page="actions"]');
     assert.ok(quick);
