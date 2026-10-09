@@ -120,20 +120,28 @@
               <button type="button" class="home-topic-link" data-page="uniform" data-i18n="uniformDress"></button>
             </div>
           </section>
-          <section class="home-topic" data-topic="access">
-            <button type="button" class="home-topic-heading" data-page="access"><span data-i18n="peopleXDHelp"></span><span aria-hidden="true">↗</span></button>
-            <div class="home-topic-links">
-              <button type="button" class="home-topic-link" data-page="access/reset" data-i18n="resetTab"></button>
-              <button type="button" class="home-topic-link" data-page="access/username" data-i18n="usernameTab"></button>
-              <button type="button" class="home-topic-link" data-page="access/app" data-i18n="appTab"></button>
+        </div>
+        <section class="company-hub" aria-labelledby="companyHubTitle">
+          <div class="company-hub-header">
+            <span class="company-hub-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"></rect><path d="M3 9h18M8 14h3M14 14h3"></path></svg></span>
+            <div>
+              <h2 id="companyHubTitle" data-i18n="workTools"></h2>
+              <p data-i18n="companyHubIntro"></p>
             </div>
-          </section>
-        </div>
-        <div class="section-title" data-i18n="workTools"></div>
-        <div class="grid company-tools">
-          <a class="quick access" href="https://mywestmorland.com" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>PeopleXD</span></a>
-          <a class="quick access" href="https://westmorland.learn.link" target="_blank" rel="noopener"><span class="icon" aria-hidden="true">↗</span><span>THRIVE</span></a>
-        </div>
+          </div>
+          <div class="company-hub-apps">
+            <a class="company-hub-app" href="https://mywestmorland.com" target="_blank" rel="noopener"><span>PeopleXD</span><span class="company-hub-arrow" aria-hidden="true">↗</span></a>
+            <a class="company-hub-app" href="https://westmorland.learn.link" target="_blank" rel="noopener"><span>THRIVE</span><span class="company-hub-arrow" aria-hidden="true">↗</span></a>
+          </div>
+          <div class="company-hub-help">
+            <button type="button" class="company-hub-help-title" data-page="access"><span data-i18n="peopleXDHelp"></span><span aria-hidden="true">↗</span></button>
+            <div class="company-hub-help-links">
+              <button type="button" class="company-hub-help-link" data-page="access/reset" data-i18n="resetTab"></button>
+              <button type="button" class="company-hub-help-link" data-page="access/username" data-i18n="usernameTab"></button>
+              <button type="button" class="company-hub-help-link" data-page="access/app" data-i18n="appTab"></button>
+            </div>
+          </div>
+        </section>
         <div class="status" id="offlineStatus"></div>
       </section>
       <section id="tasks" class="page">
