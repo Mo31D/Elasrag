@@ -135,6 +135,8 @@ import { WF_BUILD } from "./build.js";
     privateData = null;
     vaultItems = [];
     editingIndex = null; editingTaskId = null;
+    closeShiftDutyForm();
+    message("shiftDutyError", "");
     conflictedEditors.clear();
     $("vaultList").replaceChildren();
     $("accountSettings").hidden=true;
@@ -1137,6 +1139,7 @@ import { WF_BUILD } from "./build.js";
     $("shiftDutyInput").value=item?.label || "";
     $("shiftDutyTime").value=item?.time || "";
     $("shiftDutyOnce").checked=Boolean(item?.night);
+    $("deleteShiftDuty").hidden=!item;
     $("shiftDutyForm").hidden=false;
     $("addShiftDuty").hidden=true;
     message("shiftDutyError","");
@@ -1145,10 +1148,20 @@ import { WF_BUILD } from "./build.js";
   function closeShiftDutyForm() {
     editingShiftDutyId=null;
     $("shiftDutyForm").reset();$("shiftDutyForm").hidden=true;
+    $("deleteShiftDuty").hidden=true;
     $("addShiftDuty").hidden=guestMode;
   }
   $("addShiftDuty").addEventListener("click",()=>openShiftDutyForm());
   $("cancelShiftDuty").addEventListener("click",closeShiftDutyForm);
+  $("deleteShiftDuty").addEventListener("click",async()=>{
+    if(!editingShiftDutyId || saving || !authenticated || guestMode || !confirm(t("shiftDutyDeleteConfirm")))return;
+    const next=structuredClone(privateData.companion);
+    next.shiftDuties=(next.shiftDuties||[]).filter(item=>item.id!==editingShiftDutyId);
+    const btn=$("deleteShiftDuty");btn.disabled=true;
+    try{if(await saveCompanion(next))closeShiftDutyForm();}
+    catch(error){message("shiftDutyError",errorKey(error));}
+    finally{btn.disabled=false;}
+  });
   $("shiftDutyForm").addEventListener("submit",async event=>{
     event.preventDefault();
     const label=$("shiftDutyInput").value.trim();
