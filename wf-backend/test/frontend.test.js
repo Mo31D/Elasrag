@@ -493,7 +493,7 @@ test('returning from another page keeps draft inputs and back links return to th
   assert.equal(d.document.querySelector('.emergency-strip').hidden,false);
   assert.equal(d.document.querySelectorAll('#home [data-page="fire"]').length,0);
   assert.ok(d.document.querySelector('#home .shift-hero').compareDocumentPosition(d.document.querySelector('#home .home-focus')) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
-  assert.equal(d.document.querySelectorAll('#home .home-focus .focus-card').length,2);
+  assert.equal(d.document.querySelectorAll('#home .home-focus .focus-card').length,4);
   click(d,'#home .company-tools [data-page="access/reset"]');assert.ok(active(d,'access'));
   assert.equal(d.document.querySelector('#access [data-tab="reset"]').getAttribute('aria-selected'),'true');
   click(d,'#access [data-back]');assert.ok(active(d,'home'));
