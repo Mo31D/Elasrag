@@ -108,6 +108,12 @@ export const TRANSLATIONS = {
     "conflictGuideTitle": "لو حصل تهديد أو سلوك عدواني",
     "conflictGuide1": "اتكلم بهدوء ووضوح، اسمع وأظهر تفهمًا من غير تصعيد أو تحدّي.",
     "conflictGuide2": "ابعد لمكان آمن واطلب مساعدة لو فيه خطر؛ بلّغ عن أي عنف أو تهديد في العمل.",
+    "loneGuideTitle": "الشغل لوحدك — قبل الشيفت",
+    "loneGuide1": "اعرف مين بيتابع سلامتك ومواعيد التواصل المتفق عليها وطريقة طلب النجدة. اسأل عن المهام اللي ممنوع تعملها بمفردك.",
+    "loneGuide2": "لو حاسس بخطر أو مش قادر توصل للمساعدة أو فيه تهديد، ابعد لمكان آمن واتبع خطة طوارئ فرعك. اتصل بـ999 لو الخطر فوري.",
+    "dseGuideTitle": "العمل على شاشة — وضع مريح",
+    "dseGuide1": "خلي الشاشة قدامك وعلى بُعد ذراع تقريبًا، وأعلاها عند مستوى العين. اسند أسفل ظهرك، ريّح كتافك وخلي ساعديك أفقيين تقريبًا.",
+    "dseGuide2": "قلّل انعكاس الضوء، وسيب مساحة فاضية لرجليك، وغيّر النشاط أو خد فواصل قصيرة منتظمة. بلّغ لو فيه ألم مستمر أو تجهيز غير مناسب."
 
     "ppeActionLink": "افتح خطوات فحص معدات الوقاية في سلامة الشغل",
     "poisonQuick": "ابتلاع مادة تنظيف",
@@ -648,6 +654,12 @@ export const TRANSLATIONS = {
     "conflictGuideTitle": "If someone becomes aggressive",
     "conflictGuide1": "Speak calmly and clearly. Listen and show concern without escalating or confronting.",
     "conflictGuide2": "Move to safety and get help if threatened. Report violence or threats at work.",
+    "loneGuideTitle": "Working alone — before your shift",
+    "loneGuide1": "Know the agreed check-in arrangements, who monitors your safety and how to contact them or raise an alarm. Ask which tasks you must not do alone.",
+    "loneGuide2": "If you feel unsafe, cannot reach support or face aggression, withdraw if safe and follow your site's emergency plan. Call 999 for immediate danger.",
+    "dseGuideTitle": "Screen work — comfortable setup",
+    "dseGuide1": "Keep the screen in front of you, about an arm's length away, with its top at eye level. Support your lower back, relax your shoulders and keep forearms roughly horizontal.",
+    "dseGuide2": "Reduce glare, keep leg space clear, and take regular short breaks or changes of task. Report persistent pain or unsuitable equipment."
 
     "ppeActionLink": "Open PPE safety checks",
     "poisonQuick": "Cleaning chemical swallowed",
