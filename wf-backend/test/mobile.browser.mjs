@@ -178,6 +178,25 @@ try {
     await page.locator('#actions [data-page="incident"]').click();
     await page.locator('#incident.active').waitFor();
     await noOverflow();
+
+    // Food guide: all tabs, translation persistence and layout on mobile.
+    await page.goto('https://mo.elasrag.com/#food/allergens');
+    await page.locator('#food.active').waitFor();
+    assert.equal(await page.locator('#food .food-tabs button').count(),4);
+    assert.equal(await page.locator('#food .food-call').getAttribute('href'),'tel:999');
+    for(const tab of ['temperatures','hygiene','reporting','allergens']){
+      await page.locator('#food-tab-'+tab).click();
+      assert.equal(await page.locator('#food [role="tabpanel"]:visible').count(),1);
+      await noOverflow();
+      await page.locator('#languageToggle').click();
+      assert.equal(await page.locator('#food-panel-'+tab).isVisible(),true);
+      await noOverflow();
+      await page.locator('#languageToggle').click();
+    }
+    await page.locator('#food .food-fold summary').first().focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#food .food-fold').first().evaluate(el=>el.open),true);
+    await noOverflow();
     await page.goto('https://mo.elasrag.com/#uniform');
     await page.locator('#uniform.active').waitFor();
     assert.equal(await page.locator('#uniform .ppe-action-guide').count(),0);

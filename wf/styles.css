@@ -281,3 +281,33 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 #firstaid summary{min-height:44px;align-content:center;cursor:pointer;font-weight:700;font-size:15px;color:var(--accent)}
 #firstaid .aid-sources li{margin:10px 0;overflow-wrap:anywhere}
 @media(max-width:360px){#firstaid .aid-emergency{display:block}#firstaid .aid-call{margin-top:10px}#firstaid .aid-steps li{padding-inline-start:34px}}
+
+/* The food safety guide follows the existing tab routing and is public/read-only. */
+#food .food-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;overflow:visible;margin-bottom:12px}
+#food .food-tabs button{white-space:normal;min-height:48px;line-height:1.35;font-size:12.5px;padding:8px 5px}
+#food .food-footnote{font-size:12px;color:var(--muted);line-height:1.65;margin:8px 0 12px}
+#food [role="tabpanel"]>.card{margin-bottom:10px}
+#food .card h2{font-size:17px;line-height:1.4;margin:0 0 9px}
+#food .card p,#food .food-fold p{font-size:13px;line-height:1.65;margin:7px 0}
+#food .food-primary{background:#f4faf6;border-color:#ccdfd1}
+#food .food-urgent{background:#fff4f0;border-color:#edc5be}
+#food .food-urgent h2{color:#8c382f}
+#food .food-call{display:grid;place-items:center;min-height:46px;background:#963d31;color:white;font-size:20px;font-weight:800;border-radius:10px;text-decoration:none;margin:8px 0}
+#food .aid-link{margin:9px 0 0}
+#food .food-steps{padding-inline-start:23px;margin:7px 0}
+#food .food-steps li{font-size:13px;line-height:1.6;padding:7px 0;border-bottom:1px solid var(--line)}
+#food .food-steps li:last-child{border-bottom:0}
+#food .food-fold{margin:8px 0;padding:8px 13px}
+#food .food-fold summary{font-size:14px;line-height:1.5;font-weight:700;color:var(--accent);min-height:44px;align-content:center;cursor:pointer}
+#food .food-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+#food .food-metric{display:flex;flex-direction:column;gap:5px;padding:11px;border:1px solid var(--line);border-radius:12px;background:white;min-width:0}
+#food .food-metric strong{direction:ltr;unicode-bidi:isolate;color:var(--accent);font-size:24px;line-height:1.2;text-align:start}
+#food .food-metric span{font-weight:700;font-size:13px}
+#food .food-metric small{font-size:12px;line-height:1.5;color:var(--muted)}
+#actions .action-hub-food{background:#f3faf5;border-color:#c7ddcf}
+#actions .action-hub-food .action-hub-icon{background:#dfefe4;color:#1b6244}
+#training .food-signoff{margin-top:12px;padding:9px 14px}
+#training .food-signoff summary{font-size:14px;min-height:44px;align-content:center;font-weight:700;color:var(--accent)}
+#training .food-signoff p{font-size:13px;line-height:1.65}
+@media(min-width:680px){#food .food-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:350px){#food .food-metrics{grid-template-columns:1fr}}

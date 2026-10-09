@@ -369,7 +369,7 @@ import { WF_BUILD } from "./build.js";
     const button=$(activePage)?.querySelector('[data-back]');
     if(!button)return;
     const target=(returnTarget(activePage).route).split('/')[0];
-    const label={home:'home',actions:'quickAction',firstaid:'faTitle',incident:'incidentTitle',safety:'safetyQuick',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'peopleXDHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
+    const label={home:'home',actions:'quickAction',firstaid:'faTitle',incident:'incidentTitle',food:'foodGuideTitle',safety:'safetyQuick',training:'trainingNav',tasks:'myTasks',fire:'fire',benefits:'benefits',uniform:'uniformDress',access:'peopleXDHelp',details:'workDetails',vault:'privateVault'}[target] || 'home';
     button.textContent=(lang==='ar'?'→ ':'← ')+t(label);
   }
 

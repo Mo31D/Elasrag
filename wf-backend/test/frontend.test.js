@@ -685,3 +685,19 @@ test('the build ID comes from one module and public assets have no duplicated UR
   assert.match(workerSource, /import \{ WF_BUILD \} from "\.\.\/\.\.\/wf\/build\.js"/);
   assert.match(WF_BUILD,/^\d+$/);
 });
+
+test('food safety tabs work in Arabic and English without touching user training',async t=>{
+  for(const [language,word] of [['ar',/الحساسية/],['en',/allergy/i]]){
+    const {env}=fixture();const d=device(env,'#food/allergens',null,'https://mo.elasrag.com/',false,null,language);t.after(()=>d.window.close());
+    assert.ok(active(d,'food'));
+    assert.match(d.document.querySelector('#food-heading').textContent,/سلامة|Food/);
+    assert.equal(d.document.querySelector('#food .food-steps li')!==null,true);
+    assert.equal(d.document.querySelector('#food .food-call').getAttribute('href'),'tel:999');
+    for(const tab of ['temperatures','hygiene','reporting','allergens']){
+      click(d,'#food-tab-'+tab);assert.equal(d.document.querySelector('#food-panel-'+tab).hidden,false);
+      assert.equal(d.document.querySelectorAll('#food [role="tabpanel"]:not([hidden])').length,1);
+    }
+    click(d,'#languageToggle');assert.equal(d.document.querySelector('#food-panel-allergens').hidden,false);
+    click(d,'#food [data-page="firstaid/cpr"]');assert.ok(active(d,'firstaid'));assert.deepEqual(d.errors,[]);
+  }
+});
