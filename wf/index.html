@@ -142,6 +142,20 @@
         <form id="taskForm" class="inline-form"><input id="taskInput" maxlength="300" autocomplete="off" data-placeholder="addTask"><button class="primary" type="submit" data-i18n="add"></button></form>
         <div class="card"><ul id="personalTasks" class="task-list"></ul><button id="resetTasks" class="reset-checklist" data-i18n="newShift"></button></div>
       </section>
+      <section id="shiftDuties" class="page">
+        <button class="back" data-back></button>
+        <div class="check-head shift-duties-head"><h1 data-i18n="shiftDutiesTitle"></h1><span id="shiftDutyProgress" class="progress-pill">0 / 2</span></div>
+        <p id="shiftDutyNight" class="shift-duty-night"></p>
+        <ul id="shiftDutyList" class="shift-duty-list" aria-live="polite"></ul>
+        <button id="addShiftDuty" type="button" class="shift-duty-add" data-i18n="shiftDutyAdd"></button>
+        <form id="shiftDutyForm" class="shift-duty-form" hidden>
+          <input id="shiftDutyInput" type="text" maxlength="300" autocomplete="off" required data-placeholder="shiftDutyPlaceholder" data-aria="shiftDutyPlaceholder">
+          <input id="shiftDutyTime" type="time" value="" data-aria="shiftDutyTimeOptional" aria-label="Optional time">
+          <label class="shift-duty-once"><input id="shiftDutyOnce" type="checkbox"><span data-i18n="shiftDutyTonight"></span></label>
+          <div class="shift-duty-form-actions"><button type="submit" class="primary" data-i18n="save"></button><button type="button" id="cancelShiftDuty" class="secondary" data-i18n="cancel"></button></div>
+        </form>
+        <p id="shiftDutyError" class="error" role="status"></p>
+      </section>
       <section id="actions" class="page">
         <button class="back" data-back></button>
         <h1 data-i18n="quickAction"></h1>
@@ -581,7 +595,7 @@
     <nav>
       <div class="nav-inner">
         <button class="nav-btn active" data-page="home"><span aria-hidden="true">⌂</span><span data-i18n="home"></span></button>
-        <button class="nav-btn" data-page="tasks"><span aria-hidden="true">✓</span><span data-i18n="myTasks"></span></button>
+        <button class="nav-btn" data-page="shiftDuties"><span aria-hidden="true">✓</span><span data-i18n="shiftDutiesNav"></span></button>
         <button class="nav-btn" data-page="training"><span aria-hidden="true">◷</span><span data-i18n="trainingNav"></span></button>
       </div>
     </nav>
