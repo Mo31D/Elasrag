@@ -519,3 +519,17 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 #safety .ppe-mini-list.quick-steps-list .quick-step-copy>svg{display:none}
 #safety .ppe-mini-list.quick-steps-list .quick-step-row{display:flex}
 #safety .ppe-mini-list.quick-steps-list .quick-step-copy span{font-size:14px;line-height:1.55}
+
+
+/* Accounts: private information is a different destination from company app links. */
+#details-panel-accounts>.private-vault-launch{
+  display:flex;align-items:center;gap:12px;width:100%;min-height:74px;
+  padding:12px 14px;margin:0 0 18px;border:1px solid #365669;border-radius:14px;
+  background:#385566;color:#fff;text-align:start;
+}
+#details-panel-accounts>.private-vault-launch:hover{background:#304b5c}
+.private-vault-launch-icon{flex:0 0 43px;width:43px;height:43px;display:grid;place-items:center;border-radius:12px;border:1px solid #ffffff29;background:#ffffff18;color:#fff}
+.private-vault-launch-copy{display:grid;gap:3px;flex:1;min-width:0}
+.private-vault-launch-copy strong{font-size:15px;font-weight:750;line-height:1.35}
+.private-vault-launch-copy small{font-size:12px;font-weight:500;line-height:1.45;color:#e3ecf1}
+.private-vault-launch-arrow{flex:none;font-size:18px;font-weight:750;line-height:1}
