@@ -687,19 +687,19 @@ test('fire guide foregrounds evacuation, keeps drills optional and the five exti
     assert.match(main.querySelector('.fire-now-message').textContent,evacuateMessage);
     assert.equal(main.querySelectorAll('.fire-direction-list > li').length,2);
     assert.equal(main.querySelectorAll('[data-check]').length,0,'Emergency steps must not be checkboxes');
-    const practice=d.document.querySelector('#fire .fire-practice-panel');
+    assert.equal(d.document.querySelector('#fire .fire-practice-panel'),null);
+    const practice=d.document.querySelector('#training .fire-practice-panel');
     const equipment=d.document.querySelector('#fire .fire-equipment-card');
     assert.equal(practice.open,false);
     assert.equal(equipment.open,false);
     assert.match(practice.querySelector('.fire-practice-summary').textContent,practiceText);
     assert.equal(practice.querySelectorAll('[data-check]').length,2);
     assert.equal(equipment.querySelectorAll('.ext-card').length,5);
-    assert.ok(main.compareDocumentPosition(practice) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
-    assert.ok(practice.compareDocumentPosition(equipment) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
+    assert.ok(d.document.querySelector('#training .training-card').compareDocumentPosition(practice) & d.window.Node.DOCUMENT_POSITION_FOLLOWING);
     assert.equal(d.document.querySelector('#fire .fire-call-link').getAttribute('href'),'tel:999');
-    click(d,'#fire .fire-practice-summary');
+    click(d,'#training .fire-practice-summary');
     assert.equal(practice.open,true);
-    click(d,'#fire [data-check="fire-evacuation-1"]');
+    click(d,'#training [data-check="fire-evacuation-1"]');
     assert.equal(practice.querySelector('[data-check="fire-evacuation-1"]').checked,true);
     click(d,'#fire .fire-equipment-title');
     assert.equal(equipment.open,true);
@@ -707,6 +707,47 @@ test('fire guide foregrounds evacuation, keeps drills optional and the five exti
     assert.equal(practice.open,true);
     assert.equal(equipment.open,true);
     assert.equal(practice.querySelector('[data-check="fire-evacuation-1"]').checked,true);
+    assert.deepEqual(d.errors,[]);
+  }
+});
+
+test('incident checklists enhance only actionable steps and reset without altering guidance',async t=>{
+  for(const locale of ['en','ar']){
+    const {env}=fixture();
+    const d=device(env,'#safety/forecourt',null,'https://mo.elasrag.com/',false,null,locale);
+    t.after(()=>d.window.close());
+    const ids=['flow-aid-cpr','flow-aid-choking','flow-aid-recovery','flow-aid-bleeding','flow-incident-response','flow-incident-alert65','flow-food-allergy','flow-food-temp-check','flow-burns','flow-hazards','flow-wet-floor','flow-risk-check','flow-lifting','flow-chemical-safe-use','flow-chemical-dose','flow-fuel-spill','flow-pump-approval','flow-tanker-delivery','flow-speakup-report'];
+    for(const id of ids){
+      const list=d.document.querySelector('[data-quick-steps="'+id+'"]');
+      assert.ok(list,id);
+      assert.equal(list.dataset.checklist,id);
+      assert.equal(list.querySelectorAll(':scope > li > label > input[type="checkbox"]').length,list.children.length,id);
+      assert.ok(d.document.querySelector('[data-check-progress="'+id+'"]'),id);
+      assert.ok(d.document.querySelector('[data-reset-checklist="'+id+'"]'),id);
+    }
+    assert.equal(d.document.querySelectorAll('#home .home-topic-icon').length,4);
+    assert.equal(d.document.querySelectorAll('#home .home-topic-heading-label').length,4);
+    assert.equal(d.document.querySelector('#fire .fire-practice-panel'),null);
+    assert.ok(d.document.querySelector('#training .fire-practice-panel'));
+    const emergency=d.document.querySelector('#safety-panel-forecourt .fc-emergency');
+    assert.equal(emergency.firstElementChild.classList.contains('fc-emergency-head'),true);
+    assert.equal(emergency.querySelector('.fc-call').getAttribute('href'),'tel:999');
+    assert.equal(d.document.querySelector('#firstaid .aid-emergency .aid-call').getAttribute('href'),'tel:999');
+    const list=d.document.querySelector('[data-checklist="flow-fuel-spill"]');
+    const first=list.querySelector('[data-check="flow-fuel-spill-1"]');
+    assert.equal(first.checked,false);
+    assert.equal(d.document.querySelector('[data-check-progress="flow-fuel-spill"]').textContent,'0 / 4');
+    first.click();
+    assert.equal(first.checked,true);
+    assert.equal(d.document.querySelector('[data-check-progress="flow-fuel-spill"]').textContent,'1 / 4');
+    assert.ok(d.window.sessionStorage.getItem('wf-check-flow-fuel-spill'));
+    assert.equal(d.window.localStorage.getItem('wf-check-flow-fuel-spill'),null);
+    click(d,'#languageToggle');
+    assert.equal(first.checked,true,'language switch must not reset incident progress');
+    click(d,'[data-reset-checklist="flow-fuel-spill"]');
+    assert.equal(first.checked,false);
+    assert.equal(d.document.querySelector('[data-check-progress="flow-fuel-spill"]').textContent,'0 / 4');
+    assert.equal(d.window.sessionStorage.getItem('wf-check-flow-fuel-spill'),null);
     assert.deepEqual(d.errors,[]);
   }
 });
