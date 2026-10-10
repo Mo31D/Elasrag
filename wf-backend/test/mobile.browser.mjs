@@ -216,6 +216,7 @@ try {
     assert.equal(await page.locator('#safety-tab-forecourt').getAttribute('aria-selected'),'true');
     assert.match(await page.locator('#safety-panel-forecourt .fc-emergency').textContent(),/Fuel spill/);
     assert.equal(await page.locator('#safety-panel-forecourt .fc-call').getAttribute('href'),'tel:999');
+    assert.equal(await page.locator('#safety-panel-substances .chem-shift-note').count(),1);
     await noOverflow();
     await page.locator('#safety-panel-forecourt .fc-reference summary').first().click();
     await noOverflow();
