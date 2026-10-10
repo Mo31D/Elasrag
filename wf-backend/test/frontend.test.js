@@ -651,6 +651,32 @@ test('primary navigation returns home and keeps task drafts and page reading pos
   assert.deepEqual(d.errors,[]);
 });
 
+test('private Vault entry is a distinct internal action with lock icon, translated hint and unchanged external app links',async t=>{
+  const {env}=fixture();
+  const d=device(env,'#details',null,'https://mo.elasrag.com/',false,null,'en');t.after(()=>d.window.close());
+  await signIn(d);
+  click(d,'#details-tab-accounts');
+  const panel=d.document.querySelector('#details-panel-accounts');
+  const vault=panel.querySelector('button.vault-entry[data-page="vault"]');
+  assert.ok(vault,'Vault shortcut must remain a button, separate from company app links');
+  assert.ok(panel.querySelector('.private-access-card'));
+  assert.equal(vault.querySelectorAll('.vault-entry-icon svg').length,1);
+  assert.equal(vault.querySelectorAll('.vault-entry-copy [data-i18n]').length,2);
+  assert.equal(panel.querySelectorAll('a.action[href^="https://apps.apple.com/"]').length,2);
+  assert.match(vault.textContent,/Open Private Vault/);
+  assert.match(vault.textContent,/Passwords & private notes/);
+  click(d,'#languageToggle');
+  assert.match(vault.textContent,/افتح الخزنة الخاصة/);
+  assert.match(vault.textContent,/كلمات المرور والملاحظات الخاصة/);
+  click(d,'#languageToggle');
+  click(d,'.vault-entry');
+  await until(()=>active(d,'vault'));
+  click(d,'#vault [data-back]');
+  assert.ok(active(d,'details'));
+  assert.equal(d.document.querySelector('#details-tab-accounts').getAttribute('aria-selected'),'true');
+  assert.deepEqual(d.errors,[]);
+});
+
 test('induction stays inside work details and missing work PIN can be added without changing other data',async t=>{
   const {env,kv}=fixture();const d=device(env,'#details/arrival');t.after(()=>d.window.close());
   await signIn(d);

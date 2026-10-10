@@ -158,6 +158,34 @@ try {
     await noOverflow();
     await page.locator('#saveProfile').click();
     await page.locator('#profileDialog').waitFor({state:'hidden'});
+    // Private Vault has an intentionally different visual identity from the
+    // two external apps, with a single lock icon and a readable bilingual label.
+    await page.locator('#details-tab-accounts').click();
+    const vaultEntry=page.locator('#details-panel-accounts .vault-entry');
+    await vaultEntry.scrollIntoViewIfNeeded();
+    const vaultVisual=await vaultEntry.evaluate(el=>{
+      const other=el.closest('[data-tab-panel]').querySelector('a.action');
+      const icon=el.querySelector('.vault-entry-icon svg').getBoundingClientRect();
+      const rect=el.getBoundingClientRect();
+      return {bg:getComputedStyle(el).backgroundColor,otherBg:getComputedStyle(other).backgroundColor,
+        height:rect.height,width:rect.width,iconWidth:icon.width};
+    });
+    assert.notEqual(vaultVisual.bg,vaultVisual.otherBg,'Vault must not resemble the green external-app buttons');
+    assert.ok(vaultVisual.height>=52 && vaultVisual.height<=95,JSON.stringify(vaultVisual));
+    assert.ok(vaultVisual.iconWidth<=24,JSON.stringify(vaultVisual));
+    assert.match(await vaultEntry.textContent(),/Passwords & private notes/);
+    await noOverflow();
+    await page.locator('#languageToggle').click();
+    assert.match(await vaultEntry.textContent(),/كلمات المرور والملاحظات الخاصة/);
+    await noOverflow();
+    await vaultEntry.click();
+    await page.locator('#vault.active').waitFor();
+    await noOverflow();
+    await page.locator('#vault [data-back]').click();
+    await page.locator('#details.active').waitFor();
+    assert.equal(await page.locator('#details-tab-accounts').getAttribute('aria-selected'),'true');
+    await page.locator('#languageToggle').click();
+    await noOverflow();
     await page.locator('nav [data-page="home"]').click();
     assert.ok((await page.locator('#shiftHeadline').textContent()).length>0);
     await noOverflow();
