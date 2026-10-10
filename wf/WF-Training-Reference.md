@@ -6380,7 +6380,7 @@ FSA توصي بمعلومات مسببات الحساسية الدقيقة وت�
 
 ### 66.11 نقل المعلومات لاحقًا إلى My Shift Companion (لم يُنفذ هنا)
 
-عند الطلب، هذه المواد ملائمة لمرجع **Till & customer service**، مع مفاتيح وصول مباشر **Age Check، Vouchers & Coupons، Anniversary Cake، Customer Account، Duplicate Receipt**. تحذيرات ظاهرة: **Voucher no change**، **Save receipt with voucher**، **Birthday/Anniversary cake one item/no staff discount**، **Supervisor authorisation for cashier under 18**. تُعزل **Cairn Lodge Only** عن الإجراءات العامة. لا تظهر معلومات حسابات العملاء أو كلمات مرور أو بيانات زبائن شخصية في الموقع.
+عند الطلب، هذه المواد ملائمة لمرجع **Till & customer service**، مع مفاتيح وصول مباشر **Age Check، Vouchers & Coupons، Anniversary Cake، Customer Account، Duplicate Receipt**. تحذيرات ظاهرة: **Voucher no change**، **Save receipt with voucher**، **Anniversary cake one item/no staff discount**، **Supervisor authorisation for cashier under 18**. تُعزل **Cairn Lodge Only** عن الإجراءات العامة. لا تظهر معلومات حسابات العملاء أو كلمات مرور أو بيانات زبائن شخصية في الموقع.
 
 ### 66.12 تحديث الأرشيف وحالة الإنجاز
 
