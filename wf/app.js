@@ -618,6 +618,12 @@ import { WF_BUILD } from "./build.js";
         check.id = check.dataset.check;
         const copy = document.createElement("div");
         copy.className = "quick-step-copy";
+        // Some source steps translate on <li> itself: move the i18n key to
+        // the content node. Otherwise a language switch destroys the controls.
+        if(li.dataset.i18n){
+          copy.dataset.i18n = li.dataset.i18n;
+          li.removeAttribute("data-i18n");
+        }
         while(li.firstChild) copy.appendChild(li.firstChild);
         const number = document.createElement("span");
         number.className = "quick-step-number";
