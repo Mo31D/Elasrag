@@ -473,3 +473,45 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
     padding-inline:4px;
   }
 }
+
+/* Quick-response execution controls — keep policy text, use discreet ticks.
+   Unlike course checklists these are scoped to the current browser tab only. */
+.quick-steps-list{list-style:none!important;counter-reset:none!important;min-width:0;padding:0!important;margin:9px 0!important}
+.quick-steps-list>li.quick-step-item{position:relative!important;display:block!important;padding:0!important;margin:0 0 7px!important;min-height:0!important;counter-increment:none!important;border:0!important}
+.quick-steps-list>li.quick-step-item::before{display:none!important;content:none!important}
+.quick-step-row{display:flex!important;align-items:flex-start;gap:9px;min-width:0;min-height:54px;padding:11px 10px;border:1px solid #dce6df;border-radius:11px;background:#fcfdfc;color:var(--ink);cursor:pointer;line-height:1.55}
+.quick-step-row:has(.quick-step-check:checked){background:#edf6f0;border-color:#b8d2c1}
+.quick-step-row:focus-within{outline:2px solid #377662;outline-offset:2px}
+.quick-step-check{appearance:none;-webkit-appearance:none;display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;margin:1px 0 0;border:2px solid #93aea2;border-radius:7px;background:#fff;cursor:pointer}
+.quick-step-check:checked{background:#286c55;border-color:#286c55}
+.quick-step-check:checked::after{content:"✓";color:white;font-size:18px;line-height:1;font-weight:750}
+.quick-step-number{display:grid;place-items:center;flex:0 0 22px;width:22px;height:22px;margin:2px 0 0;border-radius:7px;background:#eaf1ed;color:#48695a;font-size:12px;font-weight:750}
+.quick-step-row:has(.quick-step-check:checked) .quick-step-number{color:#286c55;background:#d9e9df}
+.quick-step-copy{min-width:0;flex:1;font-size:14px;line-height:1.55;overflow-wrap:break-word}
+.quick-step-copy p{margin:3px 0 0!important;line-height:1.55}
+.quick-step-copy strong{font-size:14px}
+.quick-step-copy .task-text{display:block;font-size:14px!important;line-height:1.55}
+.quick-step-copy .incident-step-no{display:none}
+.quick-step-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0 12px}
+.quick-step-footer .progress-pill{font-size:12px;min-width:52px;text-align:center;white-space:nowrap}
+.quick-step-footer .reset-checklist{min-height:44px;margin:0;padding:8px 11px;font-size:12px;white-space:normal}
+.quick-step-safety-note{padding:9px 11px;margin:8px 0!important;border-inline-start:3px solid #bc8c4f;background:#fff8ed;color:#755321;border-radius:5px;font-size:12px!important;line-height:1.55!important}
+.fc-emergency .quick-step-row{background:#fffaf8;border-color:#ecd5cc}
+.fc-emergency .quick-step-row:has(.quick-step-check:checked){background:#edf6f0;border-color:#b8d2c1}
+.fc-emergency .quick-step-check{border-color:#a76a5c}
+.fc-emergency .quick-step-check:checked{border-color:#286c55}
+@media(max-width:359px){
+  .quick-step-row{gap:6px;padding:9px 7px}
+  .quick-step-number{flex-basis:19px;width:19px;height:19px}
+  .quick-step-copy,.quick-step-copy .task-text{font-size:13px!important}
+}
+/* Distinct group wayfinding, only on the four Home group headings. */
+#home .home-topic-heading-label{display:inline-flex;align-items:center;gap:9px;min-width:0;flex:1}
+#home .home-topic-heading-label span:last-child{min-width:0;color:var(--ink);font-size:inherit;overflow-wrap:break-word}
+#home .home-topic-icon{flex:0 0 28px;width:28px;height:28px;padding:5px;border-radius:8px;background:#eaf2ed;color:#306d59}
+#home [data-topic="food"] .home-topic-icon{background:#f1f4e9;color:#64764f}
+#home [data-topic="firstaid"] .home-topic-icon{background:#f8ece7;color:#8d5144}
+#home [data-topic="benefits"] .home-topic-icon{background:#eef1f5;color:#536e7b}
+#training .fire-practice-panel{margin:12px 0;padding:0;border:1px solid #cfded4;border-radius:14px;overflow:hidden}
+#training .fire-practice-summary{padding:12px;background:#f1f8f3}
+#training .fire-practice-body{padding:12px}
