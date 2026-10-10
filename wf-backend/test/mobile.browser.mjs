@@ -290,7 +290,7 @@ try {
     // Route-specific, session-scoped progress: one checklist per operational task.
     for (const [route,id] of [
       ['#safety/burns','flow-burns'],['#safety/hazards','flow-hazards'],
-      ['#safety/lifting','flow-lifting'],['#safety/substances','flow-chemical-safe-use'],
+      ['#safety/lifting','flow-lifting'],['#safety/hazards','flow-ppe-check'],['#safety/substances','flow-chemical-safe-use'],
       ['#safety/forecourt','flow-fuel-spill'],['#firstaid/cpr','flow-aid-cpr'],
       ['#firstaid/choking','flow-aid-choking'],['#food/allergens','flow-food-allergy'],
       ['#incident','flow-incident-response']
