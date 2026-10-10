@@ -210,6 +210,7 @@ try {
       }
     }
     // Newly documented on-shift action and workplace reporting: visible, readable, RTL-safe.
+    const previousGuidanceLang=await page.locator('html').getAttribute('lang');
     if(await page.locator('html').getAttribute('lang')!=='en')await page.locator('#languageToggle').click();
     await page.goto('https://mo.elasrag.com/#actions');
     await page.locator('#actions [data-page="safety/forecourt"]').click();
@@ -237,6 +238,7 @@ try {
     await page.locator('#training.active').waitFor();
     assert.match(await page.locator('#training .training-verified').textContent(),/PASSED.*3\/3/);
     await noOverflow();
+    if(previousGuidanceLang!=='en')await page.locator('#languageToggle').click();
 
     // Safety quick actions should be reachable and readable on every supported viewport.
     await page.goto('https://mo.elasrag.com/#actions');
