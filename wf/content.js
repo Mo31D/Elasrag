@@ -1374,3 +1374,14 @@ Object.assign(TRANSLATIONS.en, {
   "chemShift3": "For a food-preparation surface: clean first, then wipe with sanitiser using a fresh cloth and leave to air-dry as instructed for that product.",
   "chemShiftScope": "Source: New Chemicals Recap, PASSED 4/4. One press applies to the dispenser in that training, not every chemical or diluter. Follow the actual product label, COSHH and contact time."
 });
+
+/* Action-first, incident-scoped tracking. The underlying source instructions
+   remain unchanged and continue to be translated from their original keys. */
+Object.assign(TRANSLATIONS.ar, {
+  "quickStartOver": "ابدأ موقفًا جديدًا",
+  "quickStepSafety": "نفّذ الإجراءات فورًا ولا تؤخر الاتصال بالطوارئ من أجل التأشير. علّم ما أنجزته فقط عندما يكون ذلك آمنًا؛ القائمة لا تمنح صلاحية أو تدريبًا إضافيًا."
+});
+Object.assign(TRANSLATIONS.en, {
+  "quickStartOver": "Start new incident / task",
+  "quickStepSafety": "Act immediately; never delay emergency help to tick boxes. Mark completed steps only when safe. This checklist does not authorise work beyond your training."
+});
