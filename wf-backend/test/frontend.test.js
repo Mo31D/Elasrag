@@ -520,6 +520,9 @@ test('home groups secondary topics without duplicating work and training shortcu
   t.after(()=>d.window.close());
   const home=d.document.getElementById('home');
   assert.deepEqual([...home.querySelectorAll('.home-focus .focus-card')].map(el=>el.dataset.page),['details','training']);
+  assert.equal(home.querySelector('.home-work .key').textContent,'Work resources');
+  assert.equal(home.querySelector('.home-work strong').textContent,'Personal shortcuts & reminders');
+  assert.equal(home.querySelector('.home-work').dataset.page,'details');
   const expected={
     safety:['safety/burns','safety/hazards','safety/lifting','safety/substances','safety/forecourt'],
     food:['food/allergens','food/temperatures','food/hygiene','food/reporting'],
@@ -577,6 +580,8 @@ test('home groups secondary topics without duplicating work and training shortcu
   click(d,'#details [data-back]');
   assert.ok(active(d,'home'));
   click(d,'#languageToggle');
+  assert.equal(home.querySelector('.home-work .key').textContent,'موارد العمل');
+  assert.equal(home.querySelector('.home-work strong').textContent,'اختصارات وتذكيرات شخصية');
   assert.match(home.querySelector('[data-topic="benefits"] .home-topic-heading').textContent,/مزايا وإرشادات/);
   assert.match(home.querySelector('[data-topic="safety"] .home-topic-heading').textContent,/سلامة الشغل/);
   assert.match(home.querySelector('#homeBrowseTitle').textContent,/الأقسام والإرشادات/);

@@ -257,6 +257,7 @@ export const TRANSLATIONS = {
     "fire": "حريق",
     "reference": "المرجع",
     "workDetails": "بيانات الشغل",
+    "workResources": "موارد العمل",
     "training": "التدريب",
     "accountHelp": "مساعدة الدخول",
     "benefits": "المزايا",
@@ -823,6 +824,7 @@ export const TRANSLATIONS = {
     "fire": "Fire",
     "reference": "Reference",
     "workDetails": "Work details",
+    "workResources": "Work resources",
     "training": "Training",
     "accountHelp": "Account help",
     "benefits": "Benefits",
@@ -1137,8 +1139,8 @@ Object.assign(TRANSLATIONS.en, {nextShift:'Next shift',setShift:'Your schedule',
 Object.assign(TRANSLATIONS.ar, {nextShift:'الشيف الجاي',setShift:'مواعيد شغلك',onShift:'إنت في الشيف دلوقتي',workingToday:'عندك شيف النهارده',dayOff:'النهارده إجازة',endsAt:'بتخلص الساعة {time}',setSchedule:'اختار أيام شغلك',signInShift:'ادخل حسابك علشان تشوف الشيف الجاي',timeRemaining:'فاضل {time}',startsIn:'بيبدأ كمان {time}',durationDays:'يوم',durationHours:'ساعة',durationMinutes:'دقيقة'});
 Object.assign(TRANSLATIONS.en,{homeBrowse:'Browse by topic',workGuides:'Benefits & guidance',mealGuide:'Colleague meals',discountGuide:'Discounts',minibusGuide:'Minibus',workTools:'Company apps & accounts',peopleXDHelp:'PeopleXD sign-in help',allReference:'Search all guidance'});
 Object.assign(TRANSLATIONS.ar,{homeBrowse:'الأقسام والإرشادات',workGuides:'مزايا وإرشادات',mealGuide:'وجبات الموظفين',discountGuide:'الخصومات',minibusGuide:'الميني باص',workTools:'تطبيقات وحسابات الشركة',peopleXDHelp:'مساعدة دخول PeopleXD',allReference:'ابحث في كل الإرشادات'});
-Object.assign(TRANSLATIONS.en,{workQuickHint:'Shifts, pay and account details',situationsTitle:'When something happens',alertsTitle:'Alerts',noAlerts:'Nothing needs your attention right now.',shiftAlertActive:'Your shift is underway',shiftAlertSoon:'Your next shift is coming up',nothingFound:'No matching guidance'});
-Object.assign(TRANSLATIONS.ar,{workQuickHint:'الشيفت والأجر وبيانات الحساب',situationsTitle:'لو حصل موقف',alertsTitle:'التنبيهات',noAlerts:'مفيش حاجة محتاجة تنبيه دلوقتي.',shiftAlertActive:'إنت في الشيف دلوقتي',shiftAlertSoon:'شيفتك الجاية قربت',nothingFound:'مفيش إرشادات مطابقة'});
+Object.assign(TRANSLATIONS.en,{workQuickHint:'Personal shortcuts & reminders',situationsTitle:'When something happens',alertsTitle:'Alerts',noAlerts:'Nothing needs your attention right now.',shiftAlertActive:'Your shift is underway',shiftAlertSoon:'Your next shift is coming up',nothingFound:'No matching guidance'});
+Object.assign(TRANSLATIONS.ar,{workQuickHint:'اختصارات وتذكيرات شخصية',situationsTitle:'لو حصل موقف',alertsTitle:'التنبيهات',noAlerts:'مفيش حاجة محتاجة تنبيه دلوقتي.',shiftAlertActive:'إنت في الشيف دلوقتي',shiftAlertSoon:'شيفتك الجاية قربت',nothingFound:'مفيش إرشادات مطابقة'});
 
 // Food-safety shift reference from WF-Training-Reference.md, §§19–59.
 Object.assign(TRANSLATIONS.ar, {
