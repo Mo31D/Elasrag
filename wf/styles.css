@@ -514,34 +514,6 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 #home [data-topic="food"] .home-topic-icon{background:#f1f4e9;color:#64764f}
 #home [data-topic="firstaid"] .home-topic-icon{background:#f8ece7;color:#8d5144}
 #home [data-topic="benefits"] .home-topic-icon{background:#eef1f5;color:#536e7b}
-#training .fire-practice-panel{margin:12px 0;padding:0;border:1px solid #cfded4;border-radius:14px;overflow:hidden}
-#training .fire-practice-summary{padding:12px;background:#f1f8f3}
-#training .fire-practice-body{padding:12px}
-
-/* Reuse drill-only fire styles inside Training; no emergency-step duplication on Fire. */
-#training .fire-practice-panel{margin:19px 0 0;border:1px solid #d9e5dd;border-radius:13px;background:#f4f8f5;overflow:hidden}
-#training .fire-practice-summary{display:flex;align-items:center;gap:11px;min-height:66px;padding:11px 13px;list-style:none;cursor:pointer}
-#training .fire-practice-summary::-webkit-details-marker{display:none}
-#training .fire-practice-summary::marker{content:""}
-#training .fire-practice-icon{display:grid;place-items:center;width:36px;height:36px;flex:none;border-radius:10px;background:#e2ede5;color:#26604c;font-size:19px;font-weight:800}
-#training .fire-practice-summary>span:nth-child(2){display:grid;gap:3px;min-width:0;flex:1}
-#training .fire-practice-summary strong{font-size:14px;line-height:1.4}
-#training .fire-practice-summary small{font-size:12px;line-height:1.5;color:var(--muted)}
-#training .fire-practice-chevron,#training .fire-equipment-chevron{font-size:24px;line-height:1;color:#526e62;transition:transform .18s ease}
-#training .fire-practice-panel[open] .fire-practice-chevron,#training .fire-equipment-card[open] .fire-equipment-chevron{transform:rotate(180deg)}
-#training .fire-practice-body{padding:12px 13px 14px;border-top:1px solid #d9e5dd;background:white}
-#training .fire-check-hint{margin:0 0 10px;color:#795249;font-size:12px;line-height:1.6}
-#training .fire-evac-panel{background:white}
-#training .fire-evac-title{display:flex;align-items:center;gap:9px;margin:0 0 9px;font-size:14px;line-height:1.5;color:#7b3e31;font-weight:750}
-#training .fire-check-row{display:grid;grid-template-columns:34px minmax(0,1fr);align-items:center;gap:10px;width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:white;cursor:pointer}
-#training .fire-check-row:has(.task-check:checked){border-color:#b9d9c7;background:#f0f8f3}
-#training .fire-check-row:focus-within{outline:2px solid var(--accent);outline-offset:2px}
-#training .fire-check-row .task-text{min-height:34px;font-size:14px;line-height:1.5;font-weight:600}
-#training .fire-check-row .task-check{width:32px;height:32px}
-#training .fire-check-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px}
-#training .fire-check-footer .reset-checklist{margin:0;min-height:38px;font-size:12px}
-#training .fire-check-footer .progress-pill{font-size:12px;padding:6px 10px}
-
 /* The old PPE tick pictogram is replaced by a real check control, not doubled. */
 #safety .ppe-mini-list.quick-steps-list>li.quick-step-item{display:block;grid-template-columns:none;padding:0}
 #safety .ppe-mini-list.quick-steps-list .quick-step-copy>svg{display:none}
