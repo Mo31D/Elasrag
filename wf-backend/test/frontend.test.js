@@ -66,17 +66,41 @@ async function signIn(d) {
 test('first visit opens in English and one compact control shows the other language',t=>{
   const {env}=fixture();const fresh=device(env,'',null,'https://mo.elasrag.com/',false,null,null);t.after(()=>fresh.window.close());
   assert.equal(fresh.document.documentElement.lang,'en');assert.equal(fresh.document.documentElement.dir,'ltr');
-  assert.equal(fresh.document.title,'WF Staff Companion');
+  assert.equal(fresh.document.title,'My Shift Companion');
   assert.equal(fresh.document.getElementById('languageToggle').textContent,'ع');
   assert.equal(fresh.document.querySelectorAll('dialog .language-toggle').length,0);
   click(fresh,'#languageToggle');
   assert.equal(fresh.document.documentElement.lang,'ar');assert.equal(fresh.document.getElementById('languageToggle').textContent,'EN');
   assert.equal(fresh.window.localStorage.getItem('wf-language-v1'),'ar');
+  assert.equal(fresh.document.title,'My Shift Companion');
   const saved=device(env,'',null,'https://mo.elasrag.com/?lang=ar',false,null,'en');t.after(()=>saved.window.close());
   assert.equal(saved.document.documentElement.lang,'en');
   assert.deepEqual(fresh.errors,[]);assert.deepEqual(saved.errors,[]);
 });
 
+
+test('Accounts prioritises a distinct single-click private vault without changing external app links',async t=>{
+  const {env}=fixture();const d=device(env,'#details');t.after(()=>d.window.close());
+  await signIn(d);assert.ok(active(d,'details'));
+  click(d,'#details-tab-accounts');
+  const panel=d.document.getElementById('details-panel-accounts');
+  const vault=panel.querySelector('.private-vault-launch');
+  assert.equal(panel.firstElementChild,vault,'Vault must be the first Accounts destination');
+  assert.equal(panel.querySelectorAll('[data-page="vault"]').length,1,'One clear Vault entry, no competing green button');
+  assert.equal(vault.tagName,'BUTTON');
+  assert.ok(vault.querySelector('.private-vault-launch-icon svg'));
+  assert.match(vault.textContent,/Private vault/);
+  assert.match(vault.textContent,/Passwords, private notes/);
+  assert.equal(panel.querySelectorAll('a.action').length,2,'PeopleXD and THRIVE links remain separate');
+  assert.equal(panel.querySelector('[data-private="workPin"]').closest('.card').contains(vault),false);
+  click(d,'#languageToggle');
+  assert.equal(d.document.title,'My Shift Companion');
+  assert.match(vault.textContent,/الخزنة الخاصة/);
+  assert.match(vault.textContent,/كلمات السر/);
+  click(d,'.private-vault-launch');await until(()=>active(d,'vault'));
+  assert.equal(d.window.location.hash,'#vault');
+  assert.deepEqual(d.errors,[]);
+});
 
 test('shift duties replace bottom tasks link and persist across sign-ins without mixing general tasks',async t=>{
   const {env}=fixture();
