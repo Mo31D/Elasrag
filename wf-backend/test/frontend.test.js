@@ -725,6 +725,23 @@ test('incident checklists enhance only actionable steps and reset without alteri
       assert.ok(d.document.querySelector('[data-check-progress="'+id+'"]'),id);
       assert.ok(d.document.querySelector('[data-reset-checklist="'+id+'"]'),id);
     }
+    // Each numbered procedure retains ONE prominent original badge;
+    // standard unnumbered procedures still generate a single step number.
+    for(const [flow,badge,count] of [
+      ['flow-incident-response','.incident-step-no',5],
+      ['flow-risk-check','.quick-step-existing-number',3]
+    ]){
+      const rows=[...d.document.querySelectorAll('[data-checklist="'+flow+'"] > li')];
+      assert.equal(rows.length,count);
+      rows.forEach((row,index)=>{
+        assert.equal(row.querySelectorAll('.quick-step-number').length,0,flow+' must not duplicate its source numbers');
+        const original=row.querySelector('.quick-step-row > '+badge);
+        assert.ok(original,flow+' must keep the original large number');
+        assert.equal(original.textContent.trim(),String(index+1));
+        assert.ok(row.querySelector('.quick-step-check'));
+      });
+    }
+    assert.equal(d.document.querySelector('[data-checklist="flow-burns"] > li:first-child .quick-step-number').textContent,'1');
     assert.equal(d.document.querySelectorAll('#home .home-topic-icon').length,4);
     assert.equal(d.document.querySelector('[data-checklist="flow-ppe-check"]').querySelectorAll('input').length,3);
     assert.equal(d.document.querySelectorAll('#home .home-topic-heading-label').length,4);

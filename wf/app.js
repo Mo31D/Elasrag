@@ -625,11 +625,22 @@ import { WF_BUILD } from "./build.js";
           li.removeAttribute("data-i18n");
         }
         while(li.firstChild) copy.appendChild(li.firstChild);
-        const number = document.createElement("span");
-        number.className = "quick-step-number";
-        number.setAttribute("aria-hidden","true");
-        number.textContent = String(i+1);
-        label.append(check,number,copy);
+        // Numbered incident/risk guides already contain a prominent step badge.
+        // Reuse that exact badge, rather than putting a second small number next
+        // to it. Other procedures receive a generated number as before.
+        const existingNumber = copy.querySelector(":scope > .incident-step-no") ||
+          (list.classList.contains("risk-steps") ? copy.querySelector(":scope > span:first-child") : null);
+        if(existingNumber){
+          existingNumber.classList.add("quick-step-existing-number");
+          existingNumber.setAttribute("aria-hidden", "true");
+          label.append(check,existingNumber,copy);
+        } else {
+          const number = document.createElement("span");
+          number.className = "quick-step-number";
+          number.setAttribute("aria-hidden","true");
+          number.textContent = String(i+1);
+          label.append(check,number,copy);
+        }
         li.classList.add("quick-step-item");
         li.appendChild(label);
       });

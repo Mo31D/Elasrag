@@ -356,6 +356,9 @@ try {
 
     // Incident reporting and risk hierarchy from training — concise, routed and bilingual.
     assert.equal(await page.locator('#safety-panel-hazards .risk-steps li').count(),3);
+    assert.equal(await page.locator('#safety-panel-hazards .risk-steps .quick-step-number').count(),0);
+    assert.equal(await page.locator('#safety-panel-hazards .risk-steps .quick-step-existing-number').count(),3);
+    await noOverflow();
     await page.locator('#safety-panel-hazards .risk-control-details summary').click();
     assert.equal(await page.locator('#safety-panel-hazards .risk-control-list li').count(),5);
     await page.locator('#safety-panel-hazards .safety-scenario summary').first().click();
@@ -377,6 +380,14 @@ try {
     await page.locator('#safety-panel-hazards .risk-report-button').click();
     await page.locator('#incident.active').waitFor();
     assert.equal(await page.locator('#incident .incident-steps > li').count(),5);
+    assert.equal(await page.locator('#incident .incident-steps .quick-step-number').count(),0);
+    assert.equal(await page.locator('#incident .incident-steps .quick-step-existing-number').count(),5);
+    assert.equal(await page.locator('#incident .incident-steps > li:first-child .quick-step-row').evaluate(row=>{
+      const nodes=[...row.children];
+      return nodes.length===3 && nodes[0].classList.contains('quick-step-check') &&
+        nodes[1].classList.contains('incident-step-no') && nodes[2].classList.contains('quick-step-copy');
+    }),true);
+    await noOverflow();
     // Immediate action must precede definitions; details remain keyboard accessible.
     assert.equal(await page.locator('#incident .incident-classification').getAttribute('open'),null);
     assert.ok(await page.locator('#incident .incident-urgent').evaluate(el=>el.compareDocumentPosition(document.querySelector('#incident .incident-response')) & Node.DOCUMENT_POSITION_FOLLOWING));
