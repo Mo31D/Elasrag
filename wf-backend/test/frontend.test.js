@@ -66,12 +66,16 @@ async function signIn(d) {
 test('first visit opens in English and one compact control shows the other language',t=>{
   const {env}=fixture();const fresh=device(env,'',null,'https://mo.elasrag.com/',false,null,null);t.after(()=>fresh.window.close());
   assert.equal(fresh.document.documentElement.lang,'en');assert.equal(fresh.document.documentElement.dir,'ltr');
-  assert.equal(fresh.document.title,'WF Staff Companion');
+  assert.equal(fresh.document.title,'My Shift Companion');
+  assert.equal(fresh.document.querySelector('header .brand').textContent,'My Shift Companion');
+  assert.equal(fresh.document.querySelector('.lock-mark').textContent,'MS');
   assert.equal(fresh.document.getElementById('languageToggle').textContent,'ع');
   assert.equal(fresh.document.querySelectorAll('dialog .language-toggle').length,0);
   click(fresh,'#languageToggle');
   assert.equal(fresh.document.documentElement.lang,'ar');assert.equal(fresh.document.getElementById('languageToggle').textContent,'EN');
   assert.equal(fresh.window.localStorage.getItem('wf-language-v1'),'ar');
+  assert.equal(fresh.document.title,'My Shift Companion');
+  assert.equal(fresh.document.querySelector('header .brand').textContent,'My Shift Companion');
   const saved=device(env,'',null,'https://mo.elasrag.com/?lang=ar',false,null,'en');t.after(()=>saved.window.close());
   assert.equal(saved.document.documentElement.lang,'en');
   assert.deepEqual(fresh.errors,[]);assert.deepEqual(saved.errors,[]);

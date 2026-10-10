@@ -25,6 +25,8 @@ try {
     page.on('pageerror', error => errors.push(error.message));
     await page.goto('https://mo.elasrag.com/');
     await page.locator('#home.active').waitFor();
+    assert.equal(await page.title(),'My Shift Companion');
+    assert.equal(await page.locator('header .brand').textContent(),'My Shift Companion');
     await page.waitForTimeout(50);
     assert.ok(await page.evaluate(() => scrollY <= 5),JSON.stringify(await page.evaluate(()=>({scroll:scrollY,focus:document.activeElement.id,hero:document.querySelector('#shiftHero').getBoundingClientRect().toJSON()}))));
     const noOverflow = async () => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Overflow at ${width}px`);
@@ -122,6 +124,8 @@ try {
     await page.locator('#home.active').waitFor();
     await noOverflow();
     await page.locator('#languageToggle').click();
+    assert.equal(await page.title(),'My Shift Companion');
+    assert.equal(await page.locator('header .brand').textContent(),'My Shift Companion');
     assert.match(await page.locator('#home [data-topic="benefits"] .home-topic-heading').textContent(),/مزايا وإرشادات/);
     assert.match(await page.locator('#home [data-topic="safety"] .home-topic-heading').textContent(),/سلامة الشغل/);
     assert.match(await page.locator('#homeBrowseTitle').textContent(),/الأقسام والإرشادات/);
