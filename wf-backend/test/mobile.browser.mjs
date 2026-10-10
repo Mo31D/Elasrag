@@ -25,6 +25,7 @@ try {
     page.on('pageerror', error => errors.push(error.message));
     await page.goto('https://mo.elasrag.com/');
     await page.locator('#home.active').waitFor();
+    assert.equal(await page.title(),'My Shift Companion');
     await page.waitForTimeout(50);
     assert.ok(await page.evaluate(() => scrollY <= 5),JSON.stringify(await page.evaluate(()=>({scroll:scrollY,focus:document.activeElement.id,hero:document.querySelector('#shiftHero').getBoundingClientRect().toJSON()}))));
     const noOverflow = async () => assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Overflow at ${width}px`);
@@ -158,6 +159,29 @@ try {
     await noOverflow();
     await page.locator('#saveProfile').click();
     await page.locator('#profileDialog').waitFor({state:'hidden'});
+    await page.locator('#details-tab-accounts').click();
+    const vaultShortcut=page.locator('#details-panel-accounts > .private-vault-launch');
+    assert.equal(await vaultShortcut.count(),1);
+    assert.equal(await page.locator('#details-panel-accounts [data-page="vault"]').count(),1);
+    assert.equal(await page.locator('#details-panel-accounts .action').count(),2);
+    assert.equal(await vaultShortcut.locator('svg').count(),1);
+    assert.equal(await vaultShortcut.evaluate(el=>{
+      const panel=el.parentElement,rect=el.getBoundingClientRect(),width=innerWidth;
+      const external=panel.querySelector('a.action');
+      return panel.firstElementChild===el && rect.width>200 && rect.right<=width && rect.left>=0 &&
+        getComputedStyle(el).backgroundColor!==getComputedStyle(external).backgroundColor;
+    }),true);
+    assert.match(await vaultShortcut.textContent(),/Passwords, private notes/);
+    await noOverflow();
+    await page.locator('#languageToggle').click();
+    assert.equal(await page.title(),'My Shift Companion');
+    assert.match(await vaultShortcut.textContent(),/كلمات السر/);
+    await noOverflow();
+    await page.locator('#languageToggle').click();
+    await vaultShortcut.click();
+    await page.locator('#vault.active').waitFor();
+    await page.locator('#vault [data-back]').click();
+    await page.locator('#details.active').waitFor();
     await page.locator('nav [data-page="home"]').click();
     assert.ok((await page.locator('#shiftHeadline').textContent()).length>0);
     await noOverflow();
