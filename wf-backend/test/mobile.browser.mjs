@@ -39,6 +39,9 @@ try {
     assert.deepEqual(await page.locator('#home .home-focus .focus-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['details','training']);
     assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits']);
     assert.equal(await page.locator('#home .home-topic-link').count(),19);
+    assert.equal(await page.locator('#home .home-topic-icon').count(),4);
+    assert.equal(await page.locator('#home .home-topic-heading-label').count(),4);
+    assert.equal(await page.locator('#home .home-topic-icon').evaluateAll(els=>els.every(el=>el.getBoundingClientRect().width<=30)),true);
     const companyHub=page.locator('#home .company-hub');
     assert.equal(await companyHub.count(),1);
     assert.equal(await companyHub.locator('.company-hub-app').count(),2);
@@ -187,7 +190,7 @@ try {
     assert.equal(await page.locator('#fire .fire-direction-list > li').count(),2);
     assert.equal(await page.locator('#fire .fire-emergency-card [data-check]').count(),0);
     assert.match(await page.locator('#fire .fire-now-message').textContent(),/evacuating immediately/i);
-    assert.equal(await page.locator('#fire .fire-practice-panel').evaluate(el=>el.open),false);
+    assert.equal(await page.locator('#fire .fire-practice-panel').count(),0);
     assert.equal(await page.locator('#fire .fire-equipment-card').evaluate(el=>el.open),false);
     assert.equal(await page.locator('#fire .fire-call-link').getAttribute('href'),'tel:999');
     await noOverflow();
@@ -201,10 +204,6 @@ try {
     await noOverflow();
     await page.locator('#languageToggle').click();
     await page.locator('#fire .fire-equipment-title').click();
-    await page.locator('#fire .fire-practice-summary').click();
-    assert.equal(await page.locator('#fire .fire-practice-panel').evaluate(el=>el.open),true);
-    await noOverflow();
-    await page.locator('#fire .fire-practice-summary').click();
     await page.locator('[data-checklist="fire-forecourt"] summary').click();
     const label = page.locator('label[for="fire-forecourt-1"]');
     await label.click();
@@ -229,6 +228,17 @@ try {
     await noOverflow();
     await page.locator('[data-back-fire]').click();
     await page.locator('#training.active').waitFor();
+    const practice=page.locator('#training .fire-practice-panel');
+    assert.equal(await practice.count(),1);
+    assert.equal(await practice.evaluate(el=>el.open),false);
+    await practice.locator('summary').click();
+    assert.equal(await practice.evaluate(el=>el.open),true);
+    await noOverflow();
+    await practice.locator('[data-check="fire-evacuation-1"]').check();
+    assert.equal(await practice.locator('[data-check="fire-evacuation-1"]').isChecked(),true);
+    await practice.locator('[data-reset-checklist="fire-evacuation"]').click();
+    assert.equal(await practice.locator('[data-check="fire-evacuation-1"]').isChecked(),false);
+    await practice.locator('summary').click();
     await page.locator('#training-tab-completed').click();
     assert.equal(await page.locator('#completedLearning').isVisible(),true);
     for(const section of ['benefits','uniform','access']){
@@ -276,6 +286,31 @@ try {
     assert.equal(await page.locator('#training .training-verified').count(),0);
     await noOverflow();
     if(previousGuidanceLang!=='en')await page.locator('#languageToggle').click();
+
+    // Route-specific, session-scoped progress: one checklist per operational task.
+    for (const [route,id] of [
+      ['#safety/burns','flow-burns'],['#safety/hazards','flow-hazards'],
+      ['#safety/lifting','flow-lifting'],['#safety/substances','flow-chemical-safe-use'],
+      ['#safety/forecourt','flow-fuel-spill'],['#firstaid/cpr','flow-aid-cpr'],
+      ['#firstaid/choking','flow-aid-choking'],['#food/allergens','flow-food-allergy'],
+      ['#incident','flow-incident-response']
+    ]) {
+      await page.goto('https://mo.elasrag.com/'+route);
+      const list=page.locator('[data-checklist="'+id+'"]');
+      await list.waitFor({state:'visible'});
+      const initial=await list.locator('input[type="checkbox"]').count();
+      assert.ok(initial>=2,route);
+      assert.equal(await page.locator('[data-check-progress="'+id+'"]').textContent(),'0 / '+initial);
+      await list.locator('input[type="checkbox"]').first().check();
+      assert.equal(await page.locator('[data-check-progress="'+id+'"]').textContent(),'1 / '+initial);
+      await page.locator('#languageToggle').click();
+      assert.equal(await list.locator('input[type="checkbox"]').first().isChecked(),true);
+      await page.locator('#languageToggle').click();
+      await page.locator('[data-reset-checklist="'+id+'"]').click();
+      assert.equal(await list.locator('input[type="checkbox"]').first().isChecked(),false);
+      assert.equal(await page.locator('[data-check-progress="'+id+'"]').textContent(),'0 / '+initial);
+      await noOverflow();
+    }
 
     // Safety quick actions should be reachable and readable on every supported viewport.
     await page.goto('https://mo.elasrag.com/#actions');
