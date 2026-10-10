@@ -480,6 +480,7 @@ test('forecourt response and speaking-up guidance are accessible, bilingual and 
     assert.equal(d.document.querySelector('#safety-panel-substances .chem-shift-note summary').dataset.i18n,'chemShiftTitle');
     assert.equal(d.document.querySelectorAll('#safety-panel-forecourt .fc-steps>li').length,4);
     assert.equal(d.document.querySelectorAll('#safety-panel-forecourt .fc-reference details').length,5);
+    assert.ok([...d.document.querySelectorAll('#safety-panel-forecourt .fc-reference details')].every(el=>el.name==='forecourt-reference'));
     assert.match(d.document.querySelector('#safety-panel-forecourt').textContent,/1–5|1–5/);
     assert.match(d.document.querySelector('#safety [data-back]').textContent,language==='en'?/Quick Action/:/تصرف سريع/);
     click(d,'#safety [data-back]');assert.ok(active(d,'actions'));
@@ -495,17 +496,17 @@ test('forecourt response and speaking-up guidance are accessible, bilingual and 
   }
 });
 
-test('verified quiz evidence does not override or count as private course progress',async t=>{
+test('training screen shows only actionable learning without redundant result cards',async t=>{
   const {env}=fixture();const d=device(env,'#training',null,'https://mo.elasrag.com/',false,null,'en');
   t.after(()=>d.window.close());
-  const proof=d.document.querySelector('#training .training-verified');
-  assert.ok(proof);assert.match(proof.textContent,/PASSED.*3\/3.*10 Oct 2026/);
-  assert.match(proof.textContent,/New Chemicals Recap: PASSED.*4\/4/);
-  assert.match(proof.textContent,/not an automatic change to your private training list/);
+  assert.equal(d.document.querySelector('#training .training-verified'),null);
+  assert.equal(d.document.querySelector('#training .training-verified-score'),null);
+  assert.ok(d.document.querySelector('#training .training-card'));
+  assert.ok(d.document.querySelector('#training .section-tabs'));
   assert.equal(d.document.querySelector('#completedCount').textContent,'0');
   assert.equal(d.document.querySelector('#training-tab-completed').hidden,true);
   click(d,'#languageToggle');
-  assert.match(proof.textContent,/نتيجة موثقة/);
+  assert.equal(d.document.querySelector('#training .training-verified'),null);
   assert.deepEqual(d.errors,[]);
 });
 
