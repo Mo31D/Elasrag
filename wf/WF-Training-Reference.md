@@ -1,6 +1,8 @@
 # WF Staff Companion — مرجع التدريبات
 
-**نقطة الاستئناف — 10 أكتوبر 2026 (Sexual Harassment Awareness، الدفعة الثالثة §63.18–§63.28):** تم توثيق **10 صور جديدة IMG_5433–IMG_5442** عن تصوير/إذلال موظف في مناسبة عمل (**Yes**)، وواجب **Worker Protection/reasonable steps** ورفع التعويض المحتمل حتى 25% (ليس تلقائيًا)، ومخاطر عمل الرحلات والواتساب والعمل المنفرد، ورسائل Naveen (**Yes** دون وجود نص الرسائل السابقة)، وتكافؤ الفرص وتقييم المخاطر ومسارات الإبلاغ. **الصوت المرفق في Identifying risk غير مرسل**؛ لا يُدّعى سماعه. **440 صورة فريدة / 37 PDF (90 صفحة) / 18 فيديو**. لا نتيجة إتمام للكورس، و**Welcome Antlers** قيد التدريب العملي. **مرجع Markdown فقط دون تعديل صفحات الموقع أو THRIVE**.
+**نقطة الاستئناف — 10 أكتوبر 2026 (Sexual Harassment Awareness / Prevention، نتيجة اجتياز §63.29–§63.32):** وصلت **5 صور IMG_5443–IMG_5447**: شاشة صريحة لنهاية الموديول **“You can now close this module”** ونتيجة **Prevention of Sexual Harassment Quiz: PASSED، 3/3 (100%)، Attempt #1**. وثِّقت **الأسئلة الثلاثة وإجاباتها الصحيحة** مع توضيح أن Q1/Q2 لهما إجابتان وأن رسائل WhatsApp المؤذية قد تؤثر في أشخاص غير مستهدفين. **وصل المستخدم إلى نهاية هذا الموديول واجتاز الاختبار**؛ لم تظهر شارة My Learning العامة، وبطاقة **Welcome Antlers** والتدريب الميداني وبرنامج التدريب ككل **لم تنتهِ**. الإجمالي **445 صورة فريدة / 37 PDF (90 صفحة) / 18 فيديو**. تحديث Markdown فقط، بلا تعديل الموقع أو Thrive.
+
+**لقطة سابقة — 10 أكتوبر 2026 (Sexual Harassment Awareness، الدفعة الثالثة §63.18–§63.28):** تم توثيق **10 صور جديدة IMG_5433–IMG_5442** عن تصوير/إذلال موظف في مناسبة عمل (**Yes**)، وواجب **Worker Protection/reasonable steps** ورفع التعويض المحتمل حتى 25% (ليس تلقائيًا)، ومخاطر عمل الرحلات والواتساب والعمل المنفرد، ورسائل Naveen (**Yes** دون وجود نص الرسائل السابقة)، وتكافؤ الفرص وتقييم المخاطر ومسارات الإبلاغ. **الصوت المرفق في Identifying risk غير مرسل**؛ لا يُدّعى سماعه. **440 صورة فريدة / 37 PDF (90 صفحة) / 18 فيديو**. لا نتيجة إتمام للكورس، و**Welcome Antlers** قيد التدريب العملي. **مرجع Markdown فقط دون تعديل صفحات الموقع أو THRIVE**.
 
 **لقطة سابقة — 10 أكتوبر 2026 (Sexual Harassment Awareness، الدفعة الثانية §63.9–§63.17):** تمت مراجعة **8 صور** إضافية (IMG_5425–IMG_5432) شملت Golden rules، مثال المجاملة المقبولة لـLucy/Tim، المثال غير المقبول لتقييم المدير Lucy من 6 إلى 9، الخصائص التسع تحت Equality Act 2010، الأشخاص المحميين، وسيناريو عميلة مع موظف مبتدئ (**الإجابة المؤكدة Option 2**). الفرق بين **واقعة واحدة قد تكفي** وبين وصف حالة منفردة بعينها بأنها **unlikely** موثق بلا حسم مصطنع؛ صورة Feedback الخاصة بتقييم المدير لا تظهر اختيار Yes/No بوضوح. **المجموع 430 صورة فريدة / 37 PDF (90 صفحة) / 18 فيديو**. لا نتيجة إنهاء للكورس حتى الآن؛ Welcome Antlers ما زالت قيد الإتمام. **تحديث Markdown فقط، لا تغيير للموقع أو Thrive**.
 
@@ -90,7 +92,7 @@
 | **Catering for Allergies — scenario, preventing allergen cross-contact, module end** | سؤال السيلياك بعد تغيير القائمة: **راجع Allergen Matrix ولا تخمّن**؛ إبلاغ القائد؛ الفصل والتخزين/الأدوات والتنظيف واليدين؛ شاشة نهاية **الدرس** | **IMG_5393–IMG_5399.png**؛ §58.1–58.5 | 7 صور جديدة؛ لا نتيجة رقمية للسيناريو التفاعلي |
 | **مراجعة اختبار حساسية من 3 أسئلة — الاسم غير ظاهر باللقطات** | **PASSED 3/3** بعد **FAILED 1/3**؛ تصحيح 14 allergens، وGF wording المتضارب مع سياسة §21، و**Notify a Service Leader** مع Allergen Portal | **IMG_5400–IMG_5402.png**؛ §58.6–58.8 | 3 صور مراجعة جديدة؛ لا نخلطه باختبار Allergy Awareness Recap 8/8 |
 | **Natasha’s Law — PPDS allergen labelling** | خلفية القانون 2016 / 2021؛ ملصق Tuna + Sweetcorn Baguette ومكوناته المبرزة؛ تعريف منتجات الطعام المعبأ سابقًا للبيع المباشر PPDS وحدود التطبيق؛ عدم تعميم لوحة £5000 كغرامة محددة | **FS11_Natashas_Law_.mp4**، 127.315 ثانية؛ §59 | **فيديو جديد واحد**، بلا اختبار مصحح أو شهادة |
-| **Sexual Harassment Awareness / Prevention of Sexual Harassment** | **كورس قيد الاستكمال:** **24 صورة من Thrive** (6 + 8 + 10)، سيناريوهات وقواعد التحرش، عواقب مشاركة الصور، الوقاية القانونية والعوامل المؤثرة، وإجراءات الإبلاغ. الصوت `Identifying risk` غير مرسل؛ **لا Final Quiz/PASSED/اعتماد**. راجع §63.1–§63.28 | **24 صورة + 2 PDF (6 صفحات) + فيديو مقدمة 79.1 ثانية**؛ ملف Maintenance Portal مكرر ولم يُحتسب | **Markdown فقط، لا تعديل للموقع أو THRIVE** |
+| **Sexual Harassment Awareness / Prevention of Sexual Harassment** | **وصل لنهاية الموديول واجتاز الاختبار:** **PASSED، 3/3 (100%)، Attempt #1**، موثق في IMG_5443–IMG_5447 (§63.29–63.32). **لا شارة My Learning العامة أو توقيع عملي**؛ **Welcome Antlers** مستمرة. الصوت `Identifying risk` لم يُرسل للمرجع | **29 صورة THRIVE** (6+8+10+5) + **2 PDF (6 صفحات)** + فيديو مقدمة 79.1 ثانية؛ ملصق Maintenance Portal مكرر | **Markdown فقط؛ لا تغيير بالموقع أو Thrive** |
 | **Forecourt Policies & Procedures — تشغيل مضخات الوقود وإجراءات الطوارئ** | **24 صورة من ثلاث دفعات**، تشمل **May 2026**، Night Hatch، PRA، Fuel Spills، Fuel Delivery، ForeCourt Eye، Wrong Fuel وFire/Disabled Evacuation؛ **لا نتيجة اختبار أو توقيع اعتماد** | **24 صورة فريدة**، منها الغلاف والعنوان | **Markdown فقط؛ لا تعديل للموقع أو حساب التدريب** |
 | **Maintenance Portal — ملصق إرشادي** | **مرجع عملي، وليس Quiz أو إثبات إكمال كورس**؛ قواعد تسجيل الصيانة والتصعيد والأولوية بالتفصيل في §61 | **Maintenance_Portal_Poster_1.pdf**، صفحة واحدة | **مرجع Markdown فقط؛ لم يُعدل الموقع** |
 | **New Chemicals — Blake & White / Purely Smile + New Chemicals Recap** | **PASSED 4/4 من أول محاولة، Attempt #1؛ Previous Results: N/A**، وكل سؤال من الأسئلة الأربعة مصحّح بالصور؛ المواد الكيميائية والدليل العملي مفصّلة في §60 | **IMG_5415–IMG_5418.png (4 صور)** + 3 PDF (13 صفحة) + فيديو (116.2 ثانية) | **مرجع Markdown فقط؛ لم تُعدّل واجهة الموقع أو بيانات THRIVE** |
@@ -5891,7 +5893,53 @@ FSA توصي بمعلومات مسببات الحساسية الدقيقة وت�
 
 ---
 
+### 63.29 End of module — نهاية محتوى Sexual Harassment Awareness (IMG_5443.png وIMG_5444.png)
+
+**مصدر Thrive المرئي:**
+- **IMG_5443.png:** شاشة **“Well done. You've increased your awareness on the themes of sexual harassment.”** تلخص موضوع **Worker Protection (Amendment of Equality Act 2010) Act 2023**، تمييز العلامات التحذيرية ومخاطر التحرش، احترام الحدود، والتدخل أو الإبلاغ عند الضرورة لحماية النفس والزملاء.
+- **IMG_5444.png:** شاشة نصها **“You've reached the end of this module on sexual harassment awareness and prevention. You can now close this module.”**؛ وهي **دليل صريح على انتهاء محتوى الموديول**، لا تفيد وحدها بأن بطاقة التدريب الميدانية أو كامل البرنامج انتهى.
+- **التوثيق من الصور فقط**؛ لم تُعدَّل منصة Thrive نفسها، ولم نرَ علامة **Completed** في صفحة My Learning.
+
+### 63.30 Prevention of Sexual Harassment Quiz — PASSED 3/3 (IMG_5445.png وIMG_5446.jpeg وIMG_5447.jpeg)
+
+**دليل النجاح:** شاشة المراجعة بعنوان **Prevention of Sexual Harassment Quiz** تعرض **Review: Attempt #1** و**Result: PASSED** و**Score: 3/3** و**Previous Results: N/A**. كل الصور الثلاث تُظهر **نفس محاولة الاختبار** والأسئلة المتتابعة؛ النتيجة **100% من أول محاولة**، وليست ثلاث اختبارات منفصلة.
+
+| السؤال الأصلي من صورة المراجعة | الإجابة/الإجابات الصحيحة الظاهرة | تفسير Feedback الذي عرضته المنصة |
+|---|---|---|
+| **Q1: Which of the following kind of behaviours could count as sexual harassment?** (IMG_5445.png) | **Sexual jokes or innuendo**؛ و**Unwanted physical contact (such as hugging or massaging)** — إجابتان معلّمتان بصح | **“Any of these could potentially constitute sexual harassment if they are unwanted.”** أي إن المزاح الجنسي واللمس غير المرغوب قد يشكلان تحرشًا حسب الظروف، وليس كل مزاح أو عناق تلقائيًا حكمًا قانونيًا |
+| **Q2: One of your colleagues keeps making sexual jokes that makes you feel uncomfortable. What should you do?** (IMG_5446.jpeg) | **Speak to the colleague about it and ask them to stop**؛ و**Speak to your line manager or service leader about it** — إجابتان معلّمتان بصح | يوضح التصحيح أن مطالبة الزميل مباشرة بالتوقف **مشروطة براحتك وأمانك**؛ وإلا تحدّث إلى **Line Manager / Service Leader / another appropriate manager**. **المواجهة المباشرة ليست شرطًا لازمًا قبل الإبلاغ**؛ راجع §63.4 |
+| **Q3: You're a member of a WhatsApp group with other colleagues... some exchange messages of a sexual nature about another colleague not in the group ... Is this sexual harassment?** (IMG_5447.jpeg) | **Yes** — بعلامة صح | الرسائل قد تخلق **hostile, degrading or humiliating environment** للمتلقين حتى لو أن الموظف الذي تتم مناقشته **ليس موجودًا في المجموعة أو لا يعرف بالرسائل**؛ ليس مطلوبًا أن تكون الرسائل موجهة مباشرةً إلى الشخص الذي تضرر |
+
+**الخلاصة العملية المخصصة للرجوع أثناء العمل:** المضايقات الجنسية تشمل السلوك اللفظي والجسدي والرقمي غير المرغوب؛ زميل متضرر يمكنه تقديم بلاغ دون مواجهة غير آمنة؛ الرسائل في مجموعات العمل قد تضر من يطّلع عليها ولو لم تكن تستهدفه بالاسم. **جهة البلاغ الداخلية المؤكدة** هي Line Manager أو مدير مناسب آخر أو **People Team: people@westmorlandfamily.com** (§63.4).
+
+### 63.31 حالة إكمال الموديول وتمييزها عن برنامج التدريب
+
+| البند | الدليل | الحالة المثبتة |
+|---|---|---|
+| **Sexual harassment awareness and prevention — محتوى الموديول** | IMG_5444.png: **Reached the end / You can now close this module** | **وصل إلى نهاية الموديول** |
+| **Prevention of Sexual Harassment Quiz** | IMG_5445.png–IMG_5447.jpeg: **PASSED / 3/3 / Attempt #1** | **مكتمل وناجح 100% من أول محاولة** |
+| **Thrive My Learning overall completion indicator** | ليست ضمن الصور الحالية | **لم يتم التحقق من شارة Completed على لوحة التعلم**؛ لا نختلقها |
+| **Audio “Identifying risk” السابق** | كان موجودًا كعنصر قابل للتشغيل لكن لم يُرسل ملف الصوت (§63.22) | **تفاصيل التسجيل غير مؤرشفة**، ولا ينفي ذلك ظهور النجاح في الاختبار |
+| **Welcome Antlers / training card / practical sign-off** | لا توجد صورة توقيع جديد أو تقييم عملي | **ما زالت قيد الاستكمال**؛ نجاح هذا الاختبار لا يثبت اعتماد البطاقة أو اكتمال كل التدريب |
+
+**قاعدة القيد:** يجوز وصف **هذا الاختبار بأنه PASSED** و**هذا الموديول بأنه وصل للنهاية**، لأن صور النتيجة والختام تؤكد ذلك. لا يجوز اعتبار **برنامج التدريب بالكامل** منتهيًا، ولا اختلاق توقيع أو نجاح في كورسات أخرى.
+
+### 63.32 عداد الأرشيف بعد صور نهاية الموديول والاختبار
+
+| المصدر | قبل | هذه الدفعة | الإجمالي |
+|---|---:|---:|---:|
+| **صور / شاشات فريدة** | **440** | **5**: IMG_5443.png, IMG_5444.png, IMG_5445.png, IMG_5446.jpeg, IMG_5447.jpeg | **445** |
+| **PDF فريدة / صفحات** | **37 / 90** | **0** | **37 / 90** |
+| **فيديوهات فريدة** | **18** | **0** | **18** |
+| **Quiz result** | لم تظهر نتيجة نهائية سابقًا | **PASSED — 3/3 — Attempt #1** | **مثبت لهذا الموديول فقط** |
+
+**نطاق التنفيذ:** إضافة مرجعية إلى Markdown فقط؛ لا تغييرات على واجهة WF Staff Companion أو بيانات Thrive أو برنامج التدريب الآخر.
+
+---
+
 ## سجل التحديثات
+
+- **10 أكتوبر 2026 — Sexual Harassment Awareness، اجتياز مثبت:** الصور الخمس **IMG_5443–IMG_5447** تضيف إغلاق الموديول و**Prevention of Sexual Harassment Quiz PASSED 3/3، Attempt #1** وأسئلته الثلاثة في §63.29–§63.32؛ **445 صورة / 37 PDF (90 صفحة) / 18 فيديو**. لم تظهر شارة My Learning العامة؛ بطاقة Welcome Antlers والتدريب المستمر لم ينتهيا. بدون أي تعديل للواجهة أو Thrive.
 
 - **10 أكتوبر 2026 — Sexual Harassment Awareness (الدفعة الثالثة):** حفظ **10 صور IMG_5433–5442** في §63.18–§63.28: After work drinks (**Yes**)، Worker Protection/reasonable steps، Checking in، ناقص صوت Identifying Risk، Further consideration، Naveen (**Yes** مع غياب سياق الرسائل)، Equal Opportunities، Risk Assessments وReporting process. **440 صورة / 37 PDF (90 صفحة) / 18 فيديو**؛ لا إثبات إكمال ولا تغيير تطبيق.
 
