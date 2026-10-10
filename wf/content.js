@@ -1358,3 +1358,19 @@ Object.assign(TRANSLATIONS.en, {
   "verifiedQuizTitle": "Sexual harassment prevention quiz — verified result",
   "verifiedQuizNote": "From THRIVE screenshots: passed on first attempt. This is a reference note, not an automatic change to your private training list. Welcome Antlers still requires practical sign-off."
 });
+
+// New Chemicals Recap — verified quiz 4/4; product-specific, not a universal dilution rule.
+Object.assign(TRANSLATIONS.ar, {
+  "chemShiftTitle": "مواد التنظيف الجديدة — ما تنساش",
+  "chemShift1": "عند استخدام موزّع الشركة لتعبئة زجاجة الرش: اضغط مرة واحدة فقط؛ ما تزودش الجرعة حتى لو ظننت إن التركيز ضعيف.",
+  "chemShift2": "ممنوع خلط منتجين كيميائيين في زجاجة أو دلو أو حوض أو مرحاض.",
+  "chemShift3": "لتعقيم سطح تحضير الطعام: نظّفه أولًا، ثم امسحه بالمعقّم باستخدام فوطة نظيفة واتركه يجف في الهواء حسب تعليمات المنتج.",
+  "chemShiftScope": "المصدر: New Chemicals Recap — نتيجة PASSED 4/4. قاعدة الضغط مرة واحدة خاصة بالموزّع المذكور في التدريب؛ باقي المنتجات تتبع ملصقها وCOSHH ووقت التلامس."
+});
+Object.assign(TRANSLATIONS.en, {
+  "chemShiftTitle": "New cleaning chemicals — quick reminder",
+  "chemShift1": "At the company dispenser, press once only to fill a trigger-spray bottle. Never add another dose just because you think it should be stronger.",
+  "chemShift2": "Never mix two cleaning products in a bottle, bucket, sink or toilet bowl.",
+  "chemShift3": "For a food-preparation surface: clean first, then wipe with sanitiser using a fresh cloth and leave to air-dry as instructed for that product.",
+  "chemShiftScope": "Source: New Chemicals Recap, PASSED 4/4. One press applies to the dispenser in that training, not every chemical or diluter. Follow the actual product label, COSHH and contact time."
+});
