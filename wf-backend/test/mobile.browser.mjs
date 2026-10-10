@@ -77,6 +77,39 @@ try {
       await page.locator(`#${pageId} [data-back]`).click();
       await page.locator('#home.active').waitFor();
     }
+    // The two five-tab pages must use non-overlapping, non-sticky responsive grids.
+    for(const [hash,section] of [['#safety/forecourt','safety'],['#benefits/speakup','benefits']]){
+      await page.goto('https://mo.elasrag.com/'+hash);
+      await page.locator('#'+section+'.active').waitFor();
+      for(const locale of ['en','ar']){
+        if(await page.locator('html').getAttribute('lang')!==locale)await page.locator('#languageToggle').click();
+        const boxes=await page.locator('#'+section+' .section-tabs').evaluate(bar=>{
+          const rect=bar.getBoundingClientRect();
+          const tabs=[...bar.querySelectorAll('button')];
+          const positions=tabs.map(tab=>tab.getBoundingClientRect());
+          const overlaps=positions.some((a,i)=>positions.some((b,j)=>j>i&&Math.min(a.right,b.right)-Math.max(a.left,b.left)>2&&Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)>2));
+          return {
+            display:getComputedStyle(bar).display,
+            position:getComputedStyle(bar).position,
+            columns:getComputedStyle(bar).gridTemplateColumns.split(' ').length,
+            overlaps,
+            fit:tabs.every((tab,i)=>positions[i].left>=rect.left-2&&positions[i].right<=rect.right+2&&tab.scrollWidth<=tab.clientWidth+2),
+            all:tabs.length
+          };
+        });
+        assert.equal(boxes.display,'grid',JSON.stringify({width,locale,section,boxes}));
+        assert.equal(boxes.position,'relative');
+        assert.equal(boxes.columns,width>=600?5:6);
+        assert.equal(boxes.all,5);
+        assert.equal(boxes.overlaps,false,JSON.stringify({width,locale,section,boxes}));
+        assert.equal(boxes.fit,true,JSON.stringify({width,locale,section,boxes}));
+        await noOverflow();
+      }
+    }
+    if(await page.locator('html').getAttribute('lang')!=='en')await page.locator('#languageToggle').click();
+    await page.goto('https://mo.elasrag.com/');
+    await page.locator('#home.active').waitFor();
+
     // Training remains reachable from the primary card instead of a duplicate Browse tile.
     await page.locator('#home .home-learning').click();
     await page.locator('#training.active').waitFor();
@@ -221,6 +254,10 @@ try {
     assert.equal(await page.locator('#safety-panel-substances .chem-shift-note').count(),1);
     await noOverflow();
     await page.locator('#safety-panel-forecourt .fc-reference summary').first().click();
+    assert.equal(await page.locator('#safety-panel-forecourt .fc-reference details[open]').count(),1);
+    await page.locator('#safety-panel-forecourt .fc-reference summary').nth(1).click();
+    assert.equal(await page.locator('#safety-panel-forecourt .fc-reference details[open]').count(),1);
+    assert.equal(await page.locator('#safety-panel-forecourt .fc-reference details').first().evaluate(el=>el.open),false);
     await noOverflow();
     await page.locator('#languageToggle').click();
     assert.match(await page.locator('#safety-panel-forecourt .fc-emergency').textContent(),/تسرب وقود/);
@@ -236,7 +273,7 @@ try {
     await page.locator('#languageToggle').click();
     await page.goto('https://mo.elasrag.com/#training');
     await page.locator('#training.active').waitFor();
-    assert.match(await page.locator('#training .training-verified').textContent(),/PASSED.*3\/3/);
+    assert.equal(await page.locator('#training .training-verified').count(),0);
     await noOverflow();
     if(previousGuidanceLang!=='en')await page.locator('#languageToggle').click();
 
