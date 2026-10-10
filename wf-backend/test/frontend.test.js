@@ -465,6 +465,48 @@ test('two signed-in tabs save across sections without false conflicts and protec
   assert.deepEqual(a.errors,[]);assert.deepEqual(b.errors,[]);
 });
 
+test('forecourt response and speaking-up guidance are accessible, bilingual and source-bounded',async t=>{
+  for(const [language,emergency,people] of [
+    ['en',/Fuel spill on the forecourt/,/Sexual harassment or unwanted conduct/],
+    ['ar',/تسرب وقود في الساحة/,/تحرش جنسي أو سلوك غير مرغوب/]
+  ]){
+    const {env}=fixture();const d=device(env,'#actions',null,'https://mo.elasrag.com/',false,null,language);
+    t.after(()=>d.window.close());
+    click(d,'#actions [data-page="safety/forecourt"]');
+    assert.ok(active(d,'safety'));
+    assert.equal(d.document.querySelector('#safety-tab-forecourt').getAttribute('aria-selected'),'true');
+    assert.match(d.document.querySelector('#safety-panel-forecourt .fc-emergency').textContent,emergency);
+    assert.equal(d.document.querySelector('#safety-panel-forecourt .fc-call').getAttribute('href'),'tel:999');
+    assert.equal(d.document.querySelectorAll('#safety-panel-forecourt .fc-steps>li').length,4);
+    assert.equal(d.document.querySelectorAll('#safety-panel-forecourt .fc-reference details').length,5);
+    assert.match(d.document.querySelector('#safety-panel-forecourt').textContent,/1–5|1–5/);
+    assert.match(d.document.querySelector('#safety [data-back]').textContent,language==='en'?/Quick Action/:/تصرف سريع/);
+    click(d,'#safety [data-back]');assert.ok(active(d,'actions'));
+    click(d,'[data-page="home"]');
+    click(d,'#home [data-topic="benefits"] [data-page="benefits/speakup"]');
+    assert.ok(active(d,'benefits'));
+    assert.equal(d.document.querySelector('#benefits-tab-speakup').getAttribute('aria-selected'),'true');
+    assert.match(d.document.querySelector('#benefits-panel-speakup').textContent,people);
+    assert.equal(d.document.querySelector('#benefits-panel-speakup .speakup-contact').getAttribute('href'),'mailto:people@westmorlandfamily.com');
+    assert.equal(d.document.querySelectorAll('#benefits-panel-speakup .fc-steps li').length,3);
+    assert.equal(d.document.querySelectorAll('#benefits-panel-speakup details').length,2);
+    assert.deepEqual(d.errors,[]);
+  }
+});
+
+test('verified quiz evidence does not override or count as private course progress',async t=>{
+  const {env}=fixture();const d=device(env,'#training',null,'https://mo.elasrag.com/',false,null,'en');
+  t.after(()=>d.window.close());
+  const proof=d.document.querySelector('#training .training-verified');
+  assert.ok(proof);assert.match(proof.textContent,/PASSED.*3\/3.*10 Oct 2026/);
+  assert.match(proof.textContent,/not an automatic change to your private training list/);
+  assert.equal(d.document.querySelector('#completedCount').textContent,'0');
+  assert.equal(d.document.querySelector('#training-tab-completed').hidden,true);
+  click(d,'#languageToggle');
+  assert.match(proof.textContent,/نتيجة موثقة/);
+  assert.deepEqual(d.errors,[]);
+});
+
 test('home groups secondary topics without duplicating work and training shortcuts',async t=>{
   const {env}=fixture();
   const d=device(env,'',null,'https://mo.elasrag.com/',false,null,'en');
@@ -472,10 +514,10 @@ test('home groups secondary topics without duplicating work and training shortcu
   const home=d.document.getElementById('home');
   assert.deepEqual([...home.querySelectorAll('.home-focus .focus-card')].map(el=>el.dataset.page),['details','training']);
   const expected={
-    safety:['safety/burns','safety/hazards','safety/lifting','safety/substances'],
+    safety:['safety/burns','safety/hazards','safety/lifting','safety/substances','safety/forecourt'],
     food:['food/allergens','food/temperatures','food/hygiene','food/reporting'],
     firstaid:['firstaid/cpr','firstaid/choking','firstaid/recovery','firstaid/injuries'],
-    benefits:['benefits/meals','benefits/discounts','benefits/travel','benefits/leisure','uniform']
+    benefits:['benefits/meals','benefits/discounts','benefits/travel','benefits/leisure','uniform','benefits/speakup']
   };
   assert.deepEqual([...home.querySelectorAll('.home-topic')].map(el=>el.dataset.topic),Object.keys(expected));
   for(const [topic,routes] of Object.entries(expected)){
@@ -483,11 +525,11 @@ test('home groups secondary topics without duplicating work and training shortcu
     assert.equal(section.querySelector('.home-topic-heading').dataset.page,topic);
     assert.deepEqual([...section.querySelectorAll('.home-topic-link')].map(el=>el.dataset.page),routes);
   }
-  assert.equal(home.querySelectorAll('.home-topic-link').length,17);
+  assert.equal(home.querySelectorAll('.home-topic-link').length,19);
   assert.equal(home.querySelectorAll('[data-page="benefits"]').length,1);
   assert.equal(home.querySelectorAll('[data-page="uniform"]').length,1);
   assert.equal(home.querySelectorAll('#guidesGrid, #guidesTitle, .home-benefits, .home-uniform').length,0);
-  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(el=>el.dataset.page),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances']);
+  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(el=>el.dataset.page),['fire','firstaid/cpr','incident','safety/forecourt','safety/hazards','food/allergens','safety/burns','safety/substances']);
   const publicTopics=['safety','food','firstaid','benefits'];
   for(const topic of publicTopics){
     for(const route of expected[topic]){
@@ -554,7 +596,7 @@ test('returning from another page keeps draft inputs and back links return to th
   click(d,'#benefits-tab-discounts');
   click(d,'#benefits [data-back]');assert.ok(active(d,'home'));
   assert.equal(d.document.querySelectorAll('#home [data-page="benefits"]').length,1);
-  assert.equal(d.document.querySelectorAll('#home [data-topic="benefits"] [data-page^="benefits/"]').length,4);
+  assert.equal(d.document.querySelectorAll('#home [data-topic="benefits"] [data-page^="benefits/"]').length,5);
   assert.equal(d.document.querySelectorAll('#home .company-hub [data-page="access/reset"]').length,1);
   assert.equal(d.document.querySelectorAll('#home .company-hub-help-link').length,3);
   click(d,'#home [data-page="benefits"]');
@@ -733,7 +775,7 @@ test('Quick Action is public and routes to the existing procedures with contextu
   const strip=d.document.querySelector('.action-strip');
   assert.deepEqual([...strip.querySelectorAll('[data-page]')].map(button=>button.dataset.page),['fire','actions']);
   click(d,'.action-hub-strip');assert.ok(active(d,'actions'));
-  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances']);
+  assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(button=>button.dataset.page),['fire','firstaid/cpr','incident','safety/forecourt','safety/hazards','food/allergens','safety/burns','safety/substances']);
   click(d,'#actions [data-page="fire"]');assert.ok(active(d,'fire'));
   assert.match(d.document.querySelector('#fire [data-back]').textContent,/Quick Action/);
   click(d,'#fire [data-back]');await until(()=>active(d,'actions'));
