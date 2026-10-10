@@ -83,6 +83,7 @@ test('Accounts prioritises a distinct single-click private vault without changin
   const {env}=fixture();const d=device(env,'#details');t.after(()=>d.window.close());
   await signIn(d);assert.ok(active(d,'details'));
   click(d,'#details-tab-accounts');
+  if(d.document.documentElement.lang!=='en')click(d,'#languageToggle');
   const panel=d.document.getElementById('details-panel-accounts');
   const vault=panel.querySelector('.private-vault-launch');
   assert.equal(panel.firstElementChild,vault,'Vault must be the first Accounts destination');
