@@ -210,6 +210,7 @@ try {
       }
     }
     // Newly documented on-shift action and workplace reporting: visible, readable, RTL-safe.
+    if(await page.locator('html').getAttribute('lang')!=='en')await page.locator('#languageToggle').click();
     await page.goto('https://mo.elasrag.com/#actions');
     await page.locator('#actions [data-page="safety/forecourt"]').click();
     await page.locator('#safety.active').waitFor();
