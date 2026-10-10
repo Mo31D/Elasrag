@@ -429,7 +429,7 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 #safety .section-tabs,
 #benefits .section-tabs{
   display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
+  grid-template-columns:repeat(6,minmax(0,1fr));
   align-items:stretch;
   position:relative;
   top:auto;
@@ -441,6 +441,7 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 #safety .section-tabs button,
 #benefits .section-tabs button{
   flex:initial;
+  grid-column:span 2;
   min-width:0;
   width:100%;
   min-height:44px;
@@ -451,6 +452,9 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
   overflow-wrap:anywhere;
   text-align:center;
 }
+/* Last two destinations share the second row equally. */
+#safety .section-tabs button:nth-child(n+4),
+#benefits .section-tabs button:nth-child(n+4){grid-column:span 3}
 #safety .section-tabs button[aria-selected="true"],
 #benefits .section-tabs button[aria-selected="true"]{
   box-shadow:0 1px 4px #152d2110;
@@ -460,6 +464,8 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
   #safety .section-tabs,#benefits .section-tabs{
     grid-template-columns:repeat(5,minmax(0,1fr));
   }
+  #safety .section-tabs button,#benefits .section-tabs button,
+  #safety .section-tabs button:nth-child(n+4),#benefits .section-tabs button:nth-child(n+4){grid-column:auto}
 }
 @media(max-width:350px){
   #safety .section-tabs button,#benefits .section-tabs button{
