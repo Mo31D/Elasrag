@@ -733,6 +733,8 @@ test('incident checklists enhance only actionable steps and reset without alteri
     assert.equal(emergency.firstElementChild.classList.contains('fc-emergency-head'),true);
     assert.equal(emergency.querySelector('.fc-call').getAttribute('href'),'tel:999');
     assert.equal(d.document.querySelector('#firstaid .aid-emergency .aid-call').getAttribute('href'),'tel:999');
+    const allergenPanel=d.document.querySelector('#food-panel-allergens');
+    assert.ok(allergenPanel.querySelector('.food-urgent').compareDocumentPosition(allergenPanel.querySelector('.food-primary')) & d.window.Node.DOCUMENT_POSITION_FOLLOWING,'Severe allergy action must be visible before routine food checks');
     const list=d.document.querySelector('[data-checklist="flow-fuel-spill"]');
     const first=list.querySelector('[data-check="flow-fuel-spill-1"]');
     assert.equal(first.checked,false);
