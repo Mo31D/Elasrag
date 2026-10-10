@@ -35,10 +35,10 @@ try {
     assert.equal(await page.locator('#home .home-safety-grid').count(),0);
     assert.equal(await page.locator('#home #homeSafetyTitle').count(),0);
     assert.deepEqual(await page.locator('header .action-strip [data-page]').evaluateAll(els=>els.map(el=>el.dataset.page)),['fire','actions']);
-    assert.deepEqual(await page.locator('#actions .action-hub-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['fire','firstaid/cpr','incident','safety/hazards','food/allergens','safety/burns','safety/substances']);
+    assert.deepEqual(await page.locator('#actions .action-hub-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['fire','firstaid/cpr','incident','safety/forecourt','safety/hazards','food/allergens','safety/burns','safety/substances']);
     assert.deepEqual(await page.locator('#home .home-focus .focus-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['details','training']);
     assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits']);
-    assert.equal(await page.locator('#home .home-topic-link').count(),17);
+    assert.equal(await page.locator('#home .home-topic-link').count(),19);
     const companyHub=page.locator('#home .company-hub');
     assert.equal(await companyHub.count(),1);
     assert.equal(await companyHub.locator('.company-hub-app').count(),2);
@@ -61,9 +61,11 @@ try {
     else assert.ok(Math.abs(groupsLayout.firstX-groupsLayout.secondX)<2);
     for(const [route,pageId,selectedTab] of [
       ['safety/lifting','safety','lifting'],
+      ['safety/forecourt','safety','forecourt'],
       ['food/temperatures','food','temperatures'],
       ['firstaid/choking','firstaid','choking'],
       ['benefits/leisure','benefits','leisure'],
+      ['benefits/speakup','benefits','speakup'],
       ['uniform','uniform',null],
       ['access/username','access','username']
     ]){
@@ -207,6 +209,33 @@ try {
         assert.equal(await tab.getAttribute('aria-selected'),'true');
       }
     }
+    // Newly documented on-shift action and workplace reporting: visible, readable, RTL-safe.
+    await page.goto('https://mo.elasrag.com/#actions');
+    await page.locator('#actions [data-page="safety/forecourt"]').click();
+    await page.locator('#safety.active').waitFor();
+    assert.equal(await page.locator('#safety-tab-forecourt').getAttribute('aria-selected'),'true');
+    assert.match(await page.locator('#safety-panel-forecourt .fc-emergency').textContent(),/Fuel spill/);
+    assert.equal(await page.locator('#safety-panel-forecourt .fc-call').getAttribute('href'),'tel:999');
+    await noOverflow();
+    await page.locator('#safety-panel-forecourt .fc-reference summary').first().click();
+    await noOverflow();
+    await page.locator('#languageToggle').click();
+    assert.match(await page.locator('#safety-panel-forecourt .fc-emergency').textContent(),/تسرب وقود/);
+    await noOverflow();
+    await page.locator('#languageToggle').click();
+    await page.goto('https://mo.elasrag.com/#benefits/speakup');
+    await page.locator('#benefits-panel-speakup:visible').waitFor();
+    assert.equal(await page.locator('#benefits-panel-speakup .speakup-contact').getAttribute('href'),'mailto:people@westmorlandfamily.com');
+    await noOverflow();
+    await page.locator('#languageToggle').click();
+    assert.match(await page.locator('#benefits-panel-speakup').textContent(),/الإبلاغ/);
+    await noOverflow();
+    await page.locator('#languageToggle').click();
+    await page.goto('https://mo.elasrag.com/#training');
+    await page.locator('#training.active').waitFor();
+    assert.match(await page.locator('#training .training-verified').textContent(),/PASSED.*3\/3/);
+    await noOverflow();
+
     // Safety quick actions should be reachable and readable on every supported viewport.
     await page.goto('https://mo.elasrag.com/#actions');
     await page.locator('#actions [data-page="firstaid/cpr"]').click();
