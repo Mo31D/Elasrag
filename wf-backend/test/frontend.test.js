@@ -743,7 +743,12 @@ test('incident checklists enhance only actionable steps and reset without alteri
     assert.ok(d.window.sessionStorage.getItem('wf-check-flow-fuel-spill'));
     assert.equal(d.window.localStorage.getItem('wf-check-flow-fuel-spill'),null);
     click(d,'#languageToggle');
+    assert.equal(first.isConnected,true,'translated text must not replace response controls');
     assert.equal(first.checked,true,'language switch must not reset incident progress');
+    const foodStep=d.document.querySelector('[data-checklist="flow-food-allergy"] > li:first-child');
+    const foodInput=foodStep.querySelector('input');
+    assert.ok(foodInput && foodInput.isConnected,'translated list-item text must preserve nested checkbox');
+    assert.ok(foodStep.querySelector('.quick-step-copy').dataset.i18n,'translation key follows the step text');
     click(d,'[data-reset-checklist="flow-fuel-spill"]');
     assert.equal(first.checked,false);
     assert.equal(d.document.querySelector('[data-check-progress="flow-fuel-spill"]').textContent,'0 / 4');
