@@ -539,3 +539,9 @@ html[lang="ar"] [data-lang="en"],html[lang="en"] [data-lang="ar"]{display:none!i
 #training .fire-check-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px}
 #training .fire-check-footer .reset-checklist{margin:0;min-height:38px;font-size:12px}
 #training .fire-check-footer .progress-pill{font-size:12px;padding:6px 10px}
+
+/* The old PPE tick pictogram is replaced by a real check control, not doubled. */
+#safety .ppe-mini-list.quick-steps-list>li.quick-step-item{display:block;grid-template-columns:none;padding:0}
+#safety .ppe-mini-list.quick-steps-list .quick-step-copy>svg{display:none}
+#safety .ppe-mini-list.quick-steps-list .quick-step-row{display:flex}
+#safety .ppe-mini-list.quick-steps-list .quick-step-copy span{font-size:14px;line-height:1.55}
