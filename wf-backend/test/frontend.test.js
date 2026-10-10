@@ -653,7 +653,7 @@ test('primary navigation returns home and keeps task drafts and page reading pos
 
 test('private Vault entry is a distinct internal action with lock icon, translated hint and unchanged external app links',async t=>{
   const {env}=fixture();
-  const d=device(env,'#details');t.after(()=>d.window.close());
+  const d=device(env,'#details',null,'https://mo.elasrag.com/',false,null,'en');t.after(()=>d.window.close());
   await signIn(d);
   click(d,'#details-tab-accounts');
   const panel=d.document.querySelector('#details-panel-accounts');
