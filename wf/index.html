@@ -272,6 +272,24 @@
       <div class="fire-pass-body"><p data-i18n="firePassGuard"></p><p data-i18n="firePass"></p></div>
     </details>
   </section>
+
+      <details class="fire-practice-panel">
+    <summary class="fire-practice-summary"><span class="fire-practice-icon" aria-hidden="true">✓</span><span><strong data-i18n="firePracticeTitle"></strong><small data-i18n="firePracticeHint"></small></span><span class="fire-practice-chevron" aria-hidden="true">⌄</span></summary>
+    <div class="fire-practice-body">
+      <p class="fire-check-hint" data-i18n="fireChecklistHint"></p>
+    <div class="fire-evac-panel" data-checklist="fire-evacuation">
+      <h3 class="fire-evac-title"><svg class="fire-heading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H5v16h6M12 12h9m-4-4 4 4-4 4"/><path d="M5 4h7v16H5"/></svg><span data-i18n="fireEvacTitle"></span></h3>
+      <ul class="task-list fire-emergency-list">
+        <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-evacuation-1"><span class="task-text"><span data-i18n="evacuationExit"></span></span></label></li>
+        <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-evacuation-2"><span class="task-text"><span data-i18n="evacuationAssembly"></span></span></label></li>
+      </ul>
+      <div class="fire-check-footer">
+        <span class="progress-pill" data-check-progress="fire-evacuation">0 / 2</span>
+        <button type="button" class="reset-checklist" data-reset-checklist="fire-evacuation" data-i18n="resetChecklist"></button>
+      </div>
+    </div>
+    </div>
+  </details>
 </section>
 
 
@@ -602,23 +620,7 @@
         <a class="action compact-action" href="https://westmorland.learn.link" target="_blank" rel="noopener" data-i18n="openTraining"></a><div class="section-tabs" role="tablist"><button type="button" data-tab="pending" data-i18n="pendingTab" role="tab" aria-selected="true" id="training-tab-pending" aria-controls="training-panel-pending" tabindex="0"></button><button type="button" data-tab="completed" data-i18n="completedLearning" role="tab" aria-selected="false" id="training-tab-completed" aria-controls="completedLearning" tabindex="-1"></button></div>
         <div class="card training-card" id="training-panel-pending" data-tab-panel="pending" role="tabpanel" aria-labelledby="training-tab-pending"><div class="check-head"><h2 data-i18n="myLearning"></h2><span id="learningProgress" class="progress-pill"></span></div><div id="courseList"></div></div>
         <div id="completedLearning" class="card completed-history" data-tab-panel="completed" role="tabpanel" aria-labelledby="training-tab-completed" hidden=""><h2 class="check-head"><span data-i18n="completedLearning"></span><span id="completedCount" class="completed-count">0</span></h2><div id="completedCourses"></div></div>
-      <details class="fire-practice-panel">
-    <summary class="fire-practice-summary"><span class="fire-practice-icon" aria-hidden="true">✓</span><span><strong data-i18n="firePracticeTitle"></strong><small data-i18n="firePracticeHint"></small></span><span class="fire-practice-chevron" aria-hidden="true">⌄</span></summary>
-    <div class="fire-practice-body">
-      <p class="fire-check-hint" data-i18n="fireChecklistHint"></p>
-    <div class="fire-evac-panel" data-checklist="fire-evacuation">
-      <h3 class="fire-evac-title"><svg class="fire-heading-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H5v16h6M12 12h9m-4-4 4 4-4 4"/><path d="M5 4h7v16H5"/></svg><span data-i18n="fireEvacTitle"></span></h3>
-      <ul class="task-list fire-emergency-list">
-        <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-evacuation-1"><span class="task-text"><span data-i18n="evacuationExit"></span></span></label></li>
-        <li class="task"><label class="fire-check-row"><input class="task-check" type="checkbox" data-check="fire-evacuation-2"><span class="task-text"><span data-i18n="evacuationAssembly"></span></span></label></li>
-      </ul>
-      <div class="fire-check-footer">
-        <span class="progress-pill" data-check-progress="fire-evacuation">0 / 2</span>
-        <button type="button" class="reset-checklist" data-reset-checklist="fire-evacuation" data-i18n="newIncident"></button>
-      </div>
-    </div>
-    </div>
-  </details>
+
       <details class="card food-signoff"><summary data-i18n="foodCardTitle"></summary><p data-i18n="foodCardDesc"></p></details></section>
       <section id="vault" class="page">
         <button class="back" data-back></button>

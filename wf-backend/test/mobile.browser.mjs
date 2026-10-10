@@ -190,7 +190,9 @@ try {
     assert.equal(await page.locator('#fire .fire-direction-list > li').count(),2);
     assert.equal(await page.locator('#fire .fire-emergency-card [data-check]').count(),0);
     assert.match(await page.locator('#fire .fire-now-message').textContent(),/evacuating immediately/i);
-    assert.equal(await page.locator('#fire .fire-practice-panel').count(),0);
+    const practice=page.locator('#fire .fire-practice-panel');
+    assert.equal(await practice.count(),1);
+    assert.equal(await practice.evaluate(el=>el.open),false);
     assert.equal(await page.locator('#fire .fire-equipment-card').evaluate(el=>el.open),false);
     assert.equal(await page.locator('#fire .fire-call-link').getAttribute('href'),'tel:999');
     await noOverflow();
@@ -226,19 +228,43 @@ try {
     assert.match(await page.locator('label[for="fire-warden-3"]').textContent(), /حريق/);
     assert.equal(await page.locator('#fire-forecourt-1').isChecked(), true);
     await noOverflow();
-    await page.locator('[data-back-fire]').click();
-    await page.locator('#training.active').waitFor();
-    const practice=page.locator('#training .fire-practice-panel');
-    assert.equal(await practice.count(),1);
-    assert.equal(await practice.evaluate(el=>el.open),false);
+    // Practice checklist must remain a compact collapsed reference on Fire,
+    // never a floating, broken SVG/checkbox block under the course tracker.
     await practice.locator('summary').click();
     assert.equal(await practice.evaluate(el=>el.open),true);
+    const drillLayout=await practice.evaluate(el=>{
+      const icon=el.querySelector('.fire-heading-icon').getBoundingClientRect();
+      const rows=[...el.querySelectorAll('.fire-emergency-list > li')];
+      return {
+        icon:Math.max(icon.width,icon.height),
+        rows:rows.map(li=>{
+          const label=li.querySelector('label.fire-check-row');
+          return {
+            checks:label.querySelectorAll('input[type="checkbox"]').length,
+            width:label.getBoundingClientRect().width,
+            text:label.querySelector('.task-text').getBoundingClientRect().width,
+            scroll:label.scrollWidth,
+            client:label.clientWidth
+          };
+        })
+      };
+    });
+    assert.ok(drillLayout.icon<=28,'Fire rehearsal icon should not dominate the page');
+    assert.equal(drillLayout.rows.length,2);
+    for(const row of drillLayout.rows){
+      assert.equal(row.checks,1,'One checkbox per rehearsal step');
+      assert.ok(row.text>=130,'Readable label width on narrow mobile');
+      assert.ok(row.scroll<=row.client+2,'No compressed or overflowing drill row');
+    }
     await noOverflow();
     await practice.locator('[data-check="fire-evacuation-1"]').check();
     assert.equal(await practice.locator('[data-check="fire-evacuation-1"]').isChecked(),true);
     await practice.locator('[data-reset-checklist="fire-evacuation"]').click();
     assert.equal(await practice.locator('[data-check="fire-evacuation-1"]').isChecked(),false);
     await practice.locator('summary').click();
+    await page.locator('[data-back-fire]').click();
+    await page.locator('#training.active').waitFor();
+    assert.equal(await page.locator('#training .fire-practice-panel').count(),0);
     await page.locator('#training-tab-completed').click();
     assert.equal(await page.locator('#completedLearning').isVisible(),true);
     for(const section of ['benefits','uniform','access']){
