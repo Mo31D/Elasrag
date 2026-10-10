@@ -480,7 +480,7 @@ test('forecourt response and speaking-up guidance are accessible, bilingual and 
     assert.equal(d.document.querySelector('#safety-panel-substances .chem-shift-note summary').dataset.i18n,'chemShiftTitle');
     assert.equal(d.document.querySelectorAll('#safety-panel-forecourt .fc-steps>li').length,4);
     assert.equal(d.document.querySelectorAll('#safety-panel-forecourt .fc-reference details').length,5);
-    assert.ok([...d.document.querySelectorAll('#safety-panel-forecourt .fc-reference details')].every(el=>el.name==='forecourt-reference'));
+    assert.ok([...d.document.querySelectorAll('#safety-panel-forecourt .fc-reference details')].every(el=>el.getAttribute('name')==='forecourt-reference'));
     assert.match(d.document.querySelector('#safety-panel-forecourt').textContent,/1–5|1–5/);
     assert.match(d.document.querySelector('#safety [data-back]').textContent,language==='en'?/Quick Action/:/تصرف سريع/);
     click(d,'#safety [data-back]');assert.ok(active(d,'actions'));
