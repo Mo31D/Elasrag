@@ -477,6 +477,7 @@ test('forecourt response and speaking-up guidance are accessible, bilingual and 
     assert.equal(d.document.querySelector('#safety-tab-forecourt').getAttribute('aria-selected'),'true');
     assert.match(d.document.querySelector('#safety-panel-forecourt .fc-emergency').textContent,emergency);
     assert.equal(d.document.querySelector('#safety-panel-forecourt .fc-call').getAttribute('href'),'tel:999');
+    assert.equal(d.document.querySelector('#safety-panel-substances .chem-shift-note summary').dataset.i18n,'chemShiftTitle');
     assert.equal(d.document.querySelectorAll('#safety-panel-forecourt .fc-steps>li').length,4);
     assert.equal(d.document.querySelectorAll('#safety-panel-forecourt .fc-reference details').length,5);
     assert.match(d.document.querySelector('#safety-panel-forecourt').textContent,/1–5|1–5/);
@@ -499,6 +500,7 @@ test('verified quiz evidence does not override or count as private course progre
   t.after(()=>d.window.close());
   const proof=d.document.querySelector('#training .training-verified');
   assert.ok(proof);assert.match(proof.textContent,/PASSED.*3\/3.*10 Oct 2026/);
+  assert.match(proof.textContent,/New Chemicals Recap: PASSED.*4\/4/);
   assert.match(proof.textContent,/not an automatic change to your private training list/);
   assert.equal(d.document.querySelector('#completedCount').textContent,'0');
   assert.equal(d.document.querySelector('#training-tab-completed').hidden,true);
