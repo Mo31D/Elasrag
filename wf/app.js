@@ -593,16 +593,70 @@ import { WF_BUILD } from "./build.js";
   }
 
   const CHECK_PREFIX = "wf-check-";
+  // A response checklist belongs to one incident/task in this tab, never to the
+  // staff account or shared shift data. Existing drill/account checklists keep
+  // their previous persistent behaviour.
+  function checklistStore(id) {
+    return id.startsWith("flow-") ? sessionStorage : localStorage;
+  }
+
+  function enhanceResponseGuides() {
+    document.querySelectorAll("[data-quick-steps]").forEach(list => {
+      const id = list.dataset.quickSteps;
+      if (!/^flow-[a-z0-9-]+$/.test(id) || list.dataset.enhanced === "true") return;
+      if(document.querySelectorAll('[data-quick-steps="' + id + '"]').length !== 1) return;
+      list.dataset.enhanced = "true";
+      list.dataset.checklist = id;
+      list.classList.add("quick-steps-list");
+      [...list.children].filter(li => li.tagName === "LI").forEach((li, i) => {
+        const label = document.createElement("label");
+        label.className = "quick-step-row";
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.className = "quick-step-check";
+        check.dataset.check = id + "-" + (i+1);
+        check.id = check.dataset.check;
+        const copy = document.createElement("div");
+        copy.className = "quick-step-copy";
+        while(li.firstChild) copy.appendChild(li.firstChild);
+        label.append(check,copy);
+        li.classList.add("quick-step-item");
+        li.appendChild(label);
+      });
+      const footer = document.createElement("div");
+      footer.className = "quick-step-footer";
+      const progress = document.createElement("span");
+      progress.className = "progress-pill";
+      progress.dataset.checkProgress = id;
+      const reset = document.createElement("button");
+      reset.type = "button";
+      reset.className = "reset-checklist quick-reset";
+      reset.dataset.resetChecklist = id;
+      reset.dataset.i18n = "quickStartOver";
+      reset.textContent = t("quickStartOver");
+      footer.append(progress,reset);
+      list.after(footer);
+      // The emergency warning precedes the checklist rather than being
+      // hidden behind its controls. Ticking is never required to get help.
+      if (/^flow-(aid-|fuel-spill|burns|chemical-|food-allergy)/.test(id)) {
+        const notice = document.createElement("p");
+        notice.className = "quick-step-safety-note";
+        notice.dataset.i18n = "quickStepSafety";
+        notice.textContent = t("quickStepSafety");
+        list.before(notice);
+      }
+    });
+  }
 
   function checklistState(id) {
-    if(guestMode)return {};
+    if(guestMode && !id.startsWith("flow-"))return {};
     try {
-      const raw = localStorage.getItem(CHECK_PREFIX + id);
+      const raw = checklistStore(id).getItem(CHECK_PREFIX + id);
       if (!raw) return {};
       const parsed = JSON.parse(raw);
       if (!parsed || typeof parsed !== "object") return {};
       if (parsed.updatedAt && Date.now() - parsed.updatedAt > 2 * 60 * 60 * 1000) {
-        localStorage.removeItem(CHECK_PREFIX + id);
+        checklistStore(id).removeItem(CHECK_PREFIX + id);
         return {};
       }
       return parsed.items || {};
@@ -623,14 +677,14 @@ import { WF_BUILD } from "./build.js";
   }
 
   function saveChecklist(id) {
-    if(guestMode)return;
+    if(guestMode && !id.startsWith("flow-"))return;
     const card = document.querySelector('[data-checklist="' + id + '"]');
     if (!card) return;
     const items = {};
     card.querySelectorAll("[data-check]").forEach(box => {
       items[box.dataset.check] = box.checked;
     });
-    localStorage.setItem(CHECK_PREFIX + id, JSON.stringify({updatedAt:Date.now(), items}));
+    checklistStore(id).setItem(CHECK_PREFIX + id, JSON.stringify({updatedAt:Date.now(), items}));
     updateChecklistProgress(id);
   }
 
@@ -644,11 +698,11 @@ import { WF_BUILD } from "./build.js";
   }
 
   function resetChecklist(id) {
-    if(guestMode)return;
+    if(guestMode && !id.startsWith("flow-"))return;
     const card = document.querySelector('[data-checklist="' + id + '"]');
     if (!card) return;
     card.querySelectorAll("[data-check]").forEach(box => box.checked = false);
-    localStorage.removeItem(CHECK_PREFIX + id);
+    checklistStore(id).removeItem(CHECK_PREFIX + id);
     updateChecklistProgress(id);
   }
 
@@ -741,8 +795,8 @@ import { WF_BUILD } from "./build.js";
   document.addEventListener("change", e => {
     const box = e.target.closest("[data-check]");
     if (!box) return;
-    if(guestMode){box.checked=false;return;}
     const card = box.closest("[data-checklist]");
+    if(guestMode && !card?.dataset.checklist?.startsWith("flow-")){box.checked=false;return;}
     if (card) saveChecklist(card.dataset.checklist);
   });
 
@@ -1303,6 +1357,7 @@ import { WF_BUILD } from "./build.js";
   applyLanguage(lang,false);
   refreshTrainingDateIfNeeded();
   document.querySelectorAll('[data-check]').forEach(check=>{check.id=check.dataset.check;const text=check.closest('.task').querySelector('.task-text');const label=document.createElement('label');label.className=text.className;if(text.dataset.i18n)label.dataset.i18n=text.dataset.i18n;label.htmlFor=check.id;while(text.firstChild)label.append(text.firstChild);text.replaceWith(label);});
+  enhanceResponseGuides();
   if(guestMode)sessionStorage.setItem('wf-guest-preview','1');
   restoreChecklists();
   $("lockScreen").classList.add("hidden");
