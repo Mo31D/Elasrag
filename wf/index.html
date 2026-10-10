@@ -5,7 +5,7 @@
   <meta name="theme-color" content="#111827">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <link rel="canonical" href="https://mo.elasrag.com/">
-  <title>WF Staff Companion</title>
+  <title>My Shift Companion</title>
   <script>
   (() => {
     if(location.protocol === "http:"){const secure=new URL(location.href);secure.protocol="https:";location.replace(secure.href);return;}
@@ -34,7 +34,7 @@
       <button id="lockLanguageToggle" class="language-toggle" type="button" aria-label="Switch to Arabic">ع</button>
     </div>
     <div class="lock-card">
-      <div class="lock-mark">WF</div>
+      <div class="lock-mark">MS</div>
       <div id="unlockMode">
         <h1 data-i18n="appTitle"></h1>
         <p id="unlockIntro" data-i18n="enterPass"></p>
@@ -447,7 +447,12 @@
           <div class="row"><div><div class="key" data-i18n="time"></div><div class="value" data-job="firstDayTime"></div></div></div>
           <div class="row"><div><div class="key" data-i18n="location"></div><div class="value" data-job="firstDayLocation"></div></div></div>
           <div class="row"><div><div class="key" data-i18n="postcode"></div><div class="value" data-job="firstDayPostcode"></div></div><button class="copy" data-job-copy="firstDayPostcode" data-i18n="copy"></button></div>
-        </details></div><div data-tab-panel="accounts" role="tabpanel" id="details-panel-accounts" aria-labelledby="details-tab-accounts" hidden=""><div class="card warning" data-private-card="">
+        </details></div><div data-tab-panel="accounts" role="tabpanel" id="details-panel-accounts" aria-labelledby="details-tab-accounts" hidden="">
+          <button type="button" class="private-vault-launch" data-page="vault">
+            <span class="private-vault-launch-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/></svg></span>
+            <span class="private-vault-launch-copy"><strong data-i18n="privateVault"></strong><small data-i18n="vaultShortcutHint"></small></span>
+            <span class="private-vault-launch-arrow" aria-hidden="true">↗</span>
+          </button><div class="card warning" data-private-card="">
           <h2 data-i18n="kioskSettings"></h2>
           <div class="row"><div><div class="key" data-i18n="kioskId"></div><div class="value" data-private="kioskId"></div><span class="sub" data-i18n="temporaryId"></span></div><button class="copy" data-private-copy="kioskId" data-i18n="copy"></button></div>
           <div class="row"><div><div class="key" data-i18n="kioskPin"></div><div class="value" data-private="kioskPin"></div></div><button class="copy" data-private-copy="kioskPin" data-i18n="copy"></button></div>
@@ -455,7 +460,6 @@
           <h2 data-i18n="privateCodes"></h2>
           <div class="row"><div><div class="key" data-i18n="workPin"></div><div class="value" data-private="workPin"></div></div><button class="copy" data-private-copy="workPin" data-i18n="copy"></button></div>
           <button type="button" class="text-button" id="addWorkPin" data-edit-profile-field="workPin" hidden><span data-i18n="add"></span> <span data-i18n="workPin"></span></button>
-          <button class="primary" data-page="vault" data-i18n="openVault"></button>
         </div><div class="card">
           <h2>My Westmorland People / PeopleXD</h2>
           <div class="row"><div><div class="key" data-i18n="companyId"></div><div class="value">weslp</div></div><button class="copy" data-copy="weslp" data-i18n="copy"></button></div>
