@@ -451,11 +451,15 @@
           <h2 data-i18n="kioskSettings"></h2>
           <div class="row"><div><div class="key" data-i18n="kioskId"></div><div class="value" data-private="kioskId"></div><span class="sub" data-i18n="temporaryId"></span></div><button class="copy" data-private-copy="kioskId" data-i18n="copy"></button></div>
           <div class="row"><div><div class="key" data-i18n="kioskPin"></div><div class="value" data-private="kioskPin"></div></div><button class="copy" data-private-copy="kioskPin" data-i18n="copy"></button></div>
-        </div><div class="card safe">
+        </div><div class="card private-access-card">
           <h2 data-i18n="privateCodes"></h2>
           <div class="row"><div><div class="key" data-i18n="workPin"></div><div class="value" data-private="workPin"></div></div><button class="copy" data-private-copy="workPin" data-i18n="copy"></button></div>
           <button type="button" class="text-button" id="addWorkPin" data-edit-profile-field="workPin" hidden><span data-i18n="add"></span> <span data-i18n="workPin"></span></button>
-          <button class="primary" data-page="vault" data-i18n="openVault"></button>
+          <button type="button" class="vault-entry" data-page="vault">
+            <span class="vault-entry-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><rect x="5" y="10" width="14" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg></span>
+            <span class="vault-entry-copy"><strong data-i18n="openVault"></strong><span data-i18n="vaultEntryHint"></span></span>
+            <svg class="vault-entry-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"></path></svg>
+          </button>
         </div><div class="card">
           <h2>My Westmorland People / PeopleXD</h2>
           <div class="row"><div><div class="key" data-i18n="companyId"></div><div class="value">weslp</div></div><button class="copy" data-copy="weslp" data-i18n="copy"></button></div>
