@@ -99,7 +99,7 @@ try {
         });
         assert.equal(boxes.display,'grid',JSON.stringify({width,locale,section,boxes}));
         assert.equal(boxes.position,'relative');
-        assert.equal(boxes.columns,width>=600?5:3);
+        assert.equal(boxes.columns,width>=600?5:6);
         assert.equal(boxes.all,5);
         assert.equal(boxes.overlaps,false,JSON.stringify({width,locale,section,boxes}));
         assert.equal(boxes.fit,true,JSON.stringify({width,locale,section,boxes}));
