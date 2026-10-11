@@ -39,10 +39,10 @@ try {
     assert.deepEqual(await page.locator('header .action-strip [data-page]').evaluateAll(els=>els.map(el=>el.dataset.page)),['fire','actions']);
     assert.deepEqual(await page.locator('#actions .action-hub-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['fire','firstaid/cpr','incident','safety/forecourt','safety/hazards','food/allergens','safety/burns','safety/substances']);
     assert.deepEqual(await page.locator('#home .home-focus .focus-card').evaluateAll(els=>els.map(el=>el.dataset.page)),['details','training']);
-    assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits']);
-    assert.equal(await page.locator('#home .home-topic-link').count(),19);
-    assert.equal(await page.locator('#home .home-topic-icon').count(),4);
-    assert.equal(await page.locator('#home .home-topic-heading-label').count(),4);
+    assert.deepEqual(await page.locator('#home .home-topic').evaluateAll(els=>els.map(el=>el.dataset.topic)),['safety','food','firstaid','benefits','till']);
+    assert.equal(await page.locator('#home .home-topic-link').count(),23);
+    assert.equal(await page.locator('#home .home-topic-icon').count(),5);
+    assert.equal(await page.locator('#home .home-topic-heading-label').count(),5);
     assert.equal(await page.locator('#home .home-topic-icon').evaluateAll(els=>els.every(el=>el.getBoundingClientRect().width<=30)),true);
     const companyHub=page.locator('#home .company-hub');
     assert.equal(await companyHub.count(),1);
@@ -71,6 +71,10 @@ try {
       ['firstaid/choking','firstaid','choking'],
       ['benefits/leisure','benefits','leisure'],
       ['benefits/speakup','benefits','speakup'],
+      ['till/basics','till','basics'],
+      ['till/sales','till','sales'],
+      ['till/fuel','till','fuel'],
+      ['till/stock','till','stock'],
       ['uniform','uniform',null],
       ['access/username','access','username']
     ]){

@@ -527,7 +527,8 @@ test('home groups secondary topics without duplicating work and training shortcu
     safety:['safety/burns','safety/hazards','safety/lifting','safety/substances','safety/forecourt'],
     food:['food/allergens','food/temperatures','food/hygiene','food/reporting'],
     firstaid:['firstaid/cpr','firstaid/choking','firstaid/recovery','firstaid/injuries'],
-    benefits:['benefits/meals','benefits/discounts','benefits/travel','benefits/leisure','uniform','benefits/speakup']
+    benefits:['benefits/meals','benefits/discounts','benefits/travel','benefits/leisure','uniform','benefits/speakup'],
+    till:['till/basics','till/sales','till/fuel','till/stock']
   };
   assert.deepEqual([...home.querySelectorAll('.home-topic')].map(el=>el.dataset.topic),Object.keys(expected));
   for(const [topic,routes] of Object.entries(expected)){
@@ -535,12 +536,12 @@ test('home groups secondary topics without duplicating work and training shortcu
     assert.equal(section.querySelector('.home-topic-heading').dataset.page,topic);
     assert.deepEqual([...section.querySelectorAll('.home-topic-link')].map(el=>el.dataset.page),routes);
   }
-  assert.equal(home.querySelectorAll('.home-topic-link').length,19);
+  assert.equal(home.querySelectorAll('.home-topic-link').length,23);
   assert.equal(home.querySelectorAll('[data-page="benefits"]').length,1);
   assert.equal(home.querySelectorAll('[data-page="uniform"]').length,1);
   assert.equal(home.querySelectorAll('#guidesGrid, #guidesTitle, .home-benefits, .home-uniform').length,0);
   assert.deepEqual([...d.document.querySelectorAll('#actions .action-hub-card')].map(el=>el.dataset.page),['fire','firstaid/cpr','incident','safety/forecourt','safety/hazards','food/allergens','safety/burns','safety/substances']);
-  const publicTopics=['safety','food','firstaid','benefits'];
+  const publicTopics=['safety','food','firstaid','benefits','till'];
   for(const topic of publicTopics){
     for(const route of expected[topic]){
       click(d,`#home [data-topic="${topic}"] [data-page="${route}"]`);
@@ -778,9 +779,9 @@ test('incident checklists enhance only actionable steps and reset without alteri
       });
     }
     assert.equal(d.document.querySelector('[data-checklist="flow-burns"] > li:first-child .quick-step-number').textContent,'1');
-    assert.equal(d.document.querySelectorAll('#home .home-topic-icon').length,4);
+    assert.equal(d.document.querySelectorAll('#home .home-topic-icon').length,5);
     assert.equal(d.document.querySelector('[data-checklist="flow-ppe-check"]').querySelectorAll('input').length,3);
-    assert.equal(d.document.querySelectorAll('#home .home-topic-heading-label').length,4);
+    assert.equal(d.document.querySelectorAll('#home .home-topic-heading-label').length,5);
     assert.ok(d.document.querySelector('#fire .fire-practice-panel'));
     assert.equal(d.document.querySelector('#training .fire-practice-panel'),null);
     const emergency=d.document.querySelector('#safety-panel-forecourt .fc-emergency');
