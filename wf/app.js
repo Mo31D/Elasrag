@@ -158,7 +158,7 @@ import { WF_BUILD } from "./build.js";
   function renderGuestMode() {
     document.documentElement.dataset.guest = String(guestMode);
     $('guestNotice').hidden = !guestMode;
-    const controls = '[data-edit-profile],[data-edit-profile-field],#editProfileBtn,#addSecretBtn,#addCourseBtn,#importLegacyBtn,#previousVaultLink,#returnCompanion,#taskForm,[data-reset-checklist]';
+    const controls = '[data-edit-profile],[data-edit-profile-field],#editProfileBtn,#addSecretBtn,#addCourseBtn,#importLegacyBtn,#returnCompanion,#taskForm,[data-reset-checklist]';
     document.querySelectorAll(controls).forEach(el => {
       if (guestMode) { if (!el.hasAttribute('data-before-guest-hidden')) el.dataset.beforeGuestHidden=String(el.hidden); el.hidden=true; }
       else if (el.hasAttribute('data-before-guest-hidden')) { el.hidden=el.dataset.beforeGuestHidden==='true';delete el.dataset.beforeGuestHidden; }
@@ -325,8 +325,9 @@ import { WF_BUILD } from "./build.js";
     vaultItems = privateData.items;
     renderPrivateProfile(); renderVault(); renderCompanion();
     restoreDraft();
-    $("importLegacyBtn").classList.toggle("hidden", account.id !== "owner" || !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)));
-    $("previousVaultLink").classList.toggle("hidden", account.id !== "owner" || location.origin !== CANONICAL_ORIGIN);
+    // Legacy recovery remains available only through the explicitly requested old-origin migration route.
+    // The normal Private Vault never advertises or displays Import old vault.
+    $("importLegacyBtn").classList.toggle("hidden", !migrationMode || account.id !== "owner" || !(localStorage.getItem(META_KEY) && localStorage.getItem(DATA_KEY)));
     $("returnCompanion").classList.toggle("hidden", !migrationMode);
     $("logoutBtn").classList.remove("hidden");
     return true;

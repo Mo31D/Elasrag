@@ -1200,9 +1200,7 @@ Object.assign(TRANSLATIONS.ar, {
   "foodPestDesc": "بلّغ فورًا، احمِ الطعام وتخلّص من المشتبه بتلوثه حسب تعليمات الموقع، واترك المكافحة للمختص. EFK اختصار Electric Fly Killer.",
   "foodComplaintTitle": "شكوى تسمم أو حساسية أو جسم غريب",
   "foodComplaintDesc": "أبلغ قائد الخدمة واجمع الوقائع والأدلة دون تخمين. عرض التدريب: Alert65 ← Food Complaints ← Log a food complaint، مع اختيار الفرع والنوع وإدخال التفاصيل ثم Submit. الفيديو لا يثبت شكل النظام الحالي.",
-  "foodLastNote": "هذه خلاصة للعمل السريع من وثائق Westmorland؛ عند تعارض رقم أو سياسة أو اختلاف نوع المنتج ارجع لأحدث تعليمات الفرع.",
-  "foodCardTitle": "اعتماد بطاقة Welcome Antlers",
-  "foodCardDesc": "بعد شرح البنود للمدرب وتأكيده، اكتب اسمه الحقيقي وتاريخ إكمال البطاقة في THRIVE، وأرفق مستندًا فقط إن طُلب، واضغط Confirm. يلزم بعدها اعتماد Line Manager. لا تعتبر الفيديو أو Confirm إثبات إكمال."
+  "foodLastNote": "هذه خلاصة للعمل السريع من وثائق Westmorland؛ عند تعارض رقم أو سياسة أو اختلاف نوع المنتج ارجع لأحدث تعليمات الفرع."
 });
 Object.assign(TRANSLATIONS.en, {
   "foodGuideTitle": "Food safety & allergens",
@@ -1261,9 +1259,7 @@ Object.assign(TRANSLATIONS.en, {
   "foodPestDesc": "Report immediately, protect food and dispose of potentially contaminated items under site instructions. Leave pest control to specialists. EFK means Electric Fly Killer.",
   "foodComplaintTitle": "Suspected poisoning, allergy or foreign-body complaint",
   "foodComplaintDesc": "Tell the Service Leader and capture facts and evidence without guessing. Training route: Alert65 → Food Complaints → Log a food complaint; select site/type, record details and Submit. The training video does not confirm today's interface.",
-  "foodLastNote": "Concise Westmorland training reference; where a value, policy or product classification differs, follow current site guidance.",
-  "foodCardTitle": "Welcome Antlers training-card sign-off",
-  "foodCardDesc": "After the trainer explains and signs off all points, enter their real name and the completion date in THRIVE, attach a file only if required, and press Confirm. Line Manager approval is still needed. A video or Confirm alone is not proof of completion."
+  "foodLastNote": "Concise Westmorland training reference; where a value, policy or product classification differs, follow current site guidance."
 });
 
 
@@ -1400,9 +1396,6 @@ Object.assign(TRANSLATIONS.ar, {
   "tillStockTab": "المخزون والأمان",
   "tillScope": "تذكيرات سريعة من تدريب الشركة، مش تصريح لتنفيذ إجراءات مقيدة. عند الشك اسأل الـService Leader (SL).",
   "tillSource": "المصدر: إجراءات CBE وHHU وكارت التدريب (§§64–69). أي اختلاف أو إجراء خاص بالفرع يحتاج تأكيد المدير.",
-  "cbeCardTitle": "اعتماد CBE العملي — 22 بند",
-  "cbeCardText": "22 بندًا في أربع مجموعات لازم تتشرح أو تتنفذ مع المدرب. بعد التطبيق الفعلي، تسجل اسم المدرب وتاريخ الإكمال بموافقته، ثم يعتمد المدير. قراءة الصفحة مش معناها إكمال الكورس.",
-  "cbeCardOpen": "افتح مرجع الكاشير",
   "cbe_logoff_title": "سجّل خروج لو هتسيب الكاشير",
   "cbe_logoff_body": "لما تسيب الكاشير من غير مراقبة اضغط LOG OFF. ما تشاركش كلمة السر.",
   "cbe_float_title": "إدخال الـFloat والإيصال",
@@ -1470,9 +1463,6 @@ Object.assign(TRANSLATIONS.en, {
   "tillStockTab": "Stock & security",
   "tillScope": "On-shift reminders from company training, not authorisation for restricted functions. Ask your Service Leader (SL) when unsure.",
   "tillSource": "Based on CBE/HHU procedures and Training Card (§§64–69). Site-specific or conflicting instructions require manager confirmation.",
-  "cbeCardTitle": "CBE practical sign-off — 22 items",
-  "cbeCardText": "Four groups must be explained/demonstrated with your trainer. Only after actual practice should you enter the trainer's name and completion date; the line manager then authorises. Studying this page does not mark the course complete.",
-  "cbeCardOpen": "Open till quick reference",
   "cbe_logoff_title": "Log off when unattended",
   "cbe_logoff_body": "Always use LOG OFF when leaving the till unattended. Never share your password.",
   "cbe_float_title": "Enter the float & keep the receipt",

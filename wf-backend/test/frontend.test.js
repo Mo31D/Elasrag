@@ -250,6 +250,26 @@ test('public access, protected direct routes, translated auth, vault CRUD, anoth
   assert.deepEqual(a.errors, []); assert.deepEqual(b.errors, []);
 });
 
+test('current private vault hides import-old UI without deleting legacy data', async t => {
+  const {env,kv}=fixture();
+  const oldMeta='legacy encrypted metadata',oldData='legacy encrypted entries';
+  const d=device(env,'#vault',{
+    'wf-vault-meta-v1':oldMeta,
+    'wf-vault-data-v1':oldData,
+  },'https://mo.elasrag.com/');
+  t.after(()=>d.window.close());
+  await signIn(d);
+  assert.ok(active(d,'vault'));
+  assert.ok(d.document.querySelector('#importLegacyBtn').classList.contains('hidden'));
+  assert.equal(d.document.querySelector('#previousVaultLink'),null);
+  assert.equal(d.document.querySelector('#addSecretBtn').hidden,false);
+  assert.equal(d.document.querySelector('#editProfileBtn').hidden,false);
+  assert.equal(d.window.localStorage.getItem('wf-vault-meta-v1'),oldMeta);
+  assert.equal(d.window.localStorage.getItem('wf-vault-data-v1'),oldData);
+  assert.ok(kv.get('private-data'));
+  assert.deepEqual(d.errors,[]);
+});
+
 test('encrypted legacy import is verified centrally, repeat import deduplicates and old storage remains', async t => {
   const { env, kv } = fixture();
   const salt = webcrypto.getRandomValues(new Uint8Array(16));
@@ -507,6 +527,8 @@ test('training screen shows only actionable learning without redundant result ca
   assert.equal(d.document.querySelector('#training .training-verified-score'),null);
   assert.ok(d.document.querySelector('#training .training-card'));
   assert.ok(d.document.querySelector('#training .section-tabs'));
+  assert.equal(d.document.querySelector('#training .food-signoff'),null);
+  assert.equal(d.document.querySelector('#training .till-signoff'),null);
   assert.equal(d.document.querySelector('#completedCount').textContent,'0');
   assert.equal(d.document.querySelector('#training-tab-completed').hidden,true);
   click(d,'#languageToggle');
