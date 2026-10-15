@@ -27,6 +27,9 @@ const stored=existing && existing.version===1 && existing.learners && typeof exi
 let profileId=initialProfiles.entries.some(([id])=>id===initialProfiles.active)?initialProfiles.active:initialProfiles.entries[0][0];
 let view='library', filter='all', theme='all', query='', page=0, selected=null,task='learn',question=null,feedback=null,assisted=false,letterHint=false,streak=0, busy=false;
 let sound=true,motion=!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+const WORD_AUDIO_URL='https://uyfaipjthpsofjqcucop.supabase.co/storage/v1/object/public/ala-word-audio/en-GB/';
+let activeGoogleAudio=null;
+
 function student(){return initialProfiles.entries.find(([id])=>id===profileId)?.[1]||{displayName:'Adam',year:6}}
 function progress(){return stored.learners[profileId] ||= {words:{},stars:0}}
 function record(word,facet){const wr=progress().words[word.id] ||= {};return wr[facet] ||= {strength:0,days:0,reviewCount:0,lastDay:null,due:0,awarded:false}}
@@ -35,7 +38,7 @@ function rating(word,facet){let t=record(word,facet);if(!t.strength)return 'New'
 function dueCount(){return WORDS.filter(w=>w.stage<=student().year).reduce((n,w)=>n+FACETS.filter(f=>record(w,f).due>0 && record(w,f).due<=Date.now()).length,0)}
 function wordStat(w){const facts=FACETS.filter(f=>record(w,f).days>=1);return facts.length}
 function stageCount(i){return WORDS.filter(w=>w.stage===i).length}
-function wordScope(){return WORDS.filter(w=>w.stage<=student().year&&(filter==='all'||filter==='due'||String(w.stage)===filter))}
+function wordScope(){return WORDS.filter(w=>w.stage<=student().year&&(filter==='all'||filter==='due'&&FACETS.some(f=>rating(w,f)==='Review due')||String(w.stage)===filter))}
 function currentThemeCounts(){const counts=new Map(); for(const w of wordScope())counts.set(w.theme,(counts.get(w.theme)||0)+1);return counts}
 function ensureValidTheme(){const counts=currentThemeCounts();if(theme!=='all'&&!counts.has(theme))theme='all'}
 function storeAnswer(word,facet,correct,helped){
@@ -88,7 +91,7 @@ function wordView(){
  let head=wordHeader(w)+'<div class="wk-task-tabs">'+tab('learn','✧ Discover')+tab('meaning','Meaning')+tab('picture','Picture')+tab('spelling','Spell it')+tab('sentence','Build a sentence')+'</div>';
  const conceal=task==='spelling'||task==='picture';
  const img=artSvg(conceal?{art:w.art,term:'A picture hint'}:w,'wk-main-illustration');
- const info='<section class="wk-word-intro"><div class="wk-art-panel">'+img+'</div><div class="wk-word-info"><span class="wk-eyebrow">'+esc(w.theme)+' • British English</span><h1>'+(conceal?'<span class="wk-hidden-word">Mystery word</span>':esc(w.term))+'</h1>'+(learning?'<p class="wk-definition">'+esc(w.definition)+'</p><p class="wk-example">'+esc(w.example)+'</p>':'<p class="wk-definition">'+(task==='spelling'?'Listen carefully and write the word. No timer.':task==='picture'?'Which picture matches the word you hear?':task==='sentence'?'Build the sentence in the correct order.':'Choose what the word means.')+'</p>')+'<div class="wk-pronounce"><button id="wk-hear" class="wk-primary">♫ Hear '+(conceal?'word':'pronunciation')+'</button><button id="wk-hear-slow">Hear slowly</button></div><p class="wk-audio-note" id="wk-voice-note">British voice where supported by your device. No microphone or recording.</p></div></section>';
+ const info='<section class="wk-word-intro"><div class="wk-art-panel">'+img+'</div><div class="wk-word-info"><span class="wk-eyebrow">'+esc(w.theme)+' • British English</span><h1>'+(conceal?'<span class="wk-hidden-word">Mystery word</span>':esc(w.term))+'</h1>'+(learning?'<p class="wk-definition">'+esc(w.definition)+'</p><p class="wk-example">'+esc(w.example)+'</p>':'<p class="wk-definition">'+(task==='spelling'?'Listen carefully and write the word. No timer.':task==='picture'?'Which picture matches the word you hear?':task==='sentence'?'Build the sentence in the correct order.':'Choose what the word means.')+'</p>')+'<div class="wk-pronounce"><button id="wk-hear" class="wk-primary">♫ Hear Google voice × 2</button><button id="wk-hear-slow">Hear slowly</button><button id="wk-device-voice" class="wk-device-option">Use device voice instead</button></div><p class="wk-audio-note" id="wk-voice-note">Google audio plays only when a recorded word has been generated and approved. Otherwise, choose the clearly labelled device-voice alternative. No microphone or recording.</p></div></section>';
  let activity='';
  if(learning)activity='<section class="wk-exercise"><span class="wk-eyebrow">WORD DISCOVERY</span><h2>Connect sound, picture and meaning.</h2><div class="wk-chunks">'+esc(w.chunks).split('-').map(v=>'<span>'+v+'</span>').join('')+'</div><p>Tap Hear to listen again. You can say it, think it or simply listen — all are welcome.</p><button id="wk-advance" class="wk-primary">Try a quick challenge →</button></section>';
  else if(task==='meaning')activity=questionMarkup(w,'meaning');
@@ -141,18 +144,20 @@ function bindMenu(){
  document.querySelector('#wk-artbrief')?.addEventListener('click',downloadArtBriefs);
 }
 function openWord(id){
+ if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}
  const w=WORDS.find(x=>x.id===id&&x.stage<=student().year);
  if(!w)return;
  selected=w;view='lesson';task='learn';question=null;assisted=false;letterHint=false;feedback=null;
  render();window.scrollTo({top:0,behavior:'smooth'});
 }
-function back(){view='library';selected=null;question=null;render();}
-function setTask(next){task=next;question=null;feedback=null;assisted=false;letterHint=false;render();}
+function back(){if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}view='library';selected=null;question=null;render();}
+function setTask(next){if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}task=next;question=null;feedback=null;assisted=false;letterHint=false;render();}
 function bindLesson(){
  document.querySelector('#wk-to-map')?.addEventListener('click',back);
  document.querySelectorAll('[data-task]').forEach(b=>b.addEventListener('click',()=>setTask(b.dataset.task)));
- document.querySelector('#wk-hear')?.addEventListener('click',()=>speak(selected.term,false));
- document.querySelector('#wk-hear-slow')?.addEventListener('click',()=>speak(selected.term,true));
+ document.querySelector('#wk-hear')?.addEventListener('click',()=>playStudioVoice(selected,'word',false));
+ document.querySelector('#wk-hear-slow')?.addEventListener('click',()=>playStudioVoice(selected,'word',true));
+ document.querySelector('#wk-device-voice')?.addEventListener('click',()=>speak(selected.term,false));
  document.querySelector('#wk-advance')?.addEventListener('click',()=>setTask('meaning'));
  document.querySelectorAll('[data-answer]').forEach(b=>b.addEventListener('click',()=>onAnswer(b.dataset.answer)));
  document.querySelector('#wk-spell-hint')?.addEventListener('click',()=>{letterHint=true;assisted=true;render();document.querySelector('#wk-spell')?.focus();});
@@ -205,6 +210,20 @@ function answerResult(correct,facet){
 function tinyChime(){
  if(!sound)return;
  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const ctx=new AC();const n=ctx.createOscillator();const g=ctx.createGain();n.type='sine';n.frequency.setValueAtTime(620,ctx.currentTime);n.frequency.exponentialRampToValueAtTime(820,ctx.currentTime+.16);g.gain.setValueAtTime(.035,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.23);n.connect(g);g.connect(ctx.destination);n.start();n.stop(ctx.currentTime+.24);setTimeout(()=>ctx.close(),450)}catch{}
+}
+function playStudioVoice(word,variant='word',slow=false){
+ if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}
+ if(window.speechSynthesis)window.speechSynthesis.cancel();
+ const url=WORD_AUDIO_URL+encodeURIComponent(word.id)+'/'+variant+'.wav';
+ const audio=new Audio(url);
+ activeGoogleAudio=audio;audio.preload='auto';audio.playbackRate=slow?.8:1;audio.preservesPitch=true;
+ let played=0;const repeats=slow?1:2;
+ const note=document.querySelector('#wk-voice-note');
+ if(note)note.textContent='Checking for the approved Google British-English recording…';
+ audio.addEventListener('canplay',()=>{if(note)note.textContent='Google Gemini studio recording · British English · '+(slow?'slower playback':'two repetitions');},{once:true});
+ audio.addEventListener('ended',()=>{played++;if(played<repeats){audio.currentTime=0;audio.play().catch(()=>{if(note)note.textContent='Tap Hear to play again.'});}else{activeGoogleAudio=null;}});
+ audio.addEventListener('error',()=>{if(note)note.textContent='Google recording is not published for this word yet. Choose “Use device voice instead” if you want to listen now.';activeGoogleAudio=null;});
+ audio.play().catch(()=>{if(note)note.textContent='Google recording unavailable right now. Try the device voice option or check back later.';});
 }
 function speak(text,slow){
  if(!('speechSynthesis' in window)){status('This browser cannot play speech automatically. Read the word instead.');return;}
