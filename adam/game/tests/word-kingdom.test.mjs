@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { Window } from 'happy-dom';
 import { WORDS, STAGES, ART_BIBLE } from '../../words/words-data.js';
 import { artSvg } from '../../words/art.js';
-import { DFE_34_ENTRIES,DFE_56_ENTRIES,DFE_Y1_EXCEPTION_EXAMPLES,DFE_Y2_EXCEPTION_EXAMPLES } from '../../words/curriculum-dfe.js';
+import { DFE_34_ENTRIES,DFE_56_ENTRIES,DFE_34_VARIANTS,DFE_56_VARIANTS,DFE_Y1_EXCEPTION_EXAMPLES,DFE_Y2_EXCEPTION_EXAMPLES } from '../../words/curriculum-dfe.js';
 import { curriculumLinks,belongsToBand,sourceLabel,CURRICULUM_BANDS } from '../../words/curriculum-index.js';
 
 test('starter dictionary has unique reviewed-shaped entries across Reception through Year 6', () => {
@@ -13,7 +13,7 @@ test('starter dictionary has unique reviewed-shaped entries across Reception thr
   for(let year=0;year<=6;year++) assert.ok(WORDS.filter(w=>w.stage===year).length>=45);
   for(const w of WORDS){
     assert.match(w.id,/^[a-z][a-z0-9-]*$/);
-    assert.match(w.term,/^[a-z]+$/);
+    assert.match(w.term,/^[A-Za-z]+$/);
     assert.ok(w.definition.length>8);
     assert.ok(w.example.toLowerCase().includes(w.term));
     assert.ok(w.locale==='en-GB' && w.chunks && w.art);
@@ -131,4 +131,26 @@ test('each linked DfE source points to the government source and the printed pag
     assert.ok(s.page>=40&&s.page<=61);
   }
  }
+});
+
+test('every statutory list entry is represented by at least one complete word card',()=>{
+ for(const [list,variants] of [[DFE_34_ENTRIES,DFE_34_VARIANTS],[DFE_56_ENTRIES,DFE_56_VARIANTS]]){
+   for(const entry of list){
+     const possibilities=variants[entry]||[entry.toLowerCase()];
+     assert.ok(possibilities.some(id=>WORDS.some(w=>w.id===id.toLowerCase()&&w.definition&&w.example)),
+       'Missing official entry: '+entry);
+   }
+ }
+});
+test('provenance is visible in the actual word detail and abstract words cannot have misleading scored images',()=>{
+ const collection=document.querySelector('#wk-collection');collection.value='curriculum';
+ collection.dispatchEvent(new window.Event('change',{bubbles:true}));
+ const search=document.querySelector('#wk-search');search.value='because';
+ search.dispatchEvent(new window.Event('input',{bubbles:true}));
+ const target=[...document.querySelectorAll('[data-open]')].find(b=>b.dataset.open==='because');
+ assert.ok(target);
+ target.click();
+ assert.ok(document.querySelector('.wk-curriculum-note').textContent.includes('DfE'));
+ assert.equal(document.querySelector('[data-task="picture"]'),null);
+ document.querySelector('#wk-to-map').click();
 });
