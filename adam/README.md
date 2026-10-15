@@ -1,6 +1,6 @@
 # Adam Learning Adventures — first playable adventure
 
-A local-first illustrated detective adventure and three mathematical puzzle engines, built in TypeScript with Vite. The root Elasrag site is untouched. This replaces only `/adam/` after a parent approves and merges the review branch.
+A local-first illustrated detective adventure and three mathematical puzzle engines, built in TypeScript with Vite. The root Elasrag site is untouched. This release changes only `/adam/`. Automatic publication of tested milestones is authorised by the project owner.
 
 ## Play and develop
 
@@ -81,7 +81,7 @@ The official programmes of study inform the English composition and Year 6 maths
 - DfE Mathematics: https://www.gov.uk/government/publications/national-curriculum-in-england-mathematics-programmes-of-study/national-curriculum-in-england-mathematics-programmes-of-study
 - DfE Primary subjects: https://www.gov.uk/national-curriculum/key-stage-1-and-2
 
-See `TEST_REPORT.md` for verification and release limitations. Do not merge this review build to production until the real-browser/audio checks have been completed and the parent approves it.
+See `TEST_REPORT.md` for verification limits. The first milestone has been published under the owner’s automatic-deployment instruction; real-browser/device and audio cue verification remain pending.
 
 
 ## Continuation milestone: profiles, tracking and content production foundation

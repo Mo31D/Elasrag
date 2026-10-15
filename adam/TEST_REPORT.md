@@ -46,7 +46,7 @@ Original HTML cue times are provisional. Audio chapter seeking and word snippets
 4. Inspect visual contrast, scene cropping, small-screen scrolling, focus trapping, Escape, reduced-motion, and iOS full-screen fallback.
 5. Refresh mid-case and after completion; reopen for no repeat XP. Test storage denial and clearing browser data.
 6. Complete all engines and their extensions, reset fraction pieces, test local audio import and lesson import preview with valid and malformed JSON, and verify exported private progress.
-7. Obtain parent approval before merging. After GitHub Pages publishes, check `/adam/` and the existing root site.
+7. The owner has authorised automatic publication of tested milestones. Record the remaining manual verification honestly after publication; check `/adam/` and preserve the existing root site.
 
 ## Later phases
 
@@ -56,3 +56,7 @@ Detailed productive vocabulary evidence, varied recall contexts, full transcript
 ## Continuation milestone
 
 Additional automated tests cover independent family profiles, bounded events with sensitive payload exclusion, prerequisite planning and approved-content reuse, reserved-budget safeguards and default-off generation, arithmetic quarantine and educational approval gates. The simulated journey additionally creates Joseph in Year 4, checks a different fraction puzzle, grouping and sequence engines, confirms the original-audio notice and switches back to Adam with his progress intact. Actual cloud connectivity, RLS, authenticated parent access, cloud TTS, semantic AI validation, scheduled replenishment and automated reports are not implemented or claimed. New profile adaptation currently uses a supported starting stage plus hints/extensions; it is not a diagnostic placement assessment.
+
+## Publication verification
+
+Milestone merged through PR #20. GitHub Pages run 38722037804 completed successfully. The live `/adam/` HTML references the new bundle, and the published JavaScript matches the tested build byte-for-byte. This HTTP verification does not establish real-browser rendering or correct audio cue alignment.
