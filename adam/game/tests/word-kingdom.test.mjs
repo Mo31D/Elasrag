@@ -15,7 +15,7 @@ test('starter dictionary has unique reviewed-shaped entries across Reception thr
     assert.match(w.id,/^[a-z][a-z0-9-]*$/);
     assert.match(w.term,/^[A-Za-z]+$/);
     assert.ok(w.definition.length>8);
-    assert.ok(w.example.toLowerCase().includes(w.term));
+    assert.ok(w.example.toLowerCase().includes(w.term.toLowerCase()));
     assert.ok(w.locale==='en-GB' && w.chunks && w.art);
   }
   assert.equal(ART_BIBLE.policy.includes('disabled by default'),true);
