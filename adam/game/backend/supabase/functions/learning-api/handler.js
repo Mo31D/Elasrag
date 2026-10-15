@@ -268,7 +268,7 @@ export function createHandler({ env, fetch, validate, schema }) {
         if (!Object.hasOwn(lexicon, word))
           throw new ApiError('unsupported_curriculum_word', 409);
         const requestKey = await sha256(
-          `${owner}|${skill.id}|${word}|en-GB|feeling-detective-v1|${new Date().toISOString().slice(0, 10)}`,
+          `${owner}|${skill.id}|${word}|en-GB|feeling-detective-v1|quality-v2|${new Date().toISOString().slice(0, 10)}`,
         );
         const reserved = await rest('rpc/ala_reserve_generation', 'POST', {
           p_parent: owner,

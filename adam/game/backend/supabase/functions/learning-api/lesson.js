@@ -4,6 +4,12 @@ export const lexicon = Object.freeze({
   relieved: 'Happy and relaxed because a worry has gone away.',
   confident: 'Feeling sure that you can try or do something.',
 });
+const missionTitles = Object.freeze({
+  curious: 'The Curious Clue',
+  puzzled: 'The Puzzled Detective',
+  relieved: 'The Relieved Detective',
+  confident: 'The Confident Detective',
+});
 // This semantic gate complements JSON Schema; it does not replace adult review.
 export function checkLesson(value, expectedWord) {
   const reasons = [];
@@ -11,6 +17,14 @@ export function checkLesson(value, expectedWord) {
     return { ok: false, reasons: ['Not an object'] };
   if (value.word !== expectedWord || value.definition !== lexicon[expectedWord])
     reasons.push('Canonical word or definition mismatch');
+  if (value.title !== missionTitles[expectedWord])
+    reasons.push('Mission title mismatch');
+  if (
+    !new RegExp('\\b' + expectedWord + '\\b', 'i').test(
+      (value.story || []).join(' '),
+    )
+  )
+    reasons.push('Story omits target word');
   if (value.choices?.[value.answer] !== expectedWord)
     reasons.push('Answer does not match the target word');
   if (!new RegExp('\\b' + expectedWord + '\\b', 'i').test(value.example || ''))
@@ -35,7 +49,7 @@ export function checkLesson(value, expectedWord) {
 }
 export function buildPrompt(word) {
   if (!Object.hasOwn(lexicon, word)) throw Error('Unsupported word');
-  return `Create a short fictional school detective mission in natural British English. The audience is primary learners revisiting vocabulary; keep all sentences short. Return only the requested JSON. No real people, private learner details, external links, violence, medical advice, speech grading, timers, gambling or advertising. Use two or three brief story scenes, an example, a hint and a sentence to rebuild. The sole target word is ${word}. Copy its definition exactly: ${lexicon[word]} The question must be exactly: Which word means: ${lexicon[word]} Three unique choices must come from curious, puzzled, relieved, confident, including ${word}; answer is its zero-based index. sentenceParts must have four parts: "I felt", "${word}", "because", and one short reason ending in a full stop. version=1; template="feeling-detective-v1". The mission will require adult review before use.`;
+  return `Create a short fictional school detective mission in natural British English. The audience is primary learners revisiting vocabulary; keep all sentences short. Return only the requested JSON. No real people, private learner details, external links, violence, medical advice, speech grading, timers, gambling or advertising. The title must be exactly: ${missionTitles[word]}. Use two or three connected story scenes about one clue or object, and use the exact word "${word}" naturally in at least one story scene. Include an example, a hint and a sentence to rebuild. The sole target word is ${word}. Copy its definition exactly: ${lexicon[word]} The question must be exactly: Which word means: ${lexicon[word]} Three unique choices must come from curious, puzzled, relieved, confident, including ${word}; answer is its zero-based index. sentenceParts must have four parts: "I felt", "${word}", "because", and one short reason ending in a full stop. version=1; template="feeling-detective-v1". The mission will require adult review before use.`;
 }
 export function scoreAnswer(lesson, kind, answer) {
   if (kind === 'vocabulary')
