@@ -19,9 +19,9 @@ A small, static, British-English learning space within the main [Elasrag](https:
 
 ## Publish the actual Google AI Studio voiceover
 
-Upload the file `Generated Audio October 15, 2026 - 8_51AM.wav` to the repository and name it:
+Upload the file `Adam_Episode_01_Narration.mp3` to the repository and name it:
 
-`adam/audio/english-001.wav`
+`adam/audio/english-001.mp3`
 
 On GitHub: navigate to the `adam/audio` folder -> **Add file** -> **Upload files** -> select the WAV -> rename it to `english-001.wav` if necessary -> **Commit changes**.
 
