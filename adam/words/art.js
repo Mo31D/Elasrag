@@ -1,5 +1,5 @@
+import {illustrationKey} from './asset-registry.js';
 // Deterministic layered SVG illustrations. No network calls or paid models.
-// Source artwork can be replaced by an approved local illustration in a future art registry.
 const r=(x,y,w,h,fill,rx=12,stroke='none',sw=0)=>'<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="'+rx+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'"/>';
 const c=(x,y,rad,fill,stroke='none',sw=0)=>'<circle cx="'+x+'" cy="'+y+'" r="'+rad+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'"/>';
 const p=(d,fill,stroke='none',sw=0)=>'<path d="'+d+'" fill="'+fill+'" stroke="'+stroke+'" stroke-width="'+sw+'" stroke-linecap="round" stroke-linejoin="round"/>';
@@ -34,7 +34,7 @@ function motif(key){
  }
 }
 export function artSvg(word, extraClass=''){
- const key=word && typeof word.art==='string' ? word.art : 'book';
+ const key=illustrationKey(word && word.art);
  const title=String(word && word.term || 'Vocabulary illustration').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
  const raw=motif(key);
  return '<svg class="wk-art '+extraClass+'" viewBox="0 0 620 430" role="img" aria-label="Illustration for '+title+'" xmlns="http://www.w3.org/2000/svg">'

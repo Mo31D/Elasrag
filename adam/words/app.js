@@ -1,6 +1,7 @@
 import {WORDS,STAGES,ART_BIBLE} from './words-data.js';
 import {artSvg} from './art.js';
 import {curriculumLinks,curriculumYear,belongsToBand,sourceLabel,CURRICULUM_BANDS} from './curriculum-index.js';
+import {approvedClip} from './approved-audio.js';
 const ROOT='/adam/words/';
 const STORE='ala-word-kingdom-v1';
 const ALLOWED_PICTURE=new Set(['apple','book','cat','chair','door','house','school','heart','rain','sun','owl','key','magnify','clock','people','map','science','leaf','stars']);
@@ -31,7 +32,8 @@ const existing=safeParse(getLocal());
 const initialProfiles=detectProfiles();
 const stored=existing && existing.version===1 && existing.learners && typeof existing.learners==='object' ? existing:{version:1,learners:{}};
 let profileId=initialProfiles.entries.some(([id])=>id===initialProfiles.active)?initialProfiles.active:initialProfiles.entries[0][0];
-let view='library', filter='all', collection='curriculum', theme='all', query='', page=0, selected=null,task='learn',question=null,feedback=null,assisted=false,letterHint=false,streak=0, busy=false,flipped=false,returnScrollY=0,returnFocus=null;
+const requestedCollection=new URLSearchParams(window.location.search).get('collection');
+let view='library', filter='all', collection=['curriculum','school','extra','all'].includes(requestedCollection)?requestedCollection:'curriculum', theme='all', query='', page=0, selected=null,task='learn',question=null,feedback=null,assisted=false,letterHint=false,streak=0, busy=false,flipped=false,returnScrollY=0,returnFocus=null;
 let sound=true,motion=!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 let activeGoogleAudio=null;
 let cachedVoices=[];
@@ -63,7 +65,14 @@ function cardState(w){
  return 'new';
 }
 function stageCount(id){return scopedWords().filter(w=>belongsToBand(w,id)).length}
-function wordScope(){return scopedWords().filter(w=>filter==='all'||filter==='due'&&facetsFor(w).some(f=>rating(w,f)==='Review due')||belongsToBand(w,filter)&&filter!=='all'&&filter!=='due')}
+function dailyWords(){
+ const eligible=scopedWords(),seed=profileId+'|'+isoDate();
+ const due=pick(eligible.filter(w=>facetsFor(w).some(f=>rating(w,f)==='Review due')),seed+'due');
+ const learning=pick(eligible.filter(w=>!due.includes(w)&&cardState(w)==='learning'),seed+'learning');
+ const fresh=pick(eligible.filter(w=>!due.includes(w)&&!learning.includes(w)),seed+'fresh');
+ return [...due,...learning,...fresh].slice(0,6);
+}
+function wordScope(){const daily=new Set(dailyWords().map(w=>w.id));return scopedWords().filter(w=>filter==='all'||filter==='daily'&&daily.has(w.id)||filter==='due'&&facetsFor(w).some(f=>rating(w,f)==='Review due')||belongsToBand(w,filter)&&!['all','daily','due'].includes(filter))}
 function currentThemeCounts(){const counts=new Map(); for(const w of wordScope())counts.set(w.theme,(counts.get(w.theme)||0)+1);return counts}
 function ensureValidTheme(){const counts=currentThemeCounts();if(theme!=='all'&&!counts.has(theme))theme='all'}
 function storeAnswer(word,facet,correct,helped){
@@ -93,7 +102,7 @@ function layout(body){
 function shell(){
  let options=initialProfiles.entries.map(([id,p])=>'<option value="'+esc(id)+'" '+(id===profileId?'selected':'')+'>'+esc(p.displayName)+' · '+nameStage(p.year)+'</option>').join('');
  return '<section class="wk-hero"><div><span class="wk-eyebrow">✦ THE LIVING WORD ATLAS</span><h1>Every word opens <em>a new world.</em></h1><p>Discover the meaning. Hear British English. Practise spelling. Build sentences. Words from your earlier years stay available as you grow.</p><div class="wk-hero-row"><label class="wk-profile">Explorer <select id="wk-profile">'+options+'</select></label><span class="wk-meta">'+scopedWords().length+' words in this collection · '+dueCount()+' reviews due</span></div></div><div class="wk-hero-visual">'+artSvg({art:'book',term:'Magical word book'},'wk-hero-art')+'<span class="wk-hero-spark">✧</span></div></section>'+
- '<div class="wk-chapters"><button data-filter="all" class="'+(filter==='all'?'active':'')+'">All eligible <small>'+scopedWords().length+' words</small></button>'+CURRICULUM_BANDS.filter(b=>b.minYear<=student().year).map(b=>'<button data-filter="'+b.id+'" class="'+(filter===b.id?'active':'')+'" title="'+esc(b.note)+'">'+esc(b.label)+'<small>'+stageCount(b.id)+' ready cards</small></button>').join('')+'<button data-filter="due" class="'+(filter==='due'?'active':'')+'">↻ Reviews due <small>'+dueCount()+'</small></button></div>';
+ '<div class="wk-chapters"><button data-filter="daily" class="'+(filter==='daily'?'active':'')+'">✦ Today’s trail <small>6 useful words</small></button><button data-filter="all" class="'+(filter==='all'?'active':'')+'">All eligible <small>'+scopedWords().length+' words</small></button>'+CURRICULUM_BANDS.filter(b=>b.minYear<=student().year).map(b=>'<button data-filter="'+b.id+'" class="'+(filter===b.id?'active':'')+'" title="'+esc(b.note)+'">'+esc(b.label)+'<small>'+stageCount(b.id)+' ready cards</small></button>').join('')+'<button data-filter="due" class="'+(filter==='due'?'active':'')+'">↻ Reviews due <small>'+dueCount()+'</small></button></div>';
 }
 function menu(){
  const list=selectedWords();
@@ -184,13 +193,13 @@ function openWord(id){
  const w=WORDS.find(x=>x.id===id&&canStudy(x));
  if(!w)return;
  returnScrollY=window.scrollY||0;returnFocus=document.activeElement;selected=w;view='lesson';task='learn';flipped=false;question=null;assisted=false;letterHint=false;feedback=null;
- try{history.pushState({word:id},'',location.pathname+location.search+'#word='+encodeURIComponent(id));}catch{}
+ try{window.history.pushState({word:id},'',window.location.pathname+window.location.search+'#word='+encodeURIComponent(id));}catch{}
  render();document.querySelector('#wk-flip')?.focus();
 }
-function closeWord(fromHistory=false){if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}if(window.speechSynthesis)window.speechSynthesis.cancel();view='library';selected=null;question=null;render();window.scrollTo(0,returnScrollY);if(returnFocus?.isConnected)returnFocus.focus();if(!fromHistory&&location.hash.startsWith('#word='))try{history.back()}catch{}}
+function closeWord(fromHistory=false){if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}if(window.speechSynthesis)window.speechSynthesis.cancel();view='library';selected=null;question=null;render();window.scrollTo(0,returnScrollY);if(returnFocus?.isConnected)returnFocus.focus();if(!fromHistory&&window.location.hash.startsWith('#word='))try{window.history.back()}catch{}}
 function back(){closeWord(false)}
 function setTask(next){if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}task=next;flipped=true;question=null;feedback=null;assisted=false;letterHint=false;render();document.querySelector('.wk-practice-dock')?.scrollIntoView({block:'start'});}
-function siblingWord(offset){const list=selectedWords(),index=list.findIndex(w=>w.id===selected.id),next=list[index+offset];if(!next)return;selected=next;task='learn';flipped=false;question=null;assisted=false;letterHint=false;try{history.replaceState({word:next.id},'',location.pathname+location.search+'#word='+encodeURIComponent(next.id));}catch{}render();document.querySelector('#wk-flip')?.focus();}
+function siblingWord(offset){const list=selectedWords(),index=list.findIndex(w=>w.id===selected.id),next=list[index+offset];if(!next)return;selected=next;task='learn';flipped=false;question=null;assisted=false;letterHint=false;try{window.history.replaceState({word:next.id},'',window.location.pathname+window.location.search+'#word='+encodeURIComponent(next.id));}catch{}render();document.querySelector('#wk-flip')?.focus();}
 function bindLesson(){
  document.querySelector('#wk-to-map')?.addEventListener('click',back);
  document.querySelector('#wk-close-backdrop')?.addEventListener('click',back);
@@ -265,6 +274,17 @@ function voiceScore(v){
 }
 function bestBritishVoice(){return [...cachedVoices].filter(v=>v.lang?.toLowerCase().startsWith('en-')).sort((a,b)=>voiceScore(b)-voiceScore(a))[0]||null}
 function speak(text,slow,kind='word'){
+ const clip=selected && approvedClip(selected.id,kind);
+ if(clip){
+  if(activeGoogleAudio)activeGoogleAudio.pause();
+  const audio=new Audio(clip);activeGoogleAudio=audio;audio.playbackRate=slow?.82:1;
+  const node=document.querySelector('#wk-voice-note');if(node)node.textContent='Approved British-English audio'+(slow?' · slower playback':'')+'.';
+  audio.onerror=()=>{activeGoogleAudio=null;status('Approved audio is unavailable, so the device voice will be used.');speakDevice(text,slow,kind)};
+  audio.play().catch(()=>speakDevice(text,slow,kind));return;
+ }
+ speakDevice(text,slow,kind);
+}
+function speakDevice(text,slow,kind='word'){
  if(!('speechSynthesis' in window)){status('This browser cannot play speech automatically. Read the word instead.');return;}
  window.speechSynthesis.cancel();
  refreshVoices();const voice=bestBritishVoice();
