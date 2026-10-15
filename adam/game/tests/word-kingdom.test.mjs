@@ -5,10 +5,10 @@ import { WORDS, STAGES, ART_BIBLE } from '../../words/words-data.js';
 import { artSvg } from '../../words/art.js';
 
 test('starter dictionary has unique reviewed-shaped entries across Reception through Year 6', () => {
-  assert.equal(WORDS.length,84);
+  assert.ok(WORDS.length>=340);
   assert.equal(STAGES.length,7);
   assert.equal(new Set(WORDS.map(w=>w.id)).size,WORDS.length);
-  for(let year=0;year<=6;year++) assert.equal(WORDS.filter(w=>w.stage===year).length,12);
+  for(let year=0;year<=6;year++) assert.ok(WORDS.filter(w=>w.stage===year).length>=45);
   for(const w of WORDS){
     assert.match(w.id,/^[a-z][a-z0-9-]*$/);
     assert.match(w.term,/^[a-z]+$/);
@@ -48,17 +48,18 @@ test('opens word and shows independent learning tasks without recording speech',
   assert.ok(!document.querySelector('[data-record]'));
 });
 test('spelling can be checked without voice scoring and first correct earns word stars',()=>{
+  const selectedWord = document.querySelector('.wk-word-info h1').textContent.trim().toLowerCase();
   document.querySelector('[data-task="spelling"]').click();
   document.querySelector('#wk-spell').value='wrong';
   document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   assert.ok(document.querySelector('.wk-feedback.retry'));
   document.querySelector('#wk-again').click();
-  document.querySelector('#wk-spell').value='apple';
+  document.querySelector('#wk-spell').value=selectedWord;
   document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   assert.ok(document.querySelector('.wk-feedback.good'));
   assert.ok(document.querySelector('.wk-feedback').textContent.includes('+2 word stars'));
   document.querySelector('#wk-again').click();
-  document.querySelector('#wk-spell').value='apple';
+  document.querySelector('#wk-spell').value=selectedWord;
   document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   assert.ok(!document.querySelector('.wk-feedback').textContent.includes('+2 word stars'));
   assert.equal(JSON.parse(localStorage.getItem('ala-word-kingdom-v1')).learners.explorer.stars,2);
@@ -70,6 +71,17 @@ test('game link returns to existing Adam Atlas, and stage filters are cumulative
  assert.equal(document.querySelectorAll('[data-open]').length,12);
  assert.equal(document.querySelector('.wk-back').getAttribute('href'),'/adam/');
  document.querySelector('[data-filter="all"]').click();
- assert.equal(document.querySelectorAll('[data-open]').length,12); // first page of 84
+ assert.equal(document.querySelectorAll('[data-open]').length,12); // first page of expanded lexicon
  assert.ok(document.querySelector('.wk-section-bar').textContent.includes('dictionary'));
+});
+
+test('theme options never offer an empty stage and counts reflect selected year',()=>{
+ document.querySelector('[data-filter="0"]').click();
+ const available=new Map();
+ for(const w of WORDS.filter(w=>w.stage===0))available.set(w.theme,(available.get(w.theme)||0)+1);
+ const options=[...document.querySelectorAll('#wk-theme option')].slice(1);
+ assert.equal(options.length,available.size);
+ for(const option of options){
+   assert.equal(option.textContent,option.value+' ('+available.get(option.value)+')');
+ }
 });
