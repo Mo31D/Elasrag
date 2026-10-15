@@ -9,9 +9,11 @@ const put=(map,id,kind,stage,group,page,pattern)=>{
 };
 const SOURCE_MAP=new Map();
 for(const t of DFE_Y1_EXCEPTION_EXAMPLES)put(SOURCE_MAP,t,'dfe-example',1,'Year 1 common exception word examples',DFE_SOURCE_PAGES.year1Examples,'exception words');
-for(const [pattern,words] of Object.entries(DFE_Y1_PHONICS_EXAMPLES))for(const w of words.split(' '))put(SOURCE_MAP,w,'dfe-example',1,'Year 1 phonics spelling examples',40,pattern);
+const Y1_PATTERN_PAGES={'ff ll ss zz ck':40,nk:40,tch:41,'final-ve':41,syllables:40,'vowel-digraphs':43,'consonant-digraphs':44,'prefix-un':44,compounds:44};
+for(const [pattern,words] of Object.entries(DFE_Y1_PHONICS_EXAMPLES))for(const w of words.split(' '))put(SOURCE_MAP,w,'dfe-example',1,'Year 1 phonics spelling examples',Y1_PATTERN_PAGES[pattern],pattern);
 for(const t of DFE_Y2_EXCEPTION_EXAMPLES)put(SOURCE_MAP,t,'dfe-example',2,'Year 2 common exception word examples',DFE_SOURCE_PAGES.year2Examples,'exception words');
-for(const [pattern,words] of Object.entries(DFE_Y2_PHONICS_EXAMPLES))for(const w of words.split(' '))put(SOURCE_MAP,w,'dfe-example',2,'Year 2 spelling-pattern examples',45,pattern);
+const Y2_PATTERN_PAGES={dge:45,ge:45,'soft-g':45,wr:45,kn:45,'le-ending':45,homophones:48,suffixes:47,tion:47};
+for(const [pattern,words] of Object.entries(DFE_Y2_PHONICS_EXAMPLES))for(const w of words.split(' '))put(SOURCE_MAP,w,'dfe-example',2,'Year 2 spelling-pattern examples',Y2_PATTERN_PAGES[pattern],pattern);
 for(const entry of DFE_34_ENTRIES)for(const t of DFE_34_VARIANTS[entry]||[entry])put(SOURCE_MAP,t,'statutory',3,'Years 3–4 spelling list',DFE_SOURCE_PAGES.years34,null);
 for(const entry of DFE_56_ENTRIES)for(const t of DFE_56_VARIANTS[entry]||[entry])put(SOURCE_MAP,t,'statutory',5,'Years 5–6 spelling list',DFE_SOURCE_PAGES.years56,null);
 export const CURRICULUM_SOURCES = SOURCE_MAP;
