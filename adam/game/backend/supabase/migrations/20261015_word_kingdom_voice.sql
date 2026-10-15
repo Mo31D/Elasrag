@@ -385,8 +385,8 @@ grant all on public.ala_word_voice_jobs to service_role;
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
 values('ala-word-audio','ala-word-audio',true,4194304,array['audio/wav'])
 on conflict(id) do update set public=true,file_size_limit=excluded.file_size_limit,allowed_mime_types=excluded.allowed_mime_types;
--- Only backend service role can write objects. Public bucket is read-only for clients.
-revoke insert,update,delete on storage.objects from anon,authenticated;
+-- No general authenticated INSERT policy is granted for this bucket; server service-role writes only.
+-- Do not revoke global storage permissions: other apps/buckets may use them.
 
 create or replace function public.ala_reserve_word_voice(p_parent uuid,p_word text,p_variant text)
 returns jsonb language plpgsql security invoker set search_path='' as $$
