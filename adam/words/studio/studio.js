@@ -1,7 +1,8 @@
 import { WORDS,STAGES } from '../words-data.js';
 const BASE='https://uyfaipjthpsofjqcucop.supabase.co';
 const KEY='sb_publishable_TuBLFUT9rEIw7dVwXf0WeA_PZxtbQAt';
-let token=null,expires=0,busy=false;
+const SESSION='ala-word-studio-session';
+let token=null,refreshToken=null,expires=0,busy=false;
 const byId=id=>document.getElementById(id);
 const notice=text=>byId('notice').textContent=text;
 const readWord=()=>WORDS.find(w=>w.id===byId('word').value);
@@ -21,8 +22,17 @@ function populateWords(){
  changed();
 }
 function changed(){resetPlayer();const w=readWord();byId('selected-example').textContent=w?w.example:'';byId('audio-status').textContent='Status not checked yet.';}
+const saveSession=()=>{try{localStorage.setItem(SESSION,JSON.stringify({token,refreshToken,expires}))}catch{}}
+const clearSession=()=>{try{localStorage.removeItem(SESSION)}catch{}}
+async function renew(){
+ if(!refreshToken)return false;
+ const response=await fetch(BASE+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:KEY,'content-type':'application/json'},body:JSON.stringify({refresh_token:refreshToken}),signal:AbortSignal.timeout(12000)});
+ const data=await response.json().catch(()=>({}));
+ if(!response.ok||!data.access_token){clearSession();return false;}
+ token=data.access_token;refreshToken=data.refresh_token||refreshToken;expires=Date.now()+Math.min(Number(data.expires_in||3600)*1000,3500000);saveSession();return true;
+}
 async function api(action){
- if(!valid()){logout();throw Error('Session expired. Please sign in again.');}
+ if(!valid()&&!(await renew())){logout();throw Error('Session expired. Please sign in again.');}
  const w=readWord();if(!w)throw Error('Choose a word.');
  const response=await fetch(BASE+'/functions/v1/word-voice',{
   method:'POST',headers:{'apikey':KEY,'authorization':'Bearer '+token,'content-type':'application/json'},
@@ -46,7 +56,7 @@ async function run(action){
  }catch(error){notice('Audio Studio: '+String(error.message||error));}
  finally{setBusy(false);if(byId('approve').hidden===false)byId('approve').disabled=true;}
 }
-function logout(){token=null;expires=0;byId('parent-password').value='';byId('workshop').hidden=true;byId('sign-in').hidden=false;resetPlayer();}
+function logout(){token=null;refreshToken=null;expires=0;clearSession();byId('parent-password').value='';byId('workshop').hidden=true;byId('sign-in').hidden=false;resetPlayer();}
 byId('login-form').addEventListener('submit',async event=>{
  event.preventDefault();notice('Signing in…');
  const email=byId('parent-email').value.trim(),password=byId('parent-password').value;
@@ -58,7 +68,7 @@ byId('login-form').addEventListener('submit',async event=>{
   });
   const data=await response.json();
   if(!response.ok||!data.access_token)throw Error('Unable to sign in. Check your parent credentials.');
-  token=data.access_token;expires=Date.now()+Math.min(Number(data.expires_in||3600)*1000,3500000);
+  token=data.access_token;refreshToken=data.refresh_token||null;expires=Date.now()+Math.min(Number(data.expires_in||3600)*1000,3500000);saveSession();
   const r=await api('status');
   byId('sign-in').hidden=true;byId('workshop').hidden=false;byId('parent-password').value='';
   notice('Parent session verified. Voice requests require your explicit action.');
@@ -71,5 +81,15 @@ byId('variant').addEventListener('change',changed);
 for(const id of ['check','generate','preview','approve']){
  byId(id).addEventListener('click',()=>run(id==='check'?'status':id));
 }
-window.addEventListener('pagehide',logout);
+window.addEventListener('pagehide',resetPlayer);
+async function restoreSession(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(SESSION)||'null');
+  if(!saved?.refreshToken)return;
+  token=saved.token||null;refreshToken=saved.refreshToken;expires=Number(saved.expires)||0;
+  if(!valid()&&!(await renew()))return logout();
+  await api('status');byId('sign-in').hidden=true;byId('workshop').hidden=false;notice('Trusted-device parent session restored. Use Sign out on a shared device.');
+ }catch{logout();}
+}
 populateStages();
+restoreSession();

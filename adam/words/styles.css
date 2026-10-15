@@ -8,3 +8,53 @@
 .wk-curriculum-note a{color:#eecb86;font-size:13px;text-underline-offset:4px}
 .wk-search select#wk-collection{min-width:205px}
 @media(max-width:640px){.wk-curriculum-note{padding:18px 15px}.wk-search{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.wk-search select#wk-collection{min-width:0}}
+
+/* Living-card game layer */
+.wk-word{position:relative;isolation:isolate;overflow:hidden;transform-style:preserve-3d;touch-action:manipulation;min-height:290px}
+.wk-word:active{transform:translateY(-1px) scale(.985)}
+.wk-card-glow{position:absolute;inset:-45%;z-index:-1;background:radial-gradient(circle,#f3d78e2d,transparent 58%);opacity:0;transition:opacity .22s}
+.wk-word:hover .wk-card-glow,.wk-word:focus-visible .wk-card-glow{opacity:1}
+.wk-word.is-learning{border-color:#6fc7bb99}.wk-word.is-review{border-color:#efbd68;box-shadow:0 0 0 1px #efbd6844,0 16px 30px #03152266}.wk-word.is-mastered{border-color:#f1d188;box-shadow:0 0 24px #e9c66a25,0 16px 30px #03152266}
+.wk-card-state{font-size:9px;color:#bcd7d2;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.wk-mastery-track{height:4px;background:#071e2b80;border-radius:99px;overflow:hidden}.wk-mastery-track i{display:block;width:var(--progress);height:100%;background:linear-gradient(90deg,#5ac4b4,#f0cb79);border-radius:inherit}
+.wk-explore{display:flex;justify-content:space-between;align-items:center;width:100%}.wk-explore span{font-size:19px}
+.wk-modal-open{overflow:hidden}
+.wk-focus-layer{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));animation:wk-focus-in .24s ease-out}
+.wk-focus-backdrop{position:absolute;inset:0;border:0;border-radius:0;background:radial-gradient(circle at 50% 25%,#386c7273,#061521ed 67%);backdrop-filter:blur(13px);cursor:default}
+.wk-focus-panel{position:relative;width:min(1180px,100%);max-height:calc(100dvh - max(24px,env(safe-area-inset-top) + env(safe-area-inset-bottom)));overflow:auto;overscroll-behavior:contain;border:1px solid #d4b96b66;border-radius:26px;background:linear-gradient(160deg,#12394bfa,#081f31fc);box-shadow:0 35px 100px #000a,0 0 0 1px #78aa9a30;scrollbar-color:#bb985e #092538}
+.wk-lesson{max-width:none;padding:18px clamp(14px,3vw,34px) 34px}
+.wk-focus-nav{position:sticky;top:0;z-index:8;display:flex;justify-content:space-between;align-items:center;padding:3px 0 12px;background:linear-gradient(#12394b 65%,transparent)}
+.wk-focus-nav>div{display:flex;gap:8px}.wk-focus-nav>div button{width:46px;height:46px;border-radius:50%;border:1px solid #86aaa1;background:#173f51;color:#f7dd9f;font-size:20px}
+.wk-return{background:#173f51}.wk-return:first-letter{font-size:22px}
+.wk-card-scene{display:grid;justify-items:center;perspective:1500px;padding:2px 0 8px}
+.wk-living-card{width:min(760px,100%);height:min(570px,66dvh);min-height:470px;perspective:1500px}
+.wk-card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.72,.2,1)}
+.wk-living-card.is-flipped .wk-card-inner{transform:rotateY(180deg)}
+.wk-card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid #e9c778;border-radius:28px;overflow:hidden;box-shadow:0 30px 65px #020d167a,0 0 35px #e9c7781f}
+.wk-card-front{display:grid;grid-template-rows:minmax(0,1fr) auto auto auto;padding:18px;background:linear-gradient(145deg,#224f5e,#0d2b3d 75%);text-align:center}
+.wk-card-front:after,.wk-card-back:after{content:'';position:absolute;inset:9px;border:1px solid #ffe3a53d;border-radius:21px;pointer-events:none}
+.wk-card-art{min-height:0;border-radius:17px;overflow:hidden;background:#214c5c}.wk-card-art .wk-art{object-fit:cover}
+.wk-card-rune{position:absolute;z-index:3;right:30px;top:27px;width:46px;height:46px;display:grid;place-items:center;border-radius:50%;background:#102f40d9;border:1px solid #f0d18a;color:#f0d18a;font-size:22px}
+.wk-card-front h1{font-family:Georgia,serif;color:#fff0c5;font-size:clamp(38px,6vw,72px);font-weight:400;line-height:1;margin:12px 0 8px;overflow-wrap:anywhere}
+.wk-card-front .wk-eyebrow{margin-top:12px}.wk-card-footer{display:flex;justify-content:space-between;gap:16px;padding:9px 6px 0;color:#bcd9d2;font-size:11px}
+.wk-card-back{transform:rotateY(180deg);display:grid;place-items:center;padding:clamp(23px,5vw,55px);color:#203f49;background:radial-gradient(circle at 85% 8%,#ffffff80,transparent 30%),linear-gradient(145deg,#fff4d8,#dfd5b6)}
+.wk-card-back .wk-word-info{max-width:650px;max-height:100%;overflow:auto;padding:4px 12px;position:relative;z-index:2}
+.wk-card-back .wk-word-info h1{font-size:clamp(40px,6vw,68px);margin:10px 0}.wk-card-back .wk-definition{font-size:clamp(19px,2.3vw,27px)}
+.wk-flip{margin:14px 0 2px;min-height:48px;border:1px solid #dfc479;border-radius:99px;padding:10px 20px;background:#f0d18b;color:#173747;font-weight:800;box-shadow:0 7px 20px #0004}
+.wk-practise{width:100%;justify-content:center;margin-top:13px}
+.wk-practice-dock{margin:22px auto 0;max-width:1000px;border-top:1px solid #bfa45d55;padding-top:10px;animation:wk-rise .3s ease-out}
+.wk-practice-dock .wk-task-tabs{position:sticky;top:58px;z-index:6;background:#0e3042e8;backdrop-filter:blur(10px);padding:12px;border-radius:14px}
+.wk-source{margin-top:20px;border:1px solid #6e9b9166;border-radius:14px;padding:0 15px}.wk-source summary{padding:16px 0;color:#e7cb8c;font-weight:700;cursor:pointer}.wk-source .wk-curriculum-note{margin:0 0 16px}
+@keyframes wk-focus-in{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+@keyframes wk-rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@media(max-width:720px){
+ .wk-focus-layer{padding:0}.wk-focus-panel{width:100%;height:100dvh;max-height:none;border-radius:0;border:0}
+ .wk-lesson{padding:10px 12px calc(24px + env(safe-area-inset-bottom))}.wk-focus-nav{padding-top:max(3px,env(safe-area-inset-top))}
+ .wk-return span{display:none}.wk-living-card{height:min(620px,73dvh);min-height:500px}.wk-card-front{padding:11px}.wk-card-front h1{font-size:clamp(35px,11vw,55px)}
+ .wk-card-back{padding:24px 15px}.wk-card-back .wk-word-info{padding:4px}.wk-pronounce{gap:8px}.wk-pronounce button{flex:1 1 42%;padding:10px 8px;font-size:12px}
+ .wk-practice-dock .wk-task-tabs{top:57px;margin-left:-2px;margin-right:-2px}.wk-exercise{margin-top:13px;border-radius:16px}
+ .wk-card-footer{font-size:10px}.wk-word{min-height:250px}.wk-word .wk-picture{aspect-ratio:1.17}.wk-word b{font-size:22px}
+}
+@media(max-width:390px){.wk-grid{grid-template-columns:1fr 1fr}.wk-word{min-height:230px}.wk-stage{font-size:8px}.wk-card-state{display:none}.wk-living-card{min-height:470px;height:70dvh}.wk-card-back .wk-example{font-size:16px}.wk-card-back .wk-definition{font-size:18px}}
+@media(max-height:560px) and (orientation:landscape){.wk-focus-panel{height:100dvh;max-height:none;border-radius:0}.wk-lesson{padding:8px 16px 20px}.wk-living-card{height:430px;min-height:430px;width:min(700px,78vw)}.wk-card-front{grid-template-columns:1fr .8fr;grid-template-rows:auto 1fr auto}.wk-card-art{grid-row:1/4}.wk-card-front .wk-eyebrow,.wk-card-front h1,.wk-card-front .wk-card-footer{grid-column:2}.wk-card-front h1{font-size:42px;align-self:center}.wk-practice-dock{margin-top:10px}}
+@media(prefers-reduced-motion:reduce){.wk-card-inner{transition:none}.wk-living-card.is-flipped .wk-card-inner{transform:none}.wk-living-card.is-flipped .wk-card-front{display:none}.wk-living-card:not(.is-flipped) .wk-card-back{display:none}}
