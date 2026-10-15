@@ -44,7 +44,12 @@ test('initial main view displays twelve playable cards and profile/stage filters
 });
 test('opens word and shows independent learning tasks without recording speech',()=>{
   document.querySelector('[data-open]').click();
-  assert.ok(document.querySelector('.wk-word-intro'));
+  assert.ok(document.querySelector('.wk-focus-layer'));
+  assert.ok(document.querySelector('.wk-living-card'));
+  assert.equal(document.querySelector('[data-task="spelling"]'),null);
+  document.querySelector('#wk-flip').click();
+  assert.ok(document.querySelector('#wk-practise'));
+  document.querySelector('#wk-practise').click();
   assert.ok(document.querySelector('[data-task="spelling"]'));
   assert.ok(!document.querySelector('input[type="file"]'));
   assert.ok(!document.querySelector('[data-record]'));
@@ -74,7 +79,7 @@ test('game link returns to existing Adam Atlas, and stage filters are cumulative
  assert.equal(document.querySelector('.wk-back').getAttribute('href'),'/adam/');
  document.querySelector('[data-filter="all"]').click();
  assert.equal(document.querySelectorAll('[data-open]').length,12); // first page of expanded lexicon
- assert.ok(document.querySelector('.wk-section-bar').textContent.includes('dictionary'));
+ assert.ok(document.querySelector('.wk-section-bar').textContent.includes('collection'));
 });
 
 test('theme options never offer an empty stage and counts reflect selected year',()=>{
@@ -150,6 +155,8 @@ test('provenance is visible in the actual word detail and abstract words cannot 
  const target=[...document.querySelectorAll('[data-open]')].find(b=>b.dataset.open==='because');
  assert.ok(target);
  target.click();
+ document.querySelector('#wk-flip').click();
+ document.querySelector('#wk-practise').click();
  assert.ok(document.querySelector('.wk-curriculum-note').textContent.includes('DfE'));
  assert.equal(document.querySelector('[data-task="picture"]'),null);
  document.querySelector('#wk-to-map').click();

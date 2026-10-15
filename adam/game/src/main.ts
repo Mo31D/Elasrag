@@ -95,6 +95,12 @@ const icon = (id: string) => {
     pause: '<path d="M21 13V51M43 13V51"/>',
     play: '<path d="M20 10L53 32 20 54Z"/>',
     check: '<path d="M10 33L25 48 55 16"/>',
+    empty:
+      '<path d="M12 48H52M18 42H46M22 34H42"/><path d="M18 13H46V27" stroke-dasharray="4 5"/><path d="M23 17L18 13 23 9M41 31L46 27 41 23"/>',
+    glitter:
+      '<path d="M32 5L36 24 55 28 36 32 32 51 28 32 9 28 28 24Z"/><path d="M50 8V20M44 14H56M13 43V53M8 48H18"/>',
+    cloth:
+      '<path d="M10 17Q21 8 31 18T54 17V45Q43 55 32 45T10 46Z"/><path d="M11 29Q22 20 32 30T54 29"/>',
   };
   return `<svg ${common}>${paths[id] || paths.glass}</svg>`;
 };
@@ -149,7 +155,7 @@ function map() {
   view = 'map';
   const done = profile().missions.trophy;
   shell(
-    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">YOUR NEXT DISCOVERY AWAITS</p><h1>A little curiosity.<br>A whole new world.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}! Your adventure is about to begin.</p></div><div class="map-label school"><span class="region">01 / MYSTERY CITY</span><h2>The missing trophy</h2><p>${done ? 'Case solved. Revisit the evidence.' : 'A curious gap. A golden trail. One school mystery.'}</p>${button('mission', `${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <span>→</span>`, 'primary')}<small>ENGLISH · 5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></div><div class="map-label tower"><span class="region">02 / NUMBER KINGDOM</span><h2>The crystal engines</h2><p>Restore three engines with mathematical reasoning.</p>${button('maths', 'Explore the engines →', 'secondary')}<small>YEAR ${profile().year || 6} · ${state.maths.length}/3 ENGINES RESTORED</small></div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${dueSkills().length ? 'Recall trail · ' + dueSkills().length + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${cloudMissions.length ? cloudMissions.map((mission) => button('cloud-mission:' + mission.id, `English expedition · ${esc(mission.title)}`, 'map-chip')).join('') : button('cloud', 'Secure missions · parent sign-in', 'map-chip')}<span class="future">Discovery Laboratory · a future expedition</span></div></section>`,
+    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">YOUR NEXT DISCOVERY AWAITS</p><h1>A little curiosity.<br>A whole new world.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}! Your adventure is about to begin.</p></div><div class="map-label words"><span class="region">WORD KINGDOM</span><h2>The living library</h2><p>Collect, turn and master magical word cards.</p>${button('words', `${icon('book')} Enter the library →`, 'secondary')}<small>BRITISH ENGLISH · YOUR WORD STARS STAY SEPARATE</small></div><div class="map-label school"><span class="region">01 / MYSTERY CITY</span><h2>The missing trophy</h2><p>${done ? 'Case solved. Revisit the evidence.' : 'A curious gap. A golden trail. One school mystery.'}</p>${button('mission', `${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <span>→</span>`, 'primary')}<small>ENGLISH · 5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></div><div class="map-label tower"><span class="region">02 / NUMBER KINGDOM</span><h2>The crystal engines</h2><p>Restore three engines with mathematical reasoning.</p>${button('maths', 'Explore the engines →', 'secondary')}<small>YEAR ${profile().year || 6} · ${state.maths.length}/3 ENGINES RESTORED</small></div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${dueSkills().length ? 'Recall trail · ' + dueSkills().length + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${cloudMissions.length ? cloudMissions.map((mission) => button('cloud-mission:' + mission.id, `English expedition · ${esc(mission.title)}`, 'map-chip')).join('') : button('cloud', 'Family missions', 'map-chip')}<span class="future">Discovery Laboratory · a future expedition</span></div></section>`,
     'The Adventure Atlas',
   );
 }
@@ -195,7 +201,7 @@ function mission() {
     content = `<div class="hotspot trophy">${button('clue-trophy', `${icon('trophy')}<span>Inspect the trophy</span>`, 'spot')}</div>`;
   const c = chapters[Math.min(step, 5)];
   shell(
-    `<section class="mission-stage"><img class="scene-art" src="/adam/assets/scene-${scene}.svg" alt="${['Maya and Leo beside the trophy cabinet, where a green stand is empty', 'Maya and Leo looking puzzled beside the cabinet', 'The detectives investigate a golden glitter trail', 'Mr Clark with the safe trophy and a polishing cloth'][scene]}"><div class="scene-vignette"></div><div class="quest-banner"><span>CASE 001 <i>✦</i> ${step < 6 ? `STEP ${step + 1} / 6` : 'COMPLETE'}</span><h1>${titles[step]}</h1><p>${objectives[step]}</p><progress max="6" value="${step}" aria-label="Mission progress"></progress></div><aside class="inventory-rail"><span>EVIDENCE</span>${['empty', 'glitter', 'cloth', 'trophy'].map((k) => `<div class="evidence-slot ${state.clues.includes(k) ? 'found' : ''}" title="${k}">${icon(k === 'trophy' ? 'trophy' : 'glass')}<small>${state.clues.includes(k) ? '✓' : '?'}</small></div>`).join('')}</aside>${content}<div id="word-cue" class="word-cue" hidden></div><div class="mission-bottom"><div class="audio-bar">${step < 5 ? button('listen', `${icon('play')} Hear the story`, 'audio-btn') : ''}${step < 5 ? button('pause', icon('pause'), 'icon-btn') : ''}<span id="audio-status" role="status">${step < 5 ? (profile().displayName === 'Adam' ? 'Original British narration · scene summary below' : 'Original recording addresses Adam · personalised text available') : 'Think, explore, and take your time'}</span>${step < 5 ? button('read', 'Read instead', 'quiet') : ''}</div><div class="dialogue"><div class="speaker-avatar">${icon(step === 6 ? 'trophy' : 'glass')}</div><div><span class="eyebrow">${step === 6 ? 'ADVENTURE ACADEMY' : 'DETECTIVE CLUB'}</span><p id="caption">${step < 5 ? c.caption : step === 5 ? 'The words can help with other mysteries too. Ready to try?' : 'You used careful observation and explained your reasoning.'}</p><div id="task">${taskMarkup(step)}</div><p id="feedback" class="feedback" role="status"></p></div></div></div></section>`,
+    `<section class="mission-stage"><img class="scene-art" src="/adam/assets/scene-${scene}.svg" alt="${['Maya and Leo beside the trophy cabinet, where a green stand is empty', 'Maya and Leo looking puzzled beside the cabinet', 'The detectives investigate a golden glitter trail', 'Mr Clark with the safe trophy and a polishing cloth'][scene]}"><div class="scene-vignette"></div><div class="quest-banner"><span>CASE 001 <i>✦</i> ${step < 6 ? `STEP ${step + 1} / 6` : 'COMPLETE'}</span><h1>${titles[step]}</h1><p>${objectives[step]}</p><progress max="6" value="${step}" aria-label="Mission progress"></progress></div><aside class="inventory-rail" aria-label="Collected evidence"><span>EVIDENCE</span>${['empty', 'glitter', 'cloth', 'trophy'].map((k) => `<div class="evidence-slot ${state.clues.includes(k) ? 'found' : ''}" title="${k}" aria-label="${k}: ${state.clues.includes(k) ? 'found' : 'not found'}">${icon(k)}<small>${state.clues.includes(k) ? '✓' : '?'}</small></div>`).join('')}</aside>${content}<div id="word-cue" class="word-cue" hidden></div><div class="mission-bottom"><div class="audio-bar">${step < 5 ? button('listen', `${icon('play')} Hear the story`, 'audio-btn') : ''}${step < 5 ? button('pause', icon('pause'), 'icon-btn') : ''}<span id="audio-status" role="status">${step < 5 ? (profile().displayName === 'Adam' ? 'Original British narration · scene summary below' : 'Original recording addresses Adam · personalised text available') : 'Think, explore, and take your time'}</span>${step < 5 ? button('read', 'Read instead', 'quiet') : ''}</div><div class="dialogue"><div class="speaker-avatar">${icon(step === 6 ? 'trophy' : 'glass')}</div><div><span class="eyebrow">${step === 6 ? 'ADVENTURE ACADEMY' : 'DETECTIVE CLUB'}</span><p id="caption">${step === 4 ? 'The evidence is clear. Now repair the detective report in your own order.' : step < 5 ? c.caption : step === 5 ? 'The words can help with other mysteries too. Ready to try?' : 'You used careful observation and explained your reasoning.'}</p><div id="task">${taskMarkup(step)}</div><p id="feedback" class="feedback" role="status"></p></div></div></div></section>`,
     'Mystery City / School',
   );
   if (step === 5) {
@@ -604,6 +610,10 @@ async function action(id: string, b: HTMLButtonElement) {
   }
   if (id === 'map') {
     map();
+    return;
+  }
+  if (id === 'words') {
+    window.location.assign('/adam/words/');
     return;
   }
   if (id === 'mission') {
@@ -1060,6 +1070,11 @@ function profilesDialog() {
 }
 
 map();
+void import('./cloud')
+  .then(async (cloud) => {
+    if (await cloud.restoreCloudSession(cloudHooks())) map();
+  })
+  .catch(() => {});
 mediaStore()
   .then((blob) => {
     if (blob) setAudio(URL.createObjectURL(blob));

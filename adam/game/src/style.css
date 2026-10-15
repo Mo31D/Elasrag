@@ -269,6 +269,17 @@ p {
   border-top: 3px solid var(--teal);
   max-width: 305px;
 }
+.map-label.words {
+  right: 8%;
+  top: 29%;
+  max-width: 300px;
+  border-top: 3px solid #e8bc70;
+  background: linear-gradient(135deg, #173d51f5, #1b4f59ed);
+}
+.map-label.words .secondary svg {
+  width: 21px;
+  height: 21px;
+}
 .region {
   font-size: 9px;
   font-weight: 700;
@@ -1206,7 +1217,7 @@ input[type='file'] {
     gap: 8px;
   }
   .atlas {
-    min-height: 850px;
+    min-height: 980px;
   }
   .atlas-art {
     object-position: 45% center;
@@ -1217,13 +1228,18 @@ input[type='file'] {
   }
   .map-label.school {
     left: 8%;
-    top: 49%;
+    top: 51%;
     max-width: 310px;
   }
   .map-label.tower {
     right: 5%;
-    top: 65%;
+    top: 72%;
     max-width: 290px;
+  }
+  .map-label.words {
+    right: 5%;
+    top: 27%;
+    max-width: 300px;
   }
   .map-bottom {
     bottom: 20px;
@@ -1333,7 +1349,7 @@ input[type='file'] {
     width: 19px;
   }
   .atlas {
-    min-height: 1020px;
+    min-height: 1320px;
   }
   .atlas-art {
     object-fit: cover;
@@ -1346,13 +1362,19 @@ input[type='file'] {
     top: 5%;
   }
   .map-label.school {
-    top: 47%;
+    top: 48%;
     left: 6%;
     right: 6%;
     max-width: none;
   }
   .map-label.tower {
-    top: 71%;
+    top: 72%;
+    left: 6%;
+    right: 6%;
+    max-width: none;
+  }
+  .map-label.words {
+    top: 27%;
     left: 6%;
     right: 6%;
     max-width: none;
@@ -1591,13 +1613,17 @@ input[type='file'] {
     height: 66px;
   }
   .atlas {
-    min-height: 630px;
+    min-height: 760px;
   }
   .map-label.school {
-    top: 46%;
+    top: 48%;
   }
   .map-label.tower {
-    top: 49%;
+    top: 59%;
+  }
+  .map-label.words {
+    top: 22%;
+    right: 5%;
   }
   .map-heading h1 {
     font-size: 35px;
@@ -1621,6 +1647,33 @@ select {
   padding: 12px;
   min-height: 44px;
   max-width: 100%;
+}
+
+@media (max-width: 650px) {
+  .mission-stage {
+    min-height: 0;
+    padding: 700px 4% 22px;
+    overflow: hidden;
+  }
+  .mission-stage .scene-art,
+  .mission-stage .scene-vignette {
+    height: 720px;
+    bottom: auto;
+  }
+  .mission-bottom {
+    position: relative;
+    inset: auto;
+    z-index: 4;
+  }
+  .audio-bar {
+    padding: 9px;
+    border: 1px solid #b6d1c251;
+    border-radius: 12px;
+    background: #102f41e8;
+  }
+  .dialogue {
+    box-shadow: 0 16px 45px #001e3875;
+  }
 }
 .quarter {
   height: 48px;

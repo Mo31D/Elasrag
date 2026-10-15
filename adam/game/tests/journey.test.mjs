@@ -103,7 +103,7 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   const text = () => document.querySelector('#app').textContent;
   const stored = () => JSON.parse(localStorage.getItem('ala-adventure-v1'));
   assert.match(text(), /Begin investigation/);
-  assert.match(text(), /Secure missions · parent sign-in/);
+  assert.match(text(), /Family missions/);
   click('mission');
   click('next');
   assert.match(text(), /inspect the empty stand/);

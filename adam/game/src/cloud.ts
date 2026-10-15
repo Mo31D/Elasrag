@@ -66,9 +66,10 @@ export class CloudGateway {
       throw Error('Invalid verified cloud configuration');
     this.client = createClient(projectUrl, key, {
       auth: {
-        persistSession: false,
+        persistSession: true,
         detectSessionInUrl: false,
         autoRefreshToken: true,
+        storageKey: 'ala-parent-session',
       },
     });
   }
@@ -152,7 +153,7 @@ export async function openCloudDesk(h: Hooks) {
   }
 }
 function login() {
-  body().innerHTML = `<p>Sign in with an enrolled parent account. This session is held in memory and is not saved to browser storage.</p><form id="cloud-login"><label for="parent-email">Parent email</label><input id="parent-email" type="email" required autocomplete="username"><label for="parent-password">Password</label><input id="parent-password" type="password" required autocomplete="current-password"><button class="primary">Sign in securely</button></form><p id="cloud-message" role="status"></p><p class="muted">There is no public parent enrolment or child sign-up. An administrator must create and enrol the parent in the dedicated Adam project.</p>`;
+  body().innerHTML = `<p>Sign in with an enrolled parent account. This trusted device will remember the session until you choose Sign out.</p><form id="cloud-login"><label for="parent-email">Parent email</label><input id="parent-email" type="email" required autocomplete="username"><label for="parent-password">Password</label><input id="parent-password" type="password" required autocomplete="current-password"><button class="primary">Sign in securely</button></form><p id="cloud-message" role="status"></p><p class="muted">Use Sign out when using a shared device. There is no public parent enrolment or child sign-up; an administrator must enrol the parent in the dedicated Adam project.</p>`;
   document
     .querySelector('#cloud-login')!
     .addEventListener('submit', async (e) => {
@@ -173,6 +174,27 @@ function login() {
         await refresh();
       });
     });
+}
+
+export async function restoreCloudSession(h: Hooks) {
+  hooks = h;
+  if (!config.enabled) return false;
+  try {
+    gateway ??= new CloudGateway(config.projectUrl, config.publishableKey);
+    const {
+      data: { session },
+    } = await gateway.client.auth.getSession();
+    if (!session) return false;
+    dashboard = await gateway.request('dashboard');
+    if (
+      !dashboard.students.some((student: any) => student.id === selectedStudent)
+    )
+      selectedStudent = dashboard.students[0]?.id || '';
+    syncMissions();
+    return true;
+  } catch {
+    return false;
+  }
 }
 async function refresh() {
   dashboard = await gateway!.request('dashboard');
