@@ -1649,3 +1649,121 @@ select {
   max-height: 200px;
   overflow: auto;
 }
+.cloud-lesson-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid #b8c3ac;
+}
+.cloud-lesson-row strong {
+  flex: 1;
+}
+.cloud-lesson-row span {
+  font-size: 11px;
+  color: #657b6a;
+}
+.cloud-preview {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #e4e7d4;
+  color: #274c4c;
+  padding: 15px;
+  font-size: 12px;
+  max-height: 360px;
+  overflow: auto;
+}
+#cloud-body label {
+  display: block;
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 15px 0 7px;
+}
+#cloud-body input[type='checkbox'] {
+  min-height: 0;
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+}
+#cloud-body input[type='email'],
+#cloud-body input[type='password'] {
+  width: 100%;
+}
+#cloud-body select {
+  max-width: 100%;
+}
+.cloud-expedition {
+  position: relative;
+  isolation: isolate;
+  flex: 1;
+  min-height: 850px;
+  padding: 45px 6%;
+  display: grid;
+  place-items: center;
+}
+.cloud-world-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+  opacity: 0.55;
+}
+.cloud-story-card {
+  width: min(760px, 100%);
+  padding: 35px;
+  background: #f5efddf5;
+  border: 1px solid #deb971;
+  border-radius: 14px;
+  color: #294b4e;
+  box-shadow: 0 20px 80px #08283f80;
+}
+.cloud-story-card h1 {
+  font-size: 38px;
+  margin: 15px 0 20px;
+}
+.cloud-story-card h2 {
+  text-align: center;
+  margin: 15px 0;
+}
+.cloud-story-card .eyebrow {
+  color: #44766b;
+}
+.cloud-characters {
+  height: 210px;
+  width: 100%;
+  object-fit: contain;
+}
+.cloud-story {
+  font-size: 20px;
+  line-height: 1.7;
+  margin: 18px 0 25px;
+}
+.cloud-story-card .word-illustration {
+  width: 100px;
+  height: 100px;
+  margin: auto;
+}
+.cloud-story-card .muted {
+  margin-top: 20px;
+}
+@media (max-width: 650px) {
+  .cloud-expedition {
+    padding: 30px 5%;
+    min-height: 900px;
+  }
+  .cloud-story-card {
+    padding: 24px;
+  }
+  .cloud-story-card h1 {
+    font-size: 30px;
+  }
+  .cloud-story {
+    font-size: 17px;
+  }
+  .cloud-characters {
+    height: 180px;
+  }
+}

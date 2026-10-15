@@ -1,0 +1,2 @@
+# Generated SDK bundles contain intentional whitespace inside worker strings.
+assets/*.js -whitespace

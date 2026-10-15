@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "template",
+    "title",
+    "word",
+    "definition",
+    "example",
+    "story",
+    "question",
+    "choices",
+    "answer",
+    "hint",
+    "sentenceParts"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "template": { "const": "feeling-detective-v1" },
+    "title": { "type": "string", "minLength": 5, "maxLength": 90 },
+    "word": { "enum": ["curious", "puzzled", "relieved", "confident"] },
+    "definition": { "type": "string", "minLength": 10, "maxLength": 160 },
+    "example": { "type": "string", "minLength": 10, "maxLength": 220 },
+    "story": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 3,
+      "items": { "type": "string", "minLength": 10, "maxLength": 300 }
+    },
+    "question": { "type": "string", "minLength": 10, "maxLength": 220 },
+    "choices": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": { "enum": ["curious", "puzzled", "relieved", "confident"] }
+    },
+    "answer": { "type": "integer", "minimum": 0, "maximum": 2 },
+    "hint": { "type": "string", "minLength": 5, "maxLength": 180 },
+    "sentenceParts": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": { "type": "string", "minLength": 1, "maxLength": 160 }
+    }
+  }
+}

@@ -2,3 +2,8 @@ node_modules/
 dist/
 .test-build/
 *.log
+.env
+.env.*
+backend/supabase/.temp/
+backend/supabase/.branches/
+.cloud-test-build/

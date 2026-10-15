@@ -129,8 +129,12 @@ function toast(text: string) {
 function button(id: string, label: string, cls = '') {
   return `<button data-action="${id}" class="${cls}">${label}</button>`;
 }
-function shell(content: string, place: string) {
-  app.innerHTML = `<main class="game ${view}" ${!state.settings.motion ? 'data-still="true"' : ''}><header class="hud"><button class="identity" data-action="map" aria-label="Adventure map"><span class="crest">A</span><span>${esc(profile().displayName || 'Adam')}<span class="sub">LEARNING ADVENTURES</span></span></button><div class="place"><span class="dot"></span>${place}</div><div class="hud-actions"><span class="xp">${icon('star')} <b>${profile().xp}</b> XP <small>LV ${1 + Math.floor(profile().xp / 25)}</small></span>${button('journal', icon('book'), 'icon-btn')}${button('settings', icon('gear'), 'icon-btn')}</div></header>${content}<footer class="game-footer"><span>THE ADVENTURE ATLAS <i>✦</i> CHAPTER ONE</span><div>${button('parent', 'Parent desk', 'quiet')}${button('fullscreen', '⛶ Full screen', 'quiet')}</div></footer></main><dialog id="overlay" aria-labelledby="dialog-title"></dialog>`;
+function shell(
+  content: string,
+  place: string,
+  displayName = profile().displayName || 'Adam',
+) {
+  app.innerHTML = `<main class="game ${view}" ${!state.settings.motion ? 'data-still="true"' : ''}><header class="hud"><button class="identity" data-action="map" aria-label="Adventure map"><span class="crest">A</span><span>${esc(displayName)}<span class="sub">LEARNING ADVENTURES</span></span></button><div class="place"><span class="dot"></span>${place}</div><div class="hud-actions"><span class="xp">${icon('star')} <b>${profile().xp}</b> XP <small>LV ${1 + Math.floor(profile().xp / 25)}</small></span>${button('journal', icon('book'), 'icon-btn')}${button('settings', icon('gear'), 'icon-btn')}</div></header>${content}<footer class="game-footer"><span>THE ADVENTURE ATLAS <i>✦</i> CHAPTER ONE</span><div>${button('parent', 'Parent desk', 'quiet')}${button('fullscreen', '⛶ Full screen', 'quiet')}</div></footer></main><dialog id="overlay" aria-labelledby="dialog-title"></dialog>`;
   document
     .querySelector('[data-action="journal"]')
     ?.setAttribute('aria-label', 'Detective notebook');
@@ -386,7 +390,7 @@ function download(name: string, value: unknown) {
 function parent() {
   openDialog(
     'Parent desk',
-    `${button('profiles', 'Choose or add an explorer', 'secondary')}<p class="muted">Progress and imported files stay in this browser on this device. Clearing browser data removes them. This screen has no authentication; anyone using this device can open it. Export private backups when needed.</p><div class="parent-stats"><div><b>${profile().xp}</b><span>Adventure XP</span></div><div><b>${state.maths.length}/3</b><span>Maths engines</span></div><div><b>Disabled</b><span>Reward Credits</span></div></div>${button('curriculum', 'Explore Year 1–6 planning map', 'secondary')}<details open><summary>Skill evidence and review schedule</summary><div class="skill-table"><table><thead><tr><th>Skill</th><th>State</th><th>Independent days</th><th>Next review</th></tr></thead><tbody>${[
+    `${button('profiles', 'Choose or add an explorer', 'secondary')}${button('cloud', 'Secure family learning', 'secondary')}<p class="muted">Progress and imported files stay in this browser on this device. Clearing browser data removes them. This screen has no authentication; anyone using this device can open it. Export private backups when needed.</p><div class="parent-stats"><div><b>${profile().xp}</b><span>Adventure XP</span></div><div><b>${state.maths.length}/3</b><span>Maths engines</span></div><div><b>Disabled</b><span>Reward Credits</span></div></div>${button('curriculum', 'Explore Year 1–6 planning map', 'secondary')}<details open><summary>Skill evidence and review schedule</summary><div class="skill-table"><table><thead><tr><th>Skill</th><th>State</th><th>Independent days</th><th>Next review</th></tr></thead><tbody>${[
       ...skills.filter((s) => s.subject === 'English'),
       ...currentPuzzles().map((p) => ({
         id: p.id,
@@ -513,6 +517,25 @@ function bind(root: ParentNode = app) {
 }
 let lastLearningAction = 0;
 async function action(id: string, b: HTMLButtonElement) {
+  if (id === 'cloud') {
+    try {
+      const cloud = await import('./cloud');
+      await cloud.openCloudDesk({
+        openDialog,
+        closeDialog,
+        shell,
+        map,
+        setView: (v) => {
+          view = v;
+        },
+      });
+    } catch {
+      toast(
+        'The cloud module could not load. Your local adventure is still available.',
+      );
+    }
+    return;
+  }
   if (
     (view === 'mission' || view === 'maths') &&
     !document.hidden &&
