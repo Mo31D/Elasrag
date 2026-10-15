@@ -252,7 +252,7 @@ function answerResult(correct,facet){
    profileId,awardId:'word:mastered:'+selected.id,amount:3,subject:'words'
  }) : {awarded:false};
  const msg=correct
-  ? (newlyEarned?'Good thinking! +2 Word Stars. ': 'Good thinking. ')+(shared.awarded?'+3 Adventure XP for mastering this word! ':'')+(assisted?'The clue helped; try again later without it.':'You can revisit this word anytime.')
+  ? (newlyEarned?'Good thinking! +2 word stars. ': 'Good thinking. ')+(shared.awarded?'+3 Adventure XP for mastering this word! ':'')+(assisted?'The clue helped; try again later without it.':'You can revisit this word anytime.')
   : 'Not quite. Take another look and try again. A mistake is a useful clue.';
  const box=document.querySelector('#wk-feedback');
  if(box){box.className='wk-feedback '+(correct?'good':'retry');box.textContent=msg;}
