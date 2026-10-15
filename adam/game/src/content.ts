@@ -107,7 +107,15 @@ export const chapters = [
 // A confidence-first Year 6 pathway. It deliberately begins with secure KS2
 // foundations and introduces Year 6 bridges only after a clear worked model.
 // Ratio and formal algebra are not used as cold-start questions.
-export const puzzles = [
+export interface MathsPuzzle {
+  id: string; name: string; strand: string; reviewYear: number;
+  objective: string; known: string; find: string; question: string;
+  prompt: string; answer: string; acceptedAnswers: string[];
+  hint: string; language: string; explain: string;
+  extension: string; extensionAnswer: string; extensionExplain: string;
+  model: string; requires?: string[]; stretch?: boolean;
+}
+export const puzzles: MathsPuzzle[] = [
   {
     id: 'place-value', name: 'The place-value beacon', strand: 'Number', reviewYear: 4,
     objective: 'Recognise the value of a digit in a five-digit number.',
@@ -178,6 +186,102 @@ export const puzzles = [
     explain: '55° + 65° = 120°. Then 180° − 120° = 60°.',
     extension: 'A triangle has angles of 35° and 75°. Find the third angle.', extensionAnswer: '70',
     extensionExplain: '35° + 75° = 110°. Then 180° − 110° = 70°.', model: 'triangle',
+  },
+  {
+    id: 'column-subtraction', name: 'The lantern difference', strand: 'Addition and subtraction', reviewYear: 4,
+    objective: 'Subtract a four-digit number using place value and regrouping.',
+    known: 'The store had 4,302 lanterns. Explorers used 1,578 of them.',
+    find: 'How many lanterns remain?',
+    question: 'Work out 4,302 − 1,578. Regroup one column at a time.', prompt: '4,302 − 1,578 = ?', answer: '2724',
+    acceptedAnswers: ['2724','2,724'], hint: 'Start with the ones. You cannot do 2 − 8, so regroup from the tens and hundreds.',
+    language: '“Remain” means how many are left. This tells you to subtract the amount used from the starting amount.',
+    explain: '4,302 − 1,578 = 2,724. Check: 2,724 + 1,578 = 4,302.',
+    extension: 'Work out 6,010 − 2,685.', extensionAnswer: '3325',
+    extensionExplain: '6,010 − 2,685 = 3,325.', model: 'subtraction',
+  },
+  {
+    id: 'decimal-addition', name: 'The decimal docks', strand: 'Decimals', reviewYear: 5,
+    objective: 'Add decimals by aligning place-value columns.',
+    known: 'One rope is 2.35 m long. A second rope is 1.4 m long.',
+    find: 'What is their total length?',
+    question: 'Write 1.4 as 1.40, then add the columns.', prompt: '2.35 + 1.40 = ?', answer: '3.75',
+    acceptedAnswers: ['3.75','3.75m'], hint: 'Line up the decimal points: 2.35 + 1.40.',
+    language: '“Total length” means combine the two lengths. The zero in 1.40 does not change its value.',
+    explain: 'Hundredths: 5 + 0 = 5. Tenths: 3 + 4 = 7. Ones: 2 + 1 = 3. The total is 3.75 m.',
+    extension: 'Work out 4.08 + 2.7.', extensionAnswer: '6.78',
+    extensionExplain: 'Write 2.7 as 2.70. Then 4.08 + 2.70 = 6.78.', model: 'decimal',
+  },
+  {
+    id: 'perimeter', name: 'The garden boundary', strand: 'Measurement', reviewYear: 4,
+    objective: 'Find the perimeter of a rectangle.',
+    known: 'A rectangular garden is 8 m long and 5 m wide.',
+    find: 'What is the distance all the way around it?',
+    question: 'Add all four sides: 8 + 5 + 8 + 5.', prompt: 'Perimeter = ? m', answer: '26',
+    acceptedAnswers: ['26','26m'], hint: 'A rectangle has two 8 m sides and two 5 m sides.',
+    language: '“Perimeter” is the distance around the outside edge, not the space inside.',
+    explain: '8 + 5 + 8 + 5 = 26, so the perimeter is 26 m.',
+    extension: 'A rectangle is 12 cm by 7 cm. Find its perimeter.', extensionAnswer: '38',
+    extensionExplain: '12 + 7 + 12 + 7 = 38 cm.', model: 'rectangle',
+  },
+  {
+    id: 'coordinates', name: 'The map coordinates', strand: 'Position and direction', reviewYear: 5,
+    objective: 'Read a point in the first quadrant using x then y.',
+    known: 'The crystal is 3 squares across and 5 squares up from the origin.',
+    find: 'What are its coordinates?',
+    question: 'Coordinates are written (across, up).', prompt: 'Crystal = (?, ?)', answer: '3,5',
+    acceptedAnswers: ['3,5','(3,5)','3 5'], hint: 'Read across first for x, then up for y.',
+    language: '“Origin” is (0, 0). A coordinate pair always gives the horizontal position before the vertical position.',
+    explain: 'Three across gives x = 3. Five up gives y = 5. The point is (3, 5).',
+    extension: 'A key is 6 across and 2 up. Give its coordinates.', extensionAnswer: '6,2',
+    extensionExplain: 'Across first, then up: (6, 2).', model: 'coordinates',
+  },
+  {
+    id: 'statistics', name: 'The expedition chart', strand: 'Statistics', reviewYear: 5,
+    objective: 'Find the difference between two values in a table.',
+    known: 'Maya found 18 clues on Monday and 27 clues on Tuesday.',
+    find: 'How many more clues did she find on Tuesday?',
+    question: 'Compare the two amounts by finding the difference.', prompt: '27 − 18 = ?', answer: '9',
+    acceptedAnswers: ['9'], hint: 'Count up from 18 to 27, or subtract 18 from 27.',
+    language: '“How many more” asks for the difference, not the total.',
+    explain: '27 − 18 = 9, so Maya found 9 more clues on Tuesday.',
+    extension: 'A chart shows 34 votes and 19 votes. What is the difference?', extensionAnswer: '15',
+    extensionExplain: '34 − 19 = 15.', model: 'chart',
+  },
+  {
+    id: 'two-step', name: 'The supply mission', strand: 'Problem solving', reviewYear: 5,
+    objective: 'Solve a two-step problem by identifying one operation at a time.',
+    known: 'There are 6 boxes. Each box has 8 maps. Explorers use 13 maps.',
+    find: 'How many maps are left?',
+    question: 'First find the total number of maps. Then subtract the maps used.', prompt: '(6 × 8) − 13 = ?', answer: '35',
+    acceptedAnswers: ['35'], hint: 'Step 1: 6 × 8 = 48. Step 2: 48 − 13.',
+    language: 'The word “each” signals equal groups. “Left” tells you to subtract after finding the starting total.',
+    explain: 'Six groups of 8 make 48. Then 48 − 13 = 35 maps left.',
+    extension: 'Five bags hold 12 counters each. 17 are used. How many remain?', extensionAnswer: '43',
+    extensionExplain: '5 × 12 = 60, then 60 − 17 = 43.', model: 'two-step',
+  },
+  {
+    id: 'ratio-bridge', name: 'The recipe bridge', strand: 'Ratio', reviewYear: 6,
+    objective: 'Scale a simple recipe using equal groups.',
+    known: 'Two explorers need 6 fruit pieces. Four explorers is twice as many people.',
+    find: 'How many fruit pieces are needed for four explorers?',
+    question: 'If the number of explorers doubles, the fruit amount doubles too.', prompt: 'Fruit pieces = ?', answer: '12',
+    acceptedAnswers: ['12'], hint: 'Four is 2 groups of two, so use 2 groups of six.',
+    language: 'A ratio compares amounts. Here the recipe must stay fair, so both amounts change by the same scale factor.',
+    explain: 'Four explorers is double two explorers, so double 6: 6 × 2 = 12.',
+    extension: 'Three explorers need 9 bottles. Six explorers need how many?', extensionAnswer: '18',
+    extensionExplain: 'Six is double three, so 9 × 2 = 18.', model: 'ratio', requires: ['grouping','fraction-amount'], stretch: true,
+  },
+  {
+    id: 'algebra-bridge', name: 'The hidden-number machine', strand: 'Algebra', reviewYear: 6,
+    objective: 'Use an inverse operation to find a missing number.',
+    known: 'A hidden number plus 7 equals 19.',
+    find: 'What is the hidden number?',
+    question: 'Undo +7 by subtracting 7 from 19.', prompt: '□ + 7 = 19. □ = ?', answer: '12',
+    acceptedAnswers: ['12'], hint: 'Use the inverse: 19 − 7.',
+    language: 'The box stands for an unknown number. “Inverse” means the operation that undoes another operation.',
+    explain: '19 − 7 = 12. Check: 12 + 7 = 19.',
+    extension: '□ × 4 = 28. Find the hidden number.', extensionAnswer: '7',
+    extensionExplain: 'Undo ×4 with ÷4: 28 ÷ 4 = 7.', model: 'algebra', requires: ['grouping','column-subtraction'], stretch: true,
   },
 ];
 export const skills = [

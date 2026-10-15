@@ -51,7 +51,8 @@ let state: any = load(storage),
   hinted = false,
   mathIndex = 0,
   mathExtension = false,
-  mathSolved = false;
+  mathSolved = false,
+  mathAttempts = 0;
 let recallWords = words,
   chosen: string[] = [],
   reviewIndex = 0,
@@ -132,6 +133,16 @@ function save() {
 function profile() {
   return state.profiles[state.activeProfile];
 }
+function mathsUnlocked(p: any) {
+  return !(p.requires || []).some((id: string) => !state.maths.includes(id));
+}
+function recommendedMathIndex() {
+  const list = currentPuzzles();
+  const due = list.findIndex((p) => status(profile().skills[p.id]) === 'Review due');
+  if (due >= 0) return due;
+  const next = list.findIndex((p) => mathsUnlocked(p) && !state.maths.includes(p.id));
+  return next >= 0 ? next : 0;
+}
 function xp(id: string, amount: number) {
   const n = reward(state, id, amount);
   save();
@@ -187,7 +198,7 @@ function map() {
     )
     .join('');
   shell(
-    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">THE ADVENTURE ATLAS</p><h1>Choose your next<br>adventure.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}. Pick a destination and continue your journey.</p></div><div class="adventure-deck" aria-label="Available adventures"><button type="button" class="adventure-card mystery-card" data-action="mission" aria-label="${done ? 'Reopen' : state.missionStep ? 'Continue' : 'Begin'} lesson one, The missing trophy"><span class="adventure-card-top"><span class="adventure-index">LESSON 01</span><span class="adventure-state">${missionState}</span></span><span class="adventure-emblem">${icon('glass')}</span><span class="region">MYSTERY CITY · ENGLISH</span><strong>The missing trophy</strong><span class="adventure-copy">${done ? 'Case solved. Revisit the evidence and vocabulary.' : 'Follow a golden trail, examine clues and repair the detective report.'}</span><span class="adventure-action">${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <b>→</b></span><small>5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></button><button type="button" class="adventure-card maths-card" data-action="maths" aria-label="Open Number Kingdom"><span class="adventure-card-top"><span class="adventure-index">MATHS QUEST</span><span class="adventure-state">${mathsState}</span></span><span class="adventure-emblem">${icon('crystal')}</span><span class="region">NUMBER KINGDOM · CONFIDENCE PATH</span><strong>The crystal pathways</strong><span class="adventure-copy">Choose a short quest. Each question separates what you know from what you need to find.</span><span class="adventure-action">${mathsDone ? 'Continue your path' : 'Choose a first quest'} <b>→</b></span><small>YEAR ${profile().year || 6} · ${mathsDone}/${mathsTotal} PATHS SECURE</small></button><button type="button" class="adventure-card words-card" data-action="words" aria-label="Enter Word Kingdom"><span class="adventure-card-top"><span class="adventure-index">WORD COLLECTION</span><span class="adventure-state">${reviews ? `${reviews} REVIEW${reviews === 1 ? '' : 'S'} DUE` : 'READY'}</span></span><span class="adventure-emblem">${icon('book')}</span><span class="region">WORD KINGDOM · BRITISH ENGLISH</span><strong>The living library</strong><span class="adventure-copy">Discover, hear and master curriculum spelling and useful school vocabulary.</span><span class="adventure-action">Enter the library <b>→</b></span><small>WORD STARS STAY SEPARATE FROM ADVENTURE XP</small></button>${cloudCards}</div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${reviews ? 'Recall trail · ' + reviews + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${button('cloud', cloudMissions.length ? 'Manage family missions' : 'Family missions', 'map-chip')}<span class="future">Discovery Laboratory · a future expedition</span></div></section>`,
+    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">THE ADVENTURE ATLAS</p><h1>Choose your next<br>adventure.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}. Pick a destination and continue your journey.</p></div><div class="adventure-deck" aria-label="Available adventures"><button type="button" class="adventure-card mystery-card" data-action="mission" aria-label="${done ? 'Reopen' : state.missionStep ? 'Continue' : 'Begin'} lesson one, The missing trophy"><span class="adventure-card-top"><span class="adventure-index">LESSON 01</span><span class="adventure-state">${missionState}</span></span><span class="adventure-emblem">${icon('glass')}</span><span class="region">MYSTERY CITY · ENGLISH</span><strong>The missing trophy</strong><span class="adventure-copy">${done ? 'Case solved. Revisit the evidence and vocabulary.' : 'Follow a golden trail, examine clues and repair the detective report.'}</span><span class="adventure-action">${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <b>→</b></span><small>5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></button><button type="button" class="adventure-card maths-card" data-action="maths" aria-label="Open Number Kingdom"><span class="adventure-card-top"><span class="adventure-index">MATHS QUEST</span><span class="adventure-state">${mathsState}</span></span><span class="adventure-emblem">${icon('crystal')}</span><span class="region">NUMBER KINGDOM · CONFIDENCE PATH</span><strong>The crystal pathways</strong><span class="adventure-copy">Short Year 3–6 checks separate question language from mathematical thinking.</span><span class="adventure-action">${mathsDone ? 'Continue your path' : 'Start the recommended path'} <b>→</b></span><small>YEAR ${profile().year || 6} · ${mathsDone}/${mathsTotal} PATHS TRIED</small></button><button type="button" class="adventure-card words-card" data-action="words" aria-label="Enter Word Kingdom"><span class="adventure-card-top"><span class="adventure-index">WORD COLLECTION</span><span class="adventure-state">${reviews ? `${reviews} REVIEW${reviews === 1 ? '' : 'S'} DUE` : 'READY'}</span></span><span class="adventure-emblem">${icon('book')}</span><span class="region">WORD KINGDOM · BRITISH ENGLISH</span><strong>The living library</strong><span class="adventure-copy">Discover, hear and master curriculum spelling and useful school vocabulary.</span><span class="adventure-action">Enter the library <b>→</b></span><small>WORD STARS STAY SEPARATE FROM ADVENTURE XP</small></button><button type="button" class="adventure-card science-card" data-action="science" aria-label="Enter Discovery Laboratory"><span class="adventure-card-top"><span class="adventure-index">SCIENCE MISSION</span><span class="adventure-state">NEW LAB</span></span><span class="adventure-emblem">⚗</span><span class="region">DISCOVERY LABORATORY · MATERIALS</span><strong>The dissolving mystery</strong><span class="adventure-copy">Predict, test and explain why sugar seems to disappear but sand does not.</span><span class="adventure-action">Enter the laboratory <b>→</b></span><small>YEAR 5 REVIEW · YEAR 6 SCIENTIFIC THINKING</small></button>${cloudCards}</div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${reviews ? 'Recall trail · ' + reviews + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${button('cloud', cloudMissions.length ? 'Manage family missions' : 'Family missions', 'map-chip')}</div></section>`,
     'The Adventure Atlas',
   );
 }
@@ -346,14 +357,16 @@ function maths(index = -1) {
   if (index < 0) return mathsHub();
   mathIndex = index;
   mathSolved = false;
+  mathAttempts = 0;
   hinted = false;
   mathExtension = false;
   drawMaths();
 }
 function mathsHub() {
   const list = currentPuzzles();
+  const recommended = recommendedMathIndex();
   shell(
-    `<section class="maths-hub"><div class="maths-hub-heading"><span class="eyebrow">NUMBER KINGDOM · CHOOSE YOUR PATH</span><h1>Small steps. Strong thinking.</h1><p>Start anywhere. Earlier-year review is a strength check, not going backwards. Ratio and algebra will unlock only after their foundations are secure.</p></div><div class="maths-paths">${list.map((p, i) => `<button class="maths-path ${state.maths.includes(p.id) ? 'complete' : ''}" data-action="engine-${i}"><span>${state.maths.includes(p.id) ? '✓ SECURE' : `REVIEW · YEAR ${p.reviewYear}`}</span><b>${esc(p.strand)}</b><strong>${esc(p.name)}</strong><small>${esc(p.objective)}</small><i>${state.maths.includes(p.id) ? 'Practise again' : 'Start this short quest'} →</i></button>`).join('')}</div><div class="maths-later"><b>Coming later, when ready</b><span>Ratio</span><span>Algebra</span><p>These will not be used as surprise questions.</p></div></section>`,
+    `<section class="maths-hub"><div class="maths-hub-heading"><span class="eyebrow">NUMBER KINGDOM · CONFIDENCE MAP</span><h1>Small steps. Strong thinking.</h1><p>Earlier-year review is a strength check, not going backwards. The map recommends one useful next step and unlocks Year 6 bridges only when their foundations have been tried.</p><button class="primary" data-action="engine-${recommended}">Start recommended path →</button></div><div class="maths-paths">${list.map((p, i) => { const unlocked=mathsUnlocked(p), skillState=status(profile().skills[p.id]); return `<button class="maths-path ${state.maths.includes(p.id) ? 'complete' : ''} ${!unlocked ? 'locked' : ''}" ${unlocked ? `data-action="engine-${i}"` : 'disabled'}><span>${!unlocked ? 'LOCKED · BUILD FOUNDATIONS' : skillState === 'Review due' ? 'REVIEW DUE' : state.maths.includes(p.id) ? '✓ COMPLETED ONCE' : `CHECK · YEAR ${p.reviewYear}`}</span><b>${esc(p.strand)}</b><strong>${esc(p.name)}</strong><small>${esc(p.objective)}</small><i>${!unlocked ? `First: ${(p.requires || []).map((id:string)=>list.find(x=>x.id===id)?.name || id).join(' and ')}` : state.maths.includes(p.id) ? 'Practise or review again' : i === recommended ? 'Recommended next step →' : 'Start this short quest →'}</i></button>`; }).join('')}</div><div class="maths-later"><b>How mastery works</b><span>Try</span><span>Review later</span><span>Apply</span><p>One correct answer completes a path once. Secure mastery needs correct independent work again on later days.</p></div></section>`,
     'Number Kingdom / Choose a path',
   );
 }
@@ -374,6 +387,14 @@ function mathsModel(model: string) {
     return '<div class="measure-model" aria-label="Two and a half metres shown as 200 and 50 centimetres"><span>2 m<br><b>200 cm</b></span><i>+</i><span>0.5 m<br><b>50 cm</b></span></div>';
   if (model === 'triangle')
     return '<div class="triangle-model" aria-label="Triangle with angles 55 degrees, 65 degrees and an unknown angle"><span>55°</span><span>65°</span><span>?</span></div>';
+  if (model === 'subtraction') return '<div class="math-equation" aria-label="Column subtraction"><span>4,302</span><span>− 1,578</span><b>?</b></div>';
+  if (model === 'decimal') return '<div class="math-equation decimal-model" aria-label="Decimals aligned by decimal point"><span>2.35</span><span>+ 1.40</span><b>?</b></div>';
+  if (model === 'rectangle') return '<div class="rectangle-model" aria-label="Rectangle eight metres by five metres"><span>8 m</span><b>5 m</b><i>around the edge</i></div>';
+  if (model === 'coordinates') return '<div class="coordinate-model" aria-label="Coordinate grid with a point at three comma five"><span style="--x:3;--y:5">◆</span><b>(3, 5)</b></div>';
+  if (model === 'chart') return '<div class="bar-model" aria-label="Bar chart showing 18 on Monday and 27 on Tuesday"><span style="--h:60%">Mon <b>18</b></span><span style="--h:90%">Tue <b>27</b></span></div>';
+  if (model === 'two-step') return '<div class="step-model"><span>6 boxes × 8 maps</span><b>then</b><span>48 maps − 13 used</span></div>';
+  if (model === 'ratio') return '<div class="step-model"><span>2 explorers → 6 fruit</span><b>double</b><span>4 explorers → ? fruit</span></div>';
+  if (model === 'algebra') return '<div class="step-model"><span>□ + 7 = 19</span><b>undo +7</b><span>19 − 7 = □</span></div>';
   return '';
 }
 function drawMaths() {
@@ -407,7 +428,13 @@ function checkMath() {
   const accepted = mathExtension ? [answer] : (p.acceptedAnswers || [answer]);
   if (!accepted.map((x) => String(x).toLowerCase().replace(/[\s,]/g, '')).includes(normal)) {
     hinted = true;
-    feedback(`Try another way. ${p.hint}`);
+    mathAttempts++;
+    recordEvent(state, mathAttempts === 1 ? 'math_language_support' : 'math_strategy_support', { skill: p.id, attempt: mathAttempts });
+    feedback(mathAttempts === 1
+      ? `Let’s make the question clearer. ${p.language}`
+      : mathAttempts === 2
+        ? `Here is one smaller step: ${p.hint}`
+        : `Worked model: ${p.explain} You can copy the method, then try the stretch question when ready.`);
     evidence(state, p.id, false);
     save();
     return;
@@ -436,6 +463,23 @@ function download(name: string, value: unknown) {
   a.download = name;
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+function parentInsights() {
+  const attempts = (profile().events || []).filter((e: any) => e.type === 'skill_attempted');
+  const recent = attempts.filter((e: any) => e.at >= Date.now() - 7 * 86400000);
+  const supported = recent.filter((e: any) => e.assisted || !e.correct).length;
+  const due = currentPuzzles().filter((p) => status(profile().skills[p.id]) === 'Review due');
+  const next = currentPuzzles()[recommendedMathIndex()];
+  return {
+    recent: recent.length,
+    supported,
+    due,
+    recommendation: due.length
+      ? `Review ${due[0].name}; it is due now and has already been seen before.`
+      : next
+        ? `Try ${next.name} next. It is the first useful unlocked step on the confidence map.`
+        : 'Repeat a familiar path in a new context.',
+  };
 }
 function parent() {
   openDialog(
@@ -466,6 +510,10 @@ function parent() {
         '',
       )}</div></details><details><summary>Private backup and device data</summary>${button('export-progress', 'Export private progress', 'secondary')}${button('delete-progress', 'Reset local progress', 'quiet')}<p>No child account, microphone access, advertising, trackers or cloud synchronisation. Speaking practice is optional and is never scored. Support for a stammer itself should be guided by a qualified speech and language therapist.</p></details>`,
   );
+  const insight = parentInsights();
+  const stats = document.querySelector('#overlay .parent-stats');
+  stats?.insertAdjacentHTML('afterend', `<section class="parent-insight"><span class="eyebrow">THIS WEEK · LOCAL LEARNING SIGNALS</span><h3>Recommended next step</h3><p>${esc(insight.recommendation)}</p><div><span><b>${insight.recent}</b> skill attempts</span><span><b>${insight.supported}</b> needed a clue or retry</span><span><b>${insight.due.length}</b> maths reviews due</span></div><h4>Record a quick observation</h4><p class="muted">Choose only what you observed. No free-text answer or voice recording is stored.</p><div class="choices">${button('observe-independent','Understood independently','quiet')}${button('observe-language','Question wording needed explaining','quiet')}${button('observe-model','A visual maths model helped','quiet')}${button('observe-unfamiliar','Topic was unfamiliar','quiet')}</div><p id="observation-status" role="status"></p></section>`);
+  if (stats?.nextElementSibling) bind(stats.nextElementSibling);
   document
     .querySelector('#audio-file')!
     .addEventListener('change', audioImport);
@@ -662,6 +710,10 @@ async function action(id: string, b: HTMLButtonElement) {
     window.location.assign('/adam/words/');
     return;
   }
+  if (id === 'science') {
+    window.location.assign('/adam/science/');
+    return;
+  }
   if (id === 'mission') {
     recordEvent(state, 'mission_started', { mission: 'trophy' });
     if (state.missionStep === 6) {
@@ -686,6 +738,16 @@ async function action(id: string, b: HTMLButtonElement) {
   }
   if (id === 'parent') {
     parent();
+    return;
+  }
+  if (id.startsWith('observe-')) {
+    const kind = id.slice(8);
+    if (['independent','language','model','unfamiliar'].includes(kind)) {
+      recordEvent(state, `parent_observation_${kind}`, { status: 'observed' });
+      save();
+      const note = document.querySelector('#observation-status');
+      if (note) note.textContent = 'Observation saved on this device. It will inform the next review choice.';
+    }
     return;
   }
   if (id === 'close') {

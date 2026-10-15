@@ -1,5 +1,13 @@
 # Verification report — 15 October 2026
 
+## Adaptive expansion — 15 October 2026
+
+- `npm test`: 44/44 passing, including backend/RLS, generation limits, full learner journey, daily word trail, asset registry and the complete science lab journey.
+- `npm run build`: TypeScript check, Vite production bundle and `/adam/` staging completed successfully.
+- Generated output uses the `/adam/` base path and includes the separate static `/adam/science/` and `/adam/words/` experiences.
+- No paid service, automatic audio generation, microphone recording, Reward Credits or device-control integration was enabled.
+- Device speech remains dependent on the voices installed by the browser or operating system. Approved provider clips are played only when present in the reviewed manifest.
+
 ## Deep learning polish — 16 October 2026
 
 - Strict TypeScript, Vite `/adam/` production build and staging passed.

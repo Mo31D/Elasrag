@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { Window } from 'happy-dom';
 import { WORDS, STAGES, ART_BIBLE } from '../../words/words-data.js';
 import { artSvg } from '../../words/art.js';
+import {ILLUSTRATIONS,illustrationKey,ILLUSTRATION_REGISTRY_VERSION} from '../../words/asset-registry.js';
 import { DFE_34_ENTRIES,DFE_56_ENTRIES,DFE_34_VARIANTS,DFE_56_VARIANTS,DFE_Y1_EXCEPTION_EXAMPLES,DFE_Y2_EXCEPTION_EXAMPLES } from '../../words/curriculum-dfe.js';
 import { curriculumLinks,belongsToBand,sourceLabel,CURRICULUM_BANDS } from '../../words/curriculum-index.js';
 
@@ -30,6 +31,13 @@ test('every word has an accessible vector fallback without external assets', () 
   }
   assert.ok(artSvg({term:'<script>alert(1)</script>',art:'book'}).includes('&lt;script&gt;'));
 });
+test('illustrations use a versioned reusable registry',()=>{
+ assert.equal(ILLUSTRATION_REGISTRY_VERSION,1);
+ assert.equal(illustrationKey('science'),'science');
+ assert.equal(illustrationKey('unknown-concept'),'book');
+ assert.ok(Object.keys(ILLUSTRATIONS).length>=20);
+ for(const w of WORDS)assert.ok(ILLUSTRATIONS[illustrationKey(w.art)]);
+});
 const window=new Window({url:'https://www.elasrag.com/adam/words/'});
 window.document.body.innerHTML='<main id="app"></main>';
 globalThis.window=window;
@@ -38,9 +46,18 @@ globalThis.localStorage=window.localStorage;
 await import('../../words/app.js');
 test('initial main view displays twelve playable cards and profile/stage filters',()=>{
   assert.equal(document.querySelectorAll('[data-open]').length,12);
-  assert.equal(document.querySelectorAll('[data-filter]').length,8);
+  assert.equal(document.querySelectorAll('[data-filter]').length,9);
   assert.ok(document.querySelector('.wk-star').textContent.includes('0'));
   assert.equal(document.querySelector('#wk-profile').value,'explorer');
+});
+test('daily trail is a focused deterministic set of six eligible words',()=>{
+ document.querySelector('[data-filter="daily"]').click();
+ assert.equal(document.querySelectorAll('[data-open]').length,6);
+ const first=[...document.querySelectorAll('[data-open]')].map(x=>x.dataset.open);
+ document.querySelector('[data-filter="all"]').click();
+ document.querySelector('[data-filter="daily"]').click();
+ assert.deepEqual([...document.querySelectorAll('[data-open]')].map(x=>x.dataset.open),first);
+ document.querySelector('[data-filter="all"]').click();
 });
 test('school language is a distinct reviewed collection, not statutory spelling or enrichment',()=>{
  const selector=document.querySelector('#wk-collection');selector.value='school';

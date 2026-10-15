@@ -310,6 +310,11 @@ p {
     radial-gradient(circle at 88% 8%, #bf8cf054, transparent 29%),
     linear-gradient(145deg, #243c5bf5, #152b46ee);
 }
+.adventure-card.science-card {
+  background: linear-gradient(145deg, #1d5c54ee, #17384bee), radial-gradient(circle at 80% 15%, #91e1ad55, transparent 42%);
+  border-color: #8fd8aa88;
+}
+.science-card .adventure-emblem { color: #b9efc5; font-size: 42px; }
 .adventure-card-top {
   width: 100%;
   display: flex;
@@ -1098,6 +1103,8 @@ input[type='number'] {
 }
 .maths-path:hover,.maths-path:focus-visible { transform: translateY(-4px); border-color: #f4d38c; }
 .maths-path.complete { border-color: #f0d083; background: linear-gradient(145deg, #375950, #17394a); }
+.maths-path.locked { opacity: .62; filter: saturate(.65); cursor: not-allowed; }
+.maths-path.locked:hover { transform: none; border-color: #86c7ba70; }
 .maths-path span { color: #a8d9ca; font-size: 9px; font-weight: 800; letter-spacing: 1.6px; }
 .maths-path b { color: #f1cc83; font-size: 12px; margin: 16px 0 5px; }
 .maths-path strong { font-family: Georgia,serif; font-size: 24px; }
@@ -1106,6 +1113,9 @@ input[type='number'] {
 .maths-later { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: #c1d7cf; }
 .maths-later span { border: 1px solid #91b9ae50; border-radius: 999px; padding: 7px 12px; }
 .maths-later p { width: 100%; margin: 0; font-size: 11px; color: #98b9b0; }
+.parent-insight { margin:18px 0; padding:18px; border-radius:14px; background:#dfe8d9; border:1px solid #b2c6b8; color:#28484b; }
+.parent-insight h3 { margin:7px 0; }.parent-insight h4{margin-bottom:5px}
+.parent-insight>div:not(.choices){display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.parent-insight>div>span{background:#f8f6e9;border-radius:9px;padding:10px;font-size:11px}.parent-insight>div>span b{display:block;font-size:22px;color:#287367}
 .math-brief { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0 18px; }
 .math-brief p { margin: 0; padding: 13px; border-radius: 10px; background: #dce7d8; line-height: 1.5; }
 .math-brief b { display: block; color: #236d63; margin-bottom: 5px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
@@ -1127,6 +1137,16 @@ input[type='number'] {
 .triangle-model:after { content:''; position:absolute; inset:12px; clip-path:inherit; background:#edf0df; }
 .triangle-model span { position:absolute; z-index:1; color:#244b4d; font-weight:800; }
 .triangle-model span:nth-child(1){left:23px;bottom:12px}.triangle-model span:nth-child(2){right:23px;bottom:12px}.triangle-model span:nth-child(3){left:105px;top:28px}
+.math-equation { display:grid; width:max-content; min-width:180px; margin:18px auto; font:800 24px/1.25 ui-monospace,monospace; text-align:right; }
+.math-equation span:last-of-type { border-bottom:2px solid #385e5d; padding-bottom:4px; }
+.math-equation b { color:#9a6a1d; padding-top:5px; }
+.rectangle-model { width:230px; height:130px; margin:20px auto; border:5px solid #4c9684; position:relative; display:grid; place-items:center; background:#e9e8c8; }
+.rectangle-model span { position:absolute; top:-25px; }.rectangle-model b { position:absolute; left:-38px; transform:rotate(-90deg); }.rectangle-model i { color:#51716a; font-size:12px; }
+.coordinate-model { width:230px; height:190px; margin:20px auto; position:relative; background-image:linear-gradient(#8eb5ab55 1px,transparent 1px),linear-gradient(90deg,#8eb5ab55 1px,transparent 1px); background-size:32px 27px; border-left:3px solid #486e69; border-bottom:3px solid #486e69; }
+.coordinate-model span { position:absolute; left:calc(var(--x) * 32px - 9px); bottom:calc(var(--y) * 27px - 9px); color:#c68e27; font-size:22px; }.coordinate-model b{position:absolute;right:8px;top:8px}
+.bar-model { height:170px; display:flex; align-items:end; justify-content:center; gap:24px; margin:18px 0; border-bottom:2px solid #5e7c75; }
+.bar-model span { height:var(--h); width:78px; padding:8px; display:flex; flex-direction:column; justify-content:flex-end; text-align:center; background:linear-gradient(#72b9a8,#397c79); color:white; border-radius:7px 7px 0 0; }.bar-model b{font-size:22px}
+.step-model { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:10px; margin:18px 0; }.step-model span{padding:13px;border:1px solid #8bb0a5;border-radius:10px;background:#e3e9d8;font-weight:700}.step-model b{color:#7a6637;font-size:11px;text-transform:uppercase;letter-spacing:1px}
 .atlas:has(.generated-card) { min-height: 1080px; }
 
 @media (max-width: 1000px) {
@@ -1141,6 +1161,7 @@ input[type='number'] {
   .place-value-model span { font-size: 17px; padding: 10px 2px; }
   .place-value-model small { font-size: 6px; }
   .atlas:has(.generated-card) { min-height: 1730px; }
+  .parent-insight>div:not(.choices){grid-template-columns:1fr}
 }
 .custom-world {
   min-height: 700px;

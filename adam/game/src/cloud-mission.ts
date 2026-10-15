@@ -13,6 +13,21 @@ function message(text: string) {
   const node = document.querySelector('#cloud-message');
   if (node) node.textContent = text;
 }
+function speakBritish(text: string, slow = false) {
+  if (!('speechSynthesis' in window)) {
+    message('Speech is unavailable in this browser. Use the written word instead.');
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const voices = window.speechSynthesis.getVoices();
+  const voice = voices.find((v) => v.lang.toLowerCase() === 'en-gb') || voices.find((v) => v.lang.toLowerCase().startsWith('en-'));
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-GB'; utterance.voice = voice || null;
+  utterance.rate = slow ? 0.78 : 0.92; utterance.pitch = 1;
+  utterance.onerror = () => message('The device voice did not play. Try again or read the text.');
+  window.speechSynthesis.speak(utterance);
+  message(voice?.lang.toLowerCase().startsWith('en-gb') ? 'Playing the British English voice installed on this device.' : 'Playing the best English voice available on this device.');
+}
 export function feelingIllustration(word: string) {
   const mouth =
     word === 'relieved' || word === 'confident'
@@ -54,7 +69,7 @@ export function playCloudLesson(
         stage === 'story'
           ? `<img class="cloud-characters" src="/adam/assets/characters.svg" alt="Maya and Leo, the school detectives"><p class="cloud-story">${esc(l.story[scene])}</p>${btn('continue', scene < l.story.length - 1 ? 'Explore the next clue →' : 'Discover the word →', 'primary')}`
           : stage === 'word'
-            ? `<div class="word-illustration">${feelingIllustration(l.word)}</div><h2>${esc(l.word)}</h2><p>${esc(l.definition)}</p><blockquote>${esc(l.example)}</blockquote>${btn('practice', 'Try without the model →', 'primary')}`
+            ? `<div class="word-illustration">${feelingIllustration(l.word)}</div><h2>${esc(l.word)}</h2><p>${esc(l.definition)}</p><blockquote>${esc(l.example)}</blockquote><div class="choices">${btn('hear-word','♫ Hear word')}${btn('hear-slow','Slower')}${btn('hear-example','Hear example')}</div><p class="muted">Device-generated speech is a fallback, not approved studio audio. No recording or network call is used.</p>${btn('practice', 'Try without the model →', 'primary')}`
             : stage === 'vocabulary'
               ? `<p>${esc(l.question)}</p><div class="choices">${l.choices.map((c, i) => btn('answer:' + i, esc(c))).join('')}</div>${btn('hint', 'A little help', 'quiet')}`
               : stage === 'sentence'
@@ -82,6 +97,10 @@ export function playCloudLesson(
           lastAction = now;
           if (action === 'return') {
             hooks.map();
+            return;
+          }
+          if (action === 'hear-word' || action === 'hear-slow' || action === 'hear-example') {
+            speakBritish(action === 'hear-example' ? l.example : l.word, action === 'hear-slow');
             return;
           }
           if (action === 'practice') {

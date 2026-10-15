@@ -102,13 +102,14 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   const tick = () => new Promise((r) => setImmediate(r));
   const text = () => document.querySelector('#app').textContent;
   const stored = () => JSON.parse(localStorage.getItem('ala-adventure-v1'));
-  assert.equal(document.querySelectorAll('.adventure-card').length, 3);
+  assert.ok(document.querySelectorAll('.adventure-card').length >= 4);
   assert.match(text(), /LESSON 01/);
   assert.match(text(), /MATHS QUEST/);
   assert.match(text(), /WORD COLLECTION/);
   assert.ok(document.querySelector('.adventure-card[data-action="mission"]'));
   assert.ok(document.querySelector('.adventure-card[data-action="maths"]'));
   assert.ok(document.querySelector('.adventure-card[data-action="words"]'));
+  assert.ok(document.querySelector('.adventure-card[data-action="science"]'));
   assert.match(text(), /Begin investigation/);
   assert.match(text(), /Family missions/);
   click('mission');
@@ -170,7 +171,7 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   document
     .querySelector('#math-form')
     .dispatchEvent(new win.Event('submit', { cancelable: true }));
-  assert.match(text(), /Try another way/);
+  assert.match(text(), /make the question clearer/);
   answer.value = '700';
   document
     .querySelector('#math-form')

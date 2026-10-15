@@ -1,6 +1,17 @@
 # Adam Learning Adventures — first playable adventure
 
-A local-first illustrated detective adventure and three mathematical puzzle engines, built in TypeScript with Vite. The root Elasrag site is untouched. This release changes only `/adam/`. Automatic publication of tested milestones is authorised by the project owner.
+## 2026-10-15 adaptive learning expansion
+
+- Number Kingdom now contains 14 short Year 3–6 confidence paths across number, operations, fractions, decimals, percentages, measurement, geometry, coordinates, statistics, problem solving, ratio and algebra.
+- Incorrect maths answers receive language clarification first, then a smaller strategy step, then a worked model. Ratio and algebra are gated by prerequisite paths.
+- Word Kingdom includes a deterministic six-word daily trail, 632 unique cards, a versioned illustration registry and an approved-audio manifest with honest device-voice fallback.
+- Discovery Laboratory adds a playable dissolving investigation at `/adam/science/`.
+- Parent Desk now summarises recent evidence, recommends a next maths step and accepts four privacy-preserving observation types.
+- Generated English missions can use a local British-English device voice without sending text or speech recordings to a provider. Episode 1 retains its original supplied narration.
+
+Mastery, adventure XP and Word Stars remain separate. A first correct maths answer records completion once; secure mastery still requires independent evidence on later days.
+
+A local-first illustrated detective adventure with adaptive mathematics, Word Kingdom and Discovery Laboratory, built in TypeScript with Vite. The root Elasrag site is untouched. This release changes only `/adam/`. Automatic publication of tested milestones is authorised by the project owner.
 
 ## Play and develop
 
