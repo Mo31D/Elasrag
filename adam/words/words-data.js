@@ -1,4 +1,5 @@
 import { EXPANDED_WORDS } from './words-expanded.js';
+import { DFE_NEW_WORD_CARDS } from './dfe-new-cards.js';
 // Reviewed starter pack — not a comprehensive statutory vocabulary list.
 // Year bands are editorial sequencing; see SOURCES.md for statutory spelling distinctions.
 const ORIGINAL_WORDS = [
@@ -928,6 +929,6 @@ const ORIGINAL_WORDS = [
   }
 ];
 // Keep original word identifiers stable so existing learner progress remains intact.
-export const WORDS = Object.freeze([...ORIGINAL_WORDS,...EXPANDED_WORDS]);
+export const WORDS = Object.freeze([...ORIGINAL_WORDS,...EXPANDED_WORDS,...DFE_NEW_WORD_CARDS]);
 export const STAGES = ['Reception','Year 1','Year 2','Year 3','Year 4','Year 5','Year 6'];
 export const ART_BIBLE = Object.freeze({style:'premium layered storybook 2D animation, expressive clear subject, consistent midnight blue, teal, cream and antique gold; no embedded lettering',aspectRatio:'4:3',locale:'en-GB',policy:'paid image generation disabled by default; adult review before publication'});
