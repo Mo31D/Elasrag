@@ -1,0 +1,43 @@
+name: Adam Word Kingdom checks
+
+on:
+  pull_request:
+    paths:
+      - 'adam/words/**'
+      - 'adam/game/tests/word-kingdom.test.mjs'
+      - '.github/workflows/adam-word-kingdom.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'adam/words/**'
+      - 'adam/game/tests/word-kingdom.test.mjs'
+      - '.github/workflows/adam-word-kingdom.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  word-kingdom:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: adam/game/package-lock.json
+      - run: npm ci --prefix adam/game
+      - name: Syntax check and full game tests
+        run: |
+          node --check adam/words/words-data.js
+          node --check adam/words/art.js
+          node --check adam/words/app.js
+          npm --prefix adam/game test
+      - name: Ensure standalone route and safety guarantees
+        run: |
+          test -f adam/words/index.html
+          grep -q '/adam/' adam/words/app.js
+          ! grep -R -E '(AIza[0-9A-Za-z_-]{25,}|sb_secret_)' adam/words/
+          npm --prefix adam/game run build
