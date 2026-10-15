@@ -49,13 +49,27 @@ test('opens word and shows independent learning tasks without recording speech',
 });
 test('spelling can be checked without voice scoring and first correct earns word stars',()=>{
   document.querySelector('[data-task="spelling"]').click();
-  const w=WORDS.find(v=>document.querySelector('.wk-word-intro').textContent.includes('Listen carefully'));
-  assert.ok(w);
   document.querySelector('#wk-spell').value='wrong';
   document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   assert.ok(document.querySelector('.wk-feedback.retry'));
   document.querySelector('#wk-again').click();
-  const wanted=WORDS.find(x=>x.id==='apple'); // first card's actual target is found from card order below
-  const firstId=document.querySelector('#wk-spell')?document.querySelector('.wk-lesson .wk-eyebrow').textContent:null;
-  assert.ok(firstId!==null);
+  document.querySelector('#wk-spell').value='apple';
+  document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
+  assert.ok(document.querySelector('.wk-feedback.good'));
+  assert.ok(document.querySelector('.wk-feedback').textContent.includes('+2 word stars'));
+  document.querySelector('#wk-again').click();
+  document.querySelector('#wk-spell').value='apple';
+  document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
+  assert.ok(!document.querySelector('.wk-feedback').textContent.includes('+2 word stars'));
+  assert.equal(JSON.parse(localStorage.getItem('ala-word-kingdom-v1')).learners.explorer.stars,2);
+});
+
+test('game link returns to existing Adam Atlas, and stage filters are cumulative',()=>{
+ document.querySelector('#wk-to-map').click();
+ document.querySelector('[data-filter="6"]').click();
+ assert.equal(document.querySelectorAll('[data-open]').length,12);
+ assert.equal(document.querySelector('.wk-back').getAttribute('href'),'/adam/');
+ document.querySelector('[data-filter="all"]').click();
+ assert.equal(document.querySelectorAll('[data-open]').length,12); // first page of 84
+ assert.ok(document.querySelector('.wk-section-bar').textContent.includes('dictionary'));
 });
