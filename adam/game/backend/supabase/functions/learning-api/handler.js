@@ -147,6 +147,17 @@ export function createHandler({ env, fetch, validate, schema }) {
           model: 'gemini-flash-lite-latest',
           audioEnabled: false,
         });
+      if (body.action === 'reset-learning') {
+        // Authenticated, active and verified parent (checked above). No audio,
+        // generated lessons, family accounts or shared assets are deleted.
+        if (body.confirm !== 'RESET CLOUD LEARNING')
+          throw new ApiError('explicit_parent_confirmation_required', 409);
+        const result = await rest('rpc/ala_reset_cloud_learning', 'POST', {
+          p_parent: owner,
+          p_confirm: body.confirm,
+        });
+        return reply(result);
+      }
       if (body.action === 'dashboard') {
         const [
           students,
