@@ -1,6 +1,5 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { Window } from 'happy-dom';
 import ts from 'typescript';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 const temp = new URL('../.cloud-test-build/', import.meta.url);
@@ -31,26 +30,17 @@ for (const file of ['cloud-mission', 'cloud']) {
     }).outputText,
   );
 }
-const { openCloudDesk, CloudGateway } = await import(
-  new URL('cloud.mjs', temp)
-);
-test('unverified project configuration leaves cloud disconnected and explains safe setup', async () => {
-  const win = new Window();
-  globalThis.document = win.document;
-  let title = '';
-  await openCloudDesk({
-    openDialog(t, html) {
-      title = t;
-      document.body.innerHTML = html;
-    },
-    closeDialog() {},
-    shell() {},
-    map() {},
-    setView() {},
-  });
-  assert.equal(title, 'Secure family learning');
-  assert.match(document.body.textContent, /Cloud connection is not active/);
-  assert.equal(document.querySelector('input[type=password]'), null);
+const { CloudGateway } = await import(new URL('cloud.mjs', temp));
+test('verified Adam project configuration accepts only its public client shape', async () => {
+  const config = JSON.parse(
+    await readFile(new URL('../src/cloud-config.json', import.meta.url), 'utf8'),
+  );
+  assert.equal(config.enabled, true);
+  assert.match(config.projectUrl, /^https:\/\/[a-z0-9-]+\.supabase\.co$/);
+  assert.match(config.publishableKey, /^sb_publishable_/);
+  assert.doesNotThrow(
+    () => new CloudGateway(config.projectUrl, config.publishableKey),
+  );
   assert.throws(
     () => new CloudGateway('https://untrusted.test', 'secret'),
     /verified cloud configuration/,
