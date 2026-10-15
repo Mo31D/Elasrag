@@ -123,6 +123,11 @@ const icon = (id: string) => {
   };
   return `<svg ${common}>${paths[id] || paths.glass}</svg>`;
 };
+// Resume with the authoritative progress ledger after returning from standalone games.
+// Otherwise the browser back-forward cache can restore stale XP and overwrite awards.
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) { state = load(storage); map(); }
+});
 function save() {
   captureRun(state);
   try {
