@@ -35,7 +35,7 @@ function motif(key){
 }
 export function artSvg(word, extraClass=''){
  const key=word && typeof word.art==='string' ? word.art : 'book';
- const title=String(word && word.term || 'Vocabulary illustration').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;');
+ const title=String(word && word.term || 'Vocabulary illustration').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
  const raw=motif(key);
  return '<svg class="wk-art '+extraClass+'" viewBox="0 0 620 430" role="img" aria-label="Illustration for '+title+'" xmlns="http://www.w3.org/2000/svg">'
  +'<defs><linearGradient id="wk-sky" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#18394d"/><stop offset=".57" stop-color="#286b75"/><stop offset="1" stop-color="#a2bda9"/></linearGradient><linearGradient id="wk-floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#eadcaa"/><stop offset="1" stop-color="#b49c77"/></linearGradient><filter id="wk-shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#0a2332" flood-opacity=".33"/></filter></defs>'
