@@ -26,4 +26,6 @@ function act(id){
  if(id==='answer-correct'){state.step=4;state.completed=true;save();creditLearning(localStorage,{profileId:active.id,awardId:SCIENCE_AWARD,amount:10,subject:'science'});return render()}
  if(id==='restart'){state={step:0,prediction:null,tests:{},attempts:0,completed:false};save();return render()}
 }
+window.addEventListener('pageshow',event=>{if(event.persisted)window.location.reload()});
+window.addEventListener('storage',event=>{if(event.key==='ala-adventure-v1'||event.key===STORE)window.location.reload()});
 render();
