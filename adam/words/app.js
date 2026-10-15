@@ -35,6 +35,9 @@ function rating(word,facet){let t=record(word,facet);if(!t.strength)return 'New'
 function dueCount(){return WORDS.filter(w=>w.stage<=student().year).reduce((n,w)=>n+FACETS.filter(f=>record(w,f).due>0 && record(w,f).due<=Date.now()).length,0)}
 function wordStat(w){const facts=FACETS.filter(f=>record(w,f).days>=1);return facts.length}
 function stageCount(i){return WORDS.filter(w=>w.stage===i).length}
+function wordScope(){return WORDS.filter(w=>w.stage<=student().year&&(filter==='all'||filter==='due'||String(w.stage)===filter))}
+function currentThemeCounts(){const counts=new Map(); for(const w of wordScope())counts.set(w.theme,(counts.get(w.theme)||0)+1);return counts}
+function ensureValidTheme(){const counts=currentThemeCounts();if(theme!=='all'&&!counts.has(theme))theme='all'}
 function storeAnswer(word,facet,correct,helped){
  const rec=record(word,facet),today=isoDate();
  if(correct && !helped){
@@ -51,6 +54,7 @@ function storeAnswer(word,facet,correct,helped){
 }
 function status(text){const el=document.querySelector('#status');if(el)el.textContent=text;}
 function selectedWords(){
+ ensureValidTheme();
  const upper=student().year;
  return WORDS.filter(w=>w.stage<=upper&&(filter==='all'||filter==='due'&&FACETS.some(f=>rating(w,f)==='Review due')||String(w.stage)===filter)&&
  (theme==='all'||w.theme===theme)&&
@@ -67,10 +71,12 @@ function shell(){
  '<div class="wk-chapters"><button data-filter="all" class="'+(filter==='all'?'active':'')+'">All foundations <small>0–'+student().year+'</small></button>'+Array.from({length:student().year+1},(_,i)=>'<button data-filter="'+i+'" class="'+(filter===String(i)?'active':'')+'">'+nameStage(i)+'<small>'+stageCount(i)+' words</small></button>').join('')+'<button data-filter="due" class="'+(filter==='due'?'active':'')+'">↻ Reviews due <small>'+dueCount()+'</small></button></div>';
 }
 function menu(){
- const themes=[...new Set(WORDS.filter(w=>w.stage<=student().year).map(w=>w.theme))].sort();
- const list=selectedWords();const totalPages=Math.max(1,Math.ceil(list.length/12));
+ const list=selectedWords();
+ const themeCounts=currentThemeCounts();
+ const themes=[...themeCounts.keys()].sort();
+ const totalPages=Math.max(1,Math.ceil(list.length/12));
  page=Math.min(page,totalPages-1);
- return shell()+'<section class="wk-main"><div class="wk-section-bar"><div><span class="wk-eyebrow">THE WORD COLLECTION</span><h2>'+(filter==='all'?'Your growing dictionary':filter==='due'?'Ready for another look':nameStage(+filter)+' discoveries')+'</h2><p>12 words per page · Tap a card to practise at your own pace.</p></div><div class="wk-search"><label for="wk-search">Find a word</label><input id="wk-search" type="search" placeholder="Search words, meanings…" value="'+esc(query)+'" autocomplete="off"/><label for="wk-theme">Theme</label><select id="wk-theme"><option value="all">All themes</option>'+themes.map(t=>'<option '+(theme===t?'selected':'')+'>'+esc(t)+'</option>').join('')+'</select></div></div><div class="wk-grid">'+list.slice(page*12,page*12+12).map(w=>'<button class="wk-word" data-open="'+esc(w.id)+'" aria-label="Learn '+esc(w.term)+'"><div class="wk-picture">'+artSvg(w)+'</div><div class="wk-word-meta"><span class="wk-stage">'+nameStage(w.stage)+'</span><span class="wk-master">'+wordStat(w)+'/4 skills</span></div><b>'+esc(w.term)+'</b><span>'+esc(w.definition)+'</span><span class="wk-explore">Explore word →</span></button>').join('')+'</div>'+(!list.length?'<div class="wk-empty">No words match this view. Choose another stage or search.</div>':'')+'<div class="wk-pagination"><button id="wk-prev" '+(!page?'disabled':'')+'>← Previous</button><span>Page '+(page+1)+' / '+totalPages+'</span><button id="wk-next" '+(page===totalPages-1?'disabled':'')+'>Next →</button></div></section><section class="wk-bottom"><div><h2>Growing, not guessing.</h2><p>Recognising a word, spelling it, and using it in a sentence are different skills. We keep track of each separately. A slow answer or a repeated sound never loses you points.</p></div><div class="wk-actions"><button id="wk-export">Export learning backup</button><button id="wk-artbrief">Download art briefs</button></div></section>';
+ return shell()+'<section class="wk-main"><div class="wk-section-bar"><div><span class="wk-eyebrow">THE WORD COLLECTION</span><h2>'+(filter==='all'?'Your growing dictionary':filter==='due'?'Ready for another look':nameStage(+filter)+' discoveries')+'</h2><p>12 words per page · Tap a card to practise at your own pace.</p></div><div class="wk-search"><label for="wk-search">Find a word</label><input id="wk-search" type="search" placeholder="Search words, meanings…" value="'+esc(query)+'" autocomplete="off"/><label for="wk-theme">Theme</label><select id="wk-theme"><option value="all">All themes</option>'+themes.map(t=>'<option value="'+esc(t)+'" '+(theme===t?'selected':'')+'>'+esc(t)+' ('+themeCounts.get(t)+')</option>').join('')+'</select></div></div><div class="wk-grid">'+list.slice(page*12,page*12+12).map(w=>'<button class="wk-word" data-open="'+esc(w.id)+'" aria-label="Learn '+esc(w.term)+'"><div class="wk-picture">'+artSvg(w)+'</div><div class="wk-word-meta"><span class="wk-stage">'+nameStage(w.stage)+'</span><span class="wk-master">'+wordStat(w)+'/4 skills</span></div><b>'+esc(w.term)+'</b><span>'+esc(w.definition)+'</span><span class="wk-explore">Explore word →</span></button>').join('')+'</div>'+(!list.length?'<div class="wk-empty">No words match this view. Choose another stage or search.</div>':'')+'<div class="wk-pagination"><button id="wk-prev" '+(!page?'disabled':'')+'>← Previous</button><span>Page '+(page+1)+' / '+totalPages+'</span><button id="wk-next" '+(page===totalPages-1?'disabled':'')+'>Next →</button></div></section><section class="wk-bottom"><div><h2>Growing, not guessing.</h2><p>Recognising a word, spelling it, and using it in a sentence are different skills. We keep track of each separately. A slow answer or a repeated sound never loses you points.</p></div><div class="wk-actions"><button id="wk-export">Export learning backup</button><button id="wk-artbrief">Download art briefs</button></div></section>';
 }
 function wordHeader(w){
  return '<div class="wk-lesson-top"><button class="wk-return" id="wk-to-map">← All words</button><span class="wk-eyebrow">'+esc(nameStage(w.stage))+' • '+esc(w.theme)+'</span><span class="wk-skillcount">'+wordStat(w)+'/4 skills practised</span></div>';
@@ -125,7 +131,7 @@ function render(){
 }
 function bindMenu(){
  document.querySelector('#wk-profile')?.addEventListener('change',e=>{profileId=e.target.value;filter='all';theme='all';page=0;render();});
- document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;page=0;render();}));
+ document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;page=0;ensureValidTheme();render();}));
  document.querySelector('#wk-search')?.addEventListener('input',e=>{query=e.target.value;page=0;const caret=e.target.selectionStart;render();const el=document.querySelector('#wk-search');el.focus();el.setSelectionRange(caret,caret);});
  document.querySelector('#wk-theme')?.addEventListener('change',e=>{theme=e.target.value;page=0;render();});
  document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openWord(b.dataset.open)));
