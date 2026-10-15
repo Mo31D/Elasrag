@@ -102,6 +102,13 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   const tick = () => new Promise((r) => setImmediate(r));
   const text = () => document.querySelector('#app').textContent;
   const stored = () => JSON.parse(localStorage.getItem('ala-adventure-v1'));
+  assert.equal(document.querySelectorAll('.adventure-card').length, 3);
+  assert.match(text(), /LESSON 01/);
+  assert.match(text(), /LESSON 02/);
+  assert.match(text(), /WORD COLLECTION/);
+  assert.ok(document.querySelector('.adventure-card[data-action="mission"]'));
+  assert.ok(document.querySelector('.adventure-card[data-action="maths"]'));
+  assert.ok(document.querySelector('.adventure-card[data-action="words"]'));
   assert.match(text(), /Begin investigation/);
   assert.match(text(), /Family missions/);
   click('mission');

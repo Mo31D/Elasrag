@@ -230,7 +230,7 @@ p {
 }
 .map-heading {
   position: absolute;
-  top: 6%;
+  top: 5%;
   left: 6%;
 }
 .eyebrow {
@@ -248,37 +248,116 @@ p {
   font-size: 13px;
   color: #c3ded5;
   margin-top: 13px;
+  max-width: 430px;
+  line-height: 1.55;
 }
-.map-label {
+.adventure-deck {
   position: absolute;
-  max-width: 340px;
-  background: linear-gradient(135deg, #133449f2, #123346e6);
-  border: 1px solid #e1d29a50;
-  border-radius: 10px;
-  padding: 22px 25px;
-  box-shadow: 0 14px 40px #061f3d66;
+  left: 5%;
+  right: 5%;
+  top: 35%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(14px, 2vw, 28px);
+  align-items: stretch;
 }
-.map-label.school {
-  left: 18%;
-  top: 55%;
+.adventure-card {
+  position: relative;
+  min-width: 0;
+  min-height: 310px;
+  padding: 22px 22px 20px;
+  border: 1px solid #d9c99366;
   border-top: 3px solid var(--gold);
+  border-radius: 18px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  color: #f8f4df;
+  background:
+    radial-gradient(circle at 88% 8%, #eccb7650, transparent 28%),
+    linear-gradient(145deg, #173d51f5, #0d293bee);
+  box-shadow: 0 18px 46px #03152688, inset 0 1px #ffffff12;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
-.map-label.tower {
-  right: 10%;
-  top: 66%;
-  border-top: 3px solid var(--teal);
-  max-width: 305px;
+.adventure-card:before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid #ffffff10;
+  border-radius: 12px;
+  pointer-events: none;
 }
-.map-label.words {
-  right: 8%;
-  top: 29%;
-  max-width: 300px;
-  border-top: 3px solid #e8bc70;
-  background: linear-gradient(135deg, #173d51f5, #1b4f59ed);
+.adventure-card:hover,
+.adventure-card:focus-visible {
+  transform: translateY(-7px);
+  border-color: #f4d98fb8;
+  box-shadow: 0 25px 58px #031526a8, 0 0 0 3px #e9cf7740;
 }
-.map-label.words .secondary svg {
-  width: 21px;
-  height: 21px;
+.adventure-card:active {
+  transform: translateY(-2px) scale(.992);
+}
+.adventure-card.maths-card {
+  border-top-color: #75d4c0;
+  background:
+    radial-gradient(circle at 88% 8%, #72d9c84a, transparent 28%),
+    linear-gradient(145deg, #123e4cf5, #0b293bee);
+}
+.adventure-card.words-card {
+  border-top-color: #d6a6ff;
+  background:
+    radial-gradient(circle at 88% 8%, #bf8cf054, transparent 29%),
+    linear-gradient(145deg, #243c5bf5, #152b46ee);
+}
+.adventure-card-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+.adventure-index,
+.adventure-state {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+.adventure-state {
+  padding: 6px 8px;
+  border: 1px solid #cae6d45c;
+  border-radius: 999px;
+  background: #071e2b66;
+  color: #c9e8d9;
+  white-space: nowrap;
+}
+.adventure-emblem {
+  position: absolute;
+  top: 62px;
+  right: 20px;
+  width: 68px;
+  height: 68px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #f0d79947;
+  border-radius: 50%;
+  color: #f3d68f;
+  background: #09253599;
+  box-shadow: inset 0 0 24px #d8b75d20;
+  opacity: .9;
+}
+.adventure-emblem svg {
+  width: 34px;
+  height: 34px;
+}
+.maths-card .adventure-emblem {
+  color: #83dfca;
+  border-color: #83dfca55;
+}
+.words-card .adventure-emblem {
+  color: #d8b4ff;
+  border-color: #d8b4ff55;
 }
 .region {
   font-size: 9px;
@@ -286,19 +365,39 @@ p {
   letter-spacing: 2px;
   color: var(--gold);
 }
-.map-label h2 {
-  font-size: 27px;
-  margin: 9px 0;
+.adventure-card > strong {
+  max-width: calc(100% - 60px);
+  margin: 9px 0 11px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(23px, 2.2vw, 31px);
+  line-height: 1.05;
 }
-.map-label p {
+.adventure-copy {
+  min-height: 54px;
+  max-width: 90%;
   font-size: 12px;
   color: #bfd5ce;
-  line-height: 1.5;
-  margin-bottom: 17px;
+  line-height: 1.55;
 }
-.map-label small {
+.adventure-action {
+  margin-top: auto;
+  padding-top: 19px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #f4d486;
+}
+.adventure-action b {
+  display: inline-block;
+  margin-left: 8px;
+  transition: transform 180ms ease;
+}
+.adventure-card:hover .adventure-action b,
+.adventure-card:focus-visible .adventure-action b {
+  transform: translateX(4px);
+}
+.adventure-card small {
   display: block;
-  margin-top: 15px;
+  margin-top: 13px;
   font-size: 8px;
   letter-spacing: 1.5px;
   color: #bfd6cd;
@@ -359,7 +458,8 @@ p {
   display: flex;
   align-items: center;
   gap: 18px;
-  justify-content: space-between;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }
 .map-chip {
   padding: 10px 15px;
@@ -376,6 +476,7 @@ p {
   width: 19px;
 }
 .future {
+  margin-left: auto;
   font-size: 10px;
   color: #a8c6be;
   letter-spacing: 1px;
@@ -1192,11 +1293,8 @@ input[type='file'] {
   .atlas {
     min-height: 800px;
   }
-  .map-label.school {
-    top: 57%;
-  }
-  .map-label.tower {
-    top: 65%;
+  .adventure-deck {
+    top: 34%;
   }
   .mission-stage {
     min-height: 850px;
@@ -1217,7 +1315,7 @@ input[type='file'] {
     gap: 8px;
   }
   .atlas {
-    min-height: 980px;
+    min-height: 1040px;
   }
   .atlas-art {
     object-position: 45% center;
@@ -1226,20 +1324,16 @@ input[type='file'] {
     left: 5%;
     top: 5%;
   }
-  .map-label.school {
-    left: 8%;
-    top: 51%;
-    max-width: 310px;
+  .adventure-deck {
+    top: 30%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .map-label.tower {
-    right: 5%;
-    top: 72%;
-    max-width: 290px;
+  .adventure-card.words-card {
+    grid-column: 1 / -1;
+    min-height: 260px;
   }
-  .map-label.words {
-    right: 5%;
-    top: 27%;
-    max-width: 300px;
+  .adventure-copy {
+    max-width: 78%;
   }
   .map-bottom {
     bottom: 20px;
@@ -1349,7 +1443,7 @@ input[type='file'] {
     width: 19px;
   }
   .atlas {
-    min-height: 1320px;
+    min-height: 1390px;
   }
   .atlas-art {
     object-fit: cover;
@@ -1360,40 +1454,36 @@ input[type='file'] {
   }
   .map-heading {
     top: 5%;
-  }
-  .map-label.school {
-    top: 48%;
     left: 6%;
     right: 6%;
-    max-width: none;
   }
-  .map-label.tower {
-    top: 72%;
+  .adventure-deck {
+    top: 22%;
     left: 6%;
     right: 6%;
-    max-width: none;
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
-  .map-label.words {
-    top: 27%;
-    left: 6%;
-    right: 6%;
-    max-width: none;
-  }
-  .map-label {
+  .adventure-card,
+  .adventure-card.words-card {
+    grid-column: auto;
+    min-height: 290px;
     padding: 20px;
   }
-  .map-label h2 {
+  .adventure-card > strong {
     font-size: 27px;
   }
   .map-compass {
-    top: 20%;
+    top: 15%;
     right: 6%;
   }
-  .map-label p {
-    font-size: 12px;
+  .adventure-copy {
+    max-width: 82%;
+    min-height: 0;
   }
   .map-bottom {
     bottom: 20px;
+    gap: 10px;
   }
   .map-chip {
     font-size: 10px;
@@ -1613,17 +1703,10 @@ input[type='file'] {
     height: 66px;
   }
   .atlas {
-    min-height: 760px;
+    min-height: 850px;
   }
-  .map-label.school {
-    top: 48%;
-  }
-  .map-label.tower {
-    top: 59%;
-  }
-  .map-label.words {
-    top: 22%;
-    right: 5%;
+  .adventure-deck {
+    top: 32%;
   }
   .map-heading h1 {
     font-size: 35px;
