@@ -5,10 +5,10 @@ import { WORDS, STAGES, ART_BIBLE } from '../../words/words-data.js';
 import { artSvg } from '../../words/art.js';
 
 test('starter dictionary has unique reviewed-shaped entries across Reception through Year 6', () => {
-  assert.equal(WORDS.length,84);
+  assert.ok(WORDS.length>=340);
   assert.equal(STAGES.length,7);
   assert.equal(new Set(WORDS.map(w=>w.id)).size,WORDS.length);
-  for(let year=0;year<=6;year++) assert.equal(WORDS.filter(w=>w.stage===year).length,12);
+  for(let year=0;year<=6;year++) assert.ok(WORDS.filter(w=>w.stage===year).length>=45);
   for(const w of WORDS){
     assert.match(w.id,/^[a-z][a-z0-9-]*$/);
     assert.match(w.term,/^[a-z]+$/);
@@ -70,6 +70,17 @@ test('game link returns to existing Adam Atlas, and stage filters are cumulative
  assert.equal(document.querySelectorAll('[data-open]').length,12);
  assert.equal(document.querySelector('.wk-back').getAttribute('href'),'/adam/');
  document.querySelector('[data-filter="all"]').click();
- assert.equal(document.querySelectorAll('[data-open]').length,12); // first page of 84
+ assert.equal(document.querySelectorAll('[data-open]').length,12); // first page of expanded lexicon
  assert.ok(document.querySelector('.wk-section-bar').textContent.includes('dictionary'));
+});
+
+test('theme options never offer an empty stage and counts reflect selected year',()=>{
+ document.querySelector('[data-filter="0"]').click();
+ const available=new Map();
+ for(const w of WORDS.filter(w=>w.stage===0))available.set(w.theme,(available.get(w.theme)||0)+1);
+ const options=[...document.querySelectorAll('#wk-theme option')].slice(1);
+ assert.equal(options.length,available.size);
+ for(const option of options){
+   assert.equal(option.textContent,option.value+' ('+available.get(option.value)+')');
+ }
 });
