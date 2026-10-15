@@ -16,12 +16,13 @@ alter table public.ala_tts_jobs enable row level security;
 revoke all on public.ala_tts_jobs from anon,authenticated;
 grant select on public.ala_tts_jobs to authenticated;
 grant all on public.ala_tts_jobs to service_role;
+drop policy if exists ala_tts_jobs_parent_read on public.ala_tts_jobs;
 create policy ala_tts_jobs_parent_read on public.ala_tts_jobs
   for select to authenticated
   using (parent_id=(select auth.uid())
     and exists(select 1 from public.ala_parents p
       where p.user_id=(select auth.uid()) and p.active));
-create function public.ala_reserve_tts(p_parent uuid,p_clip text) returns jsonb
+create or replace function public.ala_reserve_tts(p_parent uuid,p_clip text) returns jsonb
 language plpgsql security invoker set search_path = '' as $$
 declare prior public.ala_tts_jobs; cfg public.ala_settings;
 begin
