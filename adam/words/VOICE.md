@@ -10,13 +10,13 @@ Server: Supabase Edge Function `word-voice`, guarded by `verify_jwt: true`.
 - Only a verified **enrolled parent** with free-tier confirmation can request generation. Secret Google key never reaches the browser.
 - A generated recording is **private and pending**. A parent listens via signed 2-minute playback URL and explicitly approves. On approval, the server copies the WAV to the public, read-only `ala-word-audio` bucket.
 - Approved static files are publicly playable at `/storage/v1/object/public/ala-word-audio/en-GB/{wordId}/{variant}.wav`. They contain only predefined dictionary words/educational phrases, no identifying child data.
-- The Word Kingdom learner page checks for approved voice clips before playback; otherwise it explains the clip has not yet been published and offers an **explicitly labelled device-voice alternative**. It does not pretend that browser speech is Google speech.
-- Google model: `gemini-3.8-flash-tts`, voice `Kore`, natural British English style. Audio clips are cached once. Two repeats are done by the player; no repeated provider charges.
+- The learner page currently uses the best available British English device voice. It scores `en-GB`, natural/premium/enhanced and known UK voice names above generic voices, preserves pitch at slower speed, and never auto-repeats a word.
+- The cloud studio remains a parent-only pilot. A Google model name or accent must be re-verified against the live provider documentation before the next deployment; the learner UI never claims that a clip is Google-generated without a real approved file.
 - Hard daily cap of 8 newly generated clips per parent, cooldown 10 seconds, no automatic retries on failure, no background runs. No paid fallback. This cap limits our usage, but Google's own free quota and account billing controls must also be checked.
 
 ## Known limitations
 
-- **No Google audio has been generated, listened to or approved in this commit.** The voice source will remain unavailable until the authorised parent uses the new studio and approves clips.
+- **The production storage bucket currently contains no approved word audio.** This was the direct reason the former learner buttons failed. The learner now avoids broken public URLs and uses a real device voice immediately.
 - An adult sign-in is required **in the separate audio studio**, not on the student home page. Work can later integrate this into the existing authenticated Parent Desk rather than duplicating logins.
 - The studio is a controlled pilot; it is not yet a scheduled all-words production pipeline.
 - A parent must listen through to the end before the Approve button becomes available. The service can't automatically certify accent or pronunciation.

@@ -20,7 +20,8 @@ Curriculum source: [GOV.UK English programmes of study](https://www.gov.uk/gover
 - `curriculum-dfe.js`: manually checked statutory entries, exact exception-word example sets and selected phonics-pattern examples, and page links. Joint group lists each have 100 entries. Where an original source entry contains multiple word forms (e.g., `busy/business`, `accident(ally)`, `equip`), `DFE_*_VARIANTS` records learning-card forms. The source entries sometimes normalise explanatory parentheses and asterisks for reliable matching; refer to the linked PDF for printed typography.
 - `curriculum-index.js`: every verified learning card has an explicit source class (`statutory` or `dfe-example`), introduction group, pattern label, printed page and URL. No heuristic matching to the DfE by topic.
 - `words-data.js`, `words-expanded.js`: the older 347 editorial words remain so earlier learner attempts and saved progress do not disappear. They are shown as optional enrichment **unless independently cross-referenced** to an actual official appendix term.
-- `dfe-new-cards.js`: 242 further complete meaning/example cards restricted to words whose forms are present in Appendix 1. Hard checks reject new cards with no official source mapping. There are now 589 unique word cards.
+- `dfe-new-cards.js`: 242 further complete meaning/example cards restricted to words whose forms are present in Appendix 1. Hard checks reject new cards with no official source mapping.
+- `words-academic.js`: 32 teacher-reviewed words used in classroom instructions and English, maths, science, history and geography. They are explicitly labelled **School vocabulary · supplementary**, not statutory spelling-list words. Together there are now 621 unique cards.
 - The default library view includes DfE-sourced content and a clearly labelled EYFS contextual practice track. `Optional enrichment` is a separate manual choice, not mixed into official statutory labels.
 - Word details link back to the DfE appendix, state whether the item is a statutory list entry or a non-statutory example, and name the spelling topic where available.
 - Image cues are often generic vector illustrations rather than faithful object depictions. Abstract/frequent grammatical words cannot score picture recognition based on a vague icon. Three core facets remain: meaning, spelling and sentence ordering.
@@ -29,7 +30,7 @@ Curriculum source: [GOV.UK English programmes of study](https://www.gov.uk/gover
 
 For children who need foundational English practice, first assess individual receptive vocabulary, decoding/phonics, written spelling, sentence production and optional speaking confidence *separately*. Build from observed gaps without labelling the child as a lower school year, while offering age-appropriate mystery/game contexts.
 
-Words learnt through the English programme also appear in science, mathematics and broader reading; topic-specific vocabulary can be added later **only when traced to a statutory programme-of-study clause or a named school curriculum document**. Do not infer a whole list from a topic heading.
+Words learnt through the English programme also appear in science, mathematics and broader reading. Cross-curricular words may be offered as clearly labelled supplementary school language when they are accurate, age-staged and adult-reviewed; they must not be described as statutory spelling-list entries or a school's exact teaching sequence.
 
 ## Change acceptance — mandatory
 

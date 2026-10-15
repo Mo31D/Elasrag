@@ -1,5 +1,15 @@
 # Verification report — 15 October 2026
 
+## Deep learning polish — 16 October 2026
+
+- Strict TypeScript, Vite `/adam/` production build and staging passed.
+- All 41 automated tests pass. The full simulated learner journey now covers six confidence-first maths paths, hints, a stretch question, XP deduplication, profile switching, persistence and the Word Kingdom interactions.
+- The maths start was rebuilt around Year 3–5 foundation review for a Year 6 learner: place value, grouping/division, fractions of amounts, percentages, metric conversion and triangle angles. Ratio and formal algebra are explicitly deferred rather than used as surprise assessment questions.
+- Word Kingdom contains 621 unique cards: both complete KS2 statutory spelling lists remain intact and 32 supplementary, teacher-reviewed school-language cards are separated from statutory labels and optional enrichment.
+- The empty generated-audio bucket was identified as the cause of the broken word playback. The child interface now uses the best available `en-GB` device voice immediately, preserves pitch when slowed and makes no failed cloud request. No Google clip is represented as approved.
+- Approved cloud lesson summaries are cached locally without student records, answers or other sensitive data, so a temporary session/network restore failure no longer removes their atlas cards. Sign-out clears this index.
+- The local preview server started, but the remote browser runner cannot reach container localhost (`ERR_CONNECTION_REFUSED`). Real Samsung/iPad visual and speech playback checks therefore remain required after GitHub Pages deployment.
+
 ## Passed automated checks
 
 - TypeScript strict no-emit check and Vite static production build with `/adam/` base path.

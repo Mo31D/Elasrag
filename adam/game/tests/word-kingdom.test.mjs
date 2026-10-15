@@ -38,9 +38,17 @@ globalThis.localStorage=window.localStorage;
 await import('../../words/app.js');
 test('initial main view displays twelve playable cards and profile/stage filters',()=>{
   assert.equal(document.querySelectorAll('[data-open]').length,12);
-  assert.equal(document.querySelectorAll('[data-filter]').length,7);
+  assert.equal(document.querySelectorAll('[data-filter]').length,8);
   assert.ok(document.querySelector('.wk-star').textContent.includes('0'));
   assert.equal(document.querySelector('#wk-profile').value,'explorer');
+});
+test('school language is a distinct reviewed collection, not statutory spelling or enrichment',()=>{
+ const selector=document.querySelector('#wk-collection');selector.value='school';
+ selector.dispatchEvent(new window.Event('change',{bubbles:true}));
+ assert.equal(document.querySelector('#wk-collection').value,'school');
+ assert.ok(document.querySelectorAll('[data-open]').length>0);
+ assert.match(document.querySelector('.wk-word .wk-stage').textContent,/School vocabulary/);
+ selector.value='curriculum';selector.dispatchEvent(new window.Event('change',{bubbles:true}));
 });
 test('opens word and shows independent learning tasks without recording speech',()=>{
   document.querySelector('[data-open]').click();
@@ -125,9 +133,8 @@ test('a parent can opt into enrichment while official curriculum remains default
  assert.ok(noCuration.length>0);
  const selector=document.querySelector('#wk-collection');selector.value='extra';
  selector.dispatchEvent(new window.Event('change',{bubbles:true}));
- assert.equal(document.querySelector('#wk-collection').value,'extra');
  assert.ok(document.querySelectorAll('[data-open]').length>0);
- assert.match(document.querySelector('.wk-word .wk-stage').textContent,/Enrichment/);
+ assert.match(document.querySelector('.wk-word .wk-stage').textContent,/Extra practice/);
 });
 test('each linked DfE source points to the government source and the printed page',()=>{
  for(const w of WORDS){
