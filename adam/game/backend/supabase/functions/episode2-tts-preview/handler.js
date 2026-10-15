@@ -95,7 +95,8 @@ export function createHandler({env, request = fetch}) {
         throw error('verified_parent_required',403);
       }
       owner = user.id;
-      const common = {apikey: service, authorization: 'Bearer ' + service};
+      // New sb_secret keys are API keys, not JWTs. Never send them as Bearer tokens.
+      const common = {apikey: service};
       rest = async (path, method = 'GET', body) => {
         const r = await request(base + '/rest/v1/' + path, {
           method, headers: {...common, 'content-type':'application/json', Prefer:'return=representation'},
