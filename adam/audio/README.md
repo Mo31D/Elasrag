@@ -1,9 +1,5 @@
-# Audio for Adam Learning Adventures
+# Original narration
 
-Upload the Google AI Studio voiceover MP3 here as **english-001.mp3**.
+`english-001.mp3` is an audio-only 96 kbps conversion of the supplied 160.4-second WAV. Its source copy lives in `adam/game/public/audio/`; edit that source and rebuild.
 
-The website at `/adam/` will look for the file at `/adam/audio/english-001.mp3`.
-
-For testing without publishing audio, open Parent desk, upload the WAV locally, and it will be stored in that browser only.
-
-**Privacy:** Files committed to a public GitHub Pages repository are public. Do not upload sensitive child recordings or data.
+No new narrator has been generated. Original-story excerpts support vocabulary replay. The cue points in `game/src/content.ts` originate from the supplied HTML and need listening verification. No child speech is recorded. A parent can import the same original recording locally through the parent desk. The narration becomes publicly downloadable when this review build is merged and published.
