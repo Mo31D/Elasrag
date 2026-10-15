@@ -58,6 +58,7 @@ let recallWords = words,
   reviewHinted = false,
   returnFocus: HTMLElement | null = null,
   custom: LessonPackage | null = null;
+let cloudMissions: { id: string; title: string }[] = [];
 try {
   const c = JSON.parse(storage.getItem('ala-lesson') || 'null');
   if (validateLesson(c)) custom = c;
@@ -148,7 +149,7 @@ function map() {
   view = 'map';
   const done = profile().missions.trophy;
   shell(
-    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">YOUR NEXT DISCOVERY AWAITS</p><h1>A little curiosity.<br>A whole new world.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}! Your adventure is about to begin.</p></div><div class="map-label school"><span class="region">01 / MYSTERY CITY</span><h2>The missing trophy</h2><p>${done ? 'Case solved. Revisit the evidence.' : 'A curious gap. A golden trail. One school mystery.'}</p>${button('mission', `${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <span>→</span>`, 'primary')}<small>ENGLISH · 5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></div><div class="map-label tower"><span class="region">02 / NUMBER KINGDOM</span><h2>The crystal engines</h2><p>Restore three engines with mathematical reasoning.</p>${button('maths', 'Explore the engines →', 'secondary')}<small>YEAR ${profile().year || 6} · ${state.maths.length}/3 ENGINES RESTORED</small></div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${dueSkills().length ? 'Recall trail · ' + dueSkills().length + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}<span class="future">Discovery Laboratory · a future expedition</span></div></section>`,
+    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">YOUR NEXT DISCOVERY AWAITS</p><h1>A little curiosity.<br>A whole new world.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}! Your adventure is about to begin.</p></div><div class="map-label school"><span class="region">01 / MYSTERY CITY</span><h2>The missing trophy</h2><p>${done ? 'Case solved. Revisit the evidence.' : 'A curious gap. A golden trail. One school mystery.'}</p>${button('mission', `${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <span>→</span>`, 'primary')}<small>ENGLISH · 5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></div><div class="map-label tower"><span class="region">02 / NUMBER KINGDOM</span><h2>The crystal engines</h2><p>Restore three engines with mathematical reasoning.</p>${button('maths', 'Explore the engines →', 'secondary')}<small>YEAR ${profile().year || 6} · ${state.maths.length}/3 ENGINES RESTORED</small></div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${dueSkills().length ? 'Recall trail · ' + dueSkills().length + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${cloudMissions.length ? cloudMissions.map((mission) => button('cloud-mission:' + mission.id, `English expedition · ${esc(mission.title)}`, 'map-chip')).join('') : button('cloud', 'Secure missions · parent sign-in', 'map-chip')}<span class="future">Discovery Laboratory · a future expedition</span></div></section>`,
     'The Adventure Atlas',
   );
 }
@@ -516,19 +517,39 @@ function bind(root: ParentNode = app) {
     });
 }
 let lastLearningAction = 0;
+function cloudHooks() {
+  return {
+    openDialog,
+    closeDialog,
+    shell,
+    map,
+    setView: (v: string) => {
+      view = v;
+    },
+    setCloudMissions: (missions: { id: string; title: string }[]) => {
+      cloudMissions = missions;
+    },
+  };
+}
 async function action(id: string, b: HTMLButtonElement) {
+  if (id.startsWith('cloud-mission:')) {
+    try {
+      const cloud = await import('./cloud');
+      await cloud.playCloudMission(
+        id.slice('cloud-mission:'.length),
+        cloudHooks(),
+      );
+    } catch {
+      toast(
+        'The secure mission could not load. Your local adventure is still available.',
+      );
+    }
+    return;
+  }
   if (id === 'cloud') {
     try {
       const cloud = await import('./cloud');
-      await cloud.openCloudDesk({
-        openDialog,
-        closeDialog,
-        shell,
-        map,
-        setView: (v) => {
-          view = v;
-        },
-      });
+      await cloud.openCloudDesk(cloudHooks());
     } catch {
       toast(
         'The cloud module could not load. Your local adventure is still available.',

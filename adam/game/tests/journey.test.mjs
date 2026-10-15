@@ -12,7 +12,7 @@ for (const file of ['main', 'content', 'audio']) {
   );
   text = text
     .replace(
-      "import roadmap from '../public/data/curriculum-roadmap.json';",
+      /import roadmap from ["']\.\.\/public\/data\/curriculum-roadmap\.json["'];/,
       'const roadmap=' +
         (await readFile(
           new URL('../public/data/curriculum-roadmap.json', import.meta.url),
@@ -20,10 +20,10 @@ for (const file of ['main', 'content', 'audio']) {
         )) +
         ';',
     )
-    .replace("import './style.css';", '')
-    .replace("from './content'", "from './content.mjs'")
-    .replace("from './audio'", "from './audio.mjs'")
-    .replace("from './progress.js'", "from '../src/progress.js'");
+    .replace(/import ["']\.\/style\.css["'];/, '')
+    .replace(/from ["']\.\/content["']/, "from './content.mjs'")
+    .replace(/from ["']\.\/audio["']/, "from './audio.mjs'")
+    .replace(/from ["']\.\/progress\.js["']/, "from '../src/progress.js'");
   await writeFile(
     new URL(file + '.mjs', temp),
     ts.transpileModule(text, {
@@ -103,6 +103,7 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   const text = () => document.querySelector('#app').textContent;
   const stored = () => JSON.parse(localStorage.getItem('ala-adventure-v1'));
   assert.match(text(), /Begin investigation/);
+  assert.match(text(), /Secure missions · parent sign-in/);
   click('mission');
   click('next');
   assert.match(text(), /inspect the empty stand/);
