@@ -1,9 +1,15 @@
 import {WORDS,STAGES,ART_BIBLE} from './words-data.js';
 import {artSvg} from './art.js';
+import {curriculumLinks,curriculumYear,belongsToBand,sourceLabel,CURRICULUM_BANDS} from './curriculum-index.js';
 const ROOT='/adam/words/';
 const STORE='ala-word-kingdom-v1';
 const ALLOWED_PICTURE=new Set(['apple','book','cat','chair','door','house','school','heart','rain','sun','owl','key','magnify','clock','people','map','science','leaf','stars']);
 const FACETS=['meaning','spelling','sentence','picture'];
+// Only use picture recognition where the pictogram itself clearly identifies the target word.
+// Other words still have illustration cues, but cannot win/lose a skill from an ambiguous icon.
+const ASSESSABLE_PICTURES=Object.freeze({apple:'apple',book:'book',cat:'cat',chair:'chair',door:'door',school:'school',sun:'sun',rain:'rain',heart:'heart'});
+const pictureSkills=w=>ASSESSABLE_PICTURES[w.id]===w.art;
+const facetsFor=w=>pictureSkills(w)?FACETS:FACETS.filter(x=>x!=='picture');
 const INTERVALS=[1,3,7,14,30];
 const root=document.querySelector('#app');
 const esc=(value)=>String(value==null?'':value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -25,7 +31,7 @@ const existing=safeParse(getLocal());
 const initialProfiles=detectProfiles();
 const stored=existing && existing.version===1 && existing.learners && typeof existing.learners==='object' ? existing:{version:1,learners:{}};
 let profileId=initialProfiles.entries.some(([id])=>id===initialProfiles.active)?initialProfiles.active:initialProfiles.entries[0][0];
-let view='library', filter='all', theme='all', query='', page=0, selected=null,task='learn',question=null,feedback=null,assisted=false,letterHint=false,streak=0, busy=false;
+let view='library', filter='all', collection='curriculum', theme='all', query='', page=0, selected=null,task='learn',question=null,feedback=null,assisted=false,letterHint=false,streak=0, busy=false;
 let sound=true,motion=!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 const WORD_AUDIO_URL='https://uyfaipjthpsofjqcucop.supabase.co/storage/v1/object/public/ala-word-audio/en-GB/';
 let activeGoogleAudio=null;
@@ -35,10 +41,18 @@ function progress(){return stored.learners[profileId] ||= {words:{},stars:0}}
 function record(word,facet){const wr=progress().words[word.id] ||= {};return wr[facet] ||= {strength:0,days:0,reviewCount:0,lastDay:null,due:0,awarded:false}}
 function save(){if(!setLocal(stored))status('Progress cannot be saved in this browser. Your session may be private.')}
 function rating(word,facet){let t=record(word,facet);if(!t.strength)return 'New';if(t.due && t.due<=Date.now())return 'Review due';return t.days>=4 && t.reviewCount>=3?'Secure':'Practising'}
-function dueCount(){return WORDS.filter(w=>w.stage<=student().year).reduce((n,w)=>n+FACETS.filter(f=>record(w,f).due>0 && record(w,f).due<=Date.now()).length,0)}
-function wordStat(w){const facts=FACETS.filter(f=>record(w,f).days>=1);return facts.length}
-function stageCount(i){return WORDS.filter(w=>w.stage===i).length}
-function wordScope(){return WORDS.filter(w=>w.stage<=student().year&&(filter==='all'||filter==='due'&&FACETS.some(f=>rating(w,f)==='Review due')||String(w.stage)===filter))}
+function belongsToCollection(w){
+ const refs=curriculumLinks(w);
+ if(collection==='all')return true;
+ if(collection==='extra')return w.stage!==0&&!refs.length;
+ return !!refs.length||w.stage===0;
+}
+function canStudy(w){return curriculumYear(w)<=student().year}
+function scopedWords(){return WORDS.filter(w=>canStudy(w)&&belongsToCollection(w))}
+function dueCount(){return scopedWords().reduce((n,w)=>n+facetsFor(w).filter(f=>record(w,f).due>0&&record(w,f).due<=Date.now()).length,0)}
+function wordStat(w){return facetsFor(w).filter(f=>record(w,f).days>=1).length}
+function stageCount(id){return scopedWords().filter(w=>belongsToBand(w,id)).length}
+function wordScope(){return scopedWords().filter(w=>filter==='all'||filter==='due'&&facetsFor(w).some(f=>rating(w,f)==='Review due')||belongsToBand(w,filter)&&filter!=='all'&&filter!=='due')}
 function currentThemeCounts(){const counts=new Map(); for(const w of wordScope())counts.set(w.theme,(counts.get(w.theme)||0)+1);return counts}
 function ensureValidTheme(){const counts=currentThemeCounts();if(theme!=='all'&&!counts.has(theme))theme='all'}
 function storeAnswer(word,facet,correct,helped){
@@ -58,11 +72,8 @@ function storeAnswer(word,facet,correct,helped){
 function status(text){const el=document.querySelector('#status');if(el)el.textContent=text;}
 function selectedWords(){
  ensureValidTheme();
- const upper=student().year;
- return WORDS.filter(w=>w.stage<=upper&&(filter==='all'||filter==='due'&&FACETS.some(f=>rating(w,f)==='Review due')||String(w.stage)===filter)&&
- (theme==='all'||w.theme===theme)&&
- (!query||[w.term,w.definition,w.example,w.theme].join(' ').toLowerCase().includes(query.trim().toLowerCase()))
- ).sort((a,b)=>a.stage-b.stage||a.term.localeCompare(b.term,'en-GB'));
+ return wordScope().filter(w=>(theme==='all'||w.theme===theme)&&(!query||[w.term,w.definition,w.example,w.theme].join(' ').toLowerCase().includes(query.trim().toLowerCase())))
+ .sort((a,b)=>curriculumYear(a)-curriculumYear(b)||a.term.localeCompare(b.term,'en-GB'));
 }
 function layout(body){
  root.innerHTML='<div class="kingdom"><header class="wk-top"><a href="/adam/" class="wk-back" aria-label="Return to Adventure Atlas">← <span>Adventure Atlas</span></a><div class="wk-brand"><span class="wk-crest">W</span><span><b>WORD KINGDOM</b><small>ADAM LEARNING ADVENTURES</small></span></div><div class="wk-stats"><span class="wk-star" aria-label="Word stars">✦ '+progress().stars+' <small>word stars</small></span><button class="wk-icon" id="wk-access" aria-label="Display options" title="Display options">⚙</button></div></header>'+body+'<footer class="wk-footer"><span>Learn • Listen • Spell • Build • Recall</span><a href="/adam/">Return to Adventure Atlas ↗</a><a href="/adam/words/studio/" aria-label="Parent-only audio review studio">Parent audio studio ↗</a><span>Word Kingdom v2</span></footer><div class="wk-toast" id="status" aria-live="polite"></div></div>';
@@ -70,8 +81,8 @@ function layout(body){
 }
 function shell(){
  let options=initialProfiles.entries.map(([id,p])=>'<option value="'+esc(id)+'" '+(id===profileId?'selected':'')+'>'+esc(p.displayName)+' · '+nameStage(p.year)+'</option>').join('');
- return '<section class="wk-hero"><div><span class="wk-eyebrow">✦ THE LIVING WORD ATLAS</span><h1>Every word opens <em>a new world.</em></h1><p>Discover the meaning. Hear British English. Practise spelling. Build sentences. Words from your earlier years stay available as you grow.</p><div class="wk-hero-row"><label class="wk-profile">Explorer <select id="wk-profile">'+options+'</select></label><span class="wk-meta">'+WORDS.filter(w=>w.stage<=student().year).length+' words to explore · '+dueCount()+' reviews due</span></div></div><div class="wk-hero-visual">'+artSvg({art:'book',term:'Magical word book'},'wk-hero-art')+'<span class="wk-hero-spark">✧</span></div></section>'+
- '<div class="wk-chapters"><button data-filter="all" class="'+(filter==='all'?'active':'')+'">All foundations <small>0–'+student().year+'</small></button>'+Array.from({length:student().year+1},(_,i)=>'<button data-filter="'+i+'" class="'+(filter===String(i)?'active':'')+'">'+nameStage(i)+'<small>'+stageCount(i)+' words</small></button>').join('')+'<button data-filter="due" class="'+(filter==='due'?'active':'')+'">↻ Reviews due <small>'+dueCount()+'</small></button></div>';
+ return '<section class="wk-hero"><div><span class="wk-eyebrow">✦ THE LIVING WORD ATLAS</span><h1>Every word opens <em>a new world.</em></h1><p>Discover the meaning. Hear British English. Practise spelling. Build sentences. Words from your earlier years stay available as you grow.</p><div class="wk-hero-row"><label class="wk-profile">Explorer <select id="wk-profile">'+options+'</select></label><span class="wk-meta">'+scopedWords().length+' words in this collection · '+dueCount()+' reviews due</span></div></div><div class="wk-hero-visual">'+artSvg({art:'book',term:'Magical word book'},'wk-hero-art')+'<span class="wk-hero-spark">✧</span></div></section>'+
+ '<div class="wk-chapters"><button data-filter="all" class="'+(filter==='all'?'active':'')+'">All eligible <small>'+scopedWords().length+' words</small></button>'+CURRICULUM_BANDS.filter(b=>b.minYear<=student().year).map(b=>'<button data-filter="'+b.id+'" class="'+(filter===b.id?'active':'')+'" title="'+esc(b.note)+'">'+esc(b.label)+'<small>'+stageCount(b.id)+' ready cards</small></button>').join('')+'<button data-filter="due" class="'+(filter==='due'?'active':'')+'">↻ Reviews due <small>'+dueCount()+'</small></button></div>';
 }
 function menu(){
  const list=selectedWords();
@@ -79,18 +90,22 @@ function menu(){
  const themes=[...themeCounts.keys()].sort();
  const totalPages=Math.max(1,Math.ceil(list.length/12));
  page=Math.min(page,totalPages-1);
- return shell()+'<section class="wk-main"><div class="wk-section-bar"><div><span class="wk-eyebrow">THE WORD COLLECTION</span><h2>'+(filter==='all'?'Your growing dictionary':filter==='due'?'Ready for another look':nameStage(+filter)+' discoveries')+'</h2><p>12 words per page · Tap a card to practise at your own pace.</p></div><div class="wk-search"><label for="wk-search">Find a word</label><input id="wk-search" type="search" placeholder="Search words, meanings…" value="'+esc(query)+'" autocomplete="off"/><label for="wk-theme">Theme</label><select id="wk-theme"><option value="all">All themes</option>'+themes.map(t=>'<option value="'+esc(t)+'" '+(theme===t?'selected':'')+'>'+esc(t)+' ('+themeCounts.get(t)+')</option>').join('')+'</select></div></div><div class="wk-grid">'+list.slice(page*12,page*12+12).map(w=>'<button class="wk-word" data-open="'+esc(w.id)+'" aria-label="Learn '+esc(w.term)+'"><div class="wk-picture">'+artSvg(w)+'</div><div class="wk-word-meta"><span class="wk-stage">'+nameStage(w.stage)+'</span><span class="wk-master">'+wordStat(w)+'/4 skills</span></div><b>'+esc(w.term)+'</b><span>'+esc(w.definition)+'</span><span class="wk-explore">Explore word →</span></button>').join('')+'</div>'+(!list.length?'<div class="wk-empty">No words match this view. Choose another stage or search.</div>':'')+'<div class="wk-pagination"><button id="wk-prev" '+(!page?'disabled':'')+'>← Previous</button><span>Page '+(page+1)+' / '+totalPages+'</span><button id="wk-next" '+(page===totalPages-1?'disabled':'')+'>Next →</button></div></section><section class="wk-bottom"><div><h2>Growing, not guessing.</h2><p>Recognising a word, spelling it, and using it in a sentence are different skills. We keep track of each separately. A slow answer or a repeated sound never loses you points.</p></div><div class="wk-actions"><button id="wk-export">Export learning backup</button><button id="wk-artbrief">Download art briefs</button></div></section>';
+ return shell()+'<section class="wk-main"><div class="wk-section-bar"><div><span class="wk-eyebrow">DfE NATIONAL CURRICULUM • APPENDIX 1</span><h2>'+(filter==='all'?'Your growing dictionary':filter==='due'?'Ready for another look':CURRICULUM_BANDS.find(b=>b.id===filter)?.label||'Word discoveries')+'</h2><p>DfE lists are shared across Years 3–4 and Years 5–6. Year 1–2 examples are non-statutory. EYFS words are foundational practice, not an official word list.</p></div><div class="wk-search"><label for="wk-collection">Collection</label><select id="wk-collection"><option value="curriculum" '+(collection==='curriculum'?'selected':'')+'>DfE curriculum + EYFS</option><option value="extra" '+(collection==='extra'?'selected':'')+'>Optional enrichment</option><option value="all" '+(collection==='all'?'selected':'')+'>All learning words</option></select><label for="wk-search">Find a word</label><input id="wk-search" type="search" placeholder="Search words, meanings…" value="'+esc(query)+'" autocomplete="off"/><label for="wk-theme">Theme</label><select id="wk-theme"><option value="all">All themes</option>'+themes.map(t=>'<option value="'+esc(t)+'" '+(theme===t?'selected':'')+'>'+esc(t)+' ('+themeCounts.get(t)+')</option>').join('')+'</select></div></div><div class="wk-grid">'+list.slice(page*12,page*12+12).map(w=>'<button class="wk-word" data-open="'+esc(w.id)+'" aria-label="Learn '+esc(w.term)+'"><div class="wk-picture">'+artSvg(w)+'</div><div class="wk-word-meta"><span class="wk-stage">'+esc(curriculumLinks(w).length?sourceLabel(w):(w.stage===0?'EYFS practice · editorial':'Enrichment · editorial'))+'</span><span class="wk-master">'+wordStat(w)+'/'+facetsFor(w).length+' skills</span></div><b>'+esc(w.term)+'</b><span>'+esc(w.definition)+'</span><span class="wk-explore">Explore word →</span></button>').join('')+'</div>'+(!list.length?'<div class="wk-empty">No words match this view. Choose another stage or search.</div>':'')+'<div class="wk-pagination"><button id="wk-prev" '+(!page?'disabled':'')+'>← Previous</button><span>Page '+(page+1)+' / '+totalPages+'</span><button id="wk-next" '+(page===totalPages-1?'disabled':'')+'>Next →</button></div></section><section class="wk-bottom"><div><h2>Growing, not guessing.</h2><p>Recognising a word, spelling it, and using it in a sentence are different skills. We keep track of each separately. A slow answer or a repeated sound never loses you points.</p></div><div class="wk-actions"><button id="wk-export">Export learning backup</button><button id="wk-artbrief">Download art briefs</button></div></section>';
 }
 function wordHeader(w){
- return '<div class="wk-lesson-top"><button class="wk-return" id="wk-to-map">← All words</button><span class="wk-eyebrow">'+esc(nameStage(w.stage))+' • '+esc(w.theme)+'</span><span class="wk-skillcount">'+wordStat(w)+'/4 skills practised</span></div>';
+ return '<div class="wk-lesson-top"><button class="wk-return" id="wk-to-map">← All words</button><span class="wk-eyebrow">'+esc(sourceLabel(w))+' • '+esc(w.theme)+'</span>'+(curriculumLinks(w).length?'<a class="wk-curriculum-source" href="https://www.gov.uk/government/publications/national-curriculum-in-england-english-programmes-of-study" target="_blank" rel="noopener noreferrer">DfE source ↗</a>':'<span class="wk-curriculum-source">Editorial learning practice</span>')+'<span class="wk-skillcount">'+wordStat(w)+'/'+facetsFor(w).length+' skills practised</span></div>';
 }
 function tab(name,caption){return '<button data-task="'+name+'" class="'+(task===name?'active':'')+'">'+caption+'</button>'}
 function wordView(){
  const w=selected;
  const learning=task==='learn';
- let head=wordHeader(w)+'<div class="wk-task-tabs">'+tab('learn','✧ Discover')+tab('meaning','Meaning')+tab('picture','Picture')+tab('spelling','Spell it')+tab('sentence','Build a sentence')+'</div>';
+ let head=wordHeader(w)+'<div class="wk-task-tabs">'+tab('learn','✧ Discover')+tab('meaning','Meaning')+(pictureSkills(w)?tab('picture','Picture'):'')+tab('spelling','Spell it')+tab('sentence','Build a sentence')+'</div>';
  const conceal=task==='spelling'||task==='picture';
  const img=artSvg(conceal?{art:w.art,term:'A picture hint'}:w,'wk-main-illustration');
+ const provenance=curriculumLinks(w);
+ const sourceDetails=provenance.length
+ ? '<section class="wk-curriculum-note"><span class="wk-eyebrow">Why is this word here?</span><strong>'+esc(sourceLabel(w))+'</strong><p>'+esc(provenance.some(x=>x.kind==='statutory')?'Official spelling-list word for the two-year Key Stage 2 group.':'An example used by the DfE to demonstrate a spelling requirement; the word example itself is not statutory.')+'</p><p>'+provenance.slice(0,3).map(x=>esc(x.group)+(x.pattern?' · '+esc(x.pattern):'')).join(' | ')+'</p><a href="'+esc(provenance[0].source)+'" target="_blank" rel="noopener noreferrer">View original DfE spelling appendix ↗</a></section>'
+ : '<section class="wk-curriculum-note"><strong>Contextual practice, not an official DfE word-list requirement.</strong><p>Use this word to build understanding and confidence without treating it as an assessed curriculum target.</p></section>';
  const info='<section class="wk-word-intro"><div class="wk-art-panel">'+img+'</div><div class="wk-word-info"><span class="wk-eyebrow">'+esc(w.theme)+' • British English</span><h1>'+(conceal?'<span class="wk-hidden-word">Mystery word</span>':esc(w.term))+'</h1>'+(learning?'<p class="wk-definition">'+esc(w.definition)+'</p><p class="wk-example">'+esc(w.example)+'</p>':'<p class="wk-definition">'+(task==='spelling'?'Listen carefully and write the word. No timer.':task==='picture'?'Which picture matches the word you hear?':task==='sentence'?'Build the sentence in the correct order.':'Choose what the word means.')+'</p>')+'<div class="wk-pronounce"><button id="wk-hear" class="wk-primary">♫ Hear Google voice × 2</button><button id="wk-hear-slow">Hear slowly</button><button id="wk-hear-sentence">Hear example sentence</button><button id="wk-device-voice" class="wk-device-option">Use device voice instead</button></div><p class="wk-audio-note" id="wk-voice-note">Google audio plays only when a recorded word has been generated and approved. Otherwise, choose the clearly labelled device-voice alternative. No microphone or recording.</p></div></section>';
  let activity='';
  if(learning)activity='<section class="wk-exercise"><span class="wk-eyebrow">WORD DISCOVERY</span><h2>Connect sound, picture and meaning.</h2><div class="wk-chunks">'+esc(w.chunks).split('-').map(v=>'<span>'+v+'</span>').join('')+'</div><p>Tap Hear to listen again. You can say it, think it or simply listen — all are welcome.</p><button id="wk-advance" class="wk-primary">Try a quick challenge →</button></section>';
@@ -98,14 +113,14 @@ function wordView(){
  else if(task==='picture')activity=questionMarkup(w,'picture');
  else if(task==='spelling')activity='<section class="wk-exercise"><span class="wk-eyebrow">SPELLING CASTLE</span><h2>Listen, think, then spell.</h2><p>Type the word you heard. Try on your own or ask for a clue; both are useful practice.</p><form id="wk-spell-form"><label for="wk-spell">Write the word</label><input id="wk-spell" type="text" maxlength="50" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="Your spelling here" required><div class="wk-inline-actions"><button type="submit" class="wk-primary">Check spelling</button><button type="button" id="wk-spell-hint">Show a sound clue</button></div></form>'+(letterHint?'<div class="wk-chunks">'+esc(w.chunks).split('-').map(ch=>'<span>'+esc(ch.replace(/[aeiou]/gi,'•'))+'</span>').join('')+'</div>':'')+'</section>';
  else activity=sentenceMarkup(w);
- return '<section class="wk-lesson">'+head+info+activity+'<div id="wk-feedback" class="wk-feedback" aria-live="polite"></div><div class="wk-gentle">No race. No speech scoring. You choose when to move on.</div></section>';
+ return '<section class="wk-lesson">'+head+info+sourceDetails+activity+'<div id="wk-feedback" class="wk-feedback" aria-live="polite"></div><div class="wk-gentle">No race. No speech scoring. You choose when to move on.</div></section>';
 }
 function createQuestion(w,kind){
  if(kind==='meaning'){
   const other=pick(WORDS.filter(v=>v.id!==w.id && v.stage<=student().year),w.id+'meaning').slice(0,3);
   return {kind,options:pick([w,...other],w.id+'meaning-order'),correct:w.id};
  }
- const eligible=WORDS.filter(v=>v.art!==w.art&&ALLOWED_PICTURE.has(v.art)&&v.stage<=student().year);
+ const eligible=WORDS.filter(v=>v.id!==w.id&&pictureSkills(v)&&v.art!==w.art&&canStudy(v));
  const others=pick(eligible,w.id+'picture').filter((v,i,a)=>a.findIndex(x=>x.art===v.art)===i).slice(0,3);
  return {kind,options:pick([w,...others],w.id+'picture-order'),correct:w.id};
 }
@@ -133,9 +148,10 @@ function render(){
  else{layout(menu());bindMenu();}
 }
 function bindMenu(){
- document.querySelector('#wk-profile')?.addEventListener('change',e=>{profileId=e.target.value;filter='all';theme='all';page=0;render();});
+ document.querySelector('#wk-profile')?.addEventListener('change',e=>{profileId=e.target.value;filter='all';theme='all';collection='curriculum';page=0;render();});
  document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;page=0;ensureValidTheme();render();}));
  document.querySelector('#wk-search')?.addEventListener('input',e=>{query=e.target.value;page=0;const caret=e.target.selectionStart;render();const el=document.querySelector('#wk-search');el.focus();el.setSelectionRange(caret,caret);});
+ document.querySelector('#wk-collection')?.addEventListener('change',e=>{collection=e.target.value;filter='all';theme='all';page=0;render();});
  document.querySelector('#wk-theme')?.addEventListener('change',e=>{theme=e.target.value;page=0;render();});
  document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>openWord(b.dataset.open)));
  document.querySelector('#wk-prev')?.addEventListener('click',()=>{page--;render();document.querySelector('.wk-main')?.scrollIntoView({behavior:'smooth'});});
@@ -145,7 +161,7 @@ function bindMenu(){
 }
 function openWord(id){
  if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}
- const w=WORDS.find(x=>x.id===id&&x.stage<=student().year);
+ const w=WORDS.find(x=>x.id===id&&canStudy(x));
  if(!w)return;
  selected=w;view='lesson';task='learn';question=null;assisted=false;letterHint=false;feedback=null;
  render();window.scrollTo({top:0,behavior:'smooth'});

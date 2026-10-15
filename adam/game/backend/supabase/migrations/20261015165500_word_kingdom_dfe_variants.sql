@@ -1,0 +1,30 @@
+-- Final DfE Appendix 1 statutory word-list variants, applied separately to preserve migration history.
+insert into public.ala_word_lexicon (id,term,example,introduction_year,theme)
+values
+('accident','accident','A small accident made the pencil cup fall.',3,'Spelling & vocabulary'),
+('accidentally','accidentally','I accidentally dropped my pencil.',3,'Spelling & vocabulary'),
+('actual','actual','The actual key was under the cushion.',3,'Spelling & vocabulary'),
+('actually','actually','Actually, Pip found the note first.',3,'Spelling & vocabulary'),
+('business','business','The family ran a small business.',3,'Spelling & vocabulary'),
+('eight','eight','There were eight books on the shelf.',3,'Spelling & vocabulary'),
+('eighth','eighth','The eighth clue led to the garden.',3,'Spelling & vocabulary'),
+('forwards','forwards','Move two steps forwards.',3,'Spelling & vocabulary'),
+('occasionally','occasionally','We occasionally visit the museum.',3,'Spelling & vocabulary'),
+('possess','possess','The librarian may possess a spare key.',3,'Spelling & vocabulary'),
+('possession','possession','The old map was a valuable possession.',3,'Spelling & vocabulary'),
+('though','though','Though it was raining, we went outside.',3,'Spelling & vocabulary'),
+('february','February','February has twenty-eight days in most years.',3,'Spelling & vocabulary'),
+('heart','heart','My heart beats faster when I run.',3,'Spelling & vocabulary'),
+('potatoes','potatoes','We planted potatoes in the garden.',3,'Spelling & vocabulary'),
+('special','special','This is a special day for our class.',3,'Spelling & vocabulary'),
+('criticise','criticise','It is better to help than to criticise unfairly.',5,'Spelling & vocabulary'),
+('equip','equip','We equip the explorers with maps.',5,'Spelling & vocabulary'),
+('equipped','equipped','The rescue team was equipped with torches.',5,'Spelling & vocabulary'),
+('equipment','equipment','The science equipment was kept on a shelf.',5,'Spelling & vocabulary'),
+('exaggerate','exaggerate','Do not exaggerate the size of the fish.',5,'Spelling & vocabulary'),
+('excellent','excellent','Your explanation was excellent.',5,'Spelling & vocabulary'),
+('harass','harass','We must never harass other pupils.',5,'Spelling & vocabulary'),
+('immediate','immediate','The teacher asked for an immediate response.',5,'Spelling & vocabulary'),
+('sincere','sincere','Her sincere apology helped her friend feel better.',5,'Spelling & vocabulary'),
+('sincerely','sincerely','He sincerely thanked his teacher.',5,'Spelling & vocabulary')
+on conflict(id) do nothing;

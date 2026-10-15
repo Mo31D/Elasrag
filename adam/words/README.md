@@ -3,10 +3,10 @@
 **Path:** /adam/words/  |  **Parent product:** Adam Learning Adventures /adam/
 
 ## What exists
-- 347 **curated example** vocabulary words, with about 48–51 entries per stage from Reception through Year 6. The labels are editorial introduction bands **not** a full official list or proof that every child at that stage has learned all words.
+- 589 word cards (including 242 additionally hand-edited cards whose terms appear in the DfE spelling appendix). **All 100 entries in each of the statutory Years 3–4 and Years 5–6 word lists have a ready learning card**, including important spelling variants. Editorial extras are separated from DfE-supported entries and never represented as statutory content.
 - Primary audio route is **approved, pre-generated Google Gemini en-GB clips**, reused for every learner via an immutable public educational WAV cache. A clearly labelled browser voice is available only as an **explicit alternative** if the Google clip is still awaiting generation/review. **No generated Google WAV recordings have been approved or published yet.** See [VOICE.md](VOICE.md).
-- Fully local self-contained game: illustrated word cards with procedural layered SVG art (no image-model costs); definition, sentence example, syllable-like spelling chunks, a picture selection activity, meaning quiz, untimed typed spelling, word-order sentence builder.
-- Four separate per-word assessment channels (meaning, picture, spelling, sentence), per-day independent evidence, review due dates (1,3,7,14,30 days), replay without unlimited star farming.
+- Standalone game: word cards with procedural SVG illustration hints (no image-model costs); definition, contextual example, syllable-like text chunks, meaning, untimed typed spelling and word-order sentence tasks. Picture recognition is assessed **only for words whose pictogram actually depicts the answer**, to avoid dishonest score signals.
+- Three core assessment channels (meaning, spelling, sentence); an additional picture-recognition channel only where the illustration unambiguously depicts the target word, per-day independent evidence, review due dates (1,3,7,14,30 days), replay without unlimited star farming.
 - The local explorer name and stage are read **read-only** from Adam's existing `ala-adventure-v1` browser profile record. This module writes only `ala-word-kingdom-v1`. Existing game XP, Supabase Auth and cloud XP **are not modified**.
 - Twelve cards per page, mobile-responsive portrait and landscape, reduced-motion support, keyboard-accessible native controls.
 - Private local JSON backup export. This v1 does **not** restore, cloud sync, verify learner identity, or enforce parent-only controls.
@@ -17,7 +17,7 @@
 2. Do **not** copy this code inside the main `game/src/main.ts` monolith. A distinct route/microfrontend is intentional for isolation; progressively share profile settings via a tested parent-owned contract.
 3. Main app local profile key: `ala-adventure-v1`. Word Kingdom local progress key: `ala-word-kingdom-v1`. They must not be overwritten or conflated.
 4. For cross-device progress, migrate to an authenticated, parent-owned Supabase adapter with RLS, secure child ownership and idempotent attempt IDs, keeping isolated Word Stars from main game XP until a deliberate scoring design is approved.
-5. Add a reviewed content import system with lesson/curriculum provenance, phonics quality audit and teacher/parent approval. The current 347 words are expanded editorial seed content only, not complete official lists.
+5. Add a reviewed content import system with lesson/curriculum provenance, phonics quality audit and teacher/parent approval. The two KS2 100-entry statutory group lists are fully card-covered; the separate optional enrichment vocabulary remains editorial, not a government list. EYFS and Year 1–2 have no blanket official dictionary of every word a child must know.
 6. Add a reusable **approved image registry** keyed by a semantic visual concept + Art Bible version + locale (not duplicated per learner). The current images are deterministic SVG fallback illustrations; categories may reuse generic icons rather than dedicated depictions. For external AI imagery: server-only provider keys, fixed safe prompt inputs, cost reservation, dedupe/cache, content safety validation, adult image review, immutable approved version and fallback; paid generation off by default.
 7. Add narrator audio library (word, phrase, slow variant) cached per voice/locale/model/content hash. Don't expose Gemini key to browsers. Provide play controls and a non-audio fallback.
 8. Preserve oral practice as optional and non-scored. Stammering, repeating and extended thinking time must never reduce XP.
@@ -25,10 +25,10 @@
 
 ## Curriculum integrity
 Official source: https://www.gov.uk/government/publications/national-curriculum-in-england-english-programmes-of-study
-English Appendix 1 contains statutory spelling coverage for Years 3–4 and 5–6. These are **multi-year** lists; it is incorrect to present our twelve-per-year starter samples as the required full corpus. The Reception/Year 1/Year 2 and Years 3–6 vocabulary bands here are editorial scaffolding for learning, not a government-sanctioned vocabulary checklist. Validate and expand with evidence, then separate curriculum-aligned spelling from general receptive/expressive word knowledge.
+See [CURRICULUM.md](CURRICULUM.md) for the data contract, DfE source, precise distinction between statutory lists, non-statutory word examples, and editorial EYFS/extra vocabulary. The 100-word lists are for shared Years 3–4 and Years 5–6 groups, **not separate single-year lists**. Curriculum-first is the default; enrichment is opt-in.
 
 ## Security / finance
 No browser microphone permission, speech recording, ads, tracking, external image URLs, unreviewed HTML import, API key, backend writes, or provider calls are used. Word stars are motivational local indicators, **not** mastery certificates or redeemable rewards. No paid activity is performed.
 
 ## Known limitations
-Images are vector storybook placeholders, **not** image-generated cinematic illustrations. Browser voice varies by device; no consistent British narrator guarantee until backend voice assets are implemented. Some abstract terms need context-driven custom illustrations. The four channels do not test genuine free-form expressive speaking or writing. Word order checks use curated sentence tokens and exact order; multiple equally grammatical variants are not yet accepted. Cloud account and mobile device continuity awaits Work integration.
+Images are vector storybook placeholders, **not** image-generated cinematic illustrations. Browser voice varies by device; no consistent British narrator guarantee until backend voice assets are implemented. Some abstract terms need context-driven custom illustrations. The assessment channels do not test genuine free-form expressive speaking or writing. Word order checks use curated sentence tokens and exact order; multiple equally grammatical variants are not yet accepted. Cloud account and mobile device continuity awaits Work integration.
