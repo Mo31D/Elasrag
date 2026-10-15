@@ -1,4 +1,5 @@
 import './style.css';
+import {learningSummary,readScience,resetLocalLearning} from '../public/shared/learning-progress.js';
 import roadmap from '../public/data/curriculum-roadmap.json';
 import {
   words,
@@ -104,6 +105,8 @@ const icon = (id: string) => {
     gear: '<circle cx="32" cy="32" r="11"/><path d="M25 5H39L42 15 53 18 59 30 52 38 51 50 39 56 30 50 18 53 8 42 13 31 8 21 19 12Z"/>',
     trophy:
       '<path d="M18 8H46V24Q46 38 32 40Q18 38 18 24ZM18 14H7V24Q7 35 22 35M46 14H57V24Q57 35 42 35M32 40V53M20 56H44"/>',
+    flask:
+      '<path d="M24 6H40M27 6V25L12 50Q8 57 18 57H46Q56 57 52 50L37 25V6M18 43H46M26 49H30M36 51H38"/>' ,
     crystal:
       '<path d="M32 4L51 19 56 43 32 60 8 43 13 19ZM32 4L23 25 32 60 42 25ZM13 19L23 25 42 25 51 19"/>',
     sound:
@@ -191,6 +194,8 @@ function map() {
   const mathsState = mathsDone
     ? `${mathsDone}/${mathsTotal} RESTORED`
     : 'READY TO BEGIN';
+  const learning = learningSummary(window.localStorage,state.activeProfile);
+  const lab = readScience(window.localStorage,state.activeProfile);
   const cloudCards = cloudMissions
     .map(
       (mission, index) =>
@@ -198,7 +203,7 @@ function map() {
     )
     .join('');
   shell(
-    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">THE ADVENTURE ATLAS</p><h1>Choose your next<br>adventure.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}. Pick a destination and continue your journey.</p></div><div class="adventure-deck" aria-label="Available adventures"><button type="button" class="adventure-card mystery-card" data-action="mission" aria-label="${done ? 'Reopen' : state.missionStep ? 'Continue' : 'Begin'} lesson one, The missing trophy"><span class="adventure-card-top"><span class="adventure-index">LESSON 01</span><span class="adventure-state">${missionState}</span></span><span class="adventure-emblem">${icon('glass')}</span><span class="region">MYSTERY CITY · ENGLISH</span><strong>The missing trophy</strong><span class="adventure-copy">${done ? 'Case solved. Revisit the evidence and vocabulary.' : 'Follow a golden trail, examine clues and repair the detective report.'}</span><span class="adventure-action">${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <b>→</b></span><small>5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></button><button type="button" class="adventure-card maths-card" data-action="maths" aria-label="Open Number Kingdom"><span class="adventure-card-top"><span class="adventure-index">MATHS QUEST</span><span class="adventure-state">${mathsState}</span></span><span class="adventure-emblem">${icon('crystal')}</span><span class="region">NUMBER KINGDOM · CONFIDENCE PATH</span><strong>The crystal pathways</strong><span class="adventure-copy">Short Year 3–6 checks separate question language from mathematical thinking.</span><span class="adventure-action">${mathsDone ? 'Continue your path' : 'Start the recommended path'} <b>→</b></span><small>YEAR ${profile().year || 6} · ${mathsDone}/${mathsTotal} PATHS TRIED</small></button><button type="button" class="adventure-card words-card" data-action="words" aria-label="Enter Word Kingdom"><span class="adventure-card-top"><span class="adventure-index">WORD COLLECTION</span><span class="adventure-state">${reviews ? `${reviews} REVIEW${reviews === 1 ? '' : 'S'} DUE` : 'READY'}</span></span><span class="adventure-emblem">${icon('book')}</span><span class="region">WORD KINGDOM · BRITISH ENGLISH</span><strong>The living library</strong><span class="adventure-copy">Discover, hear and master curriculum spelling and useful school vocabulary.</span><span class="adventure-action">Enter the library <b>→</b></span><small>WORD STARS STAY SEPARATE FROM ADVENTURE XP</small></button><button type="button" class="adventure-card science-card" data-action="science" aria-label="Enter Discovery Laboratory"><span class="adventure-card-top"><span class="adventure-index">SCIENCE MISSION</span><span class="adventure-state">NEW LAB</span></span><span class="adventure-emblem">⚗</span><span class="region">DISCOVERY LABORATORY · MATERIALS</span><strong>The dissolving mystery</strong><span class="adventure-copy">Predict, test and explain why sugar seems to disappear but sand does not.</span><span class="adventure-action">Enter the laboratory <b>→</b></span><small>YEAR 5 REVIEW · YEAR 6 SCIENTIFIC THINKING</small></button>${cloudCards}</div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${reviews ? 'Recall trail · ' + reviews + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${button('cloud', cloudMissions.length ? 'Manage family missions' : 'Family missions', 'map-chip')}</div></section>`,
+    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">THE ADVENTURE ATLAS</p><h1>Choose your next<br>adventure.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}. Pick a destination and continue your journey.</p></div><div class="adventure-deck" aria-label="Available adventures"><button type="button" class="adventure-card mystery-card" data-action="mission" aria-label="${done ? 'Reopen' : state.missionStep ? 'Continue' : 'Begin'} lesson one, The missing trophy"><span class="adventure-card-top"><span class="adventure-index">LESSON 01</span><span class="adventure-state">${missionState}</span></span><span class="adventure-emblem">${icon('glass')}</span><span class="region">MYSTERY CITY · ENGLISH</span><strong>The missing trophy</strong><span class="adventure-copy">${done ? 'Case solved. Revisit the evidence and vocabulary.' : 'Follow a golden trail, examine clues and repair the detective report.'}</span><span class="adventure-action">${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <b>→</b></span><small>5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></button><button type="button" class="adventure-card maths-card" data-action="maths" aria-label="Open Number Kingdom"><span class="adventure-card-top"><span class="adventure-index">MATHS QUEST</span><span class="adventure-state">${mathsState}</span></span><span class="adventure-emblem">${icon('crystal')}</span><img class="adventure-feature-art" src="/adam/assets/quest-maths.svg" alt="" loading="lazy" aria-hidden="true"><span class="region">NUMBER KINGDOM · CONFIDENCE PATH</span><strong>The crystal pathways</strong><span class="adventure-copy">Short Year 3–6 checks separate question language from mathematical thinking.</span><span class="adventure-action">${mathsDone ? 'Continue your path' : 'Start the recommended path'} <b>→</b></span><small>YEAR ${profile().year || 6} · ${mathsDone}/${mathsTotal} PATHS TRIED</small></button><button type="button" class="adventure-card words-card" data-action="words" aria-label="Enter Word Kingdom"><span class="adventure-card-top"><span class="adventure-index">WORD COLLECTION</span><span class="adventure-state">${reviews ? `${reviews} REVIEW${reviews === 1 ? '' : 'S'} DUE` : 'READY'}</span></span><span class="adventure-emblem">${icon('book')}</span><span class="region">WORD KINGDOM · BRITISH ENGLISH</span><strong>The living library</strong><span class="adventure-copy">Discover, hear and master curriculum spelling and useful school vocabulary.</span><span class="adventure-action">Enter the library <b>→</b></span><small>WORD STARS STAY SEPARATE FROM ADVENTURE XP</small></button><button type="button" class="adventure-card science-card" data-action="science" aria-label="Enter Discovery Laboratory"><span class="adventure-card-top"><span class="adventure-index">SCIENCE MISSION</span><span class="adventure-state">${lab.step>=4?'COMPLETE':lab.step?'IN PROGRESS':'NEW LAB'}</span></span><span class="adventure-emblem">${icon('flask')}</span><img class="adventure-feature-art" src="/adam/assets/quest-science.svg" alt="" loading="lazy" aria-hidden="true"><span class="region">DISCOVERY LABORATORY · MATERIALS</span><strong>The dissolving mystery</strong><span class="adventure-copy">Predict, test and explain why sugar seems to disappear but sand does not.</span><span class="adventure-action">${lab.step>=4?'Revisit the laboratory':lab.step?'Continue the experiment':'Enter the laboratory'} <b>→</b></span><small>${lab.step>=4?'✓ EVIDENCE EXPLORER · 10 XP EARNED':'MATERIALS · SCIENTIFIC THINKING · 10 XP TO EARN'}</small></button>${cloudCards}</div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${reviews ? 'Recall trail · ' + reviews + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${button('cloud', cloudMissions.length ? 'Manage family missions' : 'Family missions', 'map-chip')}</div></section>`,
     'The Adventure Atlas',
   );
 }
@@ -484,7 +489,7 @@ function parentInsights() {
 function parent() {
   openDialog(
     'Parent desk',
-    `${button('profiles', 'Choose or add an explorer', 'secondary')}${button('cloud', 'Secure family learning', 'secondary')}<p class="muted">Progress and imported files stay in this browser on this device. Clearing browser data removes them. This screen has no authentication; anyone using this device can open it. Export private backups when needed.</p><div class="parent-stats"><div><b>${profile().xp}</b><span>Adventure XP</span></div><div><b>${currentPuzzles().filter((p) => state.maths.includes(p.id)).length}/${currentPuzzles().length}</b><span>Maths paths</span></div><div><b>Disabled</b><span>Reward Credits</span></div></div>${button('curriculum', 'Explore Year 1–6 planning map', 'secondary')}<details open><summary>Skill evidence and review schedule</summary><div class="skill-table"><table><thead><tr><th>Skill</th><th>State</th><th>Independent days</th><th>Next review</th></tr></thead><tbody>${[
+    `${button('profiles', 'Choose or add an explorer', 'secondary')}${button('cloud', 'Secure family learning', 'secondary')}<p class="muted">Progress and imported files stay in this browser on this device. Clearing browser data removes them. This screen has no authentication; anyone using this device can open it. Export private backups when needed.</p><div class="parent-stats"><div><b>${profile().xp}</b><span>Adventure XP · all missions</span></div><div><b>${currentPuzzles().filter((p) => state.maths.includes(p.id)).length}/${currentPuzzles().length}</b><span>Maths paths</span></div><div><b>${learningSummary(window.localStorage,state.activeProfile).scienceCompleted ? 'Complete':'Not yet'}</b><span>Science laboratory</span></div><div><b>${learningSummary(window.localStorage,state.activeProfile).wordStars}</b><span>Word Stars · separate</span></div><div><b>Disabled</b><span>Reward Credits</span></div></div>${button('curriculum', 'Explore Year 1–6 planning map', 'secondary')}<details open><summary>Skill evidence and review schedule</summary><div class="skill-table"><table><thead><tr><th>Skill</th><th>State</th><th>Independent days</th><th>Next review</th></tr></thead><tbody>${[
       ...skills.filter((s) => s.subject === 'English'),
       ...currentPuzzles().map((p) => ({
         id: p.id,
@@ -508,7 +513,7 @@ function parent() {
       )
       .join(
         '',
-      )}</div></details><details><summary>Private backup and device data</summary>${button('export-progress', 'Export private progress', 'secondary')}${button('delete-progress', 'Reset local progress', 'quiet')}<p>No child account, microphone access, advertising, trackers or cloud synchronisation. Speaking practice is optional and is never scored. Support for a stammer itself should be guided by a qualified speech and language therapist.</p></details>`,
+      )}</div></details><details><summary>Private backup and device data</summary>${button('export-progress', 'Export ALL local progress', 'secondary')}${button('delete-progress', 'Reset all device learning progress', 'quiet')}<p class="muted">This resets every explorer’s on-device Adventure XP, maths answers, science experiment and Word Kingdom stars/reviews. It does not delete Supabase cloud progress, approved lessons or external backups. Cloud deletion requires separate parent-authorised management.</p><p>No child account, microphone access, advertising, trackers or cloud synchronisation. Speaking practice is optional and is never scored. Support for a stammer itself should be guided by a qualified speech and language therapist.</p></details>`,
   );
   const insight = parentInsights();
   const stats = document.querySelector('#overlay .parent-stats');
@@ -1009,17 +1014,20 @@ async function action(id: string, b: HTMLButtonElement) {
     return;
   }
   if (id === 'export-progress') {
-    download('private-adventure-progress.json', state);
+    const local=Object.fromEntries(['ala-adventure-v1','ala-word-kingdom-v1','ala-science-lab-v1','ala-approved-missions-v1','ala-lesson'].map(key=>[key,storage.getItem(key)]));
+    download('private-all-learning-progress.json',{exportedAt:new Date().toISOString(),scope:'this device only',local});
     return;
   }
   if (id === 'delete-progress') {
     if (
       confirm(
-        'Reset all learning progress on this device? Export a backup first if you want to keep it.',
+        'Erase ALL device learning progress for EVERY explorer, including Maths, Science, Word Kingdom and Adventure XP? This cannot be undone. Cloud progress remains unchanged. Export a backup first if needed.',
       )
     ) {
       state = fresh();
-      save();
+      resetLocalLearning(window.localStorage,state);
+      cloudMissions = [];
+      custom = null;
       closeDialog();
       map();
     }
