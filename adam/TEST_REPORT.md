@@ -60,3 +60,11 @@ Additional automated tests cover independent family profiles, bounded events wit
 ## Publication verification
 
 Milestone merged through PR #20. GitHub Pages run 38722037804 completed successfully. The live `/adam/` HTML references the new bundle, and the published JavaScript matches the tested build byte-for-byte. This HTTP verification does not establish real-browser rendering or correct audio cue alignment.
+
+## Cloud preparation verification (15 October 2026)
+
+- PostgreSQL-compatible PGlite tests execute the actual migration, with simulated Supabase Auth/Storage schemas and real database roles/RLS. They verify family isolation, anonymous denial, blocked direct XP/RPC writes, atomic reservation deduplication, cooldown/daily caps, required review, idempotent attempts and XP caps.
+- Mock HTTP adapter tests cover missing/invalid authentication, unenrolled users, missing Gemini secrets, free-tier confirmation gates, structured generation saved as pending review, answer mismatch quarantine and error redaction. The synthetic English fixture is **not** a real Gemini output.
+- Simulated DOM tests cover the new data-driven template and disabled-configuration panel; skill routing tests prefer due reviews then new words rather than repeating practice not yet due.
+- The Edge Function entrypoint passes Deno type checking using the installed pinned npm dependency; frontend strict TypeScript and static build pass. No remote Supabase function execution or actual provider request is claimed.
+- Project discovery repeatedly returned an empty list. Live RLS/advisor checks, authenticated remote invocation, a real generated lesson, real Storage use, real progress sync and device/browser QA remain blocked or unverified. No database or project outside this repository has been changed.

@@ -93,3 +93,9 @@ Each local profile keeps its own XP, awards, mission checkpoint, clues, maths co
 `game/src/factory.js` provides tested prerequisite selection, approved-content reuse, disabled-by-default budget checks, arithmetic consistency checks, quarantine and review-required approval contracts. It is a production-pipeline foundation, not a deployed AI factory. `game/backend/README.md` lists the authenticated hosted integration boundary, costs, secrets, audit and TTS strategy. No cloud records, schedules, AI requests, TTS generation or paid infrastructure have been activated. The original narrated name is unchanged for other profiles and is labelled clearly.
 
 Automatic GitHub publication is now authorised by the project owner. Development milestones still need successful tests/builds and change-scope verification; unresolved browser verification is reported honestly.
+
+## Cloud content-factory preparation (15 October 2026)
+
+Cloud source now lives in `game/backend/supabase/`, with a CLI-generated migration, an authenticated `learning-api` Edge Function, strict lesson JSON Schema, canonical English answer validation, pending review/quarantine and transactional XP/review logic. The client uses a lazy-loaded official Supabase SDK and a reusable illustrated mission renderer. `game/backend/DEPLOYMENT.md` documents activation and secure secret entry.
+
+The connected Supabase account currently exposes **no projects**, so no migration or function has been applied remotely and no Gemini key or real generated lesson has been used. `game/src/cloud-config.json` remains `enabled:false`; Parent desk → Secure family learning explains this state. Existing local play and its original narration remain available. No local child records are uploaded automatically. The source is ready for project verification and live integration tests; it is not an active cloud service.

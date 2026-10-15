@@ -1,7 +1,7 @@
-import { cp, readdir, rm } from 'node:fs/promises';
-// Stage only this app's generated files; never touch the parent site.
-for (const f of await readdir('../assets'))
-  if (/^index-[a-zA-Z0-9_-]+\.(js|css)$/.test(f)) await rm('../assets/' + f);
+import { cp, mkdir } from 'node:fs/promises';
+// Preserve the previous published hashes so cached HTML can finish loading.
+// Build in an isolated dist directory; only copy this app's output to /adam/.
+await mkdir('../assets', { recursive: true });
 await cp('dist/index.html', '../index.html');
 for (const dir of ['assets', 'audio', 'data'])
   await cp('dist/' + dir, '../' + dir, { recursive: true });

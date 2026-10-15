@@ -1,3 +1,7 @@
+# Current cloud implementation
+
+Executable preparation now lives in `supabase/`, with an authenticated Edge Function, migration and local PostgreSQL/RLS tests. See [DEPLOYMENT.md](DEPLOYMENT.md) for the current access blocker, secure Gemini secret entry and activation sequence. No live Supabase deployment or real Gemini generation has occurred. The notes below describe the original architectural boundary.
+
 # Hosted platform integration contract — disabled
 
 No hosted backend, provider, generation job or paid service is activated in this release. The only connected Supabase project discovered during development was named Dating; it has not been changed or used for children's data.
