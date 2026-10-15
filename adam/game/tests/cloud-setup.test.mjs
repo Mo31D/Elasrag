@@ -11,7 +11,7 @@ for (const file of ['cloud-mission', 'cloud']) {
   );
   source = source
     .replace(
-      "import config from './cloud-config.json';",
+      /import config from ["']\.\/cloud-config\.json["'];/,
       'const config=' +
         (await readFile(
           new URL('../src/cloud-config.json', import.meta.url),
@@ -19,7 +19,7 @@ for (const file of ['cloud-mission', 'cloud']) {
         )) +
         ';',
     )
-    .replace("from './cloud-mission'", "from './cloud-mission.mjs'");
+    .replace(/from ["']\.\/cloud-mission["']/, "from './cloud-mission.mjs'");
   await writeFile(
     new URL(file + '.mjs', temp),
     ts.transpileModule(source, {
@@ -33,7 +33,10 @@ for (const file of ['cloud-mission', 'cloud']) {
 const { CloudGateway } = await import(new URL('cloud.mjs', temp));
 test('verified Adam project configuration accepts only its public client shape', async () => {
   const config = JSON.parse(
-    await readFile(new URL('../src/cloud-config.json', import.meta.url), 'utf8'),
+    await readFile(
+      new URL('../src/cloud-config.json', import.meta.url),
+      'utf8',
+    ),
   );
   assert.equal(config.enabled, true);
   assert.match(config.projectUrl, /^https:\/\/[a-z0-9-]+\.supabase\.co$/);

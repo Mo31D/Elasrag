@@ -15,12 +15,17 @@ export interface CloudContent {
   hint: string;
   sentenceParts: string[];
 }
+export interface CloudMissionSummary {
+  id: string;
+  title: string;
+}
 export interface Hooks {
   openDialog: (title: string, body: string) => void;
   closeDialog: () => void;
   shell: (body: string, place: string, name?: string) => void;
   map: () => void;
   setView: (view: string) => void;
+  setCloudMissions?: (missions: CloudMissionSummary[]) => void;
 }
 const esc = (value: unknown) =>
   String(value ?? '').replace(
@@ -173,7 +178,18 @@ async function refresh() {
   dashboard = await gateway!.request('dashboard');
   if (!dashboard.students.some((s: any) => s.id === selectedStudent))
     selectedStudent = dashboard.students[0]?.id || '';
+  syncMissions();
   renderDesk();
+}
+function syncMissions() {
+  hooks.setCloudMissions?.(
+    (dashboard?.lessons || [])
+      .filter((lesson: any) => lesson.status === 'approved')
+      .map((lesson: any) => ({
+        id: lesson.id,
+        title: lesson.content?.title || 'English expedition',
+      })),
+  );
 }
 function renderDesk() {
   const d = dashboard;
@@ -183,7 +199,7 @@ function renderDesk() {
   const xp = d.xp
     .filter((x: any) => x.student_id === selectedStudent)
     .reduce((n: number, x: any) => n + x.amount, 0);
-  body().innerHTML = `<div class="choices">${btn('refresh', 'Refresh')}${btn('signout', 'Sign out', 'quiet')}</div><label for="cloud-student">Explorer</label><select id="cloud-student">${d.students.map((s: any) => `<option value="${esc(s.id)}" ${s.id === selectedStudent ? 'selected' : ''}>${esc(s.nickname)} · Year ${s.school_year}</option>`).join('')}</select><p>${st ? esc(st.nickname) + ' has ' + xp + ' cloud adventure XP.' : 'Add a cloud explorer to begin. Local profiles are not uploaded automatically.'}</p><details><summary>Add a cloud explorer</summary><form id="cloud-add-student"><label for="cloud-name">Nickname</label><input id="cloud-name" maxlength="30" required><label for="cloud-year">Starting stage</label><select id="cloud-year"><option value="6">Year 6</option><option value="4">Year 4</option></select><p>England primary · British English</p><button class="secondary">Create private profile</button></form></details><details><summary>Generation limits and free-tier confirmation</summary><form id="cloud-settings"><label><input id="cloud-free" type="checkbox" ${d.settings?.free_tier_confirmed ? 'checked' : ''}> I have confirmed this Gemini key's Google project is on the Free tier with no paid billing.</label><label><input id="cloud-enabled" type="checkbox" ${d.settings?.generation_enabled ? 'checked' : ''}> Enable parent-triggered text generation</label><label for="cloud-limit">Maximum requests per day (failed requests count)</label><input id="cloud-limit" type="number" min="1" max="5" value="${d.settings?.daily_limit || 2}"><button class="secondary">Save generation settings</button></form><p class="muted">Default limit: 2 per day, at most 1 per minute, 1,800 output tokens per request. This app cannot inspect Google's billing configuration. Automatic scheduling, paid fallback, audio generation and Reward Credits remain disabled.</p></details><div class="choices">${btn('generate', 'Prepare next English mission', 'primary')}</div><p class="muted">Approved suitable content is reused before requesting a new lesson. Every new lesson needs adult review. Only a generic skill and word go to Gemini; no nickname, email or learning history is sent.</p><h3>Content review · ${pending.length} pending</h3>${d.lessons.map((l: any) => `<div class="cloud-lesson-row"><strong>${esc(l.content?.title || 'Quarantined output')}</strong><span>${esc(l.status)}</span>${btn('review:' + l.id, l.status === 'pending_review' ? 'Inspect and review' : 'Inspect', 'quiet')}</div>`).join('') || '<p>No generated content yet.</p>'}<h3>Approved expeditions</h3>${approved.map((l: any) => btn('play:' + l.id, esc(l.content.title), 'secondary')).join('') || '<p>Only approved lessons appear here.</p>'}<h3>Skills and next reviews</h3>${
+  body().innerHTML = `<div class="choices">${btn('refresh', 'Refresh')}${btn('signout', 'Sign out', 'quiet')}</div><label for="cloud-student">Explorer</label><select id="cloud-student">${d.students.map((s: any) => `<option value="${esc(s.id)}" ${s.id === selectedStudent ? 'selected' : ''}>${esc(s.nickname)} · Year ${s.school_year}</option>`).join('')}</select><p>${st ? esc(st.nickname) + ' has ' + xp + ' cloud adventure XP.' : 'Add a cloud explorer to begin. Local profiles are not uploaded automatically.'}</p><details><summary>Add a cloud explorer</summary><form id="cloud-add-student"><label for="cloud-name">Nickname</label><input id="cloud-name" maxlength="30" required><label for="cloud-year">Starting stage</label><select id="cloud-year"><option value="6">Year 6</option><option value="4">Year 4</option></select><p>England primary · British English</p><button class="secondary">Create private profile</button></form></details><details><summary>Generation limits and free-tier confirmation</summary><form id="cloud-settings"><label><input id="cloud-free" type="checkbox" ${d.settings?.free_tier_confirmed ? 'checked' : ''}> I have confirmed this Gemini key's Google project is on the Free tier with no paid billing.</label><label><input id="cloud-enabled" type="checkbox" ${d.settings?.generation_enabled ? 'checked' : ''}> Enable parent-triggered text generation</label><label for="cloud-limit">Maximum requests per day (failed requests count)</label><input id="cloud-limit" type="number" min="1" max="5" value="${d.settings?.daily_limit || 2}"><button class="secondary">Save generation settings</button></form><p class="muted">Default limit: 2 per day, at most 1 per minute, 1,800 output tokens per request. This app cannot inspect Google's billing configuration. Automatic scheduling, paid fallback, audio generation and Reward Credits remain disabled.</p></details><div class="choices">${btn('generate', 'Prepare next English mission', 'primary')}</div><p class="muted">Approved suitable content is reused before requesting a new lesson. Every new lesson needs adult review. Only a generic skill and word go to Gemini; no nickname, email or learning history is sent.</p><h3>Content review · ${pending.length} pending</h3>${d.lessons.map((l: any) => `<div class="cloud-lesson-row"><strong>${esc(l.content?.title || 'Quarantined output')}</strong><span>${esc(l.status)}</span>${btn('review:' + l.id, l.status === 'pending_review' ? 'Inspect and review' : 'Inspect', 'quiet')}</div>`).join('') || '<p>No generated content yet.</p>'}<h3>Approved expeditions</h3>${approved.length ? `<div class="choices">${approved.map((l: any) => btn('play:' + l.id, esc(l.content.title), 'secondary')).join('')}${btn('atlas', 'Show approved missions on atlas', 'primary')}</div>` : '<p>Only approved lessons appear here.</p>'}<h3>Skills and next reviews</h3>${
     d.progress
       .filter((p: any) => p.student_id === selectedStudent)
       .map(
@@ -253,6 +269,7 @@ function bindDesk() {
             if (action === 'refresh') await refresh();
             else if (action === 'signout') {
               await gateway!.signOut();
+              hooks.setCloudMissions?.([]);
               login();
             } else if (action === 'generate') {
               if (!selectedStudent)
@@ -266,6 +283,9 @@ function bindDesk() {
                   ? 'Suitable content or an existing request was reused. No duplicate generation was requested.'
                   : 'Lesson prepared for adult review.',
               );
+            } else if (action === 'atlas') {
+              hooks.closeDialog();
+              hooks.map();
             } else if (action.startsWith('review:')) review(action.slice(7));
             else if (action.startsWith('play:')) {
               if (!selectedStudent) throw Error('Choose an explorer first.');
@@ -283,6 +303,30 @@ function bindDesk() {
             }
           })),
     );
+}
+
+export async function playCloudMission(id: string, h: Hooks) {
+  hooks = h;
+  if (!config.enabled) return openCloudDesk(h);
+  gateway ??= new CloudGateway(config.projectUrl, config.publishableKey);
+  const {
+    data: { session },
+  } = await gateway.client.auth.getSession();
+  if (!session) return openCloudDesk(h);
+  dashboard = await gateway.request('dashboard');
+  if (
+    !dashboard.students.some((student: any) => student.id === selectedStudent)
+  )
+    selectedStudent = dashboard.students[0]?.id || '';
+  syncMissions();
+  const lesson = dashboard.lessons.find(
+    (item: any) => item.id === id && item.status === 'approved',
+  );
+  const student = dashboard.students.find(
+    (item: any) => item.id === selectedStudent,
+  );
+  if (!lesson || !student) return openCloudDesk(h);
+  playCloudLesson(lesson, student, h, gateway);
 }
 function review(id: string) {
   const l = dashboard.lessons.find((l: any) => l.id === id);
