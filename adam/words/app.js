@@ -315,6 +315,9 @@ function downloadArtBriefs(){
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&window.speechSynthesis)window.speechSynthesis.cancel()});
 window.addEventListener('popstate',()=>{if(selected)closeWord(true)});
+// A restored browser tab must not overwrite newer rewards or reanimate deleted progress.
+window.addEventListener('pageshow',event=>{if(event.persisted)window.location.reload()});
+window.addEventListener('storage',event=>{if(event.key==='ala-adventure-v1'||event.key===STORE)window.location.reload()});
 document.addEventListener('keydown',event=>{
  if(!selected)return;
  if(event.key==='Escape'){event.preventDefault();back();return;}
