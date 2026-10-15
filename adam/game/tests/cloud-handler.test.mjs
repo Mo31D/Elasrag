@@ -108,6 +108,8 @@ function harness({
         },
       ]);
     if (path.startsWith('ala_lessons')) return ok([]);
+    if (path === 'rpc/ala_reset_cloud_learning')
+      return ok({reset:true,students_preserved:1,attempts_cleared:2,skills_cleared:3,xp_awards_cleared:1});
     if (path === 'rpc/ala_reserve_generation')
       return ok({ reused: false, job: { id: job } });
     if (path === 'rpc/ala_finish_generation') {
@@ -219,4 +221,22 @@ test('lesson schema and semantic checks reject unsafe content and malformed sent
   assert.equal(scoreAnswer(fixture, 'sentence', [0, 1, 2, 3]), true);
   assert.equal(scoreAnswer(fixture, 'sentence', [0, 2, 1, 3]), false);
   assert.throws(() => buildPrompt('unsupported'));
+});
+
+test('Cloud learning reset is prohibited without parent authentication and an exact typed confirmation',async()=>{
+ const h=harness();
+ const blocked=await h.handler(request({action:'reset-learning'}));
+ assert.equal(blocked.status,409);
+ assert.equal((await blocked.json()).error,'explicit_parent_confirmation_required');
+ assert.ok(!h.calls.some(c=>c.url.includes('rpc/ala_reset_cloud_learning')));
+ const r=await h.handler(request({action:'reset-learning',confirm:'RESET CLOUD LEARNING'}));
+ assert.equal(r.status,200);
+ const result=await r.json();
+ assert.equal(result.reset,true);
+ assert.equal(result.students_preserved,1);
+ assert.ok(h.calls.some(c=>c.url.endsWith('rpc/ala_reset_cloud_learning')));
+ const unverified=harness({enrolled:false});
+ const result2=await unverified.handler(request({action:'reset-learning',confirm:'RESET CLOUD LEARNING'}));
+ assert.equal(result2.status,403);
+ assert.ok(!unverified.calls.some(c=>c.url.includes('rpc/ala_reset_cloud_learning')));
 });

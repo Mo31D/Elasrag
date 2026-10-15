@@ -2008,3 +2008,199 @@ select {
     height: 180px;
   }
 }
+
+
+/* ATLAS V2: content-driven layout. Root-cause fix for cropped science card.
+   Old absolute deck + percentage top + fixed atlas min-height overflowed when cards were added.
+   Keep absolute positioning ONLY for decorative art. */
+.game.map .atlas {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  isolation: isolate;
+  min-height: 0 !important;
+  height: auto;
+  overflow: visible;
+  padding: clamp(34px, 5.5vw, 76px) clamp(17px, 4.5vw, 65px) 28px;
+  gap: clamp(24px, 3.2vw, 42px);
+}
+.game.map .atlas-art {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.game.map .atlas::after {
+  pointer-events: none;
+  background: linear-gradient(180deg,#0d2b40b9 0%,#123e4f81 35%,#102e40d6 100%);
+}
+.game.map .map-heading {
+  position: relative;
+  inset: auto;
+  top: auto;
+  left: auto;
+  right: auto;
+  z-index: 1;
+  max-width: 760px;
+  padding: 0;
+}
+.game.map .map-heading h1 {
+  font-size: clamp(35px,4.3vw,58px);
+  letter-spacing: -.025em;
+  line-height: 1.09;
+}
+.game.map .adventure-deck {
+  position: relative;
+  top: auto !important;
+  right: auto;
+  left: auto;
+  bottom: auto;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  align-items: stretch;
+  gap: clamp(16px,2.2vw,26px);
+  width: 100%;
+  margin: 0;
+}
+.game.map .adventure-card,
+.game.map .adventure-card.words-card {
+  position: relative;
+  grid-column: auto;
+  min-height: 332px;
+  height: auto;
+  padding: clamp(19px,2vw,26px);
+  contain: layout;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 22px;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.game.map .adventure-card .adventure-card-top,
+.game.map .adventure-card .region,
+.game.map .adventure-card > strong,
+.game.map .adventure-card .adventure-copy,
+.game.map .adventure-card .adventure-action,
+.game.map .adventure-card > small {
+  position: relative;
+  z-index: 2;
+}
+.game.map .adventure-card > strong {
+  font-size: clamp(25px,2.3vw,36px);
+  max-width: min(100%,24ch);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.game.map .adventure-card .adventure-copy {
+  max-width: min(100%,35ch);
+  font-size: 13px;
+  line-height: 1.55;
+}
+.game.map .adventure-card .adventure-action {
+  font-size: 14px;
+  min-height: 45px;
+  display: flex;
+  align-items: end;
+  gap: 9px;
+}
+.game.map .adventure-card > small {
+  font-size: 9px;
+  letter-spacing: .09em;
+  line-height: 1.4;
+  max-width: 100%;
+}
+.game.map .adventure-card.maths-card {
+  background: radial-gradient(circle at 100% 15%,#4caeae44,transparent 45%),linear-gradient(155deg,#144a56,#0c2b41 85%);
+}
+.game.map .adventure-card.science-card {
+  border-top: 3px solid #80dfb8;
+  background: radial-gradient(circle at 100% 15%,#72dcbf40,transparent 48%),linear-gradient(155deg,#195a55,#0b303f 90%);
+}
+.game.map .adventure-feature-art {
+  position: absolute;
+  top: 48px;
+  right: -6%;
+  width: clamp(165px,50%,270px);
+  height: 195px;
+  object-fit: contain;
+  opacity: .84;
+  filter: drop-shadow(0 10px 15px #031f3380);
+  z-index: 0;
+  pointer-events: none;
+}
+.game.map .adventure-card .adventure-emblem {
+  width: 56px;
+  height: 56px;
+  top: 58px;
+  right: 18px;
+  opacity: 0;
+  pointer-events: none;
+}
+.game.map .maths-card .adventure-copy,
+.game.map .science-card .adventure-copy {max-width: 72%;}
+.game.map .maths-card .adventure-card-top,
+.game.map .science-card .adventure-card-top {margin-bottom: 42px;}
+.game.map .adventure-card .region {max-width: 95%; text-wrap: balance;}
+.game.map .map-bottom {
+  position: relative;
+  inset: auto;
+  z-index: 1;
+  margin: 0;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.game.map .map-compass {
+  top: 24px;
+  right: 5%;
+  pointer-events: none;
+  opacity: .64;
+}
+.game.map .map-chip {min-height: 46px; white-space: normal;}
+.game.map .adventure-card:hover,
+.game.map .adventure-card:focus-visible {
+  transform: translateY(-4px);
+}
+.game.map .adventure-card:focus-visible,
+.game.map .map-chip:focus-visible {
+  outline: 3px solid #ffe3a4;
+  outline-offset: 4px;
+}
+@media (max-width: 1150px) {
+  .game.map .adventure-deck {grid-template-columns:repeat(2,minmax(0,1fr));}
+  .game.map .adventure-card {min-height:300px;}
+}
+@media (max-width: 680px) {
+  .game.map .atlas {padding:30px 5% 24px;gap:27px;}
+  .game.map .adventure-deck {grid-template-columns:minmax(0,1fr);gap:17px;}
+  .game.map .adventure-card,
+  .game.map .adventure-card.words-card {min-height:277px;padding:22px 23px;}
+  .game.map .adventure-card > strong {font-size:clamp(27px,6.5vw,36px);}
+  .game.map .adventure-feature-art {width:51%;height:175px;top:49px;right:-7%;}
+  .game.map .maths-card .adventure-card-top,
+  .game.map .science-card .adventure-card-top {margin-bottom:39px;}
+  .game.map .maths-card .adventure-copy,
+  .game.map .science-card .adventure-copy {max-width:75%;}
+  .game.map .adventure-card .adventure-copy {font-size:13px;min-height:0;}
+  .game.map .adventure-card .adventure-action {padding-top:12px;min-height:42px;}
+  .game.map .map-compass {top:22px;right:6%;}
+  .game.map .map-compass span {font-size:48px;}
+}
+@media (max-width: 360px) {
+  .game.map .adventure-card {padding:18px;}
+  .game.map .adventure-feature-art {opacity:.43;}
+  .game.map .maths-card .adventure-copy,
+  .game.map .science-card .adventure-copy {max-width:100%;}
+}
+@media (max-height: 580px) and (min-width: 681px) and (max-width:1150px) {
+  .game.map .adventure-deck {grid-template-columns:repeat(2,minmax(0,1fr));}
+  .game.map .atlas {padding-top:25px;}
+}
+@media (prefers-reduced-motion: reduce) {
+  .game.map .adventure-card {transition:none;}
+  .game.map .adventure-card:hover,
+  .game.map .adventure-card:focus-visible {transform:none;}
+}

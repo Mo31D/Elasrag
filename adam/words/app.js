@@ -1,3 +1,4 @@
+import {creditLearning} from '../shared/learning-progress.js';
 import {WORDS,STAGES,ART_BIBLE} from './words-data.js';
 import {artSvg} from './art.js';
 import {curriculumLinks,curriculumYear,belongsToBand,sourceLabel,CURRICULUM_BANDS} from './curriculum-index.js';
@@ -244,8 +245,14 @@ function answerResult(correct,facet){
  if(busy)return;busy=true;
  const newlyEarned=correct&&!assisted&&!record(selected,facet).awarded;
  storeAnswer(selected,facet,correct,assisted);
+ // Word Stars remain a separate collectible. A word earns Adventure XP only
+ // after all relevant independent skill challenges have succeeded.
+ const ready = correct && !assisted && facetsFor(selected).every(skill=>record(selected,skill).awarded);
+ const shared = ready ? creditLearning(localStorage,{
+   profileId,awardId:'word:mastered:'+selected.id,amount:3,subject:'words'
+ }) : {awarded:false};
  const msg=correct
-  ? (newlyEarned?'Good thinking! +2 word stars. ': 'Good thinking. ')+(assisted?'The clue helped; try again later without it.':'You can revisit this word anytime.')
+  ? (newlyEarned?'Good thinking! +2 word stars. ': 'Good thinking. ')+(shared.awarded?'+3 Adventure XP for mastering this word! ':'')+(assisted?'The clue helped; try again later without it.':'You can revisit this word anytime.')
   : 'Not quite. Take another look and try again. A mistake is a useful clue.';
  const box=document.querySelector('#wk-feedback');
  if(box){box.className='wk-feedback '+(correct?'good':'retry');box.textContent=msg;}
@@ -308,6 +315,9 @@ function downloadArtBriefs(){
 }
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&window.speechSynthesis)window.speechSynthesis.cancel()});
 window.addEventListener('popstate',()=>{if(selected)closeWord(true)});
+// A restored browser tab must not overwrite newer rewards or reanimate deleted progress.
+window.addEventListener('pageshow',event=>{if(event.persisted)window.location.reload()});
+window.addEventListener('storage',event=>{if(event.key==='ala-adventure-v1'||event.key===STORE)window.location.reload()});
 document.addEventListener('keydown',event=>{
  if(!selected)return;
  if(event.key==='Escape'){event.preventDefault();back();return;}
