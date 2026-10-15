@@ -144,7 +144,7 @@ export function createHandler({ env, fetch, validate, schema }) {
           authenticated: true,
           enrolled: true,
           geminiConfigured: !!env('GEMINI_API_KEY'),
-          model: 'gemini-2.5-flash-lite',
+          model: 'gemini-flash-lite-latest',
           audioEnabled: false,
         });
       if (body.action === 'dashboard') {
@@ -280,7 +280,7 @@ export function createHandler({ env, fetch, validate, schema }) {
             { status: 'running' },
           );
           const provider = await fetch(
-            'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent',
+            'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent',
             {
               method: 'POST',
               headers: {
@@ -294,12 +294,8 @@ export function createHandler({ env, fetch, validate, schema }) {
                 generationConfig: {
                   maxOutputTokens: 1800,
                   temperature: 0.35,
-                  responseFormat: {
-                    text: {
-                      mimeType: 'application/json',
-                      schema: providerSchema(schema),
-                    },
-                  },
+                  responseMimeType: 'application/json',
+                  responseJsonSchema: providerSchema(schema),
                 },
               }),
               signal: AbortSignal.timeout(45000),
