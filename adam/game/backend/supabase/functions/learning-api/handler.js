@@ -232,7 +232,11 @@ export function createHandler({ env, fetch, validate, schema }) {
         const st = await student(body.studentId);
         const apiKey = env('GEMINI_API_KEY');
         if (!apiKey) throw new ApiError('gemini_secret_missing', 503);
-        if (env('GEMINI_FREE_TIER_CONFIRMED') !== 'true')
+        if (
+          String(env('GEMINI_FREE_TIER_CONFIRMED') || '')
+            .trim()
+            .toLowerCase() !== 'true'
+        )
           throw new ApiError('server_free_tier_confirmation_required', 409);
         // Curriculum and prerequisite selection are server-owned, never a prompt supplied by a child.
         const available = await rest(
