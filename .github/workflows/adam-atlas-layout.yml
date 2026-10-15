@@ -1,0 +1,53 @@
+name: Adam Atlas visual geometry
+
+on:
+  pull_request:
+    paths:
+      - 'adam/game/src/**'
+      - 'adam/game/public/assets/quest-*.svg'
+      - 'adam/game/public/shared/**'
+      - 'adam/game/stage.mjs'
+      - 'adam/science/**'
+      - 'adam/words/app.js'
+      - 'adam/game/tests/browser-layout.check.mjs'
+      - '.github/workflows/adam-atlas-layout.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  atlas-layout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: adam/game/package-lock.json
+      - run: npm ci --prefix adam/game
+      - name: Install browser tester (CI only)
+        run: |
+          cd adam/game
+          npm install --no-save --package-lock=false playwright@1.58.2
+          npx playwright install --with-deps chromium
+      - name: Start Vite application
+        run: |
+          cd adam/game
+          npm run dev -- --host 127.0.0.1 --port 4173 > /tmp/adam-vite.log 2>&1 &
+          for i in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:4173/adam/ > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/adam-vite.log
+          exit 1
+      - name: Assert visible Science/Maths cards at five viewports
+        run: node adam/game/tests/browser-layout.check.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: adam-atlas-viewport-screenshots
+          path: adam/game/atlas-screenshots/
+          retention-days: 4
