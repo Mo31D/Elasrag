@@ -2,14 +2,14 @@
 // This function is intentionally independent of the existing learning-api.
 const PROJECT_ORIGINS = new Set(['https://www.elasrag.com', 'https://elasrag.com']);
 const PROJECT_CLIP = 's01-preview';
-const MODEL = 'gemini-2.5-flash-preview-tts';
+const MODEL = 'gemini-3.8-flash-lite-tts';
 const BUCKET = 'ala-educational-assets';
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-const PREVIEW_TEXT = [
-  'Narrator: Welcome back, Adam! Today, you are a detective.',
-  'Pip: Hoot-hoot, Detective Adam! There is a mystery at the old library!',
-].join('\n');
+const PREVIEW_TURNS = [
+  { speaker: 'Narrator', text: 'Welcome back, Adam! Today, you are a detective.', style: 'Warm, clear British English. Calm, inviting storytelling.' },
+  { speaker: 'Pip', text: 'Hoot-hoot, Detective Adam! There is a mystery at the old library!', style: 'Playful, bright British English. Excited but never shrill.' },
+];
 
 function error(message, status = 400) {
   return Object.assign(new Error(message), { status });
@@ -183,30 +183,35 @@ export function createHandler({env, request = fetch}) {
 
       // No student PII is transmitted except the fictional name already written in the approved script.
       const response = await request(
-        'https://generativelanguage.googleapis.com/v1beta/models/' + MODEL + ':generateContent', {
+        'https://generativelanguage.googleapis.com/v1beta/interactions', {
           method:'POST',
           headers:{'content-type':'application/json','x-goog-api-key':env('GEMINI_API_KEY')},
           body:JSON.stringify({
-            contents:[{parts:[{text:'Read the dialogue in clear, natural British English. Narrator is a warm female storyteller. Pip is a playful, high-pitched clockwork owl. Read only the dialogue: \n' + PREVIEW_TEXT}]}],
-            generationConfig:{
-              responseModalities:['AUDIO'],
-              speechConfig:{
-                languageCode:'en-GB',
-                multiSpeakerVoiceConfig:{speakerVoiceConfigs:[
-                  {speaker:'Narrator',voiceConfig:{prebuiltVoiceConfig:{voiceName:'Kore'}}},
-                  {speaker:'Pip',voiceConfig:{prebuiltVoiceConfig:{voiceName:'Puck'}}},
-                ]},
-              },
-            },
+            model:MODEL,
+            input:[{type:'user_input',content:PREVIEW_TURNS.map(turn=>({
+              type:'text',text:turn.text,
+              annotations:[{type:'speech_metadata',speaker:turn.speaker,style:turn.style}],
+            }))}],
+            response_format:{type:'audio'},
+            generation_config:{speech_config:{mode:'conversational',speakers:[
+              {speaker:'Narrator',voice:'Kore'},
+              {speaker:'Pip',voice:'Puck'},
+            ]}},
           }),
           signal:AbortSignal.timeout(45000),
         }
       );
       if (!response.ok) throw error('tts_provider_request_failed',502);
       const result = await response.json();
-      const part = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData?.data);
+      const parts = (result?.steps || []).filter(step => step.type === 'model_output')
+        .flatMap(step => step.content || []);
+      const part = parts.filter(p => p.type === 'audio' && typeof p.data === 'string').at(-1);
       if (!part) throw error('tts_audio_missing',502);
-      const audio = wavFromPcm(part.inlineData.data, part.inlineData.mimeType || '');
+      const audio = wavFromPcm(part.data, part.mime_type || 'audio/wav');
+      if (String.fromCharCode(...audio.slice(0,4)) !== 'RIFF' ||
+          String.fromCharCode(...audio.slice(8,12)) !== 'WAVE') {
+        throw error('invalid_audio_format',502);
+      }
       const path = 'family/' + owner + '/episode2/' + PROJECT_CLIP + '.wav';
       await storage('object/' + BUCKET + '/' + path, 'POST', audio, 'audio/wav');
       await rest(
