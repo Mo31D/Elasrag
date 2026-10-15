@@ -25,7 +25,7 @@ const owner = '00000000-0000-4000-8000-000000000001',
 const fixture = {
   version: 1,
   template: 'feeling-detective-v1',
-  title: 'The sealed envelope',
+  title: 'The Curious Clue',
   word: 'curious',
   definition: 'Wanting to find out more.',
   example: 'I felt curious when I noticed the sealed envelope.',
