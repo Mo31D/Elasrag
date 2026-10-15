@@ -48,17 +48,18 @@ test('opens word and shows independent learning tasks without recording speech',
   assert.ok(!document.querySelector('[data-record]'));
 });
 test('spelling can be checked without voice scoring and first correct earns word stars',()=>{
+  const selectedWord = document.querySelector('.wk-word-info h1').textContent.trim().toLowerCase();
   document.querySelector('[data-task="spelling"]').click();
   document.querySelector('#wk-spell').value='wrong';
   document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   assert.ok(document.querySelector('.wk-feedback.retry'));
   document.querySelector('#wk-again').click();
-  document.querySelector('#wk-spell').value='apple';
+  document.querySelector('#wk-spell').value=selectedWord;
   document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   assert.ok(document.querySelector('.wk-feedback.good'));
   assert.ok(document.querySelector('.wk-feedback').textContent.includes('+2 word stars'));
   document.querySelector('#wk-again').click();
-  document.querySelector('#wk-spell').value='apple';
+  document.querySelector('#wk-spell').value=selectedWord;
   document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   assert.ok(!document.querySelector('.wk-feedback').textContent.includes('+2 word stars'));
   assert.equal(JSON.parse(localStorage.getItem('ala-word-kingdom-v1')).learners.explorer.stars,2);
