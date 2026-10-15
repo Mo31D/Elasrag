@@ -50,6 +50,6 @@ jobs:
             echo "Compiled site already matches main."
             exit 0
           fi
-          git commit -m "build(adam): publish verified game bundles [skip ci]"
+          git commit -m "build(adam): publish verified game bundles"
           # Never force push over changes made by Work or another contributor.
           git push origin HEAD:main
