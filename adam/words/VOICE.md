@@ -27,7 +27,7 @@ Server: Supabase Edge Function `word-voice`, guarded by `verify_jwt: true`.
 
 ## Deployment steps for Work
 
-1. Review migration `adam/game/backend/supabase/migrations/20261015_word_kingdom_voice.sql`.
+1. Review migration `adam/game/backend/supabase/migrations/20261015163000_word_kingdom_voice.sql`.
 2. Apply migration to existing Supabase Adam (only after checking concurrent Work migrations). Do not change `learning-api`.
 3. Deploy `adam/game/backend/supabase/functions/word-voice` with `verify_jwt=true` and model secret `GEMINI_API_KEY` already stored server-side. Require `GEMINI_FREE_TIER_CONFIRMED=true` and parent `free_tier_confirmed=true`, `paid_usage_allowed=false`.
 4. Test `status`, generate a **single** clip, listen in Parent Studio, then approve. Check public playback in Samsung Chrome and iPad Safari. Verify that no unapproved clip becomes public.
