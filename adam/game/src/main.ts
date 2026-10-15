@@ -58,7 +58,22 @@ let recallWords = words,
   reviewHinted = false,
   returnFocus: HTMLElement | null = null,
   custom: LessonPackage | null = null;
-let cloudMissions: { id: string; title: string }[] = [];
+const CLOUD_MISSION_CACHE = 'ala-approved-missions-v1';
+let cloudMissions: { id: string; title: string }[] = (() => {
+  try {
+    const value = JSON.parse(storage.getItem(CLOUD_MISSION_CACHE) || '[]');
+    return Array.isArray(value)
+      ? value.filter(
+          (item) =>
+            item &&
+            typeof item.id === 'string' &&
+            typeof item.title === 'string',
+        ).slice(0, 6)
+      : [];
+  } catch {
+    return [];
+  }
+})();
 try {
   const c = JSON.parse(storage.getItem('ala-lesson') || 'null');
   if (validateLesson(c)) custom = c;
@@ -160,11 +175,19 @@ function map() {
     : state.missionStep
       ? 'IN PROGRESS'
       : 'NEW CASE';
-  const mathsState = state.maths.length
-    ? `${state.maths.length}/3 RESTORED`
+  const mathsTotal = currentPuzzles().length;
+  const mathsDone = currentPuzzles().filter((p) => state.maths.includes(p.id)).length;
+  const mathsState = mathsDone
+    ? `${mathsDone}/${mathsTotal} RESTORED`
     : 'READY TO BEGIN';
+  const cloudCards = cloudMissions
+    .map(
+      (mission, index) =>
+        `<button type="button" class="adventure-card generated-card" data-action="cloud-mission:${esc(mission.id)}" aria-label="Open generated English mission, ${esc(mission.title)}"><span class="adventure-card-top"><span class="adventure-index">ENGLISH EXPEDITION ${String(index + 1).padStart(2, '0')}</span><span class="adventure-state">APPROVED</span></span><span class="adventure-emblem">${icon('star')}</span><span class="region">MYSTERY CITY · GENERATED MISSION</span><strong>${esc(mission.title)}</strong><span class="adventure-copy">A reviewed vocabulary and sentence-building mission prepared for this family.</span><span class="adventure-action">Begin expedition <b>→</b></span><small>SECURE FAMILY CONTENT · PROGRESS SAVED</small></button>`,
+    )
+    .join('');
   shell(
-    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">THE ADVENTURE ATLAS</p><h1>Choose your next<br>adventure.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}. Pick a destination and continue your journey.</p></div><div class="adventure-deck" aria-label="Available adventures"><button type="button" class="adventure-card mystery-card" data-action="mission" aria-label="${done ? 'Reopen' : state.missionStep ? 'Continue' : 'Begin'} lesson one, The missing trophy"><span class="adventure-card-top"><span class="adventure-index">LESSON 01</span><span class="adventure-state">${missionState}</span></span><span class="adventure-emblem">${icon('glass')}</span><span class="region">MYSTERY CITY · ENGLISH</span><strong>The missing trophy</strong><span class="adventure-copy">${done ? 'Case solved. Revisit the evidence and vocabulary.' : 'Follow a golden trail, examine clues and repair the detective report.'}</span><span class="adventure-action">${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <b>→</b></span><small>5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></button><button type="button" class="adventure-card maths-card" data-action="maths" aria-label="Open lesson two, The crystal engines"><span class="adventure-card-top"><span class="adventure-index">LESSON 02</span><span class="adventure-state">${mathsState}</span></span><span class="adventure-emblem">${icon('crystal')}</span><span class="region">NUMBER KINGDOM · MATHS</span><strong>The crystal engines</strong><span class="adventure-copy">Restore three magical engines using fractions, ratios and algebra.</span><span class="adventure-action">${state.maths.length ? 'Continue the quest' : 'Start the quest'} <b>→</b></span><small>YEAR ${profile().year || 6} · ${state.maths.length}/3 ENGINES RESTORED</small></button><button type="button" class="adventure-card words-card" data-action="words" aria-label="Enter Word Kingdom"><span class="adventure-card-top"><span class="adventure-index">WORD COLLECTION</span><span class="adventure-state">${reviews ? `${reviews} REVIEW${reviews === 1 ? '' : 'S'} DUE` : 'READY'}</span></span><span class="adventure-emblem">${icon('book')}</span><span class="region">WORD KINGDOM · BRITISH ENGLISH</span><strong>The living library</strong><span class="adventure-copy">Discover, turn and master magical vocabulary cards without leaving the collection.</span><span class="adventure-action">Enter the library <b>→</b></span><small>WORD STARS STAY SEPARATE FROM ADVENTURE XP</small></button></div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${reviews ? 'Recall trail · ' + reviews + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${cloudMissions.length ? cloudMissions.map((mission) => button('cloud-mission:' + mission.id, `English expedition · ${esc(mission.title)}`, 'map-chip')).join('') : button('cloud', 'Family missions', 'map-chip')}<span class="future">Discovery Laboratory · a future expedition</span></div></section>`,
+    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">THE ADVENTURE ATLAS</p><h1>Choose your next<br>adventure.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}. Pick a destination and continue your journey.</p></div><div class="adventure-deck" aria-label="Available adventures"><button type="button" class="adventure-card mystery-card" data-action="mission" aria-label="${done ? 'Reopen' : state.missionStep ? 'Continue' : 'Begin'} lesson one, The missing trophy"><span class="adventure-card-top"><span class="adventure-index">LESSON 01</span><span class="adventure-state">${missionState}</span></span><span class="adventure-emblem">${icon('glass')}</span><span class="region">MYSTERY CITY · ENGLISH</span><strong>The missing trophy</strong><span class="adventure-copy">${done ? 'Case solved. Revisit the evidence and vocabulary.' : 'Follow a golden trail, examine clues and repair the detective report.'}</span><span class="adventure-action">${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <b>→</b></span><small>5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></button><button type="button" class="adventure-card maths-card" data-action="maths" aria-label="Open Number Kingdom"><span class="adventure-card-top"><span class="adventure-index">MATHS QUEST</span><span class="adventure-state">${mathsState}</span></span><span class="adventure-emblem">${icon('crystal')}</span><span class="region">NUMBER KINGDOM · CONFIDENCE PATH</span><strong>The crystal pathways</strong><span class="adventure-copy">Choose a short quest. Each question separates what you know from what you need to find.</span><span class="adventure-action">${mathsDone ? 'Continue your path' : 'Choose a first quest'} <b>→</b></span><small>YEAR ${profile().year || 6} · ${mathsDone}/${mathsTotal} PATHS SECURE</small></button><button type="button" class="adventure-card words-card" data-action="words" aria-label="Enter Word Kingdom"><span class="adventure-card-top"><span class="adventure-index">WORD COLLECTION</span><span class="adventure-state">${reviews ? `${reviews} REVIEW${reviews === 1 ? '' : 'S'} DUE` : 'READY'}</span></span><span class="adventure-emblem">${icon('book')}</span><span class="region">WORD KINGDOM · BRITISH ENGLISH</span><strong>The living library</strong><span class="adventure-copy">Discover, hear and master curriculum spelling and useful school vocabulary.</span><span class="adventure-action">Enter the library <b>→</b></span><small>WORD STARS STAY SEPARATE FROM ADVENTURE XP</small></button>${cloudCards}</div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${reviews ? 'Recall trail · ' + reviews + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${button('cloud', cloudMissions.length ? 'Manage family missions' : 'Family missions', 'map-chip')}<span class="future">Discovery Laboratory · a future expedition</span></div></section>`,
     'The Adventure Atlas',
   );
 }
@@ -317,37 +340,46 @@ function renderRecall(review: boolean) {
       : document.querySelector('#task')!,
   );
 }
-function maths(index = 0) {
+function maths(index = -1) {
   stop();
   view = 'maths';
+  if (index < 0) return mathsHub();
   mathIndex = index;
   mathSolved = false;
   hinted = false;
   mathExtension = false;
   drawMaths();
 }
+function mathsHub() {
+  const list = currentPuzzles();
+  shell(
+    `<section class="maths-hub"><div class="maths-hub-heading"><span class="eyebrow">NUMBER KINGDOM · CHOOSE YOUR PATH</span><h1>Small steps. Strong thinking.</h1><p>Start anywhere. Earlier-year review is a strength check, not going backwards. Ratio and algebra will unlock only after their foundations are secure.</p></div><div class="maths-paths">${list.map((p, i) => `<button class="maths-path ${state.maths.includes(p.id) ? 'complete' : ''}" data-action="engine-${i}"><span>${state.maths.includes(p.id) ? '✓ SECURE' : `REVIEW · YEAR ${p.reviewYear}`}</span><b>${esc(p.strand)}</b><strong>${esc(p.name)}</strong><small>${esc(p.objective)}</small><i>${state.maths.includes(p.id) ? 'Practise again' : 'Start this short quest'} →</i></button>`).join('')}</div><div class="maths-later"><b>Coming later, when ready</b><span>Ratio</span><span>Algebra</span><p>These will not be used as surprise questions.</p></div></section>`,
+    'Number Kingdom / Choose a path',
+  );
+}
 function mathsModel(model: string) {
-  if (model === 'halves')
-    return '<div class="ratio-model" aria-label="Four equal pieces; two coloured"><span class="quarter lit"></span><span class="quarter lit"></span><span class="quarter"></span><span class="quarter"></span></div><p>Two quarters cover the same amount as one half.</p>';
+  if (model === 'place-value')
+    return '<div class="place-value-model" aria-label="Place value columns"><span><small>10,000s</small>3</span><span><small>1,000s</small>4</span><span class="lit"><small>100s</small>7</span><span><small>10s</small>8</span><span><small>1s</small>2</span></div>';
   if (model === 'groups')
     return (
       '<div class="group-model" aria-label="Four boxes of six crystals">' +
       Array.from({ length: 4 }, () => '<span>● ● ●<br>● ● ●</span>').join('') +
       '</div>'
     );
-  if (model === 'sequence')
-    return '<div class="machine"><span>4</span><b>+4</b><span>8</span><b>+4</b><span>12</span></div>';
-
-  if (model === 'fraction')
-    return `<div class="fraction-model" aria-label="24 equal pieces, 18 coloured">${Array.from({ length: 24 }, (_, i) => `<button class="piece ${i < 18 ? 'lit' : ''}" data-action="piece" aria-label="Piece ${i + 1}, ${i < 18 ? 'coloured' : 'uncoloured'}" aria-pressed="${i < 18}"></button>`).join('')}</div><p class="muted">Explore the pieces by tapping them. Reset restores 18 of 24.</p>${button('model-reset', 'Reset pieces', 'quiet')}`;
-  if (model === 'ratio')
-    return `<div class="ratio-model" aria-label="2 amber parts and 3 blue parts">${[0, 1, 2, 3, 4].map((i) => `<span class="crystal ${i < 2 ? 'amber' : ''}">${icon('crystal')}</span>`).join('')}</div><p>2 amber parts + 3 blue parts = 5 equal parts</p>`;
-  return `<div class="machine"><span>?</span><b>× 3</b><b>+ 5</b><span>26</span></div><p>Input → multiply → add → output</p>`;
+  if (model === 'fraction-amount')
+    return `<div class="fraction-amount" aria-label="20 lanterns in four equal groups">${Array.from({ length: 20 }, (_, i) => `<span class="${i < 15 ? 'lit' : ''}"></span>`).join('')}</div><p>4 equal groups of 5. Use 3 groups.</p>`;
+  if (model === 'percent')
+    return '<div class="percent-model" aria-label="A whole split into four equal parts"><span class="lit">25%</span><span></span><span></span><span></span></div><p>25% is one of four equal parts: one quarter.</p>';
+  if (model === 'measure')
+    return '<div class="measure-model" aria-label="Two and a half metres shown as 200 and 50 centimetres"><span>2 m<br><b>200 cm</b></span><i>+</i><span>0.5 m<br><b>50 cm</b></span></div>';
+  if (model === 'triangle')
+    return '<div class="triangle-model" aria-label="Triangle with angles 55 degrees, 65 degrees and an unknown angle"><span>55°</span><span>65°</span><span>?</span></div>';
+  return '';
 }
 function drawMaths() {
   const p = currentPuzzles()[mathIndex];
   shell(
-    `<section class="engine-world"><div class="engine-mountains"></div><div class="engine-heading"><span class="eyebrow">NUMBER KINGDOM / ENGINE ${mathIndex + 1} OF 3</span><h1>${p.name}</h1><p>Make the crystals glow. Take any route that helps you reason.</p></div><div class="engine-layout"><div class="engine-art"><div class="giant-crystal ${state.maths.includes(p.id) ? 'restored' : ''}">${icon('crystal')}</div><div class="engine-pedestal"></div><span>${state.maths.includes(p.id) ? 'ENGINE RESTORED' : 'AWAITING YOUR SIGNAL'}</span><div class="engine-selector">${currentPuzzles()
+    `<section class="engine-world"><div class="engine-mountains"></div><div class="engine-heading"><span class="eyebrow">NUMBER KINGDOM / PATH ${mathIndex + 1} OF ${currentPuzzles().length}</span><h1>${p.name}</h1><p>No timer. Read one part at a time, use the picture, and ask for a smaller step whenever you need it.</p></div><div class="engine-layout"><div class="engine-art"><div class="giant-crystal ${state.maths.includes(p.id) ? 'restored' : ''}">${icon('crystal')}</div><div class="engine-pedestal"></div><span>${state.maths.includes(p.id) ? 'PATH SECURE' : 'READY WHEN YOU ARE'}</span><div class="engine-selector">${currentPuzzles()
       .map((q, i) =>
         button(
           'engine-' + i,
@@ -357,7 +389,7 @@ function drawMaths() {
       )
       .join(
         '',
-      )}</div></div><section class="puzzle-panel"><span class="eyebrow">YEAR ${profile().year || 6} / ${p.id.toUpperCase()}</span><h2>${p.prompt}</h2><p id="math-question">${p.question}</p><div id="math-model">${mathsModel(p.model)}</div><form id="math-form"><label for="math-answer">Your answer</label><div class="answer-row"><input id="math-answer" autocomplete="off" maxlength="20" aria-describedby="math-question" placeholder="${p.model === 'fraction' || p.model === 'halves' ? 'e.g. 1/2' : 'Enter a number'}"><button class="primary">Activate engine →</button></div></form><div class="choices">${button('math-hint', 'Help me reason', 'quiet')}${button('math-language', 'Explain the question', 'quiet')}</div><p id="feedback" class="feedback" role="status"></p><div id="math-next"></div></section></div></section>`,
+      )}</div>${button('maths', '← All maths paths', 'quiet')}</div><section class="puzzle-panel"><span class="eyebrow">${esc(p.strand)} · YEAR ${p.reviewYear} FOUNDATION</span><div class="math-brief"><p><b>What you know</b>${esc(p.known)}</p><p><b>What to find</b>${esc(p.find)}</p></div><h2>${p.prompt}</h2><p id="math-question">${p.question}</p><div id="math-model">${mathsModel(p.model)}</div><form id="math-form"><label for="math-answer">Your answer</label><div class="answer-row"><input id="math-answer" inputmode="decimal" autocomplete="off" maxlength="20" aria-describedby="math-question" placeholder="Enter a number"><button class="primary">Check my thinking →</button></div></form><div class="choices">${button('math-hint', 'Show one small step', 'quiet')}${button('math-language', 'Explain the words', 'quiet')}</div><p id="feedback" class="feedback" role="status"></p><div id="math-next"></div></section></div></section>`,
     'Number Kingdom / Crystal engines',
   );
   document.querySelector('#math-form')!.addEventListener('submit', (e) => {
@@ -371,7 +403,9 @@ function checkMath() {
       .querySelector<HTMLInputElement>('#math-answer')!
       .value.replace(/\s/g, '');
   const answer = mathExtension ? p.extensionAnswer : p.answer;
-  if (input !== answer) {
+  const normal = input.toLowerCase().replace(/,/g, '');
+  const accepted = mathExtension ? [answer] : (p.acceptedAnswers || [answer]);
+  if (!accepted.map((x) => String(x).toLowerCase().replace(/[\s,]/g, '')).includes(normal)) {
     hinted = true;
     feedback(`Try another way. ${p.hint}`);
     evidence(state, p.id, false);
@@ -391,7 +425,7 @@ function checkMath() {
   );
   document.querySelector('.giant-crystal')?.classList.add('restored');
   document.querySelector('#math-next')!.innerHTML =
-    `${!mathExtension ? button('extension', 'Try a stretch puzzle', 'secondary') : ''}${button('engine-' + ((mathIndex + 1) % 3), mathIndex === 2 ? 'Revisit the first engine' : 'Next engine →', 'primary')}${button('map', 'Return to atlas', 'quiet')}`;
+    `${!mathExtension ? button('extension', 'Try a stretch puzzle', 'secondary') : ''}${button('engine-' + ((mathIndex + 1) % currentPuzzles().length), mathIndex === currentPuzzles().length - 1 ? 'Revisit the first path' : 'Next path →', 'primary')}${button('maths', 'All maths paths', 'quiet')}${button('map', 'Return to atlas', 'quiet')}`;
   bind(document.querySelector('#math-next')!);
 }
 function download(name: string, value: unknown) {
@@ -406,7 +440,7 @@ function download(name: string, value: unknown) {
 function parent() {
   openDialog(
     'Parent desk',
-    `${button('profiles', 'Choose or add an explorer', 'secondary')}${button('cloud', 'Secure family learning', 'secondary')}<p class="muted">Progress and imported files stay in this browser on this device. Clearing browser data removes them. This screen has no authentication; anyone using this device can open it. Export private backups when needed.</p><div class="parent-stats"><div><b>${profile().xp}</b><span>Adventure XP</span></div><div><b>${state.maths.length}/3</b><span>Maths engines</span></div><div><b>Disabled</b><span>Reward Credits</span></div></div>${button('curriculum', 'Explore Year 1–6 planning map', 'secondary')}<details open><summary>Skill evidence and review schedule</summary><div class="skill-table"><table><thead><tr><th>Skill</th><th>State</th><th>Independent days</th><th>Next review</th></tr></thead><tbody>${[
+    `${button('profiles', 'Choose or add an explorer', 'secondary')}${button('cloud', 'Secure family learning', 'secondary')}<p class="muted">Progress and imported files stay in this browser on this device. Clearing browser data removes them. This screen has no authentication; anyone using this device can open it. Export private backups when needed.</p><div class="parent-stats"><div><b>${profile().xp}</b><span>Adventure XP</span></div><div><b>${currentPuzzles().filter((p) => state.maths.includes(p.id)).length}/${currentPuzzles().length}</b><span>Maths paths</span></div><div><b>Disabled</b><span>Reward Credits</span></div></div>${button('curriculum', 'Explore Year 1–6 planning map', 'secondary')}<details open><summary>Skill evidence and review schedule</summary><div class="skill-table"><table><thead><tr><th>Skill</th><th>State</th><th>Independent days</th><th>Next review</th></tr></thead><tbody>${[
       ...skills.filter((s) => s.subject === 'English'),
       ...currentPuzzles().map((p) => ({
         id: p.id,
@@ -543,6 +577,9 @@ function cloudHooks() {
     },
     setCloudMissions: (missions: { id: string; title: string }[]) => {
       cloudMissions = missions;
+      try {
+        storage.setItem(CLOUD_MISSION_CACHE, JSON.stringify(missions));
+      } catch {}
     },
   };
 }
@@ -886,34 +923,13 @@ async function action(id: string, b: HTMLButtonElement) {
     return;
   }
   if (id === 'math-language') {
-    if (profile().year === 4) {
-      hinted = true;
-      feedback(currentPuzzles()[mathIndex].hint);
-      return;
-    }
     hinted = true;
-    feedback(
-      (
-        {
-          fractions:
-            'Simplest form means an equivalent fraction whose numerator and denominator have no common factor except 1.',
-          ratio:
-            'A ratio compares equal parts. Altogether means the total of both colours.',
-          algebra:
-            'Input is the starting number. Output is the result. An inverse operation undoes a step.',
-        } as Record<string, string>
-      )[currentPuzzles()[mathIndex].id],
-    );
+    feedback(currentPuzzles()[mathIndex].language);
     return;
   }
   if (id === 'piece') {
     b.classList.toggle('lit');
     b.setAttribute('aria-pressed', String(b.classList.contains('lit')));
-    return;
-  }
-  if (id === 'model-reset') {
-    document.querySelector('#math-model')!.innerHTML = mathsModel('fraction');
-    bind(document.querySelector('#math-model')!);
     return;
   }
   if (id === 'extension' && mathSolved) {

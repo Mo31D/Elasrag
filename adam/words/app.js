@@ -33,8 +33,11 @@ const stored=existing && existing.version===1 && existing.learners && typeof exi
 let profileId=initialProfiles.entries.some(([id])=>id===initialProfiles.active)?initialProfiles.active:initialProfiles.entries[0][0];
 let view='library', filter='all', collection='curriculum', theme='all', query='', page=0, selected=null,task='learn',question=null,feedback=null,assisted=false,letterHint=false,streak=0, busy=false,flipped=false,returnScrollY=0,returnFocus=null;
 let sound=true,motion=!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-const WORD_AUDIO_URL='https://uyfaipjthpsofjqcucop.supabase.co/storage/v1/object/public/ala-word-audio/en-GB/';
 let activeGoogleAudio=null;
+let cachedVoices=[];
+const refreshVoices=()=>{cachedVoices=window.speechSynthesis?.getVoices?.()||[]};
+refreshVoices();
+if(window.speechSynthesis)window.speechSynthesis.addEventListener?.('voiceschanged',refreshVoices);
 
 function student(){return initialProfiles.entries.find(([id])=>id===profileId)?.[1]||{displayName:'Adam',year:6}}
 function progress(){return stored.learners[profileId] ||= {words:{},stars:0}}
@@ -44,8 +47,9 @@ function rating(word,facet){let t=record(word,facet);if(!t.strength)return 'New'
 function belongsToCollection(w){
  const refs=curriculumLinks(w);
  if(collection==='all')return true;
- if(collection==='extra')return w.stage!==0&&!refs.length;
- return !!refs.length||w.stage===0;
+ if(collection==='school')return w.school===true;
+ if(collection==='extra')return w.stage!==0&&!refs.length&&w.school!==true;
+ return !!refs.length||w.stage===0||w.school===true;
 }
 function canStudy(w){return curriculumYear(w)<=student().year}
 function scopedWords(){return WORDS.filter(w=>canStudy(w)&&belongsToCollection(w))}
@@ -97,7 +101,7 @@ function menu(){
  const themes=[...themeCounts.keys()].sort();
  const totalPages=Math.max(1,Math.ceil(list.length/12));
  page=Math.min(page,totalPages-1);
- return shell()+'<section class="wk-main"><div class="wk-section-bar"><div><span class="wk-eyebrow">DfE NATIONAL CURRICULUM • APPENDIX 1</span><h2>'+(filter==='all'?'Your growing collection':filter==='due'?'Ready for another look':CURRICULUM_BANDS.find(b=>b.id===filter)?.label||'Word discoveries')+'</h2><p>Choose a card to bring it forward. Meanings and practice stay inside this world.</p></div><div class="wk-search"><label for="wk-collection">Collection</label><select id="wk-collection"><option value="curriculum" '+(collection==='curriculum'?'selected':'')+'>DfE curriculum + EYFS</option><option value="extra" '+(collection==='extra'?'selected':'')+'>Optional enrichment</option><option value="all" '+(collection==='all'?'selected':'')+'>All learning words</option></select><label for="wk-search">Find a word</label><input id="wk-search" type="search" placeholder="Search words, meanings…" value="'+esc(query)+'" autocomplete="off"/><label for="wk-theme">Theme</label><select id="wk-theme"><option value="all">All themes</option>'+themes.map(t=>'<option value="'+esc(t)+'" '+(theme===t?'selected':'')+'>'+esc(t)+' ('+themeCounts.get(t)+')</option>').join('')+'</select></div></div><div class="wk-grid">'+list.slice(page*12,page*12+12).map(w=>'<button class="wk-word is-'+cardState(w)+'" data-open="'+esc(w.id)+'" aria-label="Open '+esc(w.term)+' card"><div class="wk-card-glow"></div><div class="wk-picture">'+artSvg(w)+'</div><div class="wk-word-meta"><span class="wk-stage">'+esc(curriculumLinks(w).length?sourceLabel(w):(w.stage===0?'EYFS practice · editorial':'Enrichment · editorial'))+'</span><span class="wk-card-state">'+(cardState(w)==='mastered'?'Mastered':cardState(w)==='review'?'Review due':cardState(w)==='learning'?'Learning':'Undiscovered')+'</span></div><b>'+esc(w.term)+'</b><div class="wk-mastery-track" aria-label="'+wordStat(w)+' of '+facetsFor(w).length+' skills practised"><i style="--progress:'+(wordStat(w)/facetsFor(w).length*100)+'%"></i></div><span class="wk-explore">Tap to reveal <span aria-hidden="true">↻</span></span></button>').join('')+'</div>'+(!list.length?'<div class="wk-empty">No words match this view. Choose another stage or search.</div>':'')+'<div class="wk-pagination"><button id="wk-prev" '+(!page?'disabled':'')+'>← Previous</button><span>Page '+(page+1)+' / '+totalPages+'</span><button id="wk-next" '+(page===totalPages-1?'disabled':'')+'>Next →</button></div></section><section class="wk-bottom"><div><h2>Growing, not guessing.</h2><p>Recognising a word, spelling it, and using it in a sentence are different skills. We keep track of each separately. A slow answer or a repeated sound never loses you points.</p></div><div class="wk-actions"><button id="wk-export">Export learning backup</button><button id="wk-artbrief">Download art briefs</button></div></section>';
+ return shell()+'<section class="wk-main"><div class="wk-section-bar"><div><span class="wk-eyebrow">ENGLAND PRIMARY • REVIEWED COLLECTIONS</span><h2>'+(filter==='all'?'Your growing collection':filter==='due'?'Ready for another look':CURRICULUM_BANDS.find(b=>b.id===filter)?.label||'Word discoveries')+'</h2><p>Choose a card to bring it forward. Meanings and practice stay inside this world.</p></div><div class="wk-search"><label for="wk-collection">Collection</label><select id="wk-collection"><option value="curriculum" '+(collection==='curriculum'?'selected':'')+'>Curriculum + school words</option><option value="school" '+(collection==='school'?'selected':'')+'>School language</option><option value="extra" '+(collection==='extra'?'selected':'')+'>Optional enrichment</option><option value="all" '+(collection==='all'?'selected':'')+'>All learning words</option></select><label for="wk-search">Find a word</label><input id="wk-search" type="search" placeholder="Search words, meanings…" value="'+esc(query)+'" autocomplete="off"/><label for="wk-theme">Theme</label><select id="wk-theme"><option value="all">All themes</option>'+themes.map(t=>'<option value="'+esc(t)+'" '+(theme===t?'selected':'')+'>'+esc(t)+' ('+themeCounts.get(t)+')</option>').join('')+'</select></div></div><div class="wk-grid">'+list.slice(page*12,page*12+12).map(w=>'<button class="wk-word is-'+cardState(w)+'" data-open="'+esc(w.id)+'" aria-label="Open '+esc(w.term)+' card"><div class="wk-card-glow"></div><div class="wk-picture">'+artSvg(w)+'</div><div class="wk-word-meta"><span class="wk-stage">'+esc(sourceLabel(w))+'</span><span class="wk-card-state">'+(cardState(w)==='mastered'?'Mastered':cardState(w)==='review'?'Review due':cardState(w)==='learning'?'Learning':'Undiscovered')+'</span></div><b>'+esc(w.term)+'</b><div class="wk-mastery-track" aria-label="'+wordStat(w)+' of '+facetsFor(w).length+' skills practised"><i style="--progress:'+(wordStat(w)/facetsFor(w).length*100)+'%"></i></div><span class="wk-explore">Tap to reveal <span aria-hidden="true">↻</span></span></button>').join('')+'</div>'+(!list.length?'<div class="wk-empty">No words match this view. Choose another stage or search.</div>':'')+'<div class="wk-pagination"><button id="wk-prev" '+(!page?'disabled':'')+'>← Previous</button><span>Page '+(page+1)+' / '+totalPages+'</span><button id="wk-next" '+(page===totalPages-1?'disabled':'')+'>Next →</button></div></section><section class="wk-bottom"><div><h2>Growing, not guessing.</h2><p>Recognising a word, spelling it, and using it in a sentence are different skills. We keep track of each separately. A slow answer or a repeated sound never loses you points.</p></div><div class="wk-actions"><button id="wk-export">Export learning backup</button><button id="wk-artbrief">Download art briefs</button></div></section>';
 }
 function wordHeader(w){
  return '<div class="wk-lesson-top"><button class="wk-return" id="wk-to-map">← All words</button><span class="wk-eyebrow">'+esc(sourceLabel(w))+' • '+esc(w.theme)+'</span>'+(curriculumLinks(w).length?'<a class="wk-curriculum-source" href="https://www.gov.uk/government/publications/national-curriculum-in-england-english-programmes-of-study" target="_blank" rel="noopener noreferrer">DfE source ↗</a>':'<span class="wk-curriculum-source">Editorial learning practice</span>')+'<span class="wk-skillcount">'+wordStat(w)+'/'+facetsFor(w).length+' skills practised</span></div>';
@@ -113,8 +117,10 @@ function wordView(){
  const provenance=curriculumLinks(w);
  const sourceDetails=provenance.length
  ? '<section class="wk-curriculum-note"><span class="wk-eyebrow">Why is this word here?</span><strong>'+esc(sourceLabel(w))+'</strong><p>'+esc(provenance.some(x=>x.kind==='statutory')?'Official spelling-list word for the two-year Key Stage 2 group.':'An example used by the DfE to demonstrate a spelling requirement; the word example itself is not statutory.')+'</p><p>'+provenance.slice(0,3).map(x=>esc(x.group)+(x.pattern?' · '+esc(x.pattern):'')).join(' | ')+'</p><a href="'+esc(provenance[0].source)+'" target="_blank" rel="noopener noreferrer">View original DfE spelling appendix ↗</a></section>'
+ : w.school===true
+ ? '<section class="wk-curriculum-note"><strong>Useful school language, not a statutory spelling-list word.</strong><p>This reviewed word helps with classroom instructions and subject understanding. Its stage is a gentle starting point, not a test limit.</p></section>'
  : '<section class="wk-curriculum-note"><strong>Contextual practice, not an official DfE word-list requirement.</strong><p>Use this word to build understanding and confidence without treating it as an assessed curriculum target.</p></section>';
- const card='<section class="wk-card-scene" aria-label="Interactive card for '+esc(w.term)+'"><div class="wk-living-card '+(flipped?'is-flipped':'')+'"><div class="wk-card-inner"><article class="wk-card-face wk-card-front" aria-hidden="'+(flipped?'true':'false')+'"><div class="wk-card-rune">✦</div><div class="wk-card-art">'+artSvg(w,'wk-main-illustration')+'</div><span class="wk-eyebrow">'+esc(sourceLabel(w))+'</span><h1 id="wk-card-title">'+esc(w.term)+'</h1><div class="wk-card-footer"><span>'+esc(w.theme)+'</span><span>'+wordStat(w)+'/'+facetsFor(w).length+' skills</span></div></article><article class="wk-card-face wk-card-back" aria-hidden="'+(!flipped?'true':'false')+'"><div class="wk-word-info"><span class="wk-eyebrow">'+esc(w.theme)+' • British English</span><h1>'+(conceal?'<span class="wk-hidden-word">Mystery word</span>':esc(w.term))+'</h1><p class="wk-definition">'+esc(w.definition)+'</p><p class="wk-example">“'+esc(w.example)+'”</p><div class="wk-pronounce"><button id="wk-hear" class="wk-primary">♫ Hear approved voice</button><button id="wk-hear-slow">Slower</button><button id="wk-hear-sentence">Example</button><button id="wk-device-voice" class="wk-device-option">Device voice</button></div><p class="wk-audio-note" id="wk-voice-note">Approved Google audio is used only when it exists. Device voice is an optional, clearly labelled fallback. No microphone or recording.</p><button id="wk-practise" class="wk-primary wk-practise">Practise this word →</button></div></article></div></div><button id="wk-flip" class="wk-flip" aria-pressed="'+flipped+'">'+(flipped?'↶ Show picture side':'↻ Turn card over')+'</button></section>';
+ const card='<section class="wk-card-scene" aria-label="Interactive card for '+esc(w.term)+'"><div class="wk-living-card '+(flipped?'is-flipped':'')+'"><div class="wk-card-inner"><article class="wk-card-face wk-card-front" aria-hidden="'+(flipped?'true':'false')+'"><div class="wk-card-rune">✦</div><div class="wk-card-art">'+artSvg(w,'wk-main-illustration')+'</div><span class="wk-eyebrow">'+esc(sourceLabel(w))+'</span><h1 id="wk-card-title">'+esc(w.term)+'</h1><div class="wk-card-footer"><span>'+esc(w.theme)+'</span><span>'+wordStat(w)+'/'+facetsFor(w).length+' skills</span></div></article><article class="wk-card-face wk-card-back" aria-hidden="'+(!flipped?'true':'false')+'"><div class="wk-word-info"><span class="wk-eyebrow">'+esc(w.theme)+' • British English</span><h1>'+(conceal?'<span class="wk-hidden-word">Mystery word</span>':esc(w.term))+'</h1><p class="wk-definition">'+esc(w.definition)+'</p><p class="wk-example">“'+esc(w.example)+'”</p><div class="wk-pronounce"><button id="wk-hear" class="wk-primary">♫ Hear word</button><button id="wk-hear-slow">Slower</button><button id="wk-hear-sentence">Hear example</button></div><p class="wk-audio-note" id="wk-voice-note">Uses the best British voice available on this device. No microphone, recording or network call.</p><button id="wk-practise" class="wk-primary wk-practise">Practise this word →</button></div></article></div></div><button id="wk-flip" class="wk-flip" aria-pressed="'+flipped+'">'+(flipped?'↶ Show picture side':'↻ Turn card over')+'</button></section>';
  let activity='';
  if(learning)activity='';
  else if(task==='meaning')activity=questionMarkup(w,'meaning');
@@ -193,10 +199,9 @@ function bindLesson(){
  document.querySelector('#wk-flip')?.addEventListener('click',()=>{flipped=!flipped;render();document.querySelector('#wk-flip')?.focus();});
  document.querySelector('#wk-practise')?.addEventListener('click',()=>setTask('meaning'));
  document.querySelectorAll('[data-task]').forEach(b=>b.addEventListener('click',()=>setTask(b.dataset.task)));
- document.querySelector('#wk-hear')?.addEventListener('click',()=>playStudioVoice(selected,'word',false));
- document.querySelector('#wk-hear-slow')?.addEventListener('click',()=>playStudioVoice(selected,'word',true));
- document.querySelector('#wk-hear-sentence')?.addEventListener('click',()=>playStudioVoice(selected,'sentence',false));
- document.querySelector('#wk-device-voice')?.addEventListener('click',()=>speak(selected.term,false));
+ document.querySelector('#wk-hear')?.addEventListener('click',()=>speak(selected.term,false,'word'));
+ document.querySelector('#wk-hear-slow')?.addEventListener('click',()=>speak(selected.term,true,'word'));
+ document.querySelector('#wk-hear-sentence')?.addEventListener('click',()=>speak(selected.example,false,'example'));
  document.querySelector('#wk-advance')?.addEventListener('click',()=>setTask('meaning'));
  document.querySelectorAll('[data-answer]').forEach(b=>b.addEventListener('click',()=>onAnswer(b.dataset.answer)));
  document.querySelector('#wk-spell-hint')?.addEventListener('click',()=>{letterHint=true;assisted=true;render();document.querySelector('#wk-spell')?.focus();});
@@ -250,29 +255,23 @@ function tinyChime(){
  if(!sound)return;
  try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;const ctx=new AC();const n=ctx.createOscillator();const g=ctx.createGain();n.type='sine';n.frequency.setValueAtTime(620,ctx.currentTime);n.frequency.exponentialRampToValueAtTime(820,ctx.currentTime+.16);g.gain.setValueAtTime(.035,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.23);n.connect(g);g.connect(ctx.destination);n.start();n.stop(ctx.currentTime+.24);setTimeout(()=>ctx.close(),450)}catch{}
 }
-function playStudioVoice(word,variant='word',slow=false){
- if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}
- if(window.speechSynthesis)window.speechSynthesis.cancel();
- const url=WORD_AUDIO_URL+encodeURIComponent(word.id)+'/'+variant+'.wav';
- const audio=new Audio(url);
- activeGoogleAudio=audio;audio.preload='auto';audio.playbackRate=slow?.8:1;audio.preservesPitch=true;
- let played=0;const repeats=slow?1:2;
- const note=document.querySelector('#wk-voice-note');
- if(note)note.textContent='Checking for the approved Google British-English recording…';
- audio.addEventListener('canplay',()=>{if(note)note.textContent='Google Gemini studio recording · British English · '+(slow?'slower playback':'two repetitions');},{once:true});
- audio.addEventListener('ended',()=>{played++;if(played<repeats){audio.currentTime=0;audio.play().catch(()=>{if(note)note.textContent='Tap Hear to play again.'});}else{activeGoogleAudio=null;}});
- audio.addEventListener('error',()=>{if(note)note.textContent='Google recording is not published for this word yet. Choose “Use device voice instead” if you want to listen now.';activeGoogleAudio=null;});
- audio.play().catch(()=>{if(note)note.textContent='Google recording unavailable right now. Try the device voice option or check back later.';});
+function voiceScore(v){
+ const name=(v.name||'').toLowerCase(),lang=(v.lang||'').toLowerCase();
+ let n=lang==='en-gb'?100:lang.startsWith('en-gb')?90:lang.startsWith('en-')?20:0;
+ if(/sonia|serena|daniel|kate|arthur|martha|oliver|google uk|natural|premium|enhanced/.test(name))n+=35;
+ if(/online/.test(name))n+=10;
+ if(/compact|espeak|festival/.test(name))n-=40;
+ return n;
 }
-function speak(text,slow){
+function bestBritishVoice(){return [...cachedVoices].filter(v=>v.lang?.toLowerCase().startsWith('en-')).sort((a,b)=>voiceScore(b)-voiceScore(a))[0]||null}
+function speak(text,slow,kind='word'){
  if(!('speechSynthesis' in window)){status('This browser cannot play speech automatically. Read the word instead.');return;}
  window.speechSynthesis.cancel();
- const voices=window.speechSynthesis.getVoices();
- const uk=voices.find(v=>v.lang?.toLowerCase()==='en-gb')||voices.find(v=>v.lang?.toLowerCase().startsWith('en-gb'));
- const fallback=voices.find(v=>v.lang?.toLowerCase().startsWith('en-'));
- const utterance=new SpeechSynthesisUtterance(text);utterance.lang='en-GB';utterance.voice=uk||fallback||null;utterance.rate=slow?.72:.88;utterance.pitch=1;
+ refreshVoices();const voice=bestBritishVoice();
+ const utterance=new SpeechSynthesisUtterance(text);utterance.lang='en-GB';utterance.voice=voice;utterance.rate=slow?.78:(kind==='example'?.94:.9);utterance.pitch=1;
  const node=document.querySelector('#wk-voice-note');
- if(node)node.textContent=uk?'Using a British English voice installed on this device.':'Using an available device voice; British pronunciation cannot be guaranteed here. Cloud audio will require approved voice assets.';
+ const isBritish=voice?.lang?.toLowerCase().startsWith('en-gb');
+ if(node)node.textContent=isBritish?'British English device voice'+(slow?' · slower, with natural pitch':kind==='example'?' · example sentence':' · tap again whenever you like')+'.': 'Using the best English voice available here; this device has no British voice installed.';
  utterance.onerror=()=>status('Speech did not play. Try the button again, or use the written word.');
  window.speechSynthesis.speak(utterance);
 }

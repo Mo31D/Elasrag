@@ -104,51 +104,80 @@ export const chapters = [
       'Notice. Puzzled. Investigate. Relieved. Keep these words in your detective notebook.',
   },
 ];
+// A confidence-first Year 6 pathway. It deliberately begins with secure KS2
+// foundations and introduces Year 6 bridges only after a clear worked model.
+// Ratio and formal algebra are not used as cold-start questions.
 export const puzzles = [
   {
-    id: 'fractions',
-    name: 'The fraction vault',
-    objective: 'Simplify fractions using common factors.',
-    question:
-      'The vault shows 18/24. Set its lock to the same amount in simplest form.',
-    prompt: '18/24 = ?',
-    answer: '3/4',
-    hint: 'Group 24 pieces into groups of 6. How many groups are coloured?',
-    explain: '18 ÷ 6 = 3 and 24 ÷ 6 = 4, so 18/24 = 3/4.',
-    extension: '24/32',
-    extensionAnswer: '3/4',
-    extensionExplain: '24 ÷ 8 = 3 and 32 ÷ 8 = 4, so 24/32 = 3/4.',
-    model: 'fraction',
+    id: 'place-value', name: 'The place-value beacon', strand: 'Number', reviewYear: 4,
+    objective: 'Recognise the value of a digit in a five-digit number.',
+    known: 'The number is 34,782. The digit 7 is in the hundreds column.',
+    find: 'What is the value of the digit 7?',
+    question: 'In 34,782, the digit 7 means seven hundreds.', prompt: 'Value of 7 = ?', answer: '700',
+    acceptedAnswers: ['700'], hint: 'Read the columns: ten-thousands, thousands, hundreds, tens, ones.',
+    language: '“Value” means how much the digit is worth because of its place. It does not mean the digit name.',
+    explain: 'The 7 is in the hundreds column, so its value is 700.',
+    extension: 'In 68,241, what is the value of the digit 8?', extensionAnswer: '8000',
+    extensionExplain: 'The 8 is in the thousands column, so its value is 8,000.', model: 'place-value',
   },
   {
-    id: 'ratio',
-    name: 'The crystal bridge',
-    objective: 'Solve unequal sharing problems using ratio.',
-    question:
-      'The bridge needs amber and blue crystals in a ratio of 2 : 3. There are 30 crystals altogether. How many should be amber?',
-    prompt: 'Amber crystals = ?',
-    answer: '12',
-    hint: '2 + 3 = 5 equal groups. Share 30 between those 5 groups.',
-    explain: '30 ÷ 5 = 6 crystals per part. Amber needs 2 parts: 2 × 6 = 12.',
-    extension: 'There are 45 crystals in the same ratio. How many are amber?',
-    extensionAnswer: '18',
-    extensionExplain: '45 ÷ 5 = 9 per part. Amber has 2 parts, so 2 × 9 = 18.',
-    model: 'ratio',
+    id: 'grouping', name: 'The crystal stores', strand: 'Multiplication', reviewYear: 3,
+    objective: 'Use multiplication facts to solve a division problem.',
+    known: 'There are 24 crystals. Each box holds exactly 6 crystals.',
+    find: 'How many full boxes are needed?',
+    question: 'Make equal groups of 6 until all 24 crystals are packed.', prompt: '24 ÷ 6 = ?', answer: '4',
+    acceptedAnswers: ['4'], hint: 'Count in sixes: 6, 12, 18, 24. Count how many jumps you made.',
+    language: '“Each box holds 6” means every group must contain 6. You are finding the number of groups.',
+    explain: 'Four groups of 6 make 24, so 24 ÷ 6 = 4 boxes.',
+    extension: '36 crystals, with 6 in each box. How many boxes?', extensionAnswer: '6',
+    extensionExplain: 'Six groups of 6 make 36, so 36 ÷ 6 = 6.', model: 'groups',
   },
   {
-    id: 'algebra',
-    name: 'The signal tower',
-    objective: 'Use a simple formula and find an unknown.',
-    question:
-      'A signal machine triples the input and adds 5. Its output is 26. Find the input.',
-    prompt: '3 × n + 5 = 26. n = ?',
-    answer: '7',
-    hint: 'Undo the steps in reverse: subtract 5, then divide by 3.',
-    explain: '26 − 5 = 21. Then 21 ÷ 3 = 7. Check: 3 × 7 + 5 = 26.',
-    extension: '3 × n + 5 = 41. n = ?',
-    extensionAnswer: '12',
-    extensionExplain: '41 − 5 = 36, then 36 ÷ 3 = 12. Check: 3 × 12 + 5 = 41.',
-    model: 'algebra',
+    id: 'fraction-amount', name: 'The fraction garden', strand: 'Fractions', reviewYear: 4,
+    objective: 'Find a fraction of an amount using equal groups.',
+    known: 'There are 20 lanterns, split into 4 equal groups. Three groups are lit.',
+    find: 'How many lanterns are lit?',
+    question: 'Find three quarters of 20.', prompt: '3/4 of 20 = ?', answer: '15',
+    acceptedAnswers: ['15'], hint: 'First find one quarter: 20 ÷ 4 = 5. Then take 3 groups.',
+    language: 'The denominator 4 tells you to make 4 equal groups. The numerator 3 tells you to use 3 of them.',
+    explain: 'One quarter of 20 is 5. Three quarters is 3 × 5 = 15.',
+    extension: 'What is 3/4 of 28?', extensionAnswer: '21',
+    extensionExplain: '28 ÷ 4 = 7, then 3 × 7 = 21.', model: 'fraction-amount',
+  },
+  {
+    id: 'percent-bridge', name: 'The hundred-gate', strand: 'Fractions and percentages', reviewYear: 5,
+    objective: 'Connect 25% with one quarter and find it for an amount.',
+    known: '25% means 25 out of 100. It is the same as one quarter.',
+    find: 'What is 25% of 40?',
+    question: 'Find one quarter of 40.', prompt: '25% of 40 = ?', answer: '10',
+    acceptedAnswers: ['10'], hint: 'Because 25% = 1/4, divide 40 by 4.',
+    language: '“25% of 40” means take one quarter of the 40 items. The word “of” tells you to find part of an amount.',
+    explain: '25% is one quarter. 40 ÷ 4 = 10.',
+    extension: 'What is 25% of 60?', extensionAnswer: '15',
+    extensionExplain: '60 ÷ 4 = 15, so 25% of 60 is 15.', model: 'percent',
+  },
+  {
+    id: 'metric-convert', name: 'The measuring bridge', strand: 'Measurement', reviewYear: 5,
+    objective: 'Convert metres to centimetres.',
+    known: '1 metre = 100 centimetres.', find: 'How many centimetres are in 2.5 metres?',
+    question: 'Two whole metres are 200 cm. Half a metre is 50 cm.', prompt: '2.5 m = ? cm', answer: '250',
+    acceptedAnswers: ['250','250cm'], hint: 'Split 2.5 m into 2 m and 0.5 m, then convert each part.',
+    language: '“Convert” means change the unit without changing the actual length.',
+    explain: '2 m = 200 cm and 0.5 m = 50 cm. Altogether, 2.5 m = 250 cm.',
+    extension: '3.2 m = ? cm', extensionAnswer: '320',
+    extensionExplain: 'Multiply metres by 100: 3.2 × 100 = 320 cm.', model: 'measure',
+  },
+  {
+    id: 'triangle-angles', name: 'The geometry compass', strand: 'Geometry', reviewYear: 5,
+    objective: 'Find a missing angle in a triangle.',
+    known: 'Angles inside a triangle total 180°. Two angles are 55° and 65°.',
+    find: 'What is the missing angle?',
+    question: 'Add the known angles, then subtract their total from 180°.', prompt: 'Missing angle = ?°', answer: '60',
+    acceptedAnswers: ['60','60°'], hint: '55 + 65 = 120. Now find the difference between 120 and 180.',
+    language: '“Angles in a triangle total 180°” means all three inside angles add up to 180°.',
+    explain: '55° + 65° = 120°. Then 180° − 120° = 60°.',
+    extension: 'A triangle has angles of 35° and 75°. Find the third angle.', extensionAnswer: '70',
+    extensionExplain: '35° + 75° = 110°. Then 180° − 110° = 70°.', model: 'triangle',
   },
 ];
 export const skills = [
@@ -177,21 +206,11 @@ export const skills = [
   ...puzzles.map((p) => ({
     id: p.id,
     subject: 'Mathematics',
-    stage: 'Year 6',
+    stage: `Year ${p.reviewYear} review → Year 6 readiness`,
     objective: p.objective,
-    prerequisites:
-      p.id === 'fractions'
-        ? ['equivalent fractions', 'common factors']
-        : p.id === 'ratio'
-          ? ['multiplication', 'division']
-          : ['inverse operations'],
-    difficulty: 3,
-    vocabulary:
-      p.id === 'ratio'
-        ? ['ratio', 'part', 'altogether']
-        : p.id === 'algebra'
-          ? ['input', 'output', 'inverse']
-          : ['numerator', 'denominator', 'factor'],
+    prerequisites: ['read the known information', 'identify what to find'],
+    difficulty: p.reviewYear >= 5 ? 2 : 1,
+    vocabulary: [p.strand, 'known', 'find'],
     mission: p.id,
     source: 'DfE mathematics programme: Year 6',
   })),
@@ -246,54 +265,5 @@ export function validateLesson(v: unknown): v is LessonPackage {
 
 export function starterPuzzles(year: number) {
   if (year >= 6) return puzzles;
-  return [
-    {
-      ...puzzles[0],
-      id: 'y4-fractions',
-      name: 'The fraction vault',
-      objective: 'Recognise equivalent fractions.',
-      question:
-        'Two of four equal pieces are coloured. Which fraction with denominator 2 shows the same amount?',
-      prompt: '2/4 = ?',
-      answer: '1/2',
-      hint: 'Divide both numbers by 2. Two quarters cover half the whole.',
-      explain: '2 ÷ 2 = 1 and 4 ÷ 2 = 2, so 2/4 = 1/2.',
-      extension: '3/6 = ?',
-      extensionAnswer: '1/2',
-      extensionExplain: '3 ÷ 3 = 1 and 6 ÷ 3 = 2, so 3/6 = 1/2.',
-      model: 'halves',
-    },
-    {
-      ...puzzles[1],
-      id: 'y4-sharing',
-      name: 'The crystal stores',
-      objective: 'Use multiplication and division facts.',
-      question:
-        'There are 24 crystals. Each box holds 6 crystals. How many boxes are needed?',
-      prompt: '24 ÷ 6 = ?',
-      answer: '4',
-      hint: 'Count in sixes: 6, 12, 18, 24.',
-      explain: 'Four groups of 6 make 24. We need 4 boxes.',
-      extension: '36 crystals, 6 in each box. How many boxes?',
-      extensionAnswer: '6',
-      extensionExplain: '6 × 6 = 36, so 36 ÷ 6 = 6.',
-      model: 'groups',
-    },
-    {
-      ...puzzles[2],
-      id: 'y4-sequence',
-      name: 'The pattern tower',
-      objective: 'Continue a number sequence.',
-      question:
-        'The signal gains 4 each time. Continue the pattern: 4, 8, 12, …',
-      prompt: '4, 8, 12, ?',
-      answer: '16',
-      hint: 'Add 4 to 12.',
-      explain: 'Each step adds 4, so 12 + 4 = 16.',
-      extension: '7, 11, 15, ?',
-      extensionAnswer: '19',
-      extensionExplain: 'The step is still +4. 15 + 4 = 19.',
-      model: 'sequence',
-    },
-  ];
+  return puzzles.slice(0, 3).map((p) => ({...p,id:`y4-${p.id}`}));
 }

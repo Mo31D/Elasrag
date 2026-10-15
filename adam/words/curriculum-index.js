@@ -26,12 +26,14 @@ export function belongsToBand(w,band){
  if(band==='y2')return refs.some(s=>s.stage===2);
  if(band==='y34')return refs.some(s=>s.stage===3&&s.kind==='statutory');
  if(band==='y56')return refs.some(s=>s.stage===5&&s.kind==='statutory');
+ if(band==='school')return w.school===true;
  return true;
 }
 export function sourceLabel(w){
  const refs=curriculumLinks(w);
  if(refs.some(x=>x.kind==='statutory'))return refs.some(x=>x.stage===3)?'DfE statutory · Years 3–4':'DfE statutory · Years 5–6';
  if(refs.some(x=>x.kind==='dfe-example'))return refs.some(x=>x.stage===1)?'DfE example · Year 1':'DfE example · Year 2';
+ if(w.school===true)return 'School vocabulary · supplementary';
  return 'Extra practice · not a DfE word list';
 }
 export const CURRICULUM_BANDS=[
@@ -40,4 +42,5 @@ export const CURRICULUM_BANDS=[
  {id:'y2',label:'Year 2 examples',minYear:2,note:'DfE spelling examples (non-statutory words)'},
  {id:'y34',label:'Years 3–4',minYear:3,note:'DfE statutory 100-entry group list'},
  {id:'y56',label:'Years 5–6',minYear:5,note:'DfE statutory 100-entry group list'}
+ ,{id:'school',label:'School language',minYear:2,note:'Teacher-reviewed cross-curricular vocabulary; supplementary, not a statutory spelling list'}
 ];

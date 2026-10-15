@@ -355,6 +355,16 @@ p {
   color: #83dfca;
   border-color: #83dfca55;
 }
+.generated-card {
+  border-top-color: #f1b978;
+  background:
+    radial-gradient(circle at 88% 8%, #f1b97848, transparent 28%),
+    linear-gradient(145deg, #3d354df5, #172b42ee);
+}
+.generated-card .adventure-emblem {
+  color: #ffd899;
+  border-color: #ffd89955;
+}
 .words-card .adventure-emblem {
   color: #d8b4ff;
   border-color: #d8b4ff55;
@@ -1057,6 +1067,80 @@ input[type='number'] {
   flex-wrap: wrap;
   gap: 10px;
   margin-top: 15px;
+}
+.maths-hub {
+  min-height: 760px;
+  padding: clamp(34px, 5vw, 70px) 6%;
+  background: radial-gradient(circle at 50% 10%, #317c78, #123c50 48%, #0c2b3e);
+}
+.maths-hub-heading { max-width: 720px; }
+.maths-hub-heading h1 { font-size: clamp(34px, 5vw, 58px); }
+.maths-hub-heading p { color: #c9ded5; line-height: 1.65; }
+.maths-paths {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 36px 0 24px;
+}
+.maths-path {
+  min-height: 210px;
+  padding: 20px;
+  border: 1px solid #86c7ba70;
+  border-radius: 18px;
+  color: #eef7ef;
+  text-align: left;
+  background: linear-gradient(145deg, #174f5ce8, #123445e8);
+  box-shadow: 0 16px 30px #051a2860;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+.maths-path:hover,.maths-path:focus-visible { transform: translateY(-4px); border-color: #f4d38c; }
+.maths-path.complete { border-color: #f0d083; background: linear-gradient(145deg, #375950, #17394a); }
+.maths-path span { color: #a8d9ca; font-size: 9px; font-weight: 800; letter-spacing: 1.6px; }
+.maths-path b { color: #f1cc83; font-size: 12px; margin: 16px 0 5px; }
+.maths-path strong { font-family: Georgia,serif; font-size: 24px; }
+.maths-path small { color: #c4d8d1; line-height: 1.5; margin: 9px 0 18px; }
+.maths-path i { margin-top: auto; color: #f6d58e; font-style: normal; font-weight: 800; font-size: 12px; }
+.maths-later { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: #c1d7cf; }
+.maths-later span { border: 1px solid #91b9ae50; border-radius: 999px; padding: 7px 12px; }
+.maths-later p { width: 100%; margin: 0; font-size: 11px; color: #98b9b0; }
+.math-brief { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0 18px; }
+.math-brief p { margin: 0; padding: 13px; border-radius: 10px; background: #dce7d8; line-height: 1.5; }
+.math-brief b { display: block; color: #236d63; margin-bottom: 5px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+.place-value-model { display: grid; grid-template-columns: repeat(5,1fr); gap: 5px; margin: 18px 0; }
+.place-value-model span { background: #e8eadc; border: 1px solid #bcc8b2; border-radius: 8px; text-align: center; padding: 12px 4px; font-size: 22px; font-weight: 800; }
+.place-value-model span.lit { background: #f7dc98; border-color: #bb8e39; }
+.place-value-model small { display: block; font-size: 8px; color: #647a70; margin-bottom: 5px; }
+.fraction-amount { display: grid; grid-template-columns: repeat(5, 22px); gap: 5px 12px; margin: 18px 0; }
+.fraction-amount span { width: 18px; height: 18px; border-radius: 50% 50% 45% 45%; background: #d7ddcf; border: 1px solid #8ca99c; }
+.fraction-amount span.lit { background: #e7b956; box-shadow: 0 0 8px #e7b95680; }
+.percent-model { display: grid; grid-template-columns: repeat(4,1fr); border: 2px solid #507d73; margin: 18px 0; }
+.percent-model span { min-height: 58px; display: grid; place-items: center; border-right: 1px solid #507d73; }
+.percent-model span:last-child { border: 0; }
+.percent-model .lit { background: #e6c36f; color: #23454a; font-weight: 800; }
+.measure-model { display: flex; align-items: center; gap: 10px; margin: 18px 0; }
+.measure-model span { flex: 1; padding: 12px; border: 1px solid #85a89d; border-radius: 9px; background: #e8eadc; text-align: center; }
+.measure-model i { font-style: normal; font-size: 24px; }
+.triangle-model { width: 230px; height: 160px; margin: 18px auto; position: relative; clip-path: polygon(50% 0,100% 100%,0 100%); background: #65a89b; }
+.triangle-model:after { content:''; position:absolute; inset:12px; clip-path:inherit; background:#edf0df; }
+.triangle-model span { position:absolute; z-index:1; color:#244b4d; font-weight:800; }
+.triangle-model span:nth-child(1){left:23px;bottom:12px}.triangle-model span:nth-child(2){right:23px;bottom:12px}.triangle-model span:nth-child(3){left:105px;top:28px}
+.atlas:has(.generated-card) { min-height: 1080px; }
+
+@media (max-width: 1000px) {
+  .maths-paths { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .atlas:has(.generated-card) { min-height: 1410px; }
+}
+@media (max-width: 650px) {
+  .maths-hub { padding: 30px 5%; }
+  .maths-paths { grid-template-columns: 1fr; }
+  .maths-path { min-height: 180px; }
+  .math-brief { grid-template-columns: 1fr; }
+  .place-value-model span { font-size: 17px; padding: 10px 2px; }
+  .place-value-model small { font-size: 6px; }
+  .atlas:has(.generated-card) { min-height: 1730px; }
 }
 .custom-world {
   min-height: 700px;

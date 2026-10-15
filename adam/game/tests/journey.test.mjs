@@ -104,7 +104,7 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   const stored = () => JSON.parse(localStorage.getItem('ala-adventure-v1'));
   assert.equal(document.querySelectorAll('.adventure-card').length, 3);
   assert.match(text(), /LESSON 01/);
-  assert.match(text(), /LESSON 02/);
+  assert.match(text(), /MATHS QUEST/);
   assert.match(text(), /WORD COLLECTION/);
   assert.ok(document.querySelector('.adventure-card[data-action="mission"]'));
   assert.ok(document.querySelector('.adventure-card[data-action="maths"]'));
@@ -163,31 +163,36 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   await import(new URL('main.mjs?reload=1', temp));
   assert.match(text(), /Reopen case/);
   click('maths');
+  assert.match(text(), /Small steps/);
+  click('engine-0');
   const answer = document.querySelector('#math-answer');
-  answer.value = '1/2';
+  answer.value = '70';
   document
     .querySelector('#math-form')
     .dispatchEvent(new win.Event('submit', { cancelable: true }));
   assert.match(text(), /Try another way/);
-  answer.value = '3/4';
+  answer.value = '700';
   document
     .querySelector('#math-form')
     .dispatchEvent(new win.Event('submit', { cancelable: true }));
-  assert.match(text(), /18 ÷ 6/);
+  assert.match(text(), /hundreds column/);
   const after = stored().profiles.explorer.xp;
   document
     .querySelector('#math-form')
     .dispatchEvent(new win.Event('submit', { cancelable: true }));
   assert.equal(stored().profiles.explorer.xp, after);
   click('extension');
-  document.querySelector('#math-answer').value = '3/4';
+  document.querySelector('#math-answer').value = '8000';
   document
     .querySelector('#math-form')
     .dispatchEvent(new win.Event('submit', { cancelable: true }));
   assert.match(text(), /new problem/);
   for (const [index, value] of [
-    [1, '12'],
-    [2, '7'],
+    [1, '4'],
+    [2, '15'],
+    [3, '10'],
+    [4, '250'],
+    [5, '60'],
   ]) {
     click('engine-' + index);
     document.querySelector('#math-answer').value = value;
@@ -195,7 +200,7 @@ test('complete detective and maths journey in simulated DOM, including refresh a
       .querySelector('#math-form')
       .dispatchEvent(new win.Event('submit', { cancelable: true }));
   }
-  assert.equal(stored().maths.length, 3);
+  assert.equal(stored().maths.length, 6);
   click('map');
   click('parent');
   assert.match(document.querySelector('dialog').textContent, /Reward Credits/);
@@ -209,16 +214,17 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   assert.match(text(), /Welcome, Joseph/);
   assert.equal(stored().profiles[stored().activeProfile].xp, 0);
   click('maths');
-  assert.match(text(), /2\/4 =/);
-  document.querySelector('#math-answer').value = '1/2';
+  click('engine-0');
+  assert.match(text(), /Value of 7/);
+  document.querySelector('#math-answer').value = '700';
   document
     .querySelector('#math-form')
     .dispatchEvent(new win.Event('submit', { cancelable: true }));
-  assert.match(text(), /2 ÷ 2 = 1/);
+  assert.match(text(), /hundreds column/);
   click('engine-1');
   assert.match(text(), /24 ÷ 6/);
   click('engine-2');
-  assert.match(text(), /4, 8, 12/);
+  assert.match(text(), /3\/4 of 20/);
   click('map');
   click('mission');
   assert.match(text(), /recording addresses Adam/);
@@ -227,6 +233,6 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   click('profiles');
   click('profile:explorer');
   assert.match(text(), /Welcome, Adam/);
-  assert.equal(stored().maths.length, 3);
+  assert.equal(stored().maths.length, 6);
   await tick();
 });
