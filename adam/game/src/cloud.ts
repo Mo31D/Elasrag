@@ -103,6 +103,29 @@ export class CloudGateway {
       );
     return value;
   }
+  async episode2Tts(action: 'generate-preview' | 'get-preview') {
+    const { data: { session } } = await this.client.auth.getSession();
+    if (!session) throw Error('Please sign in as an enrolled parent first.');
+    const res = await fetch(this.projectUrl + '/functions/v1/episode2-tts-preview', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Bearer ' + session.access_token,
+        apikey: this.key,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ action }),
+      signal: AbortSignal.timeout(action === 'generate-preview' ? 65000 : 20000),
+    });
+    const value = await res.json().catch(() => ({ error: 'tts_unavailable' }));
+    if (!res.ok) throw Error(
+      value.error === 'free_tier_not_confirmed'
+        ? 'Confirm Google Free Tier and save your parent settings before generating audio.'
+        : value.error === 'tts_quota_or_reservation_blocked'
+          ? 'The TTS preview limit or cooldown has been reached.'
+          : 'Audio preview unavailable: ' + String(value.error || 'request_failed'),
+    );
+    return value as { status: string; playbackUrl?: string; audioBytes?: number };
+  }
   async signOut() {
     await this.client.auth.signOut({ scope: 'local' });
   }
@@ -199,7 +222,7 @@ function renderDesk() {
   const xp = d.xp
     .filter((x: any) => x.student_id === selectedStudent)
     .reduce((n: number, x: any) => n + x.amount, 0);
-  body().innerHTML = `<div class="choices">${btn('refresh', 'Refresh')}${btn('signout', 'Sign out', 'quiet')}</div><label for="cloud-student">Explorer</label><select id="cloud-student">${d.students.map((s: any) => `<option value="${esc(s.id)}" ${s.id === selectedStudent ? 'selected' : ''}>${esc(s.nickname)} · Year ${s.school_year}</option>`).join('')}</select><p>${st ? esc(st.nickname) + ' has ' + xp + ' cloud adventure XP.' : 'Add a cloud explorer to begin. Local profiles are not uploaded automatically.'}</p><details><summary>Add a cloud explorer</summary><form id="cloud-add-student"><label for="cloud-name">Nickname</label><input id="cloud-name" maxlength="30" required><label for="cloud-year">Starting stage</label><select id="cloud-year"><option value="6">Year 6</option><option value="4">Year 4</option></select><p>England primary · British English</p><button class="secondary">Create private profile</button></form></details><details><summary>Generation limits and free-tier confirmation</summary><form id="cloud-settings"><label><input id="cloud-free" type="checkbox" ${d.settings?.free_tier_confirmed ? 'checked' : ''}> I have confirmed this Gemini key's Google project is on the Free tier with no paid billing.</label><label><input id="cloud-enabled" type="checkbox" ${d.settings?.generation_enabled ? 'checked' : ''}> Enable parent-triggered text generation</label><label for="cloud-limit">Maximum requests per day (failed requests count)</label><input id="cloud-limit" type="number" min="1" max="5" value="${d.settings?.daily_limit || 2}"><button class="secondary">Save generation settings</button></form><p class="muted">Default limit: 2 per day, at most 1 per minute, 1,800 output tokens per request. This app cannot inspect Google's billing configuration. Automatic scheduling, paid fallback, audio generation and Reward Credits remain disabled.</p></details><div class="choices">${btn('generate', 'Prepare next English mission', 'primary')}</div><p class="muted">Approved suitable content is reused before requesting a new lesson. Every new lesson needs adult review. Only a generic skill and word go to Gemini; no nickname, email or learning history is sent.</p><h3>Content review · ${pending.length} pending</h3>${d.lessons.map((l: any) => `<div class="cloud-lesson-row"><strong>${esc(l.content?.title || 'Quarantined output')}</strong><span>${esc(l.status)}</span>${btn('review:' + l.id, l.status === 'pending_review' ? 'Inspect and review' : 'Inspect', 'quiet')}</div>`).join('') || '<p>No generated content yet.</p>'}<h3>Approved expeditions</h3>${approved.length ? `<div class="choices">${approved.map((l: any) => btn('play:' + l.id, esc(l.content.title), 'secondary')).join('')}${btn('atlas', 'Show approved missions on atlas', 'primary')}</div>` : '<p>Only approved lessons appear here.</p>'}<h3>Skills and next reviews</h3>${
+  body().innerHTML = `<div class="choices">${btn('refresh', 'Refresh')}${btn('signout', 'Sign out', 'quiet')}</div><label for="cloud-student">Explorer</label><select id="cloud-student">${d.students.map((s: any) => `<option value="${esc(s.id)}" ${s.id === selectedStudent ? 'selected' : ''}>${esc(s.nickname)} · Year ${s.school_year}</option>`).join('')}</select><p>${st ? esc(st.nickname) + ' has ' + xp + ' cloud adventure XP.' : 'Add a cloud explorer to begin. Local profiles are not uploaded automatically.'}</p><details><summary>Add a cloud explorer</summary><form id="cloud-add-student"><label for="cloud-name">Nickname</label><input id="cloud-name" maxlength="30" required><label for="cloud-year">Starting stage</label><select id="cloud-year"><option value="6">Year 6</option><option value="4">Year 4</option></select><p>England primary · British English</p><button class="secondary">Create private profile</button></form></details><details><summary>Generation limits and free-tier confirmation</summary><form id="cloud-settings"><label><input id="cloud-free" type="checkbox" ${d.settings?.free_tier_confirmed ? 'checked' : ''}> I have confirmed this Gemini key's Google project is on the Free tier with no paid billing.</label><label><input id="cloud-enabled" type="checkbox" ${d.settings?.generation_enabled ? 'checked' : ''}> Enable parent-triggered text generation</label><label for="cloud-limit">Maximum requests per day (failed requests count)</label><input id="cloud-limit" type="number" min="1" max="5" value="${d.settings?.daily_limit || 2}"><button class="secondary">Save generation settings</button></form><p class="muted">Default limit: 2 per day, at most 1 per minute, 1,800 output tokens per request. This app cannot inspect Google's billing configuration. Automatic scheduling, paid fallback, audio generation and Reward Credits remain disabled.</p></details><div class="choices">${btn('generate', 'Prepare next English mission', 'primary')}</div><h3>Episode 2 · Two-voice audio preview</h3><p class="muted">A short private Gemini Free Tier test of Narrator and Pip, only when you press Generate.</p><div class="choices">${btn('tts-generate', 'Generate voice preview', 'secondary')}${btn('tts-existing', 'Play saved preview', 'quiet')}</div><audio id="episode2-tts-player" controls preload="none" hidden aria-label="Episode 2 voice preview"></audio><p class="muted">Audio links expire after two minutes. Play saved preview does not use another Gemini request.</p><p class="muted">Approved suitable content is reused before requesting a new lesson. Every new lesson needs adult review. Only a generic skill and word go to Gemini; no nickname, email or learning history is sent.</p><h3>Content review · ${pending.length} pending</h3>${d.lessons.map((l: any) => `<div class="cloud-lesson-row"><strong>${esc(l.content?.title || 'Quarantined output')}</strong><span>${esc(l.status)}</span>${btn('review:' + l.id, l.status === 'pending_review' ? 'Inspect and review' : 'Inspect', 'quiet')}</div>`).join('') || '<p>No generated content yet.</p>'}<h3>Approved expeditions</h3>${approved.length ? `<div class="choices">${approved.map((l: any) => btn('play:' + l.id, esc(l.content.title), 'secondary')).join('')}${btn('atlas', 'Show approved missions on atlas', 'primary')}</div>` : '<p>Only approved lessons appear here.</p>'}<h3>Skills and next reviews</h3>${
     d.progress
       .filter((p: any) => p.student_id === selectedStudent)
       .map(
@@ -283,6 +306,18 @@ function bindDesk() {
                   ? 'Suitable content or an existing request was reused. No duplicate generation was requested.'
                   : 'Lesson prepared for adult review.',
               );
+            } else if (action === 'tts-generate' || action === 'tts-existing') {
+              const result = await gateway!.episode2Tts(action === 'tts-generate' ? 'generate-preview' : 'get-preview');
+              const player = document.querySelector<HTMLAudioElement>('#episode2-tts-player');
+              if (result.status === 'ready' && result.playbackUrl && player) {
+                player.hidden = false;
+                player.src = result.playbackUrl;
+                message('Voice clip ready. Press play to hear the Narrator and Pip.');
+              } else {
+                message(result.status === 'not_generated'
+                  ? 'No audio preview saved yet. Choose Generate voice preview.'
+                  : 'Audio status: ' + String(result.status) + '. Please check again later.');
+              }
             } else if (action === 'atlas') {
               hooks.closeDialog();
               hooks.map();
