@@ -45,3 +45,17 @@ test('guided practice followed by a different independent challenge counts one i
  evidence(state,'place-value',true,true,now+2000);evidence(state,'place-value',true,false,now+3000);
  assert.equal(state.profiles.explorer.skills['place-value'].independent,1);
 });
+test('a due review still counts after guided practice on that later day',()=>{
+ const state=fresh(),start=Date.parse('2026-10-14T12:00:00Z');
+ evidence(state,'place-value',true,false,start);
+ const later=start+86400000;
+ evidence(state,'place-value',true,true,later);
+ evidence(state,'place-value',true,false,later+1000);
+ assert.equal(state.profiles.explorer.skills['place-value'].reviewCount,1);
+ assert.equal(state.profiles.explorer.skills['place-value'].due,later+1000+3*86400000);
+});
+test('independent-day counting uses the family London day across devices',()=>{
+ const s=fresh();evidence(s,'notice',true,false,Date.parse('2026-10-15T22:30:00Z'));
+ evidence(s,'notice',true,false,Date.parse('2026-10-15T23:30:00Z'));
+ assert.equal(s.profiles.explorer.skills.notice.independent,2);
+});

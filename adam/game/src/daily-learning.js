@@ -111,3 +111,39 @@ export function contentReadiness(dashboard, studentId, now = Date.now()) {
           : "Prepare one small English mission, then check and approve it.",
   };
 }
+
+// Prioritise the actual due facet; rotating blindly can leave one facet overdue forever.
+export function nextNotebookFacet(
+  term,
+  skills,
+  rotation = 0,
+  now = Date.now(),
+) {
+  const facets = [0, 1, 2].map((i) => ({
+    i,
+    record: skills["notebook:" + term + ":" + i],
+  }));
+  const due = facets
+    .filter((x) => x.record?.due && x.record.due <= now)
+    .sort((a, b) => a.record.due - b.record.due);
+  if (due.length) return due[0].i;
+  const unseen = facets.find((x) => !x.record);
+  if (unseen) return unseen.i;
+  return rotation % 3;
+}
+export function completedDiscoveryToday(profile, lab, now = Date.now()) {
+  const today = dayKey(now);
+  if (
+    lab?.completed &&
+    Number.isFinite(lab.completedAt) &&
+    dayKey(lab.completedAt) === today
+  )
+    return true;
+  return (profile.events || []).some(
+    (e) =>
+      Number.isFinite(e.at) &&
+      dayKey(e.at) === today &&
+      (e.type === "mission_completed" ||
+        (e.type === "xp_awarded" && e.mission === "science:dissolving-001")),
+  );
+}

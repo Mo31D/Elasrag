@@ -70,7 +70,7 @@ test("cloud snapshot exports only one learner and restores without touching othe
     JSON.stringify({
       version: 1,
       learners: {
-        explorer: { notice: { term: "notice" } },
+        explorer: { notice: { term: "notice",definition:"See something.",example:"I notice a clue.",sources:["Story"] } },
         joseph: { other: { term: "other" } },
       },
     }),
@@ -93,4 +93,33 @@ test("cloud snapshot exports only one learner and restores without touching othe
     () => restoreProfile(s, "explorer", { version: 1 }),
     /incompatible/,
   );
+});
+test('restore rejects root-overwriting run fields and malformed nested learning data before writing',()=>{
+ const storage=new Window().localStorage;storage.setItem(KEY,JSON.stringify(fresh()));
+ const payload=snapshotProfile(storage,'explorer'),before=storage.getItem(KEY);
+ for(const bad of [
+  {...payload,profile:{...payload.profile,run:{...payload.profile.run,profiles:{}}}},
+  {...payload,profile:{...payload.profile,skills:{notice:null}}},
+  {...payload,words:{words:{apple:{meaning:null}},stars:1}},
+  {...payload,notebook:{notice:{term:'notice'}}},
+  {...payload,science:{step:999,tests:{},attempts:0}}
+ ]){assert.equal(Boolean(validateSnapshot(bad)),false);assert.throws(()=>restoreProfile(storage,'explorer',bad));assert.equal(storage.getItem(KEY),before);}
+});
+test('restoring Joseph preserves Adam legacy science; failed storage writes roll back every key',()=>{
+ const storage=new Window().localStorage,root=fresh();createProfile(root,'joseph','Joseph',4);storage.setItem(KEY,JSON.stringify(root));
+ const payload=snapshotProfile(storage,'joseph');
+ storage.setItem('ala-science-lab-v1',JSON.stringify({step:3,tests:{sugar:true},attempts:1}));
+ restoreProfile(storage,'joseph',payload);
+ assert.equal(JSON.parse(storage.getItem('ala-science-lab-v1')).learners.explorer.step,3);
+ const keys=[KEY,'ala-word-kingdom-v1','ala-science-lab-v1','ala-notebook-v1'],before=keys.map(k=>storage.getItem(k));
+ let writes=0;const failing={getItem:k=>storage.getItem(k),removeItem:k=>storage.removeItem(k),setItem:(k,v)=>{if(++writes===2)throw Error('QuotaExceededError');storage.setItem(k,v);}};
+ assert.throws(()=>restoreProfile(failing,'joseph',payload),/storage is full/);assert.deepEqual(keys.map(k=>storage.getItem(k)),before);
+});
+test('notebook chooses an overdue facet before rotating; science completed before opening Today still counts',async()=>{
+ const {nextNotebookFacet,completedDiscoveryToday}=await import('../src/daily-learning.js');
+ assert.equal(nextNotebookFacet('notice',{'notebook:notice:0':{due:100}},2,200),0);
+ assert.equal(nextNotebookFacet('notice',{'notebook:notice:0':{due:300}},0,200),1);
+ const now=Date.parse('2026-10-16T10:00:00Z');
+ assert.equal(completedDiscoveryToday({events:[]},{completed:true,completedAt:now-10000},now),true);
+ assert.equal(completedDiscoveryToday({events:[]},{completed:true,completedAt:now-86400000},now),false);
 });
