@@ -50,6 +50,7 @@ function harness({
   free = true,
   candidate = fixture,
   providerFailure = false,
+  pending = false,
 } = {}) {
   const calls = [];
   const envs = {
@@ -107,7 +108,7 @@ function harness({
           vocabulary: { curious: 'Wanting to find out more.' },
         },
       ]);
-    if (path.startsWith('ala_lessons')) return ok([]);
+    if (path.startsWith('ala_lessons')) return ok(pending&&path.includes('status=eq.pending_review')?[{id:lessonId,status:'pending_review',content:fixture}]:[]);
     if (path === 'rpc/ala_reset_cloud_learning')
       return ok({reset:true,students_preserved:1,attempts_cleared:2,skills_cleared:3,xp_awards_cleared:1});
     if (path === 'rpc/ala_reserve_generation')
@@ -240,3 +241,5 @@ test('Cloud learning reset is prohibited without parent authentication and an ex
  assert.equal(result2.status,403);
  assert.ok(!unverified.calls.some(c=>c.url.includes('rpc/ala_reset_cloud_learning')));
 });
+
+test('a pending lesson from an earlier day is reused without another Gemini request',async()=>{const h=harness({pending:true});const result=await h.handler(request({action:'generate',studentId:student}));assert.equal(result.status,200);assert.equal((await result.json()).needsReview,true);assert.equal(h.calls.some(c=>c.url.includes('googleapis')||c.url.includes('ala_reserve_generation')),false);});

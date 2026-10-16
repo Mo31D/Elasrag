@@ -97,6 +97,39 @@ for(const size of sizes){
   await page.locator('#notebook-search').fill('apple');
   assert.ok(await page.locator('[data-notebook-term="apple"]').isVisible());
   await page.screenshot({path:shots+'/'+size.name+'-notebook.png',fullPage:true});
+  await page.locator('[data-action="close"]').click();
+  await page.locator('[data-action="daily"]').click();
+  assert.match(await page.locator('.daily-world').innerText(),/A little learning/);
+  await page.locator('[data-action="daily-maths"]').click();
+  await page.locator('[data-action="beacon-next"]').click();
+  await page.locator('#beacon-answer').fill('12');
+  await page.locator('#beacon-form button').click();
+  assert.match(await page.locator('#beacon-feedback').innerText(),/Try again/);
+  await page.locator('#beacon-answer').fill('400');
+  await page.locator('#beacon-form button').click();
+  await page.locator('[data-action="beacon-next"]').click();
+  for(let stage=2;stage<=3;stage++){
+   const heading=await page.locator('.beacon-panel h2').innerText();const [,digit,formatted]=heading.match(/value of (\d) in ([\d,]+)/);
+   const digits=formatted.replaceAll(',',''),value=Number(digit)*10**(digits.length-digits.indexOf(digit)-1);
+   await page.locator('#beacon-answer').fill(String(value));await page.locator('#beacon-form button').click();
+   if(stage===2)await page.locator('[data-action="beacon-next"]').click();
+  }
+  assert.match(await page.locator('#beacon-next').innerText(),/review is scheduled/);
+  await page.screenshot({path:shots+'/'+size.name+'-beacon.png',fullPage:true});
+  await page.locator('[data-action="daily"]').first().click();
+  assert.ok(await page.locator('.daily-steps li.done').count()>=1);
+  await page.reload();await page.locator('[data-action="daily"]').click();assert.ok(await page.locator('.daily-steps li.done').count()>=1);
+  const dailyWidth=await page.evaluate(()=>({width:document.documentElement.scrollWidth,viewport:innerWidth}));assert.ok(dailyWidth.width<=dailyWidth.viewport+2);
+  await page.locator('[data-action="daily-words"]').click();
+  // Every fresh word begins with meaning recognition. Wrong attempts stay supported.
+  for(let i=0;i<3;i++){
+   await page.locator('[data-action="notebook-help"]').click();
+   const model=await page.locator('#notebook-feedback').innerText();const term=model.split(':')[0];
+   await page.locator('[data-action="notebook-choice:'+term+'"]').click();
+   assert.match(await page.locator('#notebook-feedback').innerText(),/Supported practice saved/);
+   await page.locator('[data-action="notebook-next"]').click();
+  }
+  assert.match(await page.locator('#overlay').innerText(),/Recall trail complete/);
   assert.equal(errors.length,0,'cross-game runtime errors: '+errors.join('; '));
   console.log('PASS',size.name,geometry);
  }catch(e){

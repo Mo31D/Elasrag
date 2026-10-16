@@ -10,6 +10,8 @@ for (const file of ['cloud-mission', 'cloud']) {
     'utf8',
   );
   source = source
+    .replace(/from ["']\.\/device-sync\.js["']/, "from '../src/device-sync.js'")
+    .replace(/from ["']\.\/daily-learning\.js["']/, "from '../src/daily-learning.js'")
     .replace(
       /import config from ["']\.\/cloud-config\.json["'];/,
       'const config=' +

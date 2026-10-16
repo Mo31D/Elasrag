@@ -66,12 +66,11 @@ export function evidence(
     return s;
   }
   // Independent evidence counts once per day. Later recall must happen on a later day.
-  if (
-    !s.last ||
-    new Date(s.last).toDateString() !== new Date(now).toDateString()
-  ) {
+  const lastIndependent=s.lastIndependent ?? (s.independent>0?s.last:0);
+  if (!lastIndependent || new Date(lastIndependent).toDateString() !== new Date(now).toDateString()) {
     if (s.independent > 0 && now >= s.due) s.reviewCount++;
     s.independent++;
+    s.lastIndependent=now;
     s.due = now + intervals[Math.min(s.reviewCount, 4)] * 86400000;
     s.last = now;
   }
