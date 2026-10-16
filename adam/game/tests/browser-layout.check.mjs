@@ -53,7 +53,8 @@ for(const size of sizes){
   await page.locator('[data-action="maths"]').click();
   await page.locator('[data-action="engine-8"]').click();
   await page.locator('.visual-tool summary').click();
-  await page.getByRole('slider',{name:'Garden length'}).fill('10');
+  await page.getByRole('slider',{name:'Garden length'}).focus();
+  await page.getByRole('slider',{name:'Garden length'}).press('End');
   assert.match(await page.locator('.garden-result').innerText(),/30 m.*50 m²/);
   await page.locator('[data-action="maths"]').click();
   await page.locator('[data-action="engine-9"]').click();
