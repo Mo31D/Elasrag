@@ -1,3 +1,5 @@
+import {snapshotProfile,restoreProfile,validateSnapshot} from './device-sync.js';
+import {contentReadiness} from './daily-learning.js';
 import {syncCloudSnapshot,CLOUD_SNAPSHOT_KEY} from '../public/shared/notebook.js';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import config from './cloud-config.json';
@@ -27,6 +29,7 @@ export interface Hooks {
   map: () => void;
   setView: (view: string) => void;
   refreshCloudProgress?: () => Promise<void>;
+  restoreLocalProgress?: () => void;
   setCloudMissions?: (missions: CloudMissionSummary[]) => void;
 }
 const esc = (value: unknown) =>
@@ -219,12 +222,13 @@ function syncMissions() {
 function renderDesk() {
   const d = dashboard;
   const st = d.students.find((s: any) => s.id === selectedStudent);
+  const readiness=contentReadiness(d,selectedStudent);
   const pending = d.lessons.filter((l: any) => l.status === 'pending_review');
   const approved = d.lessons.filter((l: any) => l.status === 'approved');
   const xp = d.xp
     .filter((x: any) => x.student_id === selectedStudent)
     .reduce((n: number, x: any) => n + x.amount, 0);
-  body().innerHTML = `<div class="choices">${btn('refresh', 'Refresh')}${btn('signout', 'Sign out', 'quiet')}</div><label for="cloud-student">Explorer</label><select id="cloud-student">${d.students.map((s: any) => `<option value="${esc(s.id)}" ${s.id === selectedStudent ? 'selected' : ''}>${esc(s.nickname)} · Year ${s.school_year}</option>`).join('')}</select><p>${st ? esc(st.nickname) + ' has ' + xp + ' cloud adventure XP.' : 'Add a cloud explorer to begin. Local profiles are not uploaded automatically.'}</p><details><summary>Add a cloud explorer</summary><form id="cloud-add-student"><label for="cloud-name">Nickname</label><input id="cloud-name" maxlength="30" required><label for="cloud-year">Starting stage</label><select id="cloud-year"><option value="6">Year 6</option><option value="4">Year 4</option></select><p>England primary · British English</p><button class="secondary">Create private profile</button></form></details><details><summary>Reset cloud learning progress · parent only</summary><p class="muted">This permanently erases cloud attempt history, mastery evidence, XP and reward entries for every explorer in this parent account. Approved lessons, generated content and student accounts are kept. Device progress is separate.</p>${btn('reset-learning','Reset all cloud learning progress','quiet')}</details><details><summary>Generation limits and free-tier confirmation</summary><form id="cloud-settings"><label><input id="cloud-free" type="checkbox" ${d.settings?.free_tier_confirmed ? 'checked' : ''}> I have confirmed this Gemini key's Google project is on the Free tier with no paid billing.</label><label><input id="cloud-enabled" type="checkbox" ${d.settings?.generation_enabled ? 'checked' : ''}> Enable parent-triggered text generation</label><label for="cloud-limit">Maximum requests per day (failed requests count)</label><input id="cloud-limit" type="number" min="1" max="5" value="${d.settings?.daily_limit || 2}"><button class="secondary">Save generation settings</button></form><p class="muted">Default limit: 2 per day, at most 1 per minute, 1,800 output tokens per request. This app cannot inspect Google's billing configuration. Automatic scheduling, paid fallback, audio generation and Reward Credits remain disabled.</p></details><div class="choices">${btn('generate', 'Prepare next English mission', 'primary')}</div><p class="muted">Approved suitable content is reused before requesting a new lesson. Every new lesson needs adult review. Only a generic skill and word go to Gemini; no nickname, email or learning history is sent.</p><h3>Content review · ${pending.length} pending</h3>${d.lessons.map((l: any) => `<div class="cloud-lesson-row"><strong>${esc(l.content?.title || 'Quarantined output')}</strong><span>${esc(l.status)}</span>${btn('review:' + l.id, l.status === 'pending_review' ? 'Inspect and review' : 'Inspect', 'quiet')}</div>`).join('') || '<p>No generated content yet.</p>'}<h3>Approved expeditions</h3>${approved.length ? `<div class="choices">${approved.map((l: any) => btn('play:' + l.id, esc(l.content.title), 'secondary')).join('')}${btn('atlas', 'Show approved missions on atlas', 'primary')}</div>` : '<p>Only approved lessons appear here.</p>'}<h3>Skills and next reviews</h3>${
+  body().innerHTML = `<div class="choices">${btn('refresh', 'Refresh')}${btn('signout', 'Sign out', 'quiet')}</div><label for="cloud-student">Explorer</label><select id="cloud-student">${d.students.map((s: any) => `<option value="${esc(s.id)}" ${s.id === selectedStudent ? 'selected' : ''}>${esc(s.nickname)} · Year ${s.school_year}</option>`).join('')}</select><p>${st ? esc(st.nickname) + ' has ' + xp + ' cloud adventure XP.' : 'Add a cloud explorer to begin. Local profiles are not uploaded automatically.'}</p><section class="parent-insight"><h3>Next content step</h3><p>${esc(readiness.next)}</p><p>${readiness.ready} new approved · ${readiness.pending} waiting for review · ${readiness.due} skills due</p></section><details><summary>Move game progress between devices</summary><p>Parent-controlled cloud save for one explorer: maths, words, notebook, science and Adventure XP. Choose the local explorer and the matching cloud explorer above. This replaces a snapshot, not the server-verified assessment ledger. Save on the old device, then restore on the new one.</p><label for="sync-profile">Local explorer to save or restore</label><select id="sync-profile">${Object.entries(JSON.parse(localStorage.getItem('ala-adventure-v1')||'{}').profiles||{}).map(([id,p]:[string,any])=>`<option value="${esc(id)}">${esc(p.displayName)} · Year ${p.year}</option>`).join('')}</select><div class="choices">${btn('snapshot-save','Save this explorer to cloud')}${btn('snapshot-restore','Restore cloud progress on this device')}${btn('snapshot-inspect','Check cloud save','quiet')}</div><p id="sync-message" role="status">No background uploads. A stale revision is rejected so another device cannot be silently overwritten.</p></details><details><summary>Add a cloud explorer</summary><form id="cloud-add-student"><label for="cloud-name">Nickname</label><input id="cloud-name" maxlength="30" required><label for="cloud-year">Starting stage</label><select id="cloud-year"><option value="6">Year 6</option><option value="4">Year 4</option></select><p>England primary · British English</p><button class="secondary">Create private profile</button></form></details><details><summary>Reset cloud learning progress · parent only</summary><p class="muted">This permanently erases cloud attempt history, mastery evidence, XP and reward entries for every explorer in this parent account. Approved lessons, generated content and student accounts are kept. Device progress is separate.</p>${btn('reset-learning','Reset all cloud learning progress','quiet')}</details><details><summary>Generation limits and free-tier confirmation</summary><form id="cloud-settings"><label><input id="cloud-free" type="checkbox" ${d.settings?.free_tier_confirmed ? 'checked' : ''}> I have confirmed this Gemini key's Google project is on the Free tier with no paid billing.</label><label><input id="cloud-enabled" type="checkbox" ${d.settings?.generation_enabled ? 'checked' : ''}> Enable parent-triggered text generation</label><label for="cloud-limit">Maximum requests per day (failed requests count)</label><input id="cloud-limit" type="number" min="1" max="5" value="${d.settings?.daily_limit || 2}"><button class="secondary">Save generation settings</button></form><p class="muted">Default limit: 2 per day, at most 1 per minute, 1,800 output tokens per request. This app cannot inspect Google's billing configuration. Automatic scheduling, paid fallback, audio generation and Reward Credits remain disabled.</p></details><div class="choices">${btn('generate', 'Prepare next English mission', 'primary')}</div><p class="muted">Approved suitable content is reused before requesting a new lesson. Every new lesson needs adult review. Only a generic skill and word go to Gemini; no nickname, email or learning history is sent.</p><h3>Content review · ${pending.length} pending</h3>${d.lessons.map((l: any) => `<div class="cloud-lesson-row"><strong>${esc(l.content?.title || 'Quarantined output')}</strong><span>${esc(l.status)}</span>${btn('review:' + l.id, l.status === 'pending_review' ? 'Inspect and review' : 'Inspect', 'quiet')}</div>`).join('') || '<p>No generated content yet.</p>'}<h3>Approved expeditions</h3>${approved.length ? `<div class="choices">${approved.map((l: any) => btn('play:' + l.id, esc(l.content.title), 'secondary')).join('')}${btn('atlas', 'Show approved missions on atlas', 'primary')}</div>` : '<p>Only approved lessons appear here.</p>'}<h3>Skills and next reviews</h3>${
     d.progress
       .filter((p: any) => p.student_id === selectedStudent)
       .map(
@@ -291,7 +295,34 @@ function bindDesk() {
         (b.onclick = () =>
           guarded(b, async () => {
             const action = b.dataset.cloud!;
-            if (action === 'refresh') await refresh();
+            if(action.startsWith('snapshot-')){
+              const localId=(document.querySelector('#sync-profile') as HTMLSelectElement).value;
+              const notice=document.querySelector('#sync-message')!;
+              if(!selectedStudent||!localId)throw Error('Choose both explorers first.');
+              const {data:sessionData}=await gateway!.client.auth.getSession();
+              const owner=sessionData.session?.user.id;if(!owner)throw Error('Sign in again.');
+              const binding=owner+':'+selectedStudent+':'+localId;
+              const cacheKey='ala-sync-revisions-v1';
+              const cache=JSON.parse(localStorage.getItem(cacheKey)||'{}');
+              const {data:remote,error}=await gateway!.client.from('ala_device_snapshots').select('revision,updated_at,payload').eq('student_id',selectedStudent).eq('parent_id',owner).maybeSingle();
+              if(error)throw Error('Cloud save is unavailable. Your device progress is safe.');
+              if(action==='snapshot-inspect'){notice.textContent=remote?`Cloud revision ${remote.revision}, saved ${new Date(remote.updated_at).toLocaleString('en-GB')}. Restore it before saving changes from a different device.`:'No cloud save yet.';return;}
+              if(action==='snapshot-save'){
+                const payload=snapshotProfile(localStorage,localId);
+                const student=dashboard.students.find((s:any)=>s.id===selectedStudent);
+                if(payload.profile.year!==student.school_year||payload.profile.displayName.trim().toLowerCase()!==student.nickname.trim().toLowerCase())throw Error('Explorer name and year must match. Choose the correct profiles first.');
+                if(remote&&cache[binding]!==remote.revision)throw Error('A cloud save from another device exists. Export this device’s backup, then restore the cloud version before saving again. No progress was overwritten.');
+                const {data:result,error:saveError}=await gateway!.client.rpc('ala_save_device_snapshot',{p_student:selectedStudent,p_expected_revision:cache[binding]||0,p_payload:payload});
+                if(saveError)throw Error('Cloud save failed. Your local progress is safe.');
+                if(result.conflict)throw Error('Another device saved first. Restore its latest progress before saving.');
+                cache[binding]=result.revision;localStorage.setItem(cacheKey,JSON.stringify(cache));notice.textContent=`Saved securely as revision ${result.revision}. On the other device, choose Restore cloud progress.`;
+              }else{
+                const local=snapshotProfile(localStorage,localId);const chosen=dashboard.students.find((s:any)=>s.id===selectedStudent);if(local.profile.year!==chosen.school_year||local.profile.displayName.trim().toLowerCase()!==chosen.nickname.trim().toLowerCase())throw Error('Choose matching local and cloud explorers before restoring.');
+                if(!remote||!validateSnapshot(remote.payload))throw Error('No compatible cloud save is available.');
+                if(!window.confirm('Replace this explorer’s device progress with the cloud save? Export a device backup first if it contains work you want to keep. Other explorers are preserved.'))return;
+                restoreProfile(localStorage,localId,remote.payload);hooks.restoreLocalProgress?.();cache[binding]=remote.revision;localStorage.setItem(cacheKey,JSON.stringify(cache));notice.textContent='Restored. Close this desk and return to the Atlas to see your progress.';
+              }
+            } else if (action === 'refresh') await refresh();
             else if (action === 'signout') {
               await gateway!.signOut();
       window.localStorage.removeItem(CLOUD_SNAPSHOT_KEY);

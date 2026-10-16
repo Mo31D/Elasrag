@@ -24,6 +24,7 @@ for (const file of ['main', 'content', 'audio']) {
     .replace(/from ["']\.\/content["']/, "from './content.mjs'")
     .replace(/from ["']\.\/audio["']/, "from './audio.mjs'")
     .replace(/from ["']\.\/visual-tools\.js["']/, "from '../src/visual-tools.js'")
+    .replace(/from ["']\.\/daily-learning\.js["']/, "from '../src/daily-learning.js'")
     .replace(/from ["']\.\/progress\.js["']/, "from '../src/progress.js'");
   await writeFile(
     new URL(file + '.mjs', temp),
@@ -236,5 +237,31 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   click('profile:explorer');
   assert.match(text(), /Welcome, Adam/);
   assert.equal(stored().maths.length, 6);
+  click('daily');
+  assert.match(text(),/A little learning/);
+  click('map');click('maths');click('beacon');click('beacon-next');
+  const submitBeacon=value=>{document.querySelector('#beacon-answer').value=value;document.querySelector('#beacon-form').dispatchEvent(new win.Event('submit',{cancelable:true}));};
+  submitBeacon('12');assert.match(text(),/Try again when ready/);submitBeacon('400');click('beacon-next');
+  const {beaconExample}=await import('../src/daily-learning.js');submitBeacon(String(beaconExample(2).answer));click('beacon-next');submitBeacon(String(beaconExample(3).answer));
+  assert.ok(stored().profiles.explorer.daily.completed.includes('maths'));
+  click('daily');click('daily-words');assert.match(document.querySelector('dialog').textContent,/Recall trail/);
+  for(let i=0;i<3;i++){
+    click('notebook-help');const term=document.querySelector('#notebook-feedback').textContent.split(':')[0];
+    click('notebook-choice:'+term);assert.match(document.querySelector('#notebook-feedback').textContent,/Supported practice saved/);click('notebook-next');
+  }
+  assert.ok(stored().profiles.explorer.daily.completed.includes('words'));
+  click('daily');click('daily-words');
+  for(let i=0;i<3;i++){
+    click('notebook-help');const term=document.querySelector('#notebook-feedback').textContent.split(':')[0];
+    document.querySelector('#notebook-spelling').value=term;
+    document.querySelector('#notebook-answer').dispatchEvent(new win.Event('submit',{cancelable:true}));click('notebook-next');
+  }
+  click('daily');click('daily-words');
+  for(let i=0;i<3;i++){
+    const n=document.querySelectorAll('[data-action^="notebook-part:"]').length;
+    for(let part=n-1;part>=0;part--)click('notebook-part:'+part);
+    click('notebook-check');assert.match(document.querySelector('#notebook-feedback').textContent,/practice saved/);click('notebook-next');
+  }
+  click('daily');click('journal');assert.match(document.querySelector('dialog').textContent,/Start a short recall/);
   await tick();
 });

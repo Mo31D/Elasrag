@@ -38,3 +38,10 @@ test('invalid saved progress recovers and valid state round-trips', () => {
   s.clues = ['empty'];
   assert.deepEqual(load({ getItem: () => JSON.stringify(s) }), s);
 });
+test('guided practice followed by a different independent challenge counts one independent day',()=>{
+ const state=fresh(),now=Date.parse('2026-10-16T12:00:00Z');
+ evidence(state,'place-value',true,true,now);evidence(state,'place-value',true,false,now+1000);
+ assert.equal(state.profiles.explorer.skills['place-value'].independent,1);
+ evidence(state,'place-value',true,true,now+2000);evidence(state,'place-value',true,false,now+3000);
+ assert.equal(state.profiles.explorer.skills['place-value'].independent,1);
+});

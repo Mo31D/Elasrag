@@ -12,7 +12,7 @@ const source = await readFile(
 );
 await writeFile(
   new URL('cloud-mission.mjs', temp),
-  ts.transpileModule(source, {
+  ts.transpileModule(source.replace(/from ["']\.\/daily-learning\.js["']/, "from '../src/daily-learning.js'"), {
     compilerOptions: {
       target: ts.ScriptTarget.ES2022,
       module: ts.ModuleKind.ESNext,

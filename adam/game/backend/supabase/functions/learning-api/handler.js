@@ -275,6 +275,9 @@ export function createHandler({ env, fetch, validate, schema }) {
         );
         if (approved.length)
           return reply({ reused: true, lesson: approved[0] });
+        // Reuse content awaiting adult review across days, not only the same request key.
+        const waiting = await rest('ala_lessons?' + filter + '&skill_id=eq.' + encodeURIComponent(skill.id) + '&status=eq.pending_review&order=created_at.desc&limit=1');
+        if (waiting.length) return reply({reused:true,lesson:waiting[0],needsReview:true});
         const word = Object.keys(skill.vocabulary || {})[0];
         if (!Object.hasOwn(lexicon, word))
           throw new ApiError('unsupported_curriculum_word', 409);

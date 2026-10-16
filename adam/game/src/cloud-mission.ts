@@ -1,3 +1,5 @@
+import {finishDaily} from './daily-learning.js';
+import {matchingProfile} from '../public/shared/notebook.js';
 import {collectCloudWord} from '../public/shared/notebook.js';
 import type { CloudContent, Hooks } from './cloud';
 const esc = (value: unknown) =>
@@ -169,6 +171,7 @@ export function playCloudLesson(
                 );
               } else {
                 stage = kind === 'vocabulary' ? 'sentence' : 'complete';
+                if(stage==='complete'){try{const root=JSON.parse(localStorage.getItem('ala-adventure-v1')||'null');const id=matchingProfile(localStorage,student);if(id&&root?.profiles?.[id]){finishDaily(root.profiles[id],'discovery');localStorage.setItem('ala-adventure-v1',JSON.stringify(root));}}catch{}}
                 assisted = false;
                 show();
               }

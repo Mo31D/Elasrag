@@ -1,3 +1,4 @@
+import {dailyPlan,finishDaily,reviewOrder,beaconLesson,beaconExample} from './daily-learning.js';
 import './style.css';
 import {discoverWord,notebookWords,SCIENCE_VOCABULARY} from '../public/shared/notebook.js';
 import {WORDS} from '../../words/words-data.js';
@@ -213,7 +214,7 @@ function map() {
     )
     .join('');
   shell(
-    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">THE ADVENTURE ATLAS</p><h1>Choose your next<br>adventure.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}. Pick a destination and continue your journey.</p></div><div class="adventure-deck" aria-label="Available adventures"><button type="button" class="adventure-card mystery-card" data-action="mission" aria-label="${done ? 'Reopen' : state.missionStep ? 'Continue' : 'Begin'} lesson one, The missing trophy"><span class="adventure-card-top"><span class="adventure-index">LESSON 01</span><span class="adventure-state">${missionState}</span></span><span class="adventure-emblem">${icon('glass')}</span><span class="region">MYSTERY CITY · ENGLISH</span><strong>The missing trophy</strong><span class="adventure-copy">${done ? 'Case solved. Revisit the evidence and vocabulary.' : 'Follow a golden trail, examine clues and repair the detective report.'}</span><span class="adventure-action">${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <b>→</b></span><small>5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></button><button type="button" class="adventure-card maths-card" data-action="maths" aria-label="Open Number Kingdom"><span class="adventure-card-top"><span class="adventure-index">MATHS QUEST</span><span class="adventure-state">${mathsState}</span></span><span class="adventure-emblem">${icon('crystal')}</span><img class="adventure-feature-art" src="/adam/assets/quest-maths.svg" alt="" loading="lazy" aria-hidden="true"><span class="region">NUMBER KINGDOM · CONFIDENCE PATH</span><strong>The crystal pathways</strong><span class="adventure-copy">Short Year 3–6 checks separate question language from mathematical thinking.</span><span class="adventure-action">${mathsDone ? 'Continue your path' : 'Start the recommended path'} <b>→</b></span><small>YEAR ${profile().year || 6} · ${mathsDone}/${mathsTotal} PATHS TRIED</small></button><button type="button" class="adventure-card words-card" data-action="words" aria-label="Enter Word Kingdom"><span class="adventure-card-top"><span class="adventure-index">WORD COLLECTION</span><span class="adventure-state">${reviews ? `${reviews} REVIEW${reviews === 1 ? '' : 'S'} DUE` : 'READY'}</span></span><span class="adventure-emblem">${icon('book')}</span><span class="region">WORD KINGDOM · BRITISH ENGLISH</span><strong>The living library</strong><span class="adventure-copy">Discover, hear and master curriculum spelling and useful school vocabulary.</span><span class="adventure-action">Enter the library <b>→</b></span><small>COMPLETE WORD ACTIVITIES TO EARN ADVENTURE XP</small></button><button type="button" class="adventure-card science-card" data-action="science" aria-label="Enter Discovery Laboratory"><span class="adventure-card-top"><span class="adventure-index">SCIENCE MISSION</span><span class="adventure-state">${scienceComplete?'COMPLETE':lab.step?'IN PROGRESS':'NEW LAB'}</span></span><span class="adventure-emblem">${icon('flask')}</span><img class="adventure-feature-art" src="/adam/assets/quest-science.svg" alt="" loading="lazy" aria-hidden="true"><span class="region">DISCOVERY LABORATORY · MATERIALS</span><strong>The dissolving mystery</strong><span class="adventure-copy">Predict, test and explain why sugar seems to disappear but sand does not.</span><span class="adventure-action">${scienceComplete?'Revisit the laboratory':lab.step?'Continue the experiment':'Enter the laboratory'} <b>→</b></span><small>${scienceComplete?'✓ EVIDENCE EXPLORER · 10 XP EARNED':'MATERIALS · SCIENTIFIC THINKING · 10 XP TO EARN'}</small></button>${cloudCards}</div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${reviews ? 'Recall trail · ' + reviews + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${button('cloud', cloudMissions.length ? 'Manage family missions' : 'Family missions', 'map-chip')}</div></section>`,
+    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">THE ADVENTURE ATLAS</p><h1>Choose your next<br>adventure.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}. Pick a destination and continue your journey.</p></div><div class="daily-launch"><span class="eyebrow">YOUR NEXT SMALL ADVENTURE</span><h2>My adventure today</h2><p>Recall a few words, build one maths skill and explore a discovery. Take a break whenever you like.</p>${button('daily','Continue today’s adventure →','primary')}</div><div class="adventure-deck" aria-label="Available adventures"><button type="button" class="adventure-card mystery-card" data-action="mission" aria-label="${done ? 'Reopen' : state.missionStep ? 'Continue' : 'Begin'} lesson one, The missing trophy"><span class="adventure-card-top"><span class="adventure-index">LESSON 01</span><span class="adventure-state">${missionState}</span></span><span class="adventure-emblem">${icon('glass')}</span><span class="region">MYSTERY CITY · ENGLISH</span><strong>The missing trophy</strong><span class="adventure-copy">${done ? 'Case solved. Revisit the evidence and vocabulary.' : 'Follow a golden trail, examine clues and repair the detective report.'}</span><span class="adventure-action">${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <b>→</b></span><small>5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></button><button type="button" class="adventure-card maths-card" data-action="maths" aria-label="Open Number Kingdom"><span class="adventure-card-top"><span class="adventure-index">MATHS QUEST</span><span class="adventure-state">${mathsState}</span></span><span class="adventure-emblem">${icon('crystal')}</span><img class="adventure-feature-art" src="/adam/assets/quest-maths.svg" alt="" loading="lazy" aria-hidden="true"><span class="region">NUMBER KINGDOM · CONFIDENCE PATH</span><strong>The crystal pathways</strong><span class="adventure-copy">Short Year 3–6 checks separate question language from mathematical thinking.</span><span class="adventure-action">${mathsDone ? 'Continue your path' : 'Start the recommended path'} <b>→</b></span><small>YEAR ${profile().year || 6} · ${mathsDone}/${mathsTotal} PATHS TRIED</small></button><button type="button" class="adventure-card words-card" data-action="words" aria-label="Enter Word Kingdom"><span class="adventure-card-top"><span class="adventure-index">WORD COLLECTION</span><span class="adventure-state">${reviews ? `${reviews} REVIEW${reviews === 1 ? '' : 'S'} DUE` : 'READY'}</span></span><span class="adventure-emblem">${icon('book')}</span><span class="region">WORD KINGDOM · BRITISH ENGLISH</span><strong>The living library</strong><span class="adventure-copy">Discover, hear and master curriculum spelling and useful school vocabulary.</span><span class="adventure-action">Enter the library <b>→</b></span><small>COMPLETE WORD ACTIVITIES TO EARN ADVENTURE XP</small></button><button type="button" class="adventure-card science-card" data-action="science" aria-label="Enter Discovery Laboratory"><span class="adventure-card-top"><span class="adventure-index">SCIENCE MISSION</span><span class="adventure-state">${scienceComplete?'COMPLETE':lab.step?'IN PROGRESS':'NEW LAB'}</span></span><span class="adventure-emblem">${icon('flask')}</span><img class="adventure-feature-art" src="/adam/assets/quest-science.svg" alt="" loading="lazy" aria-hidden="true"><span class="region">DISCOVERY LABORATORY · MATERIALS</span><strong>The dissolving mystery</strong><span class="adventure-copy">Predict, test and explain why sugar seems to disappear but sand does not.</span><span class="adventure-action">${scienceComplete?'Revisit the laboratory':lab.step?'Continue the experiment':'Enter the laboratory'} <b>→</b></span><small>${scienceComplete?'✓ EVIDENCE EXPLORER · 10 XP EARNED':'MATERIALS · SCIENTIFIC THINKING · 10 XP TO EARN'}</small></button>${cloudCards}</div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${reviews ? 'Recall trail · ' + reviews + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${button('cloud', cloudMissions.length ? 'Manage family missions' : 'Family missions', 'map-chip')}</div></section>`,
     'The Adventure Atlas',
   );
 }
@@ -313,6 +314,7 @@ function complete() {
   if (!p.missions.trophy)
     recordEvent(state, 'mission_completed', { mission: 'trophy' });
   p.missions.trophy = true;
+  finishDaily(p,'discovery');
   xp('mission:trophy', state.settings.missionXP);
   save();
 }
@@ -336,7 +338,7 @@ function wordCard(id: string) {
   discoverWord(window.localStorage,state.activeProfile,{term:w.label,definition:w.definition,example:w.example},'The missing trophy');
   openDialog(
     w.label,
-    `<div class="word-illustration">${icon(w.icon)}</div><p class="definition">${w.definition}</p><blockquote>${w.example}</blockquote><div class="choices">${button('hear-' + id, `${icon('sound')} Hear in the original story`, 'secondary')}${button('slow-' + id, 'Gentler replay', 'quiet')}</div><p class="muted">You may try saying it, think it, or simply listen. Take as long as you like.</p>${button(view==='mission'?'close':'journal',view==='mission'?'Back to the investigation →':'← All collected words','primary')}`,
+    `<div class="word-illustration">${icon(w.icon)}</div><p class="definition">${w.definition}</p><blockquote>${w.example}</blockquote><div class="choices">${button('notebook-one:'+esc(w.label),'Practise this word','primary')}${button('hear-' + id, `${icon('sound')} Hear in the original story`, 'secondary')}${button('slow-' + id, 'Gentler replay', 'quiet')}</div><p class="muted">You may try saying it, think it, or simply listen. Take as long as you like.</p>${button(view==='mission'?'close':'journal',view==='mission'?'Back to the investigation →':'← All collected words','primary')}`,
   );
 }
 function journal() {
@@ -353,7 +355,7 @@ function journal() {
   for(const entry of entries) combined.set(entry.term.toLowerCase(),{...combined.get(entry.term.toLowerCase()),...entry});
   const list=[...combined.values()].sort((a,b)=>a.term.localeCompare(b.term,'en-GB'));
   openDialog('Detective notebook',
-    `<p class="notebook-intro">Your discoveries across stories, Word Kingdom and science. Finding a word starts its journey; mastery comes from later independent practice.</p><div class="notebook-toolbar"><span>${list.length} collected words</span><label class="sr-only" for="notebook-search">Find a collected word</label><input id="notebook-search" type="search" placeholder="Find a word…" autocomplete="off"></div><div class="journal-grid notebook-collection">${list.map(w=>`<button class="journal-word" data-notebook-term="${esc(w.term.toLowerCase())}" data-action="notebook:${esc(w.term.toLowerCase())}"><span class="notebook-mark">${icon(w.original?words.find(x=>x.id===w.original)!.icon:'book')}</span><strong>${esc(w.term)}</strong><small>${esc(w.sources.join(' · '))}</small><span class="notebook-state">${w.original?status(profile().skills[w.original]):w.practised?'Practising':'Discovered'}</span></button>`).join('')}</div><p id="notebook-empty" hidden>No collected words match that search.</p><details class="notebook-evidence"><summary>Evidence pouch · ${state.clues.length} clues</summary><p>${state.clues.length?state.clues.map((k:string)=>({empty:'Empty trophy stand',glitter:'Gold glitter trail',cloth:'Polishing cloth',trophy:'Trophy safe with Mr Clark'}[k]||k)).join(' · '):'Your first clue is waiting at the school.'}</p></details>`);
+    `<p class="notebook-intro">Your discoveries across stories, Word Kingdom and science. Finding a word starts its journey; mastery comes from later independent practice.</p>${button('notebook-review','Start a short recall trail →','primary')}<div class="notebook-toolbar"><span>${list.length} collected words</span><label class="sr-only" for="notebook-search">Find a collected word</label><input id="notebook-search" type="search" placeholder="Find a word…" autocomplete="off"></div><div class="journal-grid notebook-collection">${list.map(w=>`<button class="journal-word" data-notebook-term="${esc(w.term.toLowerCase())}" data-action="notebook:${esc(w.term.toLowerCase())}"><span class="notebook-mark">${icon(w.original?words.find(x=>x.id===w.original)!.icon:'book')}</span><strong>${esc(w.term)}</strong><small>${esc(w.sources.join(' · '))}</small><small>${(()=>{const all=[0,1,2].map(i=>profile().skills['notebook:'+w.term+':'+i]).filter(Boolean);const due=all.map(x=>x.due).filter(Boolean).sort()[0];return due?'Review '+new Date(due).toLocaleDateString('en-GB'):'Ready for first recall';})()}</small><span class="notebook-state">${w.original?status(profile().skills[w.original]):w.practised?'Practising':'Discovered'}</span></button>`).join('')}</div><p id="notebook-empty" hidden>No collected words match that search.</p><details class="notebook-evidence"><summary>Evidence pouch · ${state.clues.length} clues</summary><p>${state.clues.length?state.clues.map((k:string)=>({empty:'Empty trophy stand',glitter:'Gold glitter trail',cloth:'Polishing cloth',trophy:'Trophy safe with Mr Clark'}[k]||k)).join(' · '):'Your first clue is waiting at the school.'}</p></details>`);
   document.querySelector('#overlay')?.classList.add('notebook-dialog');
   document.querySelector('#notebook-search')?.addEventListener('input',(event)=>{
     const query=(event.target as HTMLInputElement).value.trim().toLowerCase();let count=0;
@@ -366,7 +368,7 @@ function collectedWord(term:string) {
   const original=words.find(w=>w.label===term);
   if(original)return wordCard(original.id);
   if(!stored)return;
-  openDialog(esc(stored.term),`<p class="definition">${esc(stored.definition)}</p><blockquote>${esc(stored.example)}</blockquote><p class="muted">Found in ${esc(stored.sources.join(' · '))}. Discovery is separate from mastery.</p><div class="choices">${button('notebook-hear:'+esc(term),'♫ Hear word','secondary')}${button('journal','← All collected words','quiet')}</div>`);
+  openDialog(esc(stored.term),`<p class="definition">${esc(stored.definition)}</p><blockquote>${esc(stored.example)}</blockquote><p class="muted">Found in ${esc(stored.sources.join(' · '))}. Discovery is separate from mastery.</p><div class="choices">${button('notebook-one:'+esc(term),'Practise this word','primary')}${button('notebook-hear:'+esc(term),'♫ Hear word','secondary')}${button('journal','← All collected words','quiet')}</div>`);
 }
 
 function renderRecall(review: boolean) {
@@ -392,6 +394,62 @@ function renderRecall(review: boolean) {
       : document.querySelector('#task')!,
   );
 }
+let beaconStage=0,beaconAssisted=false,beaconIndependent=true,beaconDay=0;
+let notebookQueue:any[]=[],notebookIndex=0,notebookFacet=0,notebookAssisted=false,notebookChosen:number[]=[];
+function daily(){
+ state=load(storage);stop();view='daily';const plan=dailyPlan(profile());const lab=readScience(window.localStorage,state.activeProfile);if(plan.scienceAtStart===undefined)plan.scienceAtStart=!!lab.completed;if((!plan.scienceAtStart&&lab.completed)||(profile().events||[]).some((e:any)=>e.type==='mission_completed'&&e.at>=plan.startedAt))finishDaily(profile(),'discovery');save();
+ const tasks=[['words','Recall trail','Three collected words, one small activity each.'],['maths','Build a maths skill','A worked example, guided practice and a fresh challenge.'],['discovery','Make a discovery','Continue a story, approved mission or science experiment.']];
+ shell(`<section class="daily-world"><span class="eyebrow">MY ADVENTURE TODAY · ${esc(plan.day)}</span><h1>A little learning.<br>A real adventure.</h1><p>About 10–15 minutes, at your pace. There is no timer or daily streak.</p><ol class="daily-steps">${tasks.map(([id,title,copy])=>`<li class="${plan.completed.includes(id)?'done':''}"><span class="daily-seal">${plan.completed.includes(id)?'✓':tasks.findIndex(t=>t[0]===id)+1}</span><div><h2>${title}</h2><p>${copy}</p><button class="${plan.completed.includes(id)?'quiet':'primary'}" data-action="daily-${id}">${plan.completed.includes(id)?'Revisit':'Begin'} →</button></div></li>`).join('')}</ol>${plan.completed.length===3?'<p class="daily-finish" role="status">Today’s journey is complete. This is a good place to rest or do something offline.</p>':'<p class="muted">Your completed steps stay saved if you leave. Opening an activity earns no XP.</p>'}${button('map','← Adventure Atlas','quiet')}</section>`,'Today’s adventure');
+}
+function startBeacon(){stop();view='beacon';beaconStage=0;beaconAssisted=false;beaconIndependent=true;beaconDay=Date.now();drawBeacon();}
+function drawBeacon(){
+ const e=beaconExample(beaconStage,beaconDay),guided=beaconStage<2;
+ shell(`<section class="daily-world beacon-world"><span class="eyebrow">NUMBER KINGDOM · STEP ${beaconStage+1} OF 4</span><h1>${beaconLesson.title}</h1><p class="lesson-stage">${beaconLesson.stages[beaconStage]}</p><section class="beacon-panel"><p>A digit is a single number symbol. Its <b>value</b> tells us how much it represents in this position.</p><h2>What is the value of ${e.digit} in ${e.number}?</h2><div class="beacon-columns" aria-label="Place value columns">${e.number.replace(',','').split('').map((d:string,i:number)=>`<span class="${Number(d)===e.digit?'lit':''}"><small>${["10,000s","1,000s","100s","10s","1s"][i]}</small><b>${d}</b></span>`).join('')}</div>${guided?`<p>${e.digit} is in the <b>${e.column}</b> column. Each one is worth ${e.unit.toLocaleString('en-GB')}.</p><p class="math-equation">${e.digit} × ${e.unit.toLocaleString('en-GB')} = ${beaconStage===0?e.answer.toLocaleString('en-GB'):'?'}</p>`:'<p>Use the column headings if they help. The picture does not show the answer.</p>'}${beaconStage===0?button('beacon-next','Now let me try →','primary'):`<form id="beacon-form"><label for="beacon-answer">The digit represents</label><input id="beacon-answer" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="Enter its value"><button class="primary">Check my thinking →</button></form>${button('beacon-hint','Show a smaller step','quiet')}`}<p id="beacon-feedback" role="status" class="feedback"></p><div id="beacon-next"></div></section>${button('daily','← Today’s adventure','quiet')}${button('maths','All maths paths','quiet')}</section>`,'The place-value beacon');
+ document.querySelector('#beacon-form')?.addEventListener('submit',event=>{
+  event.preventDefault();const input=document.querySelector<HTMLInputElement>('#beacon-answer')!;
+  const raw=input.value.replace(/[ ,]/g,'');if(!raw)return;
+  const correct=/^\d+$/.test(raw)&&Number(raw)===e.answer;
+  const target=document.querySelector('#beacon-feedback')!;
+  if(!correct){beaconAssisted=true;recordEvent(state,'skill_attempted',{skill:'place-value',correct:false,assisted:true});save();target.textContent=`Look at the ${e.column} column. The digit ${e.digit} represents ${e.digit} groups of ${e.unit.toLocaleString('en-GB')}. Try again when ready.`;recordEvent(state,'math_language_support',{skill:'place-value',attempt:beaconStage});save();return;}
+  input.disabled=true;document.querySelector<HTMLButtonElement>('#beacon-form button')!.disabled=true;
+  if(beaconStage>=2)beaconIndependent=beaconIndependent&&!beaconAssisted;
+  target.textContent=`${e.digit} ${e.column} means ${e.answer.toLocaleString('en-GB')}. ${beaconAssisted||beaconStage===1?'That was useful supported practice.':'You worked out the value yourself.'}`;
+  if(beaconStage===3){
+   evidence(state,'place-value',true,!beaconIndependent);if(!state.maths.includes('place-value'))state.maths.push('place-value');
+   xp('engine:place-value',state.settings.missionXP);if(beaconIndependent)xp('independent:place-value',state.settings.independentXP);
+   finishDaily(profile(),'maths');save();
+   document.querySelector('#beacon-next')!.innerHTML=`<p>A review is scheduled for a later day. Finishing once is not secure mastery.</p>${button('daily','Return to today’s adventure →','primary')}`;
+  }else document.querySelector('#beacon-next')!.innerHTML=button('beacon-next',beaconStage===1?'Try a new number independently →':'Use the skill in a new place →','primary');
+  bind(document.querySelector('#beacon-next')!);
+ });
+}
+function notebookReview(){
+ // Collect the original lesson vocabulary too; discovery itself gives no learning credit.
+ words.forEach(w=>discoverWord(window.localStorage,state.activeProfile,{term:w.label,definition:w.definition,example:w.example},'The missing trophy'));
+ notebookQueue=reviewOrder(notebookWords(window.localStorage,state.activeProfile),profile().skills).slice(0,3);
+ notebookIndex=0;notebookFacet=0;drawNotebookReview();
+}
+function drawNotebookReview(){
+ const w=notebookQueue[notebookIndex];
+ if(!w){if(notebookQueue.length>=3)finishDaily(profile(),'words');save();openDialog('Recall trail complete',`<p>You practised ${notebookQueue.length} collected words. The next reviews are scheduled.</p>${button('daily','Back to today’s adventure →','primary')}`);return;}
+ notebookAssisted=false;notebookChosen=[];
+ const counts=profile().notebookFacets||{};const facet=(counts[w.term]||0)%3;notebookFacet=facet;
+ const chunks=w.example.trim().split(/\s+/);
+ // Reverse a known complete sentence; accessible buttons provide a drag-free reconstruction.
+ const pieces=[...chunks].reverse();
+ const alternatives=[w,...notebookWords(window.localStorage,state.activeProfile).filter((x:any)=>x.term!==w.term&&x.definition!==w.definition)].slice(0,3).sort((a,b)=>a.term.localeCompare(b.term));
+ openDialog(`Recall trail · ${notebookIndex+1} of ${notebookQueue.length}`,`<span class="eyebrow">${['MEANING','SPELLING','SENTENCE'][facet]}</span>${facet===0?`<h3>Which word means:</h3><p class="definition">${esc(w.definition)}</p><div class="choices">${alternatives.map((a:any)=>button('notebook-choice:'+esc(a.term),esc(a.term),'secondary')).join('')}</div>`:facet===1?`<p class="definition">${esc(w.definition)}</p><p>${esc(w.example.replace(new RegExp(w.term,'gi'),'_____'))}</p><form id="notebook-answer"><label for="notebook-spelling">Write the missing word</label><input id="notebook-spelling" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="60"><button class="primary">Check spelling</button></form>`:`<p>Rebuild the example sentence about <b>${esc(w.term)}</b>.</p><p id="notebook-sentence" class="sentence-drop" aria-live="polite">Tap the words in order.</p><div class="choices">${pieces.map((part:string,i:number)=>button('notebook-part:'+i,esc(part),'secondary')).join('')}</div><div class="choices">${button('notebook-undo','Undo last word','quiet')}${button('notebook-check','Check sentence','primary')}</div>`}<div class="choices">${button('notebook-help','Show a model','quiet')}${button('notebook-review-hear','♫ Device voice','quiet')}${button('journal','Stop and return to notebook','quiet')}</div><p id="notebook-feedback" role="status"></p><div id="notebook-continue"></div>`);
+ document.querySelector('#notebook-answer')?.addEventListener('submit',e=>{e.preventDefault();checkNotebook(document.querySelector<HTMLInputElement>('#notebook-spelling')!.value.trim().toLowerCase()===w.term.toLowerCase());});
+}
+function checkNotebook(correct:boolean){
+ const w=notebookQueue[notebookIndex],target=document.querySelector('#notebook-feedback')!;
+ if(!correct){notebookAssisted=true;evidence(state,'notebook:'+w.term+':'+notebookFacet,false,true);save();target.textContent='Try another way. Use Show a model whenever it helps.';return;}
+ evidence(state,'notebook:'+w.term+':'+notebookFacet,true,notebookAssisted);profile().notebookFacets??={};profile().notebookFacets[w.term]=(profile().notebookFacets[w.term]||0)+1;discoverWord(window.localStorage,state.activeProfile,{...w,practised:true},'Detective notebook');
+ if(!notebookAssisted)xp('notebook:'+w.term+':'+notebookFacet,1);
+ save();target.textContent=notebookAssisted?'Supported practice saved. We will revisit this word later.':'Independent practice saved. We will revisit this word later.';
+ document.querySelectorAll<HTMLButtonElement>('#overlay button').forEach(b=>{if(b.dataset.action?.startsWith('notebook-'))b.disabled=true;});
+ document.querySelector('#notebook-continue')!.innerHTML=button('notebook-next','Next word →','primary');bind(document.querySelector('#notebook-continue')!);
+}
 function maths(index = -1) {
   stop();
   view = 'maths';
@@ -400,7 +458,7 @@ function maths(index = -1) {
   mathIndex = index;
   mathSolved = false;
   mathAttempts = 0;
-  hinted = false;
+  hinted = true; // The initial path includes a worked picture: count it as guided practice.
   mathExtension = false;
   drawMaths();
 }
@@ -408,7 +466,7 @@ function mathsHub() {
   const list = currentPuzzles();
   const recommended = recommendedMathIndex();
   shell(
-    `<section class="maths-hub"><div class="maths-hub-heading"><span class="eyebrow">NUMBER KINGDOM · CONFIDENCE MAP</span><h1>Small steps. Strong thinking.</h1><p>Earlier-year review is a strength check, not going backwards. The map recommends one useful next step and unlocks Year 6 bridges only when their foundations have been tried.</p><button class="primary" data-action="engine-${recommended}">Start recommended path →</button></div><div class="maths-paths">${list.map((p, i) => { const unlocked=mathsUnlocked(p), skillState=status(profile().skills[p.id]); return `<button class="maths-path ${state.maths.includes(p.id) ? 'complete' : ''} ${!unlocked ? 'locked' : ''}" ${unlocked ? `data-action="engine-${i}"` : 'disabled'}><span>${!unlocked ? 'LOCKED · BUILD FOUNDATIONS' : skillState === 'Review due' ? 'REVIEW DUE' : state.maths.includes(p.id) ? '✓ COMPLETED ONCE' : `CHECK · YEAR ${p.reviewYear}`}</span><b>${esc(p.strand)}</b><strong>${esc(p.name)}</strong><small>${esc(p.objective)}</small><i>${!unlocked ? `First: ${(p.requires || []).map((id:string)=>list.find(x=>x.id===id)?.name || id).join(' and ')}` : state.maths.includes(p.id) ? 'Practise or review again' : i === recommended ? 'Recommended next step →' : 'Start this short quest →'}</i></button>`; }).join('')}</div><div class="maths-later"><b>How mastery works</b><span>Try</span><span>Review later</span><span>Apply</span><p>One correct answer completes a path once. Secure mastery needs correct independent work again on later days.</p></div></section>`,
+    `<section class="maths-hub"><div class="maths-hub-heading"><span class="eyebrow">NUMBER KINGDOM · CONFIDENCE MAP</span><h1>Small steps. Strong thinking.</h1><p>Earlier-year review is a strength check, not going backwards. The map recommends one useful next step and unlocks Year 6 bridges only when their foundations have been tried.</p><button class="primary" data-action="${recommended===0?'beacon':'engine-'+recommended}">Start recommended path →</button>${button('beacon','Learn place value step by step','secondary')}</div><div class="maths-paths">${list.map((p, i) => { const unlocked=mathsUnlocked(p), skillState=status(profile().skills[p.id]); return `<button class="maths-path ${state.maths.includes(p.id) ? 'complete' : ''} ${!unlocked ? 'locked' : ''}" ${unlocked ? `data-action="engine-${i}"` : 'disabled'}><span>${!unlocked ? 'LOCKED · BUILD FOUNDATIONS' : skillState === 'Review due' ? 'REVIEW DUE' : state.maths.includes(p.id) ? '✓ COMPLETED ONCE' : `CHECK · YEAR ${p.reviewYear}`}</span><b>${esc(p.strand)}</b><strong>${esc(p.name)}</strong><small>${esc(p.objective)}</small><i>${!unlocked ? `First: ${(p.requires || []).map((id:string)=>list.find(x=>x.id===id)?.name || id).join(' and ')}` : state.maths.includes(p.id) ? 'Practise or review again' : i === recommended ? 'Recommended next step →' : 'Start this short quest →'}</i></button>`; }).join('')}</div><div class="maths-later"><b>How mastery works</b><span>Try</span><span>Review later</span><span>Apply</span><p>One correct answer completes a path once. Secure mastery needs correct independent work again on later days.</p></div></section>`,
     'Number Kingdom / Choose a path',
   );
 }
@@ -452,7 +510,7 @@ function drawMaths() {
       )
       .join(
         '',
-      )}</div>${button('maths', '← All maths paths', 'quiet')}</div><section class="puzzle-panel"><span class="eyebrow">${esc(p.strand)} · YEAR ${p.reviewYear} FOUNDATION</span><div class="math-brief"><p><b>What you know</b>${esc(p.known)}</p><p><b>What to find</b>${esc(p.find)}</p></div><h2>${p.prompt}</h2><p id="math-question">${p.question}</p><div id="math-model">${mathsModel(p.model)}</div><form id="math-form"><label for="math-answer">Your answer</label><div class="answer-row"><input id="math-answer" inputmode="decimal" autocomplete="off" maxlength="20" aria-describedby="math-question" placeholder="Enter a number"><button class="primary">Check my thinking →</button></div></form><div class="choices">${button('math-hint', 'Show one small step', 'quiet')}${button('math-language', 'Explain the words', 'quiet')}</div><p id="feedback" class="feedback" role="status"></p><div id="math-next"></div></section></div></section>`,
+      )}</div>${button('maths', '← All maths paths', 'quiet')}</div><section class="puzzle-panel"><span class="eyebrow">${esc(p.strand)} · YEAR ${p.reviewYear} FOUNDATION · GUIDED PRACTICE</span><details class="math-worked"><summary>Watch a worked example</summary><p>${esc(p.explain)}</p></details><div class="math-brief"><p><b>What you know</b>${esc(p.known)}</p><p><b>What to find</b>${esc(p.find)}</p></div><h2>${p.prompt}</h2><p id="math-question">${p.question}</p><div id="math-model">${mathsModel(p.model)}</div><form id="math-form"><label for="math-answer">Your answer</label><div class="answer-row"><input id="math-answer" inputmode="decimal" autocomplete="off" maxlength="20" aria-describedby="math-question" placeholder="Enter a number"><button class="primary">Check my thinking →</button></div></form><div class="choices">${button('math-hint', 'Show one small step', 'quiet')}${button('math-language', 'Explain the words', 'quiet')}</div><p id="feedback" class="feedback" role="status"></p><div id="math-next"></div></section></div></section>`,
     'Number Kingdom / Crystal engines',
   );
   const tools = document.createElement('div');
@@ -489,8 +547,9 @@ function checkMath() {
     if (!state.maths.includes(p.id)) state.maths.push(p.id);
     xp('engine:' + p.id, state.settings.missionXP);
     if (!hinted) xp('independent:' + p.id, state.settings.independentXP);
-  } else if (!hinted) xp('extension:' + p.id, state.settings.applicationXP);
+  } else if (!hinted) {xp('extension:' + p.id, state.settings.applicationXP);xp('independent:' + p.id,state.settings.independentXP);}
   mathSolved = true;
+  finishDaily(profile(),'maths');
   save();
   feedback(
     `${mathExtension ? 'You applied the method in a new problem. ' : ''}${mathExtension ? p.extensionExplain : p.explain}`,
@@ -542,7 +601,7 @@ function parent() {
       })
       .join(
         '',
-      )}</tbody></table></div><p class="muted">Review intervals: 1, 3, 7, 14, 30 days. Secure requires at least four independent days including three later reviews. A clue or correction records supported practice. This is learning evidence, not a formal assessment. Word checks assess meaning in context; independent spoken or written vocabulary use has not been assessed.</p></details><details><summary>Original narration and audio import</summary><p>The supplied narrator is bundled (160.4 seconds). A replacement is local only and must be the same recording. Source cue positions remain provisional until checked by listening.</p><label>Choose original WAV or MP3<input type="file" id="audio-file" accept="audio/wav,audio/mpeg"></label><p id="upload-feedback" role="status"></p><div class="choices">${words.map((w) => button('hear-' + w.id, esc(w.label), 'quiet')).join('')}</div></details><details><summary>Import a lesson and preview</summary><p>Version 1 supports local text and vocabulary quests with one decision challenge. Images, multi-scene audio authoring and online publishing are future work.</p>${button('template', 'Download lesson template', 'secondary')}<label>Lesson JSON (up to 100 KB)<input id="lesson-file" type="file" accept=".json,application/json"></label><div id="lesson-preview"></div></details><details><summary>Adventure reward settings</summary><p>XP is separate from mastery. Repeat completions cannot farm XP. Reward Credits and device control are disabled.</p><form id="xp-form"><label>Mission XP<input id="mission-xp" type="number" min="0" max="50" value="${state.settings.missionXP}"></label><label>Independent understanding XP<input id="independent-xp" type="number" min="0" max="20" value="${state.settings.independentXP}"></label><label>New application XP<input id="application-xp" type="number" min="0" max="20" value="${state.settings.applicationXP}"></label><button class="secondary">Save XP rules</button></form></details><details><summary>Local learning activity</summary><p>${profile().events?.filter((e: any) => e.at >= Date.now() - 7 * 86400000).length || 0} learning events in the last 7 days. ${(profile().events || []).filter((e: any) => e.type === 'skill_attempted' && e.correct).length} correct recorded skill attempts.</p><p class="muted">At most 500 events per explorer are kept. Active-time estimates count only short intervals between learning actions while visible; they are not surveillance or proof of attention.</p><div class="event-list">${(
+      )}</tbody></table></div><p class="muted">Review intervals: 1, 3, 7, 14, 30 days. Secure requires at least four independent days including three later reviews. A clue or correction records supported practice. This is learning evidence, not a formal assessment. Word checks assess meaning in context; independent spoken or written vocabulary use has not been assessed.</p></details><details><summary>Original narration and audio import</summary><p>The supplied narrator is bundled (160.4 seconds). A replacement is local only and must be the same recording. Source cue positions remain provisional until checked by listening.</p><label>Choose original WAV or MP3<input type="file" id="audio-file" accept="audio/wav,audio/mpeg"></label><p id="upload-feedback" role="status"></p><div class="choices">${words.map((w) => button('hear-' + w.id, esc(w.label), 'quiet')).join('')}</div></details><details><summary>Import a lesson and preview</summary><p>Version 1 supports local text and vocabulary quests with one decision challenge. Images, multi-scene audio authoring and online publishing are future work.</p>${button('template', 'Download lesson template', 'secondary')}<label>Lesson JSON (up to 100 KB)<input id="lesson-file" type="file" accept=".json,application/json"></label><div id="lesson-preview"></div></details><details><summary>Adventure reward settings</summary><p>XP is separate from mastery. Repeat completions cannot farm XP. Reward Credits and device control are disabled.</p><form id="xp-form"><label>Mission XP<input id="mission-xp" type="number" min="0" max="50" value="${state.settings.missionXP}"></label><label>Independent understanding XP<input id="independent-xp" type="number" min="0" max="20" value="${state.settings.independentXP}"></label><label>New application XP<input id="application-xp" type="number" min="0" max="20" value="${state.settings.applicationXP}"></label><button class="secondary">Save XP rules</button></form></details><details><summary>Local learning activity</summary><p>Try a 10–15 minute session with Adam. Record whether wording, the visual model or unfamiliar content was the obstacle. The app cannot infer his experience from clicks alone.</p><p>${profile().events?.filter((e: any) => e.at >= Date.now() - 7 * 86400000).length || 0} learning events in the last 7 days. ${(profile().events || []).filter((e: any) => e.type === 'skill_attempted' && e.correct).length} correct recorded skill attempts.</p><p class="muted">At most 500 events per explorer are kept. Active-time estimates count only short intervals between learning actions while visible; they are not surveillance or proof of attention.</p><div class="event-list">${(
       profile().events || []
     )
       .slice(-15)
@@ -668,6 +727,7 @@ function cloudHooks() {
     closeDialog,
     shell,
     map,
+    restoreLocalProgress: () => {state=load(storage);},
     refreshCloudProgress: async () => {
       const cloud = await import('./cloud');
       await cloud.restoreCloudSession(cloudHooks());
@@ -684,6 +744,21 @@ function cloudHooks() {
   };
 }
 async function action(id: string, b: HTMLButtonElement) {
+  if(id==='daily'){closeDialog();daily();return;}
+  if(id==='daily-words'||id==='notebook-review'){notebookReview();return;}
+  if(id.startsWith('notebook-one:')){const term=id.slice(13),w=notebookWords(window.localStorage,state.activeProfile).find((x:any)=>x.term===term);if(w){notebookQueue=[w];notebookIndex=0;drawNotebookReview();}return;}
+  if(id==='daily-maths'){const index=recommendedMathIndex();if(index===0)startBeacon();else maths(index);return;}
+  if(id==='beacon'){startBeacon();return;}
+  if(id==='daily-discovery'){closeDialog();openDialog('Choose a discovery',`<p>Continue a familiar adventure or explore an approved mission. Completing learning, rather than opening it, marks this step.</p>${button('mission','The missing trophy','secondary')}${button('science','The dissolving mystery','secondary')}${cloudMissions.map(m=>button('cloud-mission:'+esc(m.id),esc(m.title),'secondary')).join('')}`);return;}
+  if(id==='beacon-next'){beaconStage++;beaconAssisted=false;drawBeacon();return;}
+  if(id==='beacon-hint'){beaconAssisted=true;const e=beaconExample(beaconStage,beaconDay);document.querySelector('#beacon-feedback')!.textContent=`The ${e.column} column counts groups of ${e.unit.toLocaleString('en-GB')}. Multiply ${e.digit} by ${e.unit.toLocaleString('en-GB')}.`;return;}
+  if(id==='notebook-next'){notebookIndex++;drawNotebookReview();return;}
+  if(id==='notebook-review-hear'){if(!window.speechSynthesis){toast('Device speech is unavailable. Use the written example.');return;}const u=new SpeechSynthesisUtterance(notebookQueue[notebookIndex].term);u.lang='en-GB';u.voice=speechSynthesis.getVoices().find(v=>v.lang==='en-GB')||null;speechSynthesis.cancel();speechSynthesis.speak(u);return;}
+  if(id==='notebook-help'){notebookAssisted=true;const w=notebookQueue[notebookIndex];document.querySelector('#notebook-feedback')!.textContent=`${w.term}: ${w.definition} ${w.example}`;return;}
+  if(id.startsWith('notebook-choice:')){checkNotebook(id.slice(16)===notebookQueue[notebookIndex].term);return;}
+  if(id.startsWith('notebook-part:')){const n=Number(id.slice(14));if(!notebookChosen.includes(n)){notebookChosen.push(n);b.disabled=true;document.querySelector('#notebook-sentence')!.textContent=notebookChosen.map(i=>notebookQueue[notebookIndex].example.trim().split(/\s+/).reverse()[i]).join(' ');}return;}
+  if(id==='notebook-undo'){const n=notebookChosen.pop();document.querySelector<HTMLButtonElement>(`[data-action="notebook-part:${n}"]`)?.removeAttribute('disabled');document.querySelector('#notebook-sentence')!.textContent=notebookChosen.map(i=>notebookQueue[notebookIndex].example.trim().split(/\s+/).reverse()[i]).join(' ');return;}
+  if(id==='notebook-check'){checkNotebook(notebookChosen.map(i=>notebookQueue[notebookIndex].example.trim().split(/\s+/).reverse()[i]).join(' ')===notebookQueue[notebookIndex].example.trim());return;}
   if(id.startsWith('notebook:')){collectedWord(id.slice(9));return;}
   if(id.startsWith('notebook-hear:')){
     if(!window.speechSynthesis){toast('Device speech is unavailable. The meaning is written above.');return;}
@@ -762,7 +837,7 @@ async function action(id: string, b: HTMLButtonElement) {
     return;
   }
   if (id === 'map') {
-    map();
+    state=load(storage);map();
     return;
   }
   if (id === 'words') {
@@ -1056,6 +1131,9 @@ async function action(id: string, b: HTMLButtonElement) {
   if (id === 'extension' && mathSolved) {
     mathExtension = true;
     hinted = false;
+    document.querySelector('.puzzle-panel h2')!.textContent='Try independently';
+    document.querySelectorAll<HTMLElement>('.math-brief,.math-worked,.puzzle-panel .visual-tool').forEach(n=>n.hidden=true);
+    document.querySelector('.puzzle-panel .eyebrow')!.textContent='APPLY THE METHOD · A NEW SITUATION';
     document.querySelector('#math-question')!.textContent =
       currentPuzzles()[mathIndex].extension;
     document.querySelector('#math-model')!.innerHTML =
