@@ -23,6 +23,7 @@ for (const file of ['main', 'content', 'audio']) {
     .replace(/import ["']\.\/style\.css["'];/, '')
     .replace(/from ["']\.\/content["']/, "from './content.mjs'")
     .replace(/from ["']\.\/audio["']/, "from './audio.mjs'")
+    .replace(/from ["']\.\/visual-tools\.js["']/, "from '../src/visual-tools.js'")
     .replace(/from ["']\.\/progress\.js["']/, "from '../src/progress.js'");
   await writeFile(
     new URL(file + '.mjs', temp),

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Window} from 'happy-dom';
+import {mountVisualTool} from '../src/visual-tools.js';
+import {mountParticleView} from '../../science/particle-view.js';
+function host(){const w=new Window();return [w,w.document.createElement('div')]}
+test('fraction pieces update exact fraction and percentage without rewards',()=>{const [w,h]=host();let support=0;mountVisualTool(h,'percent',()=>support++);h.querySelector('[data-piece="0"]').click();assert.match(h.querySelector('output').textContent,/1\/4.*25%/);const select=h.querySelector('select');select.value='10';select.dispatchEvent(new w.Event('change'));h.querySelector('[data-piece="0"]').click();assert.match(h.querySelector('output').textContent,/1\/10.*10%/);assert.ok(support>0)});
+test('garden changes distinguish perimeter from area',()=>{const [w,h]=host();mountVisualTool(h,'rectangle');const input=h.querySelector('input');input.value='10';input.dispatchEvent(new w.Event('input'));assert.match(h.querySelector('.garden-result').textContent,/30 m.*50 m²/);assert.equal(h.querySelectorAll('.visual-garden i').length,50)});
+test('coordinate map preserves ordered pair and gives useful feedback',()=>{const [,h]=host();mountVisualTool(h,'coordinates');h.querySelector('[data-x="5"][data-y="3"]').click();assert.match(h.querySelector('output').textContent,/5 across, then 3 up/);h.querySelector('[data-x="3"][data-y="5"]').click();assert.match(h.querySelector('output').textContent,/Treasure found/)});
+test('particle illustration conserves material and distinguishes dissolving from settling',()=>{const [,h]=host();mountParticleView(h);const count=h.querySelectorAll('circle').length;h.querySelector('[data-stir]').click();assert.match(h.querySelector('[role=status]').textContent,/still present/);assert.equal(h.querySelectorAll('circle').length,count);h.querySelector('[data-material="sand"]').click();h.querySelector('[data-stir]').click();assert.match(h.querySelector('[role=status]').textContent,/not dissolved/);assert.equal(h.querySelectorAll('circle').length,count)});

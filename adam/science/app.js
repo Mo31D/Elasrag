@@ -1,3 +1,4 @@
+import {mountParticleView} from './particle-view.js';
 import {readScience,writeScience,creditLearning,SCIENCE_AWARD} from '../shared/learning-progress.js';
 const app=document.querySelector('#app');
 const STORE='ala-science-lab-v1';
@@ -7,7 +8,7 @@ const active=getProfile();
 let state=readScience(localStorage,active.id);
 const save=()=>{try{writeScience(localStorage,active.id,state)}catch{}};
 const button=(action,label,cls='')=>`<button data-action="${action}" class="${cls}">${label}</button>`;
-function frame(body){app.innerHTML=`<div class="lab"><header><a href="/adam/">← Adventure Atlas</a><div><b>DISCOVERY LABORATORY</b><small>ADAM LEARNING ADVENTURES</small></div><span>SCIENCE · MATERIALS</span></header>${body}<footer><span>Predict · Observe · Explain</span><a href="/adam/">Return to the Atlas</a></footer><div id="toast" role="status"></div></div>`;document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(b.dataset.action));}
+function frame(body){app.innerHTML=`<div class="lab"><header><a href="/adam/">← Adventure Atlas</a><div><b>DISCOVERY LABORATORY</b><small>ADAM LEARNING ADVENTURES</small></div><span>SCIENCE · MATERIALS</span></header>${body}<footer><span>Predict · Observe · Explain</span><a href="/adam/">Return to the Atlas</a></footer><div id="toast" role="status"></div></div>`;document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>act(b.dataset.action));if(state.step===2||state.step===4){const host=document.createElement('section');host.className='particle-host';document.querySelector('footer').before(host);mountParticleView(host);}}
 function beaker(kind,tested=false){return `<div class="beaker ${tested?kind:''}" aria-label="Beaker of water ${tested?'after adding '+kind:''}"><i></i><span>${tested?(kind==='sugar'?'clear mixture':'sand at the bottom'):'water'}</span></div>`}
 function render(){
  const name=safe(active.data.displayName||'Adam'),step=state.step;
