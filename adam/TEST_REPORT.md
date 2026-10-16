@@ -88,3 +88,18 @@ Milestone merged through PR #20. GitHub Pages run 38722037804 completed successf
 - The Adam project was verified as Free plan, Frankfurt, healthy and initially empty. Three migrations, 15 RLS-protected app tables, a private bucket and `learning-api` were deployed. The security advisor reports no findings; foreign-key index findings were corrected.
 - The server-side Gemini secret was exercised without exposing it. `gemini-flash-lite-latest` returned a real sample, **The Mystery Pen**, which passed JSON Schema and canonical semantic checks (187 prompt tokens and 160 output tokens). It still requires adult review and is not attached to a family record.
 - The production function was restored after each one-time provider test and rejects an anonymous status request with HTTP 401. Authenticated parent invocation, real progress sync, Storage uploads and device/browser QA remain pending because no parent Auth identity has been created. No project outside Adam was changed.
+
+## Hands-on visual tools — 16 October 2026
+
+Built on updated main `076b4d1`, preserving the owner's responsive Atlas,
+shared learning rewards, profile-specific science state and automated builds.
+
+- Added optional fraction/percentage lantern pieces inside fraction missions.
+- Added adjustable rectangle tiles with distinct perimeter and area calculations.
+- Added a touch/keyboard coordinate treasure grid with ordered-pair feedback.
+- Added a qualitative sugar/sand particle view in Discovery Laboratory.
+- Opening or manipulating a maths model marks the response as supported practice.
+  Exploration does not award XP or count as independent mastery.
+- Particle numbers are conserved; the model explicitly labels scale and colours
+  as symbolic and does not imply sand becomes soluble through stirring.
+- 54 automated tests passed; strict TypeScript and `/adam/` production build passed.

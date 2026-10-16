@@ -1,4 +1,5 @@
 import './style.css';
+import { mountVisualTool } from './visual-tools.js';
 import {learningSummary,readScience,resetLocalLearning} from '../public/shared/learning-progress.js';
 import roadmap from '../public/data/curriculum-roadmap.json';
 import {
@@ -424,6 +425,9 @@ function drawMaths() {
       )}</div>${button('maths', '← All maths paths', 'quiet')}</div><section class="puzzle-panel"><span class="eyebrow">${esc(p.strand)} · YEAR ${p.reviewYear} FOUNDATION</span><div class="math-brief"><p><b>What you know</b>${esc(p.known)}</p><p><b>What to find</b>${esc(p.find)}</p></div><h2>${p.prompt}</h2><p id="math-question">${p.question}</p><div id="math-model">${mathsModel(p.model)}</div><form id="math-form"><label for="math-answer">Your answer</label><div class="answer-row"><input id="math-answer" inputmode="decimal" autocomplete="off" maxlength="20" aria-describedby="math-question" placeholder="Enter a number"><button class="primary">Check my thinking →</button></div></form><div class="choices">${button('math-hint', 'Show one small step', 'quiet')}${button('math-language', 'Explain the words', 'quiet')}</div><p id="feedback" class="feedback" role="status"></p><div id="math-next"></div></section></div></section>`,
     'Number Kingdom / Crystal engines',
   );
+  const tools = document.createElement('div');
+  document.querySelector('#math-model')!.after(tools);
+  mountVisualTool(tools, p.model, () => { hinted = true; });
   document.querySelector('#math-form')!.addEventListener('submit', (e) => {
     e.preventDefault();
     checkMath();
