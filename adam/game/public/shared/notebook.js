@@ -1,5 +1,6 @@
 // Device-only vocabulary discoveries and read-only cloud XP snapshots.
 // Cloud totals replace snapshots; they are never minted again as local awards.
+export const SCIENCE_VOCABULARY=Object.freeze([{term:'soluble',definition:'Able to dissolve in a liquid.',example:'Sugar is soluble in water.'},{term:'insoluble',definition:'Unable to dissolve in a particular liquid.',example:'Sand is insoluble in water.'},{term:'conclusion',definition:'An explanation supported by the evidence you collected.',example:'Our conclusion used both observations.'}]);
 export const NOTEBOOK_KEY='ala-notebook-v1';
 export const CLOUD_SNAPSHOT_KEY='ala-cloud-snapshot-v1';
 const read=(s,k)=>{try{return JSON.parse(s.getItem(k))||{}}catch{return {}}};

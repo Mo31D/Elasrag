@@ -83,7 +83,7 @@ export function playCloudLesson(
                     .join(
                       '',
                     )}</div><div class="choices">${btn('check', 'Seal the report', 'primary')}${btn('hint', 'Show a model', 'quiet')}</div><p class="muted">Optional: say your idea, think it, or explain it to someone. There is no timer or speech score.</p>`
-                : `<div class="award-title">✦ EXPEDITION COMPLETE</div><p>You connected a word with its meaning and rebuilt an explanation.</p><p>${totalXP} cloud XP awarded in this session. Review evidence is saved for ${esc(student.nickname)}.</p>${btn('return', 'Return to the atlas', 'primary')}`
+                : `<div class="award-title">✦ EXPEDITION COMPLETE</div><p>You connected a word with its meaning and rebuilt an explanation.</p><p>${totalXP} Adventure XP saved securely in this session. Review evidence is saved for ${esc(student.nickname)}.</p>${btn('return', 'Return to the atlas', 'primary')}`
       }<p id="cloud-message" class="feedback" role="status"></p><p class="muted">${stage === 'complete' ? '' : 'Progress is recorded only when your answer reaches the server. '}This generated mission currently uses text and illustrations. Episode 1 keeps its original narration.</p></div></section>`,
       'Family expedition',
       student.nickname,
