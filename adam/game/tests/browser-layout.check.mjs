@@ -84,7 +84,7 @@ for(const size of sizes){
   await page.getByRole('button',{name:'Record observations →',exact:true}).click();
   await page.getByRole('button',{name:'Sugar is soluble in water; sand is insoluble.',exact:true}).click();
   await page.getByRole('link',{name:'Return to the Adventure Atlas',exact:true}).click();
-  assert.match(await page.locator('.xp').innerText(),/10.*XP/);
+  assert.match(await page.locator('.xp').innerText(),/\b10\s+XP\b/);
   await page.getByRole('button',{name:'Detective notebook',exact:true}).click();
   await page.locator('#notebook-search').fill('soluble');
   assert.ok(await page.locator('[data-notebook-term="soluble"]').isVisible());
