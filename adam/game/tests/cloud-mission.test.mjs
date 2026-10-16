@@ -83,6 +83,7 @@ test('next skill routing prefers due reviews then new words, skipping practice n
 test('approved data-driven mission hides the model during recall and submits vocabulary and sentence evidence', async () => {
   const win = new Window({ url: 'https://example.test' });
   globalThis.document = win.document;
+  globalThis.window = win;
   const calls = [];
   let name;
   const hooks = {

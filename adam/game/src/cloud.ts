@@ -1,3 +1,4 @@
+import {syncCloudSnapshot,CLOUD_SNAPSHOT_KEY} from '../public/shared/notebook.js';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import config from './cloud-config.json';
 import { playCloudLesson } from './cloud-mission';
@@ -25,6 +26,7 @@ export interface Hooks {
   shell: (body: string, place: string, name?: string) => void;
   map: () => void;
   setView: (view: string) => void;
+  refreshCloudProgress?: () => Promise<void>;
   setCloudMissions?: (missions: CloudMissionSummary[]) => void;
 }
 const esc = (value: unknown) =>
@@ -204,6 +206,7 @@ async function refresh() {
   renderDesk();
 }
 function syncMissions() {
+  syncCloudSnapshot(window.localStorage,dashboard);
   hooks.setCloudMissions?.(
     (dashboard?.lessons || [])
       .filter((lesson: any) => lesson.status === 'approved')
@@ -291,6 +294,7 @@ function bindDesk() {
             if (action === 'refresh') await refresh();
             else if (action === 'signout') {
               await gateway!.signOut();
+      window.localStorage.removeItem(CLOUD_SNAPSHOT_KEY);
               hooks.setCloudMissions?.([]);
               login();
             } else if (action === 'reset-learning') {

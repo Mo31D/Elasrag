@@ -103,3 +103,20 @@ shared learning rewards, profile-specific science state and automated builds.
 - Particle numbers are conserved; the model explicitly labels scale and colours
   as symbolic and does not imply sand becomes soluble through stirring.
 - 54 automated tests passed; strict TypeScript and `/adam/` production build passed.
+
+## Cohesive layout, XP and notebook — 16 October 2026
+
+- Quest illustrations now occupy a separate card grid column, with consistent,
+  shorter mobile cards. Maths path buttons flow in seven-column rows above the
+  question. The mobile trophy scene and science controls are more compact.
+- The notebook collects discovered vocabulary from approved generated missions,
+  Word Kingdom and Science, deduplicates terms and preserves source labels.
+  Existing practised Word Kingdom words are recovered when the notebook opens.
+- Adventure XP displays local awards plus the last authenticated cloud ledger
+  snapshot. Snapshots replace totals rather than re-awarding points. Only a
+  unique matching name and school year links a cloud explorer to a device profile;
+  ambiguous matches contribute no cloud XP. No cloud permissions or schema changed.
+- Word Stars remain distinct. Corrected retries stay supported practice and do not
+  earn independent stars. Existing award IDs and XP remain intact.
+- New notebook and cloud snapshot data are included in local exports and reset.
+- 59 automated tests pass; strict TypeScript and /adam/ production build pass.

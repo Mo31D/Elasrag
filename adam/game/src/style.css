@@ -1745,11 +1745,12 @@ input[type='file'] {
     margin: 20px 0 15px;
   }
   .engine-selector {
-    position: absolute;
-    right: 5px;
-    top: 25px;
-    flex-direction: column;
-    gap: 12px;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
   }
   .engine-node {
     width: 36px;
@@ -2211,3 +2212,24 @@ select {
 /* Fourteen path buttons must never determine the width of the question column. */
 .engine-art{min-width:0}.engine-selector{flex-wrap:wrap;justify-content:center;max-width:100%;gap:10px}
 @media(min-width:651px){.engine-layout{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}}
+
+/* Cohesive quest cards: illustrations have their own grid area, never the text area. */
+.game.map .adventure-card,.game.map .adventure-card.words-card{display:grid;grid-template-columns:minmax(0,1fr) 64px;grid-template-rows:auto auto auto 1fr auto auto;column-gap:14px;row-gap:9px;min-height:260px;padding:22px;border-radius:19px}
+.game.map .adventure-card .adventure-card-top{grid-column:1/-1;grid-row:1;margin:0 0 8px;min-height:26px}
+.game.map .adventure-card .region{grid-column:1;grid-row:2;max-width:100%;font-size:9px;letter-spacing:.12em;line-height:1.5;margin:0}
+.game.map .adventure-card>strong{grid-column:1;grid-row:3;max-width:100%;font-size:clamp(24px,2.1vw,31px);line-height:1.12;margin:0;text-wrap:pretty}
+.game.map .adventure-feature-art{position:static;grid-column:2;grid-row:2/4;width:64px;height:72px;max-width:100%;opacity:1;align-self:center;filter:none}
+.game.map .adventure-card .adventure-emblem{position:static;grid-column:2;grid-row:2/4;width:58px;height:58px;opacity:1;align-self:center;justify-self:center;margin:0}
+.game.map .maths-card .adventure-emblem,.game.map .science-card .adventure-emblem{display:none}
+.game.map .adventure-card .adventure-copy,.game.map .maths-card .adventure-copy,.game.map .science-card .adventure-copy{grid-column:1/-1;grid-row:4;min-height:0;max-width:100%;margin:3px 0 0;align-self:start;font-size:13px;line-height:1.6}
+.game.map .adventure-card .adventure-action{grid-column:1/-1;grid-row:5;min-height:36px;margin:0;padding:4px 0 0;align-self:end;align-items:center;font-size:13px}
+.game.map .adventure-card>small{grid-column:1/-1;grid-row:6;margin:0;line-height:1.5;font-size:9px;letter-spacing:.06em}
+.game.map .adventure-card-top .adventure-state{white-space:normal;text-align:right;letter-spacing:.08em;font-size:8px}
+.game.map .adventure-deck{align-items:stretch}
+.game-footer{padding-bottom:max(14px,env(safe-area-inset-bottom));gap:10px;flex-wrap:wrap}
+.notebook-toolbar{display:flex;justify-content:space-between;gap:14px;align-items:center;margin:18px 0}.notebook-toolbar>span{font-size:12px;font-weight:700;white-space:nowrap}.notebook-toolbar input{width:220px;min-width:0}
+.notebook-dialog{max-width:900px}.notebook-dialog>h2{font-size:clamp(28px,5vw,38px);line-height:1.15;margin:12px 0}.notebook-intro{font-size:13px!important;line-height:1.6}.notebook-collection{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.notebook-collection .journal-word{display:flex;flex-direction:column;align-items:flex-start;text-align:left;min-width:0;padding:15px;gap:9px;border-radius:13px;min-height:160px}.notebook-mark{width:34px;height:34px;display:grid;place-items:center}.notebook-mark svg{width:30px!important;height:30px!important}.notebook-collection .journal-word strong{font-size:clamp(19px,3vw,25px);overflow-wrap:anywhere;line-height:1.2}.notebook-collection .journal-word small{font-size:10px;color:#57746b;line-height:1.45;overflow-wrap:anywhere}.notebook-state{font-size:10px;color:#397064;margin-top:auto;font-weight:800}.journal-word[hidden]{display:none!important}.notebook-evidence{margin-top:20px}.notebook-evidence summary{padding:14px 0;cursor:pointer;font-weight:700}.xp-rules{padding:12px 0}.xp-rules p{font-size:13px;line-height:1.6;margin:10px 0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:680px){.game.map .atlas{gap:22px;padding:24px 5%}.game.map .map-heading h1{font-size:34px}.game.map .map-heading>p:last-child{font-size:13px;max-width:30ch}.game.map .adventure-deck{gap:13px}.game.map .adventure-card,.game.map .adventure-card.words-card{min-height:224px;padding:18px;column-gap:10px;row-gap:8px;grid-template-columns:minmax(0,1fr) 56px}.game.map .adventure-card>strong{font-size:26px}.game.map .adventure-feature-art{width:56px;height:64px}.game.map .adventure-card .adventure-emblem{width:50px;height:50px}.game.map .adventure-card .adventure-emblem svg{width:27px;height:27px}.game.map .adventure-card .adventure-copy{font-size:12px}.game.map .map-bottom{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:10px}.game.map .map-chip{font-size:11px;padding:10px;justify-content:center}.game-footer>span{font-size:8px;letter-spacing:.08em}.notebook-collection{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.notebook-collection .journal-word{min-height:145px;padding:12px}.notebook-toolbar{flex-wrap:wrap}.notebook-toolbar input{width:100%}.notebook-dialog{padding:20px}.notebook-dialog .close{width:42px;height:42px}}
+@media(max-width:650px){.engine-world{min-height:0}.engine-heading{padding:24px 5% 0}.engine-heading h1{font-size:clamp(27px,7vw,34px)}.engine-heading>p{font-size:12px;line-height:1.6}.engine-layout{display:grid;grid-template-columns:minmax(0,1fr);padding:16px 5% 28px;gap:14px}.engine-art{min-height:0;display:flex;flex-direction:row;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center}.engine-art .giant-crystal,.engine-art .engine-pedestal{display:none}.engine-art>span{margin:0;font-size:9px}.engine-art>.quiet{padding:8px;font-size:11px}.engine-selector{position:static;order:3;flex:0 0 100%;width:100%;flex-direction:row;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:7px}.engine-node{width:100%;height:38px;min-width:0;border-radius:10px;font-size:12px}.engine-layout .puzzle-panel{margin:0;padding:20px 16px}.puzzle-panel h2{font-size:24px}.math-brief{gap:8px;margin-top:12px}.math-brief p{padding:12px}.game-footer .quiet{font-size:10px;padding:8px}.mission-stage{min-height:0}.mission-stage .mission-bottom{padding-bottom:max(20px,env(safe-area-inset-bottom))}}
+@media(max-width:650px){.mission-stage{padding:540px 4% 20px}.mission-stage .scene-art,.mission-stage .scene-vignette{height:560px}.quest-banner{top:14px;padding:14px 16px}.quest-banner h1{font-size:25px;line-height:1.15}.quest-banner p{font-size:11px}.inventory-rail{top:170px;right:4%;padding:7px;gap:6px}.evidence-slot{width:30px;height:32px}.evidence-slot svg{width:18px;height:18px}.hotspot.empty{top:360px;left:24%}.hotspot.poster{top:264px;left:5%}.hotspot.glitter{top:340px;left:6%}.hotspot.cloth{top:415px;left:48%}.hotspot.window{top:265px;left:55%}.hotspot.trophy{top:360px;left:48%}.spot{min-height:44px;font-size:11px}.audio-bar{margin-bottom:12px}.dialogue{padding:17px}.dialogue .primary{min-height:46px}.hud-actions .icon-btn{width:40px;height:40px}}

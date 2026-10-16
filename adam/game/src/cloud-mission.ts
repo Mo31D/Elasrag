@@ -1,3 +1,4 @@
+import {collectCloudWord} from '../public/shared/notebook.js';
 import type { CloudContent, Hooks } from './cloud';
 const esc = (value: unknown) =>
   String(value ?? '').replace(
@@ -64,6 +65,7 @@ export function playCloudLesson(
   hooks.closeDialog();
   hooks.setView('cloud');
   const show = () => {
+    if(stage==='word') collectCloudWord(window.localStorage,student,row);
     hooks.shell(
       `<section class="cloud-expedition"><img class="cloud-world-art" src="/adam/assets/atlas.svg" alt="The adventure islands"><div class="cloud-story-card"><p class="eyebrow">${esc(student.nickname)} / ENGLISH EXPEDITION</p><h1>${esc(l.title)}</h1>${
         stage === 'story'
@@ -96,6 +98,7 @@ export function playCloudLesson(
             activeMs = Math.min(30000, activeMs + now - lastAction);
           lastAction = now;
           if (action === 'return') {
+            try {await hooks.refreshCloudProgress?.();} catch {}
             hooks.map();
             return;
           }
@@ -156,6 +159,7 @@ export function playCloudLesson(
               });
               activeMs = 0;
               totalXP += result.xp || 0;
+              if(result.correct) {collectCloudWord(window.localStorage,student,row,true);try {await hooks.refreshCloudProgress?.();} catch {}}
               if (!result.correct) {
                 assisted = true;
                 message(

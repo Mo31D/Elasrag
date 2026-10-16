@@ -1,6 +1,8 @@
 import './style.css';
+import {discoverWord,notebookWords} from '../public/shared/notebook.js';
+import {WORDS} from '../../words/words-data.js';
 import { mountVisualTool } from './visual-tools.js';
-import {learningSummary,readScience,resetLocalLearning} from '../public/shared/learning-progress.js';
+import {learningSummary,readScience,resetLocalLearning,LOCAL_RESET_KEYS} from '../public/shared/learning-progress.js';
 import roadmap from '../public/data/curriculum-roadmap.json';
 import {
   words,
@@ -176,7 +178,8 @@ function shell(
   place: string,
   displayName = profile().displayName || 'Adam',
 ) {
-  app.innerHTML = `<main class="game ${view}" ${!state.settings.motion ? 'data-still="true"' : ''}><header class="hud"><button class="identity" data-action="map" aria-label="Adventure map"><span class="crest">A</span><span>${esc(displayName)}<span class="sub">LEARNING ADVENTURES</span></span></button><div class="place"><span class="dot"></span>${place}</div><div class="hud-actions"><span class="xp">${icon('star')} <b>${profile().xp}</b> XP <small>LV ${1 + Math.floor(profile().xp / 25)}</small></span>${button('journal', icon('book'), 'icon-btn')}${button('settings', icon('gear'), 'icon-btn')}</div></header>${content}<footer class="game-footer"><span>THE ADVENTURE ATLAS <i>✦</i> CHAPTER ONE</span><div>${button('parent', 'Parent desk', 'quiet')}${button('fullscreen', '⛶ Full screen', 'quiet')}</div></footer></main><dialog id="overlay" aria-labelledby="dialog-title"></dialog>`;
+  const totalXP=learningSummary(window.localStorage,state.activeProfile).xp;
+  app.innerHTML = `<main class="game ${view}" ${!state.settings.motion ? 'data-still="true"' : ''}><header class="hud"><button class="identity" data-action="map" aria-label="Adventure map"><span class="crest">A</span><span>${esc(displayName)}<span class="sub">LEARNING ADVENTURES</span></span></button><div class="place"><span class="dot"></span>${place}</div><div class="hud-actions"><span class="xp">${icon('star')} <b>${totalXP}</b> XP <small>LV ${1 + Math.floor(totalXP / 25)}</small></span>${button('journal', icon('book'), 'icon-btn')}${button('settings', icon('gear'), 'icon-btn')}</div></header>${content}<footer class="game-footer"><span>THE ADVENTURE ATLAS <i>✦</i> CHAPTER ONE</span><div>${button('parent', 'Parent desk', 'quiet')}${button('fullscreen', '⛶ Full screen', 'quiet')}</div></footer></main><dialog id="overlay" aria-labelledby="dialog-title"></dialog>`;
   document
     .querySelector('[data-action="journal"]')
     ?.setAttribute('aria-label', 'Detective notebook');
@@ -317,6 +320,7 @@ function openDialog(title: string, body: string) {
   stop();
   returnFocus = document.activeElement as HTMLElement;
   const d = document.querySelector<HTMLDialogElement>('#overlay')!;
+  d.classList.remove('notebook-dialog');
   d.innerHTML = `<div class="modal-head"><span class="eyebrow">ADVENTURE ACADEMY</span>${button('close', '✕', 'close')}</div><h2 id="dialog-title">${title}</h2>${body}`;
   d.showModal();
   d.querySelector<HTMLButtonElement>('.close')?.focus();
@@ -329,17 +333,40 @@ function closeDialog() {
 }
 function wordCard(id: string) {
   const w = words.find((w) => w.id === id)!;
+  discoverWord(window.localStorage,state.activeProfile,{term:w.label,definition:w.definition,example:w.example},'The missing trophy');
   openDialog(
     w.label,
     `<div class="word-illustration">${icon(w.icon)}</div><p class="definition">${w.definition}</p><blockquote>${w.example}</blockquote><div class="choices">${button('hear-' + id, `${icon('sound')} Hear in the original story`, 'secondary')}${button('slow-' + id, 'Gentler replay', 'quiet')}</div><p class="muted">You may try saying it, think it, or simply listen. Take as long as you like.</p>${button('close', 'Back to the investigation →', 'primary')}`,
   );
 }
 function journal() {
-  openDialog(
-    'Detective notebook',
-    `<p>Evidence and words collected on this device.</p><div class="journal-grid">${words.map((w) => `<button class="journal-word" data-action="word-${w.id}">${icon(w.icon)}<strong>${w.label}</strong><small>${status(profile().skills[w.id])}</small></button>`).join('')}</div><h3>Evidence pouch</h3><p>${state.clues.length ? state.clues.map((k: string) => ({ empty: 'Empty trophy stand', glitter: 'Gold glitter trail', cloth: 'Polishing cloth', trophy: 'Trophy safe with Mr Clark' })[k as string] || k).join(' · ') : 'Your first clue is waiting at the school.'}</p><p class="muted">Mastery needs independent answers and later recall. Listening alone earns no mastery.</p>`,
-  );
+  // Recover previously practised collection words without treating catalogue views as learning.
+  try {
+    const saved=JSON.parse(storage.getItem('ala-word-kingdom-v1')||'{}').learners?.[state.activeProfile]?.words||{};
+    for(const w of WORDS) if(Object.values(saved[w.id]||{}).some((v:any)=>v.days>0||v.due>0))
+      discoverWord(window.localStorage,state.activeProfile,{...w,practised:true},'Word Kingdom');
+  } catch {}
+  const entries=notebookWords(window.localStorage,state.activeProfile) as any[];
+  const combined=new Map<string,any>(words.map(w=>[w.label,{term:w.label,definition:w.definition,example:w.example,sources:['The missing trophy'],original:w.id}]));
+  for(const entry of entries) combined.set(entry.term.toLowerCase(),{...combined.get(entry.term.toLowerCase()),...entry});
+  const list=[...combined.values()].sort((a,b)=>a.term.localeCompare(b.term,'en-GB'));
+  openDialog('Detective notebook',
+    `<p class="notebook-intro">Your discoveries across stories, Word Kingdom and science. Finding a word starts its journey; mastery comes from later independent practice.</p><div class="notebook-toolbar"><span>${list.length} collected words</span><label class="sr-only" for="notebook-search">Find a collected word</label><input id="notebook-search" type="search" placeholder="Find a word…" autocomplete="off"></div><div class="journal-grid notebook-collection">${list.map(w=>`<button class="journal-word" data-notebook-term="${esc(w.term.toLowerCase())}" data-action="notebook:${esc(w.term.toLowerCase())}"><span class="notebook-mark">${icon(w.original?words.find(x=>x.id===w.original)!.icon:'book')}</span><strong>${esc(w.term)}</strong><small>${esc(w.sources.join(' · '))}</small><span class="notebook-state">${w.original?status(profile().skills[w.original]):w.practised?'Practising':'Discovered'}</span></button>`).join('')}</div><p id="notebook-empty" hidden>No collected words match that search.</p><details class="notebook-evidence"><summary>Evidence pouch · ${state.clues.length} clues</summary><p>${state.clues.length?state.clues.map((k:string)=>({empty:'Empty trophy stand',glitter:'Gold glitter trail',cloth:'Polishing cloth',trophy:'Trophy safe with Mr Clark'}[k]||k)).join(' · '):'Your first clue is waiting at the school.'}</p></details>`);
+  document.querySelector('#overlay')?.classList.add('notebook-dialog');
+  document.querySelector('#notebook-search')?.addEventListener('input',(event)=>{
+    const query=(event.target as HTMLInputElement).value.trim().toLowerCase();let count=0;
+    document.querySelectorAll<HTMLElement>('[data-notebook-term]').forEach(card=>{card.hidden=!card.textContent?.toLowerCase().includes(query);if(!card.hidden)count++;});
+    document.querySelector<HTMLElement>('#notebook-empty')!.hidden=count>0;
+  });
 }
+function collectedWord(term:string) {
+  const stored=notebookWords(window.localStorage,state.activeProfile).find((w:any)=>w.term.toLowerCase()===term) as any;
+  const original=words.find(w=>w.label===term);
+  if(original)return wordCard(original.id);
+  if(!stored)return;
+  openDialog(esc(stored.term),`<p class="definition">${esc(stored.definition)}</p><blockquote>${esc(stored.example)}</blockquote><p class="muted">Found in ${esc(stored.sources.join(' · '))}. Discovery is separate from mastery.</p><div class="choices">${button('notebook-hear:'+esc(term),'♫ Hear word','secondary')}${button('journal','← All collected words','quiet')}</div>`);
+}
+
 function renderRecall(review: boolean) {
   const list = recallWords;
   const w = list[reviewIndex];
@@ -367,6 +394,7 @@ function maths(index = -1) {
   stop();
   view = 'maths';
   if (index < 0) return mathsHub();
+  if (!currentPuzzles()[index] || !mathsUnlocked(currentPuzzles()[index])) {toast('Try the foundation paths first.');return mathsHub();}
   mathIndex = index;
   mathSolved = false;
   mathAttempts = 0;
@@ -412,7 +440,7 @@ function mathsModel(model: string) {
 function drawMaths() {
   const p = currentPuzzles()[mathIndex];
   shell(
-    `<section class="engine-world"><div class="engine-mountains"></div><div class="engine-heading"><span class="eyebrow">NUMBER KINGDOM / PATH ${mathIndex + 1} OF ${currentPuzzles().length}</span><h1>${p.name}</h1><p>No timer. Read one part at a time, use the picture, and ask for a smaller step whenever you need it.</p></div><div class="engine-layout"><div class="engine-art"><div class="giant-crystal ${state.maths.includes(p.id) ? 'restored' : ''}">${icon('crystal')}</div><div class="engine-pedestal"></div><span>${state.maths.includes(p.id) ? 'PATH SECURE' : 'READY WHEN YOU ARE'}</span><div class="engine-selector">${currentPuzzles()
+    `<section class="engine-world"><div class="engine-mountains"></div><div class="engine-heading"><span class="eyebrow">NUMBER KINGDOM / PATH ${mathIndex + 1} OF ${currentPuzzles().length}</span><h1>${p.name}</h1><p>No timer. Read one part at a time, use the picture, and ask for a smaller step whenever you need it.</p></div><div class="engine-layout"><div class="engine-art"><div class="giant-crystal ${state.maths.includes(p.id) ? 'restored' : ''}">${icon('crystal')}</div><div class="engine-pedestal"></div><span>${state.maths.includes(p.id) ? 'PATH COMPLETED' : 'READY WHEN YOU ARE'}</span><div class="engine-selector">${currentPuzzles()
       .map((q, i) =>
         button(
           'engine-' + i,
@@ -499,7 +527,7 @@ function parentInsights() {
 function parent() {
   openDialog(
     'Parent desk',
-    `${button('profiles', 'Choose or add an explorer', 'secondary')}${button('cloud', 'Secure family learning', 'secondary')}<p class="muted">Progress and imported files stay in this browser on this device. Clearing browser data removes them. This screen has no authentication; anyone using this device can open it. Export private backups when needed.</p><div class="parent-stats"><div><b>${profile().xp}</b><span>Adventure XP · all missions</span></div><div><b>${currentPuzzles().filter((p) => state.maths.includes(p.id)).length}/${currentPuzzles().length}</b><span>Maths paths</span></div><div><b>${learningSummary(window.localStorage,state.activeProfile).scienceCompleted ? 'Complete':'Not yet'}</b><span>Science laboratory</span></div><div><b>${learningSummary(window.localStorage,state.activeProfile).wordStars}</b><span>Word Stars · separate</span></div><div><b>Disabled</b><span>Reward Credits</span></div></div>${button('curriculum', 'Explore Year 1–6 planning map', 'secondary')}<details open><summary>Skill evidence and review schedule</summary><div class="skill-table"><table><thead><tr><th>Skill</th><th>State</th><th>Independent days</th><th>Next review</th></tr></thead><tbody>${[
+    `${button('profiles', 'Choose or add an explorer', 'secondary')}${button('cloud', 'Secure family learning', 'secondary')}<p class="muted">Progress and imported files stay in this browser on this device. Clearing browser data removes them. This screen has no authentication; anyone using this device can open it. Export private backups when needed.</p><div class="parent-stats"><div><b>${learningSummary(window.localStorage,state.activeProfile).xp}</b><span>Adventure XP · all missions</span></div><div><b>${currentPuzzles().filter((p) => state.maths.includes(p.id)).length}/${currentPuzzles().length}</b><span>Maths paths</span></div><div><b>${learningSummary(window.localStorage,state.activeProfile).scienceCompleted ? 'Complete':'Not yet'}</b><span>Science laboratory</span></div><div><b>${learningSummary(window.localStorage,state.activeProfile).wordStars}</b><span>Word Stars · separate</span></div><div><b>Disabled</b><span>Reward Credits</span></div></div>${button('curriculum', 'Explore Year 1–6 planning map', 'secondary')}<details open><summary>Skill evidence and review schedule</summary><div class="skill-table"><table><thead><tr><th>Skill</th><th>State</th><th>Independent days</th><th>Next review</th></tr></thead><tbody>${[
       ...skills.filter((s) => s.subject === 'English'),
       ...currentPuzzles().map((p) => ({
         id: p.id,
@@ -525,6 +553,8 @@ function parent() {
         '',
       )}</div></details><details><summary>Private backup and device data</summary>${button('export-progress', 'Export ALL local progress', 'secondary')}${button('delete-progress', 'Reset all device learning progress', 'quiet')}<p class="muted">This resets every explorer’s on-device Adventure XP, maths answers, science experiment and Word Kingdom stars/reviews. It does not delete Supabase cloud progress, approved lessons or external backups. Cloud deletion requires separate parent-authorised management.</p><p>No child account, microphone access, advertising, trackers or cloud synchronisation. Speaking practice is optional and is never scored. Support for a stammer itself should be guided by a qualified speech and language therapist.</p></details>`,
   );
+  const totals=learningSummary(window.localStorage,state.activeProfile);
+  document.querySelector('#overlay .parent-stats')?.insertAdjacentHTML('afterend',`<details class="xp-rules"><summary>How the adventure points connect</summary><p>One Adventure XP total across local stories, maths, Word Kingdom, science and linked approved cloud missions.</p><p><b>${totals.localXP} local XP + ${totals.cloudXP} confirmed cloud XP = ${totals.xp} Adventure XP</b></p><p>Stories and maths use the rules below. Completing all independent Word Kingdom activities for a word gives 3 Adventure XP once; the science investigation gives 10 once. Word Stars track word practice separately. Opening cards and replaying audio earn no XP. Reward Credits remain disabled.</p><p class="muted">Cloud totals use the last authenticated server snapshot, matched only to one explorer with the same name and school year. Reconnecting refreshes the snapshot without granting points again.</p></details>`);
   const insight = parentInsights();
   const stats = document.querySelector('#overlay .parent-stats');
   stats?.insertAdjacentHTML('afterend', `<section class="parent-insight"><span class="eyebrow">THIS WEEK · LOCAL LEARNING SIGNALS</span><h3>Recommended next step</h3><p>${esc(insight.recommendation)}</p><div><span><b>${insight.recent}</b> skill attempts</span><span><b>${insight.supported}</b> needed a clue or retry</span><span><b>${insight.due.length}</b> maths reviews due</span></div><h4>Record a quick observation</h4><p class="muted">Choose only what you observed. No free-text answer or voice recording is stored.</p><div class="choices">${button('observe-independent','Understood independently','quiet')}${button('observe-language','Question wording needed explaining','quiet')}${button('observe-model','A visual maths model helped','quiet')}${button('observe-unfamiliar','Topic was unfamiliar','quiet')}</div><p id="observation-status" role="status"></p></section>`);
@@ -610,6 +640,7 @@ async function lessonImport(e: Event) {
 function customQuest() {
   if (!custom) return;
   view = 'custom';
+  custom.vocabulary.forEach(w=>discoverWord(window.localStorage,state.activeProfile,w,custom!.title));
   shell(
     `<section class="custom-world"><span class="eyebrow">LOCAL IMPORTED QUEST · YEAR ${custom.year}</span><h1>${esc(custom.title)}</h1><p>${esc(custom.objective)}</p><div class="puzzle-panel"><div class="custom-vocab">${custom.vocabulary.map((w) => `<p><b>${esc(w.word)}</b> ${esc(w.definition)}</p>`).join('')}</div><h2>${esc(custom.question)}</h2><div class="choices">${custom.choices.map((c, i) => button('custom-answer-' + i, esc(c))).join('')}</div>${button('custom-hint', 'Hint', 'quiet')}<p id="feedback" role="status"></p>${button('map', 'Return to atlas', 'secondary')}</div></section>`,
     'Imported expedition',
@@ -635,6 +666,10 @@ function cloudHooks() {
     closeDialog,
     shell,
     map,
+    refreshCloudProgress: async () => {
+      const cloud = await import('./cloud');
+      await cloud.restoreCloudSession(cloudHooks());
+    },
     setView: (v: string) => {
       view = v;
     },
@@ -647,6 +682,13 @@ function cloudHooks() {
   };
 }
 async function action(id: string, b: HTMLButtonElement) {
+  if(id.startsWith('notebook:')){collectedWord(id.slice(9));return;}
+  if(id.startsWith('notebook-hear:')){
+    if(!window.speechSynthesis){toast('Device speech is unavailable. The meaning is written above.');return;}
+    window.speechSynthesis.cancel();const voice=window.speechSynthesis.getVoices().find(v=>v.lang.toLowerCase()==='en-gb');
+    const utterance=new SpeechSynthesisUtterance(id.slice(14));utterance.lang='en-GB';utterance.voice=voice||null;utterance.rate=.9;window.speechSynthesis.speak(utterance);return;
+  }
+
   if (id.startsWith('cloud-mission:')) {
     try {
       const cloud = await import('./cloud');
@@ -1024,7 +1066,7 @@ async function action(id: string, b: HTMLButtonElement) {
     return;
   }
   if (id === 'export-progress') {
-    const local=Object.fromEntries(['ala-adventure-v1','ala-word-kingdom-v1','ala-science-lab-v1','ala-approved-missions-v1','ala-lesson'].map(key=>[key,storage.getItem(key)]));
+    const local=Object.fromEntries(LOCAL_RESET_KEYS.map(key=>[key,storage.getItem(key)]));
     download('private-all-learning-progress.json',{exportedAt:new Date().toISOString(),scope:'this device only',local});
     return;
   }
@@ -1174,6 +1216,7 @@ function profilesDialog() {
   });
 }
 
+if(!storage.getItem(KEY))save();
 map();
 void import('./cloud')
   .then(async (cloud) => {
