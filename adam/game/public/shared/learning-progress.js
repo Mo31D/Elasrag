@@ -1,10 +1,11 @@
+import {cloudXP,NOTEBOOK_KEY,CLOUD_SNAPSHOT_KEY} from './notebook.js';
 // Single same-origin local learning ledger shared by Atlas, Word Kingdom and Science.
 // Remote Supabase records are deliberately not touched by this browser-only module.
 export const ADVENTURE_KEY = 'ala-adventure-v1';
 export const WORDS_KEY = 'ala-word-kingdom-v1';
 export const SCIENCE_KEY = 'ala-science-lab-v1';
 export const LOCAL_RESET_KEYS = Object.freeze([
-  ADVENTURE_KEY, WORDS_KEY, SCIENCE_KEY, 'ala-approved-missions-v1', 'ala-lesson'
+  ADVENTURE_KEY, WORDS_KEY, SCIENCE_KEY, NOTEBOOK_KEY, CLOUD_SNAPSHOT_KEY, 'ala-approved-missions-v1', 'ala-lesson'
 ]);
 export const SCIENCE_AWARD = 'science:dissolving-001';
 const validProfile = id => typeof id === 'string' && /^[a-z0-9-]{3,60}$/.test(id);
@@ -57,7 +58,9 @@ export function learningSummary(storage, profileId) {
   const word=parse(storage.getItem(WORDS_KEY))?.learners?.[profileId];
   const math=Array.isArray(p?.run?.maths)?p.run.maths:(profileId===s?.activeProfile?s?.maths:[]);
   return {
-    xp:Number.isFinite(p?.xp)?p.xp:0,
+    xp:(Number.isFinite(p?.xp)?p.xp:0)+cloudXP(storage,profileId),
+    localXP:Number.isFinite(p?.xp)?p.xp:0,
+    cloudXP:cloudXP(storage,profileId),
     mathsSolved:math.length,
     scienceCompleted:readScience(storage,profileId).step>=4,
     wordStars:Number.isFinite(word?.stars)?word.stars:0,

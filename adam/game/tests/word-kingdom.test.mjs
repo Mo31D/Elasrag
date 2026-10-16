@@ -89,6 +89,12 @@ test('spelling can be checked without voice scoring and first correct earns word
   document.querySelector('#wk-spell').value=selectedWord;
   document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   assert.ok(document.querySelector('.wk-feedback.good'));
+  assert.ok(!document.querySelector('.wk-feedback').textContent.includes('+2 word stars'));
+  assert.equal(JSON.parse(localStorage.getItem('ala-word-kingdom-v1')).learners.explorer.stars,0);
+  document.querySelector('[data-task="meaning"]').click();
+  document.querySelector('[data-task="spelling"]').click();
+  document.querySelector('#wk-spell').value=selectedWord;
+  document.querySelector('#wk-spell-form').dispatchEvent(new window.Event('submit',{bubbles:true,cancelable:true}));
   assert.ok(document.querySelector('.wk-feedback').textContent.includes('+2 word stars'));
   document.querySelector('#wk-again').click();
   document.querySelector('#wk-spell').value=selectedWord;

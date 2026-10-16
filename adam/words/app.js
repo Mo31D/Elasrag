@@ -1,3 +1,5 @@
+import {discoverWord} from '../shared/notebook.js';
+import {learningSummary} from '../shared/learning-progress.js';
 import {creditLearning} from '../shared/learning-progress.js';
 import {WORDS,STAGES,ART_BIBLE} from './words-data.js';
 import {artSvg} from './art.js';
@@ -97,7 +99,7 @@ function selectedWords(){
  .sort((a,b)=>curriculumYear(a)-curriculumYear(b)||a.term.localeCompare(b.term,'en-GB'));
 }
 function layout(body){
- root.innerHTML='<div class="kingdom"><header class="wk-top"><a href="/adam/" class="wk-back" aria-label="Return to Adventure Atlas">← <span>Adventure Atlas</span></a><div class="wk-brand"><span class="wk-crest">W</span><span><b>WORD KINGDOM</b><small>ADAM LEARNING ADVENTURES</small></span></div><div class="wk-stats"><span class="wk-star" aria-label="Word stars">✦ '+progress().stars+' <small>word stars</small></span><button class="wk-icon" id="wk-access" aria-label="Display options" title="Display options">⚙</button></div></header>'+body+'<footer class="wk-footer"><span>Learn • Listen • Spell • Build • Recall</span><a href="/adam/">Return to Adventure Atlas ↗</a><a href="/adam/words/studio/" aria-label="Parent-only audio review studio">Parent audio studio ↗</a><span>Word Kingdom v2</span></footer><div class="wk-toast" id="status" aria-live="polite"></div></div>';
+ root.innerHTML='<div class="kingdom"><header class="wk-top"><a href="/adam/" class="wk-back" aria-label="Return to Adventure Atlas">← <span>Adventure Atlas</span></a><div class="wk-brand"><span class="wk-crest">W</span><span><b>WORD KINGDOM</b><small>ADAM LEARNING ADVENTURES</small></span></div><div class="wk-stats"><span class="wk-adventure-xp">★ '+learningSummary(localStorage,profileId).xp+' <small>XP</small></span><span class="wk-star" aria-label="Word stars">✦ '+progress().stars+' <small>word stars</small></span><button class="wk-icon" id="wk-access" aria-label="Display options" title="Display options">⚙</button></div></header>'+body+'<footer class="wk-footer"><span>Learn • Listen • Spell • Build • Recall</span><a href="/adam/">Return to Adventure Atlas ↗</a><a href="/adam/words/studio/" aria-label="Parent-only audio review studio">Parent audio studio ↗</a><span>Word Kingdom v2</span></footer><div class="wk-toast" id="status" aria-live="polite"></div></div>';
  document.querySelector('#wk-access')?.addEventListener('click',()=>{motion=!motion;document.documentElement.classList.toggle('wk-still',!motion);status(motion?'Gentle motion on':'Motion reduced');});
 }
 function shell(){
@@ -193,6 +195,7 @@ function openWord(id){
  if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}
  const w=WORDS.find(x=>x.id===id&&canStudy(x));
  if(!w)return;
+ discoverWord(localStorage,profileId,w,'Word Kingdom');
  returnScrollY=window.scrollY||0;returnFocus=document.activeElement;selected=w;view='lesson';task='learn';flipped=false;question=null;assisted=false;letterHint=false;feedback=null;
  try{window.history.pushState({word:id},'',window.location.pathname+window.location.search+'#word='+encodeURIComponent(id));}catch{}
  render();document.querySelector('#wk-flip')?.focus();
@@ -200,7 +203,7 @@ function openWord(id){
 function closeWord(fromHistory=false){if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}if(window.speechSynthesis)window.speechSynthesis.cancel();view='library';selected=null;question=null;render();window.scrollTo(0,returnScrollY);if(returnFocus?.isConnected)returnFocus.focus();if(!fromHistory&&window.location.hash.startsWith('#word='))try{window.history.back()}catch{}}
 function back(){closeWord(false)}
 function setTask(next){if(activeGoogleAudio){activeGoogleAudio.pause();activeGoogleAudio=null;}task=next;flipped=true;question=null;feedback=null;assisted=false;letterHint=false;render();document.querySelector('.wk-practice-dock')?.scrollIntoView({block:'start'});}
-function siblingWord(offset){const list=selectedWords(),index=list.findIndex(w=>w.id===selected.id),next=list[index+offset];if(!next)return;selected=next;task='learn';flipped=false;question=null;assisted=false;letterHint=false;try{window.history.replaceState({word:next.id},'',window.location.pathname+window.location.search+'#word='+encodeURIComponent(next.id));}catch{}render();document.querySelector('#wk-flip')?.focus();}
+function siblingWord(offset){const list=selectedWords(),index=list.findIndex(w=>w.id===selected.id),next=list[index+offset];if(!next)return;selected=next;discoverWord(localStorage,profileId,next,'Word Kingdom');task='learn';flipped=false;question=null;assisted=false;letterHint=false;try{window.history.replaceState({word:next.id},'',window.location.pathname+window.location.search+'#word='+encodeURIComponent(next.id));}catch{}render();document.querySelector('#wk-flip')?.focus();}
 function bindLesson(){
  document.querySelector('#wk-to-map')?.addEventListener('click',back);
  document.querySelector('#wk-close-backdrop')?.addEventListener('click',back);
@@ -243,16 +246,20 @@ function onAnswer(id){
 }
 function answerResult(correct,facet){
  if(busy)return;busy=true;
+ if(!correct)assisted=true;
  const newlyEarned=correct&&!assisted&&!record(selected,facet).awarded;
  storeAnswer(selected,facet,correct,assisted);
+ if(correct)discoverWord(localStorage,profileId,{...selected,practised:true},'Word Kingdom');
  // Word Stars remain a separate collectible. A word earns Adventure XP only
  // after all relevant independent skill challenges have succeeded.
  const ready = correct && !assisted && facetsFor(selected).every(skill=>record(selected,skill).awarded);
  const shared = ready ? creditLearning(localStorage,{
    profileId,awardId:'word:mastered:'+selected.id,amount:3,subject:'words'
  }) : {awarded:false};
+ const xpNode=document.querySelector('.wk-adventure-xp');if(xpNode)xpNode.innerHTML='★ '+learningSummary(localStorage,profileId).xp+' <small>XP</small>';
+ const starNode=document.querySelector('.wk-star');if(starNode)starNode.innerHTML='✦ '+progress().stars+' <small>word stars</small>';
  const msg=correct
-  ? (newlyEarned?'Good thinking! +2 word stars. ': 'Good thinking. ')+(shared.awarded?'+3 Adventure XP for mastering this word! ':'')+(assisted?'The clue helped; try again later without it.':'You can revisit this word anytime.')
+  ? (newlyEarned?'Good thinking! +2 word stars. ': 'Good thinking. ')+(shared.awarded?'+3 Adventure XP for completing this word’s activities! ':'')+(assisted?'The clue helped; try again later without it.':'You can revisit this word anytime.')
   : 'Not quite. Take another look and try again. A mistake is a useful clue.';
  const box=document.querySelector('#wk-feedback');
  if(box){box.className='wk-feedback '+(correct?'good':'retry');box.textContent=msg;}

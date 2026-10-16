@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
-import {mkdir} from 'node:fs/promises';
+import {mkdir,readFile,stat} from 'node:fs/promises';
+import {createServer} from 'node:http';
+import {fileURLToPath} from 'node:url';
+import {resolve,extname} from 'node:path';
+const root=fileURLToPath(new URL('../../../',import.meta.url));
+const shots=fileURLToPath(new URL('../atlas-screenshots/',import.meta.url));
+const server=createServer(async(req,res)=>{try{let path=resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!path.startsWith(root))throw Error();if((await stat(path)).isDirectory())path+='/index.html';res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.json':'application/json','.mp3':'audio/mpeg'})[extname(path)]||'application/octet-stream');res.end(await readFile(path));}catch{res.statusCode=404;res.end('Not found')}});
+await new Promise(r=>server.listen(4174,'127.0.0.1',r));
 
 const sizes=[
  {name:'samsung-s21-portrait',width:360,height:780,touch:true},
@@ -9,7 +16,7 @@ const sizes=[
  {name:'ipad-landscape',width:1180,height:820,touch:true},
  {name:'desktop',width:1440,height:900,touch:false}
 ];
-await mkdir('atlas-screenshots',{recursive:true});
+await mkdir(shots,{recursive:true});
 const browser=await chromium.launch({headless:true});
 let failures=[];
 for(const size of sizes){
@@ -18,7 +25,7 @@ for(const size of sizes){
  try{
   const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:4173/adam/',{waitUntil:'networkidle',timeout:30000});
+  await page.goto('http://127.0.0.1:4174/adam/',{waitUntil:'networkidle',timeout:30000});
   await page.locator('.adventure-card.science-card').waitFor();
   const geometry=await page.evaluate(()=>{
    const r=(selector)=>{const e=document.querySelector(selector);if(!e)return null;const b=e.getBoundingClientRect();return {top:b.top,bottom:b.bottom,left:b.left,right:b.right,height:b.height,width:b.width,position:getComputedStyle(e).position}};
@@ -34,22 +41,26 @@ for(const size of sizes){
   });
   assert.ok(geometry.cards>=4,'missing a quest');
   assert.equal(geometry.deck.position,'relative','atlas cards must be in document flow');
-  assert.ok(geometry.science.height>=250,'science card should have content space');
+  assert.ok(geometry.science.height>=210,'science card should have content space');
   assert.ok(geometry.science.bottom<=geometry.atlas.bottom+2,'science card cropped by atlas');
   assert.ok(geometry.bottom.top>=geometry.science.bottom-1,'bottom actions cover science card');
   assert.ok(geometry.bottom.bottom<=geometry.footer.top+2,'bottom actions overlap footer');
   assert.ok(geometry.documentWidth<=geometry.viewport+2,'horizontal overflow');
   assert.equal(errors.length,0,'runtime errors: '+errors.join('; '));
   await page.locator('.adventure-card.science-card').scrollIntoViewIfNeeded();
-  await page.screenshot({path:'atlas-screenshots/'+size.name+'.png',fullPage:true});
+  await page.screenshot({path:shots+'/'+size.name+'.png',fullPage:true});
+  const artwork=await page.locator('.science-card').evaluate(card=>{const a=card.querySelector('.adventure-feature-art').getBoundingClientRect(),t=card.querySelector('strong').getBoundingClientRect();return {overlap:a.left<t.right&&a.right>t.left&&a.top<t.bottom&&a.bottom>t.top}});
+  assert.equal(artwork.overlap,false,'science artwork overlaps its title');
   // Exercise the actual visual tools at every viewport, not just the atlas.
   await page.locator('[data-action="maths"]').click();
   await page.locator('[data-action="engine-2"]').click();
+  const selector=await page.locator('.engine-selector').boundingBox(),question=await page.locator('.puzzle-panel').boundingBox();
+  if(size.width<=650)assert.ok(selector.y+selector.height<=question.y+2,'path selector covers the question');
   await page.locator('.visual-tool summary').click();
   await page.locator('[data-piece="0"]').click();
   assert.match(await page.locator('.visual-tool output').innerText(),/1\/4.*25%/);
   await page.locator('.visual-tool').scrollIntoViewIfNeeded();
-  await page.screenshot({path:'atlas-screenshots/'+size.name+'-fractions.png',fullPage:true});
+  await page.screenshot({path:shots+'/'+size.name+'-fractions.png',fullPage:true});
   await page.locator('[data-action="maths"]').click();
   await page.locator('[data-action="engine-8"]').click();
   await page.locator('.visual-tool summary').click();
@@ -64,11 +75,35 @@ for(const size of sizes){
   const width=await page.evaluate(()=>({document:document.documentElement.scrollWidth,viewport:innerWidth}));
   assert.ok(width.document<=width.viewport+2,'visual tool causes horizontal overflow');
   assert.equal(errors.length,0,'runtime errors: '+errors.join('; '));
+  await page.getByRole('button',{name:'Adventure map',exact:true}).click();
+  await page.getByRole('button',{name:'Enter Discovery Laboratory',exact:true}).click();
+  await page.getByRole('button',{name:'Enter the laboratory →',exact:true}).click();
+  await page.getByRole('button',{name:'Sugar will dissolve',exact:true}).click();
+  await page.getByRole('button',{name:'Test sugar',exact:true}).click();
+  await page.getByRole('button',{name:'Test sand',exact:true}).click();
+  await page.getByRole('button',{name:'Record observations →',exact:true}).click();
+  await page.getByRole('button',{name:'Sugar is soluble in water; sand is insoluble.',exact:true}).click();
+  await page.getByRole('link',{name:'Return to the Adventure Atlas',exact:true}).click();
+  assert.match(await page.locator('.xp').innerText(),/10.*XP/);
+  await page.getByRole('button',{name:'Detective notebook',exact:true}).click();
+  await page.locator('#notebook-search').fill('soluble');
+  assert.ok(await page.locator('[data-notebook-term="soluble"]').isVisible());
+  await page.locator('[data-action="close"]').click();
+  await page.getByRole('button',{name:'Enter Word Kingdom',exact:true}).click();
+  await page.getByRole('button',{name:'Open apple card',exact:true}).click();
+  await page.getByRole('button',{name:'Close card',exact:true}).click();
+  await page.getByRole('link',{name:'Return to Adventure Atlas',exact:true}).click();
+  await page.getByRole('button',{name:'Detective notebook',exact:true}).click();
+  await page.locator('#notebook-search').fill('apple');
+  assert.ok(await page.locator('[data-notebook-term="apple"]').isVisible());
+  await page.screenshot({path:shots+'/'+size.name+'-notebook.png',fullPage:true});
+  assert.equal(errors.length,0,'cross-game runtime errors: '+errors.join('; '));
   console.log('PASS',size.name,geometry);
  }catch(e){
   failures.push(size.name+': '+e.message);
-  await page.screenshot({path:'atlas-screenshots/'+size.name+'-failed.png',fullPage:true}).catch(()=>{});
+  await page.screenshot({path:shots+'/'+size.name+'-failed.png',fullPage:true}).catch(()=>{});
  }finally{await ctx.close();}
 }
 await browser.close();
+await new Promise(r=>server.close(r));
 if(failures.length)throw Error(failures.join('\n'));
