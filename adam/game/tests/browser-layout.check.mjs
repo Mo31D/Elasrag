@@ -42,6 +42,27 @@ for(const size of sizes){
   assert.equal(errors.length,0,'runtime errors: '+errors.join('; '));
   await page.locator('.adventure-card.science-card').scrollIntoViewIfNeeded();
   await page.screenshot({path:'atlas-screenshots/'+size.name+'.png',fullPage:true});
+  // Exercise the actual visual tools at every viewport, not just the atlas.
+  await page.locator('[data-action="maths"]').click();
+  await page.locator('[data-action="engine-2"]').click();
+  await page.locator('.visual-tool summary').click();
+  await page.locator('[data-piece="0"]').click();
+  assert.match(await page.locator('.visual-tool output').innerText(),/1\/4.*25%/);
+  await page.locator('.visual-tool').scrollIntoViewIfNeeded();
+  await page.screenshot({path:'atlas-screenshots/'+size.name+'-fractions.png',fullPage:true});
+  await page.locator('[data-action="maths"]').click();
+  await page.locator('[data-action="engine-8"]').click();
+  await page.locator('.visual-tool summary').click();
+  await page.getByRole('slider',{name:'Garden length'}).fill('10');
+  assert.match(await page.locator('.garden-result').innerText(),/30 m.*50 m²/);
+  await page.locator('[data-action="maths"]').click();
+  await page.locator('[data-action="engine-9"]').click();
+  await page.locator('.visual-tool summary').click();
+  await page.getByRole('button',{name:'Point (3, 5)',exact:true}).click();
+  assert.match(await page.locator('.visual-tool output').innerText(),/Treasure found/);
+  const width=await page.evaluate(()=>({document:document.documentElement.scrollWidth,viewport:innerWidth}));
+  assert.ok(width.document<=width.viewport+2,'visual tool causes horizontal overflow');
+  assert.equal(errors.length,0,'runtime errors: '+errors.join('; '));
   console.log('PASS',size.name,geometry);
  }catch(e){
   failures.push(size.name+': '+e.message);
