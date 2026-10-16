@@ -158,6 +158,9 @@ function recommendedMathIndex() {
 function xp(id: string, amount: number) {
   const n = reward(state, id, amount);
   save();
+  const total=learningSummary(window.localStorage,state.activeProfile).xp;
+  const hud=document.querySelector('.hud-actions .xp');
+  if(hud)hud.innerHTML=`${icon('star')} <b>${total}</b> XP <small>LV ${1+Math.floor(total/25)}</small>`;
   if (n) toast(`+${n} XP · Adventure progress saved`);
 }
 function toast(text: string) {

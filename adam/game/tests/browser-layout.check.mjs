@@ -115,6 +115,7 @@ for(const size of sizes){
    if(stage===2)await page.locator('[data-action="beacon-next"]').click();
   }
   assert.match(await page.locator('#beacon-next').innerText(),/review is scheduled/);
+  assert.match(await page.locator('.xp').innerText(),/\b18\s+XP\b/,'HUD must update immediately after the new lesson awards XP');
   await page.screenshot({path:shots+'/'+size.name+'-beacon.png',fullPage:true});
   await page.locator('[data-action="daily"]').first().click();
   assert.ok(await page.locator('.daily-steps li.done').count()>=1);
