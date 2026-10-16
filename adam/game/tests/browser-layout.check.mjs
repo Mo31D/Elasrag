@@ -79,8 +79,8 @@ for(const size of sizes){
   await page.getByRole('button',{name:'Enter Discovery Laboratory',exact:true}).click();
   await page.getByRole('button',{name:'Enter the laboratory →',exact:true}).click();
   await page.getByRole('button',{name:'Sugar will dissolve',exact:true}).click();
-  await page.getByRole('button',{name:'Test sugar',exact:true}).click();
-  await page.getByRole('button',{name:'Test sand',exact:true}).click();
+  await page.locator('[data-action="test-sugar"]').click();
+  await page.locator('[data-action="test-sand"]').click();
   await page.getByRole('button',{name:'Record observations →',exact:true}).click();
   await page.getByRole('button',{name:'Sugar is soluble in water; sand is insoluble.',exact:true}).click();
   await page.getByRole('link',{name:'Return to the Adventure Atlas',exact:true}).click();
