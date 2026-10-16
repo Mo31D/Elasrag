@@ -10,14 +10,14 @@ export function segment(start: number, end: number, done?: () => void) {
   narration.currentTime = start;
   return narration.play();
 }
-narration.addEventListener('timeupdate', () => {
-  if (stopAt && narration.currentTime >= stopAt) {
-    narration.pause();
-    stopAt = 0;
-    finish?.();
-  }
-});
+function finishSegment(){
+  if(!stopAt)return;
+  narration.pause();stopAt=0;const callback=finish;finish=undefined;callback?.();
+}
+narration.addEventListener('timeupdate',()=>{if(stopAt&&narration.currentTime>=stopAt)finishSegment();});
+narration.addEventListener('ended',finishSegment);
 export function stop() {
+  stopAt=0;finish=undefined;
   narration.pause();
   voice.pause();
 }

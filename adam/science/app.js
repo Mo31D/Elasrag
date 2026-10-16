@@ -26,7 +26,7 @@ function act(id){
  if(id.startsWith('test-')){state.tests[id.slice(5)]=true;save();return render()}
  if(id==='observed'){state.step=3;save();return render()}
  if(id==='answer-wrong'){state.attempts++;save();const f=document.querySelector('#feedback');if(f)f.textContent=state.attempts===1?'Look at what you could still see. Dissolving is different from sinking.':'Use both observations: sugar spread through the water, while sand remained visible.';return}
- if(id==='answer-correct'){state.step=4;state.completed=true;save();creditLearning(localStorage,{profileId:active.id,awardId:SCIENCE_AWARD,amount:10,subject:'science'});return render()}
+ if(id==='answer-correct'){state.step=4;state.completed=true;state.completedAt=Date.now();save();creditLearning(localStorage,{profileId:active.id,awardId:SCIENCE_AWARD,amount:10,subject:'science'});return render()}
  if(id==='restart'){state={step:0,prediction:null,tests:{},attempts:0,completed:false};save();return render()}
 }
 window.addEventListener('pageshow',event=>{if(event.persisted)window.location.reload()});

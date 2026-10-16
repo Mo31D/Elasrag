@@ -184,7 +184,16 @@ test('complete detective and maths journey in simulated DOM, including refresh a
     .querySelector('#math-form')
     .dispatchEvent(new win.Event('submit', { cancelable: true }));
   assert.equal(stored().profiles.explorer.xp, after);
+  const attemptsAfterSolve=stored().profiles.explorer.events.length;
+  document.querySelector('#math-form').dispatchEvent(new win.Event('submit',{cancelable:true}));
+  assert.equal(stored().profiles.explorer.events.length,attemptsAfterSolve);
   click('extension');
+  document.querySelector('#math-answer').value='';
+  document.querySelector('#math-form').dispatchEvent(new win.Event('submit',{cancelable:true}));
+  assert.equal(stored().profiles.explorer.events.length,attemptsAfterSolve);
+  for(let retry=0;retry<2;retry++){document.querySelector('#math-answer').value='0';document.querySelector('#math-form').dispatchEvent(new win.Event('submit',{cancelable:true}));}
+  assert.match(document.querySelector('#feedback').textContent,/8,000/);
+  assert.doesNotMatch(document.querySelector('#feedback').textContent,/700/);
   document.querySelector('#math-answer').value = '8000';
   document
     .querySelector('#math-form')
@@ -263,5 +272,10 @@ test('complete detective and maths journey in simulated DOM, including refresh a
     click('notebook-check');assert.match(document.querySelector('#notebook-feedback').textContent,/practice saved/);click('notebook-next');
   }
   click('daily');click('journal');assert.match(document.querySelector('dialog').textContent,/Start a short recall/);
+  const audio=await import(new URL('audio.mjs',temp));let ended=0;
+  await audio.segment(153.95,160.4,()=>ended++);
+  audio.narration.currentTime=160.39;audio.narration.dispatchEvent(new win.Event('ended'));audio.narration.dispatchEvent(new win.Event('ended'));
+  assert.equal(ended,1,'rounded final cue finishes once when the actual file ends');
+  await audio.segment(0,30,()=>ended++);audio.stop();audio.narration.dispatchEvent(new win.Event('ended'));assert.equal(ended,1,'leaving a scene cancels its completion callback');
   await tick();
 });

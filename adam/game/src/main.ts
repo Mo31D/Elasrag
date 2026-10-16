@@ -1,4 +1,4 @@
-import {dailyPlan,finishDaily,reviewOrder,beaconLesson,beaconExample} from './daily-learning.js';
+import {dailyPlan,finishDaily,reviewOrder,beaconLesson,beaconExample,nextNotebookFacet,completedDiscoveryToday} from './daily-learning.js';
 import './style.css';
 import {discoverWord,notebookWords,SCIENCE_VOCABULARY} from '../public/shared/notebook.js';
 import {WORDS} from '../../words/words-data.js';
@@ -400,7 +400,7 @@ function renderRecall(review: boolean) {
 let beaconStage=0,beaconAssisted=false,beaconIndependent=true,beaconDay=0;
 let notebookQueue:any[]=[],notebookIndex=0,notebookFacet=0,notebookAssisted=false,notebookChosen:number[]=[];
 function daily(){
- state=load(storage);stop();view='daily';const plan=dailyPlan(profile());const lab=readScience(window.localStorage,state.activeProfile);if(plan.scienceAtStart===undefined)plan.scienceAtStart=!!lab.completed;if((!plan.scienceAtStart&&lab.completed)||(profile().events||[]).some((e:any)=>e.type==='mission_completed'&&e.at>=plan.startedAt))finishDaily(profile(),'discovery');save();
+ state=load(storage);stop();view='daily';const plan=dailyPlan(profile());const lab=readScience(window.localStorage,state.activeProfile);if(plan.scienceAtStart===undefined)plan.scienceAtStart=!!lab.completed;if(completedDiscoveryToday(profile(),lab))finishDaily(profile(),'discovery');save();
  const tasks=[['words','Recall trail','Three collected words, one small activity each.'],['maths','Build a maths skill','A worked example, guided practice and a fresh challenge.'],['discovery','Make a discovery','Continue a story, approved mission or science experiment.']];
  shell(`<section class="daily-world"><span class="eyebrow">MY ADVENTURE TODAY · ${esc(plan.day)}</span><h1>A little learning.<br>A real adventure.</h1><p>About 10–15 minutes, at your pace. There is no timer or daily streak.</p><ol class="daily-steps">${tasks.map(([id,title,copy])=>`<li class="${plan.completed.includes(id)?'done':''}"><span class="daily-seal">${plan.completed.includes(id)?'✓':tasks.findIndex(t=>t[0]===id)+1}</span><div><h2>${title}</h2><p>${copy}</p><button class="${plan.completed.includes(id)?'quiet':'primary'}" data-action="daily-${id}">${plan.completed.includes(id)?'Revisit':'Begin'} →</button></div></li>`).join('')}</ol>${plan.completed.length===3?'<p class="daily-finish" role="status">Today’s journey is complete. This is a good place to rest or do something offline.</p>':'<p class="muted">Your completed steps stay saved if you leave. Opening an activity earns no XP.</p>'}${button('map','← Adventure Atlas','quiet')}</section>`,'Today’s adventure');
 }
@@ -436,7 +436,7 @@ function drawNotebookReview(){
  const w=notebookQueue[notebookIndex];
  if(!w){if(notebookQueue.length>=3)finishDaily(profile(),'words');save();openDialog('Recall trail complete',`<p>You practised ${notebookQueue.length} collected words. The next reviews are scheduled.</p>${button('daily','Back to today’s adventure →','primary')}`);return;}
  notebookAssisted=false;notebookChosen=[];
- const counts=profile().notebookFacets||{};const facet=(counts[w.term]||0)%3;notebookFacet=facet;
+ const facet=nextNotebookFacet(w.term,profile().skills,profile().notebookFacets?.[w.term]||0);notebookFacet=facet;
  const chunks=w.example.trim().split(/\s+/);
  // Reverse a known complete sentence; accessible buttons provide a drag-free reconstruction.
  const pieces=[...chunks].reverse();
@@ -525,10 +525,12 @@ function drawMaths() {
   });
 }
 function checkMath() {
+  if(mathSolved)return;
   const p = currentPuzzles()[mathIndex],
     input = document
       .querySelector<HTMLInputElement>('#math-answer')!
       .value.replace(/\s/g, '');
+  if(!input){feedback('Enter an answer when you are ready.');return;}
   const answer = mathExtension ? p.extensionAnswer : p.answer;
   const normal = input.toLowerCase().replace(/,/g, '');
   const accepted = mathExtension ? [answer] : (p.acceptedAnswers || [answer]);
@@ -539,8 +541,8 @@ function checkMath() {
     feedback(mathAttempts === 1
       ? `Let’s make the question clearer. ${p.language}`
       : mathAttempts === 2
-        ? `Here is one smaller step: ${p.hint}`
-        : `Worked model: ${p.explain} You can copy the method, then try the stretch question when ready.`);
+        ? `Here is one smaller step: ${mathExtension?p.extensionExplain:p.hint}`
+        : `Worked model: ${mathExtension?p.extensionExplain:p.explain} Use this method to work through the question at your pace.`);
     evidence(state, p.id, false);
     save();
     return;
@@ -552,6 +554,7 @@ function checkMath() {
     if (!hinted) xp('independent:' + p.id, state.settings.independentXP);
   } else if (!hinted) {xp('extension:' + p.id, state.settings.applicationXP);xp('independent:' + p.id,state.settings.independentXP);}
   mathSolved = true;
+  document.querySelectorAll<HTMLInputElement|HTMLButtonElement>('#math-form input,#math-form button').forEach(node=>node.disabled=true);
   finishDaily(profile(),'maths');
   save();
   feedback(
@@ -1133,6 +1136,9 @@ async function action(id: string, b: HTMLButtonElement) {
   }
   if (id === 'extension' && mathSolved) {
     mathExtension = true;
+    mathSolved = false;
+    mathAttempts = 0;
+    document.querySelectorAll<HTMLInputElement|HTMLButtonElement>('#math-form input,#math-form button').forEach(node=>node.disabled=false);
     hinted = false;
     document.querySelector('.puzzle-panel h2')!.textContent='Try independently';
     document.querySelectorAll<HTMLElement>('.math-brief,.math-worked,.puzzle-panel .visual-tool').forEach(n=>n.hidden=true);
