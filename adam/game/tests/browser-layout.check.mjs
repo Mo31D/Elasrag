@@ -25,8 +25,9 @@ for(const size of sizes){
  try{
   const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto('http://127.0.0.1:4174/adam/',{waitUntil:'networkidle',timeout:30000});
+  await page.goto('http://127.0.0.1:4174/adam/',{waitUntil:'domcontentloaded',timeout:30000});
   await page.locator('.adventure-card.science-card').waitFor();
+  await page.waitForFunction(()=>{const image=document.querySelector('.painted-atlas');return image?.complete&&image.naturalWidth>0;});
   const geometry=await page.evaluate(()=>{
    const rect=e=>{const b=e.getBoundingClientRect();return {top:b.top,bottom:b.bottom,left:b.left,right:b.right,height:b.height,width:b.width}};
    const image=document.querySelector('.painted-atlas');
@@ -179,7 +180,8 @@ for(const size of sizes){
   await page.locator('#math-answer').fill('8000');await page.locator('#math-form button').click();assert.match(await page.locator('.xp').innerText(),/\b18\s+XP\b/);
   assert.equal(errors.length,0,'cross-game runtime errors: '+errors.join('; '));
   await page.route('**/assets/play/world-map-v1.webp',route=>route.abort());
-  await page.goto('http://127.0.0.1:4174/adam/',{waitUntil:'networkidle'});
+  await page.goto('http://127.0.0.1:4174/adam/',{waitUntil:'domcontentloaded'});
+  await page.locator('.world-site').first().waitFor();
   assert.equal(await page.locator('.world-site').count(),4,'unavailable map image must not block navigation');
   await page.getByRole('button',{name:'Open Number Kingdom',exact:true}).click();
   await page.locator('[data-action="engine-0"]').click();
