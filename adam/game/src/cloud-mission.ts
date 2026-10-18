@@ -1,3 +1,4 @@
+import {wordScene} from '../public/shared/play-art.js';
 import {finishDaily} from './daily-learning.js';
 import {matchingProfile} from '../public/shared/notebook.js';
 import {collectCloudWord} from '../public/shared/notebook.js';
@@ -32,6 +33,7 @@ function speakBritish(text: string, slow = false) {
   message(voice?.lang.toLowerCase().startsWith('en-gb') ? 'Playing the British English voice installed on this device.' : 'Playing the best English voice available on this device.');
 }
 export function feelingIllustration(word: string) {
+  const picture=wordScene({term:word},'cloud-context-picture');if(picture)return picture;
   const mouth =
     word === 'relieved' || word === 'confident'
       ? 'M22 40Q32 52 42 40'
@@ -71,7 +73,7 @@ export function playCloudLesson(
     hooks.shell(
       `<section class="cloud-expedition"><img class="cloud-world-art" src="/adam/assets/atlas.svg" alt="The adventure islands"><div class="cloud-story-card"><p class="eyebrow">${esc(student.nickname)} / ENGLISH EXPEDITION</p><h1>${esc(l.title)}</h1>${
         stage === 'story'
-          ? `<img class="cloud-characters" src="/adam/assets/characters.svg" alt="Maya and Leo, the school detectives"><p class="cloud-story">${esc(l.story[scene])}</p>${btn('continue', scene < l.story.length - 1 ? 'Explore the next clue →' : 'Discover the word →', 'primary')}`
+          ? `${feelingIllustration(l.word)}<p class="cloud-story">${esc(l.story[scene])}</p>${btn('continue', scene < l.story.length - 1 ? 'Explore the next clue →' : 'Discover the word →', 'primary')}`
           : stage === 'word'
             ? `<div class="word-illustration">${feelingIllustration(l.word)}</div><h2>${esc(l.word)}</h2><p>${esc(l.definition)}</p><blockquote>${esc(l.example)}</blockquote><div class="choices">${btn('hear-word','♫ Hear word')}${btn('hear-slow','Slower')}${btn('hear-example','Hear example')}</div><p class="muted">Device-generated speech is a fallback, not approved studio audio. No recording or network call is used.</p>${btn('practice', 'Try without the model →', 'primary')}`
             : stage === 'vocabulary'
@@ -86,7 +88,7 @@ export function playCloudLesson(
                       '',
                     )}</div><div class="choices">${btn('check', 'Seal the report', 'primary')}${btn('hint', 'Show a model', 'quiet')}</div><p class="muted">Optional: say your idea, think it, or explain it to someone. There is no timer or speech score.</p>`
                 : `<div class="award-title">✦ EXPEDITION COMPLETE</div><p>You connected a word with its meaning and rebuilt an explanation.</p><p>${totalXP} Adventure XP saved securely in this session. Review evidence is saved for ${esc(student.nickname)}.</p>${btn('return', 'Return to the atlas', 'primary')}`
-      }<p id="cloud-message" class="feedback" role="status"></p><p class="muted">${stage === 'complete' ? '' : 'Progress is recorded only when your answer reaches the server. '}This generated mission currently uses text and illustrations. Episode 1 keeps its original narration.</p></div></section>`,
+      }<p id="cloud-message" class="feedback" role="status"></p><details class="mission-notes"><summary>About this mission</summary><p class="muted">${stage === 'complete' ? '' : 'Progress is recorded only when your answer reaches the server. '}Illustrations show vocabulary contexts. Device speech is optional. Episode 1 keeps its original narrator.</p></details></div></section>`,
       'Family expedition',
       student.nickname,
     );

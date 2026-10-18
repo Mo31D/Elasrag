@@ -4,7 +4,7 @@ export function mountVisualTool(host, model, onExplore = () => {}) {
   const kind = model === 'fraction-amount' || model === 'percent' ? 'fractions'
     : model === 'rectangle' ? 'garden' : model === 'coordinates' ? 'map' : null;
   if (!kind) return;
-  host.innerHTML = `<details class="visual-tool"><summary>✦ Open the hands-on ${kind === 'fractions' ? 'fraction lanterns' : kind === 'garden' ? 'garden builder' : 'treasure grid'}</summary><div class="visual-tool-body"></div></details>`;
+  host.innerHTML = `<details class="visual-tool" open><summary>✦ Open the hands-on ${kind === 'fractions' ? 'fraction lanterns' : kind === 'garden' ? 'garden builder' : 'treasure grid'}</summary><div class="visual-tool-body"></div></details>`;
   const body = host.querySelector('.visual-tool-body');
   const details = host.querySelector('details');
   details.addEventListener('toggle', () => { if (details.open) onExplore(); });

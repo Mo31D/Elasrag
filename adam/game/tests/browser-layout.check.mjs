@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {resolve,extname} from 'node:path';
 const root=fileURLToPath(new URL('../../../',import.meta.url));
 const shots=fileURLToPath(new URL('../atlas-screenshots/',import.meta.url));
-const server=createServer(async(req,res)=>{try{let path=resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!path.startsWith(root))throw Error();if((await stat(path)).isDirectory())path+='/index.html';res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.json':'application/json','.mp3':'audio/mpeg'})[extname(path)]||'application/octet-stream');res.end(await readFile(path));}catch{res.statusCode=404;res.end('Not found')}});
+const server=createServer(async(req,res)=>{try{let path=resolve(root,'.'+decodeURIComponent(new URL(req.url,'http://localhost').pathname));if(!path.startsWith(root))throw Error();if((await stat(path)).isDirectory())path+='/index.html';res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.json':'application/json','.mp3':'audio/mpeg','.webp':'image/webp'})[extname(path)]||'application/octet-stream');res.end(await readFile(path));}catch{res.statusCode=404;res.end('Not found')}});
 await new Promise(r=>server.listen(4174,'127.0.0.1',r));
 
 const sizes=[
@@ -28,48 +28,58 @@ for(const size of sizes){
   await page.goto('http://127.0.0.1:4174/adam/',{waitUntil:'networkidle',timeout:30000});
   await page.locator('.adventure-card.science-card').waitFor();
   const geometry=await page.evaluate(()=>{
-   const r=(selector)=>{const e=document.querySelector(selector);if(!e)return null;const b=e.getBoundingClientRect();return {top:b.top,bottom:b.bottom,left:b.left,right:b.right,height:b.height,width:b.width,position:getComputedStyle(e).position}};
-   return {
-    science:r('.adventure-card.science-card'),
-    maths:r('.adventure-card.maths-card'),
-    atlas:r('.atlas'),deck:r('.adventure-deck'),footer:r('.game-footer'),bottom:r('.map-bottom'),
-    cards:document.querySelectorAll('.adventure-deck .adventure-card').length,
-    viewport:innerWidth,
-    documentWidth:document.documentElement.scrollWidth,
-    scrollHeight:document.documentElement.scrollHeight
-   };
+   const rect=e=>{const b=e.getBoundingClientRect();return {top:b.top,bottom:b.bottom,left:b.left,right:b.right,height:b.height,width:b.width}};
+   const image=document.querySelector('.painted-atlas');
+   return {frame:rect(document.querySelector('.world-map-frame')),sites:[...document.querySelectorAll('.world-site')].map(e=>({...rect(e),label:rect(e.querySelector('.site-label'))})),camp:rect(document.querySelector('.explorer-camp')),footer:rect(document.querySelector('.game-footer')),bottom:rect(document.querySelector('.map-bottom')),viewport:innerWidth,documentWidth:document.documentElement.scrollWidth,imageLoaded:image.complete&&image.naturalWidth>0};
   });
-  assert.ok(geometry.cards>=4,'missing a quest');
-  assert.equal(geometry.deck.position,'relative','atlas cards must be in document flow');
-  assert.ok(geometry.science.height>=210,'science card should have content space');
-  assert.ok(geometry.science.bottom<=geometry.atlas.bottom+2,'science card cropped by atlas');
-  assert.ok(geometry.bottom.top>=geometry.science.bottom-1,'bottom actions cover science card');
-  assert.ok(geometry.bottom.bottom<=geometry.footer.top+2,'bottom actions overlap footer');
+  assert.equal(geometry.sites.length,4,'all four destinations must be available');
+  assert.equal(geometry.imageLoaded,true,'original world artwork must load');
+  for(const site of geometry.sites){
+   assert.ok(site.width>=44&&site.height>=44,'world destination needs a comfortable touch target');
+   assert.ok(site.left>=geometry.frame.left&&site.right<=geometry.frame.right+1&&site.top>=geometry.frame.top&&site.bottom<=geometry.frame.bottom+1,'destination cropped by map');
+   assert.ok(site.label.left>=0&&site.label.right<=geometry.viewport+1,'destination label cropped');
+  }
+  for(let i=0;i<4;i++)for(let j=i+1;j<4;j++){
+   const a=geometry.sites[i],b=geometry.sites[j];
+   assert.equal(a.left<b.right&&a.right>b.left&&a.top<b.bottom&&a.bottom>b.top,false,'destination controls overlap');
+  }
+  assert.ok(geometry.bottom.bottom<=geometry.footer.top+2,'camp actions overlap footer');
+  if(size.width<=700)assert.ok(geometry.camp.top>=geometry.frame.bottom,'camp covers the map');
   assert.ok(geometry.documentWidth<=geometry.viewport+2,'horizontal overflow');
   assert.equal(errors.length,0,'runtime errors: '+errors.join('; '));
-  await page.locator('.adventure-card.science-card').scrollIntoViewIfNeeded();
   await page.screenshot({path:shots+'/'+size.name+'.png',fullPage:true});
-  const artwork=await page.locator('.science-card').evaluate(card=>{const a=card.querySelector('.adventure-feature-art').getBoundingClientRect(),t=card.querySelector('strong').getBoundingClientRect();return {overlap:a.left<t.right&&a.right>t.left&&a.top<t.bottom&&a.bottom>t.top}});
-  assert.equal(artwork.overlap,false,'science artwork overlaps its title');
+  // The artwork is a playable scene. Optional text opens on request, without a new route.
+  await page.locator('[data-action="mission"]').click();
+  await page.locator('.scene-art').waitFor();
+  assert.ok(await page.locator('.scene-art').evaluate(e=>e.complete&&e.naturalWidth>0));
+  const scene=await page.locator('.scene-art').boundingBox(),clue=await page.locator('[data-action="clue-empty"]').boundingBox();
+  assert.ok(clue.x>=0&&clue.x+clue.width<=size.width+1&&clue.y+clue.height<=scene.y+scene.height+1,'clue is outside its scene');
+  await page.locator('[data-action="read"]').click();
+  assert.equal(await page.locator('.story-caption').getAttribute('open'),'');
+  await page.locator('[data-action="clue-empty"]').click();
+  assert.equal(await page.locator('.word-illustration .word-story-art').count(),1,'discovered word has a contextual picture');
+  await page.locator('[data-action="close"]').click();
+  await page.screenshot({path:shots+'/'+size.name+'-detective.png',fullPage:true});
+  await page.getByRole('button',{name:'Adventure map',exact:true}).click();
   // Exercise the actual visual tools at every viewport, not just the atlas.
   await page.locator('[data-action="maths"]').click();
   await page.locator('[data-action="engine-2"]').click();
   const selector=await page.locator('.engine-selector').boundingBox(),question=await page.locator('.puzzle-panel').boundingBox();
   if(size.width<=650)assert.ok(selector.y+selector.height<=question.y+2,'path selector covers the question');
-  await page.locator('.visual-tool summary').click();
+  assert.equal(await page.locator('.visual-tool').getAttribute('open'),'','visual help should be visible without hunting for it');
   await page.locator('[data-piece="0"]').click();
   assert.match(await page.locator('.visual-tool output').innerText(),/1\/4.*25%/);
   await page.locator('.visual-tool').scrollIntoViewIfNeeded();
   await page.screenshot({path:shots+'/'+size.name+'-fractions.png',fullPage:true});
   await page.locator('[data-action="maths"]').click();
   await page.locator('[data-action="engine-8"]').click();
-  await page.locator('.visual-tool summary').click();
+  assert.equal(await page.locator('.visual-tool').getAttribute('open'),'','visual help should be visible without hunting for it');
   await page.getByRole('slider',{name:'Garden length'}).focus();
   await page.getByRole('slider',{name:'Garden length'}).press('End');
   assert.match(await page.locator('.garden-result').innerText(),/30 m.*50 m²/);
   await page.locator('[data-action="maths"]').click();
   await page.locator('[data-action="engine-9"]').click();
-  await page.locator('.visual-tool summary').click();
+  assert.equal(await page.locator('.visual-tool').getAttribute('open'),'','visual help should be visible without hunting for it');
   await page.getByRole('button',{name:'Point (3, 5)',exact:true}).click();
   assert.match(await page.locator('.visual-tool output').innerText(),/Treasure found/);
   const width=await page.evaluate(()=>({document:document.documentElement.scrollWidth,viewport:innerWidth}));
@@ -81,6 +91,9 @@ for(const size of sizes){
   await page.getByRole('button',{name:'Sugar will dissolve',exact:true}).click();
   await page.locator('[data-action="test-sugar"]').click();
   await page.locator('[data-action="test-sand"]').click();
+  await page.locator('[data-stir]').click();
+  assert.match(await page.locator('.particle-host [role="status"]').innerText(),/still present/);
+  await page.screenshot({path:shots+'/'+size.name+'-science.png',fullPage:true});
   await page.getByRole('button',{name:'Record observations →',exact:true}).click();
   await page.getByRole('button',{name:'Sugar is soluble in water; sand is insoluble.',exact:true}).click();
   await page.getByRole('link',{name:'Return to the Adventure Atlas',exact:true}).click();
@@ -91,6 +104,7 @@ for(const size of sizes){
   await page.locator('[data-action="close"]').click();
   await page.getByRole('button',{name:'Enter Word Kingdom',exact:true}).click();
   await page.getByRole('button',{name:'Open apple card',exact:true}).click();
+  await page.screenshot({path:shots+'/'+size.name+'-word-card.png',fullPage:true});
   await page.getByRole('button',{name:'Close card',exact:true}).click();
   await page.getByRole('link',{name:'Return to Adventure Atlas',exact:true}).click();
   await page.getByRole('button',{name:'Detective notebook',exact:true}).click();
@@ -105,13 +119,15 @@ for(const size of sizes){
   await page.locator('#beacon-answer').fill('12');
   await page.locator('#beacon-form button').click();
   assert.match(await page.locator('#beacon-feedback').innerText(),/Try again/);
-  await page.locator('#beacon-answer').fill('400');
+  await page.locator('.value-crate[data-value="400"]').click();
+  assert.equal(await page.locator('#beacon-answer').inputValue(),'400');
+  assert.match(await page.locator('.xp').innerText(),/\b10\s+XP\b/,'selecting a visual answer must not award XP');
   await page.locator('#beacon-form button').click();
   await page.locator('[data-action="beacon-next"]').click();
   for(let stage=2;stage<=3;stage++){
    const heading=await page.locator('.beacon-panel h2').innerText();const [,digit,formatted]=heading.match(/value of (\d) in ([\d,]+)/);
    const digits=formatted.replaceAll(',',''),value=Number(digit)*10**(digits.length-digits.indexOf(digit)-1);
-   await page.locator('#beacon-answer').fill(String(value));await page.locator('#beacon-form button').click();
+   await page.locator('.value-crate[data-value="'+value+'"]').click();await page.locator('#beacon-form button').click();
    if(stage===2)await page.locator('[data-action="beacon-next"]').click();
   }
   assert.match(await page.locator('#beacon-next').innerText(),/review is scheduled/);
@@ -141,6 +157,11 @@ for(const size of sizes){
   assert.match(await page.locator('#feedback').innerText(),/8,000/);assert.doesNotMatch(await page.locator('#feedback').innerText(),/700/);
   await page.locator('#math-answer').fill('8000');await page.locator('#math-form button').click();assert.match(await page.locator('.xp').innerText(),/\b18\s+XP\b/);
   assert.equal(errors.length,0,'cross-game runtime errors: '+errors.join('; '));
+  await page.route('**/assets/play/world-map-v1.webp',route=>route.abort());
+  await page.goto('http://127.0.0.1:4174/adam/',{waitUntil:'networkidle'});
+  assert.equal(await page.locator('.world-site').count(),4,'unavailable map image must not block navigation');
+  await page.getByRole('button',{name:'Open Number Kingdom',exact:true}).click();
+  assert.ok(await page.locator('.engine-world').isVisible(),'game still works with missing artwork');
   console.log('PASS',size.name,geometry);
  }catch(e){
   failures.push(size.name+': '+e.message);
