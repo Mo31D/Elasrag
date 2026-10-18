@@ -64,12 +64,12 @@ test('reset clears the entire registered local learning ecosystem, for every pro
    assert.equal(storage.getItem(key),null);
  assert.equal(storage.getItem('external-user-data'),'must remain');
 });
-test('atlas cards use natural document flow instead of brittle absolute deck height',async()=>{
+test('illustrated atlas contains navigation in its scene and keeps camp actions in flow',async()=>{
  const css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
- const rules=css.slice(css.indexOf('/* ATLAS V2:'));
- assert.match(rules,/\.game\.map \.atlas\s*{[\s\S]*?overflow:\s*visible/);
- assert.match(rules,/\.game\.map \.adventure-deck\s*{[\s\S]*?position:\s*relative/);
- assert.match(rules,/\.game\.map \.map-bottom\s*{[\s\S]*?position:\s*relative/);
- assert.match(rules,/grid-template-columns:\s*minmax\(0,1fr\)/);
+ const rules=css.slice(css.indexOf('/* PLAY WORLD v1'));
+ assert.match(rules,/\.world-map-frame\s*{[^}]*position:relative[^}]*aspect-ratio:2\/3/);
+ assert.match(rules,/\.world-sites\.adventure-deck\s*{[^}]*position:absolute;inset:0/);
+ assert.match(rules,/\.play-atlas \.map-bottom\s*{[^}]*position:static/);
+ assert.match(rules,/grid-template-columns:minmax\(0,1fr\)/);
  assert.match(rules,/prefers-reduced-motion/);
 });

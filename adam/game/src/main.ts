@@ -1,3 +1,5 @@
+import {worldMarkup,celebrate,mountValueForge} from './play-world.js';
+import {wordScene,PLAY_ART} from '../public/shared/play-art.js';
 import {dailyPlan,finishDaily,reviewOrder,beaconLesson,beaconExample,nextNotebookFacet,completedDiscoveryToday} from './daily-learning.js';
 import './style.css';
 import {discoverWord,notebookWords,SCIENCE_VOCABULARY} from '../public/shared/notebook.js';
@@ -161,7 +163,7 @@ function xp(id: string, amount: number) {
   const total=learningSummary(window.localStorage,state.activeProfile).xp;
   const hud=document.querySelector('.hud-actions .xp');
   if(hud)hud.innerHTML=`${icon('star')} <b>${total}</b> XP <small>LV ${1+Math.floor(total/25)}</small>`;
-  if (n) toast(`+${n} XP · Adventure progress saved`);
+  if (n) celebrate(app,`+${n} Adventure XP`,{motion:state.settings.motion,sound:false});
 }
 function toast(text: string) {
   let t = document.querySelector('#toast');
@@ -193,33 +195,8 @@ function shell(
   bind();
 }
 function map() {
-  stop();
-  view = 'map';
-  const done = profile().missions.trophy;
-  const reviews = dueSkills().length;
-  const missionState = done
-    ? 'CASE SOLVED'
-    : state.missionStep
-      ? 'IN PROGRESS'
-      : 'NEW CASE';
-  const mathsTotal = currentPuzzles().length;
-  const mathsDone = currentPuzzles().filter((p) => state.maths.includes(p.id)).length;
-  const mathsState = mathsDone
-    ? `${mathsDone}/${mathsTotal} RESTORED`
-    : 'READY TO BEGIN';
-  const learning = learningSummary(window.localStorage,state.activeProfile);
-  const lab = readScience(window.localStorage,state.activeProfile);
-  const scienceComplete = learning.scienceXP>0 || lab.step>=4;
-  const cloudCards = cloudMissions
-    .map(
-      (mission, index) =>
-        `<button type="button" class="adventure-card generated-card" data-action="cloud-mission:${esc(mission.id)}" aria-label="Open generated English mission, ${esc(mission.title)}"><span class="adventure-card-top"><span class="adventure-index">ENGLISH EXPEDITION ${String(index + 1).padStart(2, '0')}</span><span class="adventure-state">APPROVED</span></span><span class="adventure-emblem">${icon('star')}</span><span class="region">MYSTERY CITY · GENERATED MISSION</span><strong>${esc(mission.title)}</strong><span class="adventure-copy">A reviewed vocabulary and sentence-building mission prepared for this family.</span><span class="adventure-action">Begin expedition <b>→</b></span><small>SECURE FAMILY CONTENT · PROGRESS SAVED</small></button>`,
-    )
-    .join('');
-  shell(
-    `<section class="atlas" aria-label="Adventure world map"><img class="atlas-art" src="/adam/assets/atlas.svg" alt="Floating islands connected by a trail of light, with a school and a crystal tower"><div class="map-heading"><p class="eyebrow">THE ADVENTURE ATLAS</p><h1>Choose your next<br>adventure.</h1><p>Welcome, ${esc(profile().displayName || 'Adam')}. Pick a destination and continue your journey.</p></div><div class="daily-launch"><span class="eyebrow">YOUR NEXT SMALL ADVENTURE</span><h2>My adventure today</h2><p>Recall a few words, build one maths skill and explore a discovery. Take a break whenever you like.</p>${button('daily','Continue today’s adventure →','primary')}</div><div class="adventure-deck" aria-label="Available adventures"><button type="button" class="adventure-card mystery-card" data-action="mission" aria-label="${done ? 'Reopen' : state.missionStep ? 'Continue' : 'Begin'} lesson one, The missing trophy"><span class="adventure-card-top"><span class="adventure-index">LESSON 01</span><span class="adventure-state">${missionState}</span></span><span class="adventure-emblem">${icon('glass')}</span><span class="region">MYSTERY CITY · ENGLISH</span><strong>The missing trophy</strong><span class="adventure-copy">${done ? 'Case solved. Revisit the evidence and vocabulary.' : 'Follow a golden trail, examine clues and repair the detective report.'}</span><span class="adventure-action">${done ? 'Reopen case' : state.missionStep ? 'Continue investigation' : 'Begin investigation'} <b>→</b></span><small>5–15 MIN · ${done ? '✓ STAR DETECTIVE' : '4 WORDS TO DISCOVER'}</small></button><button type="button" class="adventure-card maths-card" data-action="maths" aria-label="Open Number Kingdom"><span class="adventure-card-top"><span class="adventure-index">MATHS QUEST</span><span class="adventure-state">${mathsState}</span></span><span class="adventure-emblem">${icon('crystal')}</span><img class="adventure-feature-art" src="/adam/assets/quest-maths.svg" alt="" loading="lazy" aria-hidden="true"><span class="region">NUMBER KINGDOM · CONFIDENCE PATH</span><strong>The crystal pathways</strong><span class="adventure-copy">Short Year 3–6 checks separate question language from mathematical thinking.</span><span class="adventure-action">${mathsDone ? 'Continue your path' : 'Start the recommended path'} <b>→</b></span><small>YEAR ${profile().year || 6} · ${mathsDone}/${mathsTotal} PATHS TRIED</small></button><button type="button" class="adventure-card words-card" data-action="words" aria-label="Enter Word Kingdom"><span class="adventure-card-top"><span class="adventure-index">WORD COLLECTION</span><span class="adventure-state">${reviews ? `${reviews} REVIEW${reviews === 1 ? '' : 'S'} DUE` : 'READY'}</span></span><span class="adventure-emblem">${icon('book')}</span><span class="region">WORD KINGDOM · BRITISH ENGLISH</span><strong>The living library</strong><span class="adventure-copy">Discover, hear and master curriculum spelling and useful school vocabulary.</span><span class="adventure-action">Enter the library <b>→</b></span><small>COMPLETE WORD ACTIVITIES TO EARN ADVENTURE XP</small></button><button type="button" class="adventure-card science-card" data-action="science" aria-label="Enter Discovery Laboratory"><span class="adventure-card-top"><span class="adventure-index">SCIENCE MISSION</span><span class="adventure-state">${scienceComplete?'COMPLETE':lab.step?'IN PROGRESS':'NEW LAB'}</span></span><span class="adventure-emblem">${icon('flask')}</span><img class="adventure-feature-art" src="/adam/assets/quest-science.svg" alt="" loading="lazy" aria-hidden="true"><span class="region">DISCOVERY LABORATORY · MATERIALS</span><strong>The dissolving mystery</strong><span class="adventure-copy">Predict, test and explain why sugar seems to disappear but sand does not.</span><span class="adventure-action">${scienceComplete?'Revisit the laboratory':lab.step?'Continue the experiment':'Enter the laboratory'} <b>→</b></span><small>${scienceComplete?'✓ EVIDENCE EXPLORER · 10 XP EARNED':'MATERIALS · SCIENTIFIC THINKING · 10 XP TO EARN'}</small></button>${cloudCards}</div><div class="map-compass">N<br><span>✧</span><br>S</div><div class="map-bottom">${button('reviews', `${icon('book')} ${reviews ? 'Recall trail · ' + reviews + ' due' : 'Recall trail · practise words'}`, 'map-chip')}${custom ? button('custom', `Imported quest · ${esc(custom.title)}`, 'map-chip') : ''}${button('cloud', cloudMissions.length ? 'Manage family missions' : 'Family missions', 'map-chip')}</div></section>`,
-    'The Adventure Atlas',
-  );
+ stop();view='map';const learning=learningSummary(window.localStorage,state.activeProfile);
+ shell(worldMarkup({name:profile().displayName||'Adam',done:!!profile().missions.trophy,missionStep:state.missionStep,mathsDone:currentPuzzles().filter(p=>state.maths.includes(p.id)).length,mathsTotal:currentPuzzles().length,scienceComplete:learning.scienceCompleted||learning.scienceXP>0,wordStars:learning.wordStars,reviews:dueSkills().length,cloudMissions,custom}), 'The Adventure Atlas');
 }
 function dueSkills() {
   return words.filter((w) => status(profile().skills[w.id]) === 'Review due');
@@ -263,9 +240,11 @@ function mission() {
     content = `<div class="hotspot trophy">${button('clue-trophy', `${icon('trophy')}<span>Inspect the trophy</span>`, 'spot')}</div>`;
   const c = chapters[Math.min(step, 5)];
   shell(
-    `<section class="mission-stage"><img class="scene-art" src="/adam/assets/scene-${scene}.svg" alt="${['Maya and Leo beside the trophy cabinet, where a green stand is empty', 'Maya and Leo looking puzzled beside the cabinet', 'The detectives investigate a golden glitter trail', 'Mr Clark with the safe trophy and a polishing cloth'][scene]}"><div class="scene-vignette"></div><div class="quest-banner"><span>CASE 001 <i>✦</i> ${step < 6 ? `STEP ${step + 1} / 6` : 'COMPLETE'}</span><h1>${titles[step]}</h1><p>${objectives[step]}</p><progress max="6" value="${step}" aria-label="Mission progress"></progress></div><aside class="inventory-rail" aria-label="Collected evidence"><span>EVIDENCE</span>${['empty', 'glitter', 'cloth', 'trophy'].map((k) => `<div class="evidence-slot ${state.clues.includes(k) ? 'found' : ''}" title="${k}" aria-label="${k}: ${state.clues.includes(k) ? 'found' : 'not found'}">${icon(k)}<small>${state.clues.includes(k) ? '✓' : '?'}</small></div>`).join('')}</aside>${content}<div id="word-cue" class="word-cue" hidden></div><div class="mission-bottom"><div class="audio-bar">${step < 5 ? button('listen', `${icon('play')} Hear the story`, 'audio-btn') : ''}${step < 5 ? button('pause', icon('pause'), 'icon-btn') : ''}<span id="audio-status" role="status">${step < 5 ? (profile().displayName === 'Adam' ? 'Original British narration · scene summary below' : 'Original recording addresses Adam · personalised text available') : 'Think, explore, and take your time'}</span>${step < 5 ? button('read', 'Read instead', 'quiet') : ''}</div><div class="dialogue"><div class="speaker-avatar">${icon(step === 6 ? 'trophy' : 'glass')}</div><div><span class="eyebrow">${step === 6 ? 'ADVENTURE ACADEMY' : 'DETECTIVE CLUB'}</span><p id="caption">${step === 4 ? 'The evidence is clear. Now repair the detective report in your own order.' : step < 5 ? c.caption : step === 5 ? 'The words can help with other mysteries too. Ready to try?' : 'You used careful observation and explained your reasoning.'}</p><div id="task">${taskMarkup(step)}</div><p id="feedback" class="feedback" role="status"></p></div></div></div></section>`,
+    `<section class="mission-stage illustrated-mission"><img class="scene-art" src="${scene<3?PLAY_ART.school:PLAY_ART.reveal}" onerror="this.onerror=null;this.src='/adam/assets/scene-${scene}.svg'" alt="${['Maya and Leo beside the trophy cabinet, where a round stand is empty', 'Maya and Leo looking puzzled beside the cabinet', 'The detectives investigate a golden glitter trail', 'Mr Clark with the safe trophy and a polishing cloth'][scene]}"><div class="scene-vignette"></div><div class="quest-banner"><span>CASE 001 <i>✦</i> ${step < 6 ? `STEP ${step + 1} / 6` : 'COMPLETE'}</span><h1>${titles[step]}</h1><p>${objectives[step]}</p><progress max="6" value="${step}" aria-label="Mission progress"></progress></div><aside class="inventory-rail" aria-label="Collected evidence"><span>EVIDENCE</span>${['empty', 'glitter', 'cloth', 'trophy'].map((k) => `<div class="evidence-slot ${state.clues.includes(k) ? 'found' : ''}" title="${k}" aria-label="${k}: ${state.clues.includes(k) ? 'found' : 'not found'}">${icon(k)}<small>${state.clues.includes(k) ? '✓' : '?'}</small></div>`).join('')}</aside>${content}<div id="word-cue" class="word-cue" hidden></div><div class="mission-bottom"><div class="audio-bar">${step < 5 ? button('listen', `${icon('play')} Hear the story`, 'audio-btn') : ''}${step < 5 ? button('pause', icon('pause'), 'icon-btn')+button('replay-chapter','↺','icon-btn') : ''}<span id="audio-status" role="status">${step < 5 ? (profile().displayName === 'Adam' ? 'Original British story' : 'Original recording addresses Adam · personalised text available') : 'Think, explore, and take your time'}</span>${step < 5 ? button('read', 'Read instead', 'quiet') : ''}</div><div class="dialogue"><div class="speaker-avatar">${icon(step === 6 ? 'trophy' : 'glass')}</div><div><span class="eyebrow">${step === 6 ? 'ADVENTURE ACADEMY' : 'DETECTIVE CLUB'}</span><details class="story-caption"><summary>Read the story</summary><p id="caption">${step === 4 ? 'The evidence is clear. Now repair the detective report in your own order.' : step < 5 ? c.caption : step === 5 ? 'The words can help with other mysteries too. Ready to try?' : 'You used careful observation and explained your reasoning.'}</p></details><div id="task">${taskMarkup(step)}</div><p id="feedback" class="feedback" role="status"></p></div></div></div></section>`,
     'Mystery City / School',
   );
+  document.querySelector('[data-action="pause"]')?.setAttribute('aria-label','Pause story');
+  document.querySelector('[data-action="replay-chapter"]')?.setAttribute('aria-label','Replay this scene');
   if (step === 5) {
     reviewIndex = 0;
     recallWords = words;
@@ -279,11 +258,11 @@ function taskMarkup(step: number) {
   if (step === 0)
     return `<p class="task-note">Start with the story, or read the caption. Then examine the empty stand.</p>${button('next', 'Follow the mystery →', 'primary')}`;
   if (step === 1)
-    return `<p class="task-note">What did they notice? You can say your idea aloud, think it, or choose below. There is no hurry.</p><div class="choices">${button('notice-correct', 'The empty trophy stand')}${button('notice-wrong', 'A broken window')}</div>`;
+    return `<p class="task-note">What did they notice? You can say your idea aloud, think it, or choose below. There is no hurry.</p><div class="choices">${button('notice-correct', `${icon('empty')}<span>The empty trophy stand</span>`,'picture-answer')}${button('notice-wrong', `<span aria-hidden="true">▧</span><span>A broken window</span>`,'picture-answer')}</div>`;
   if (step === 2)
     return `<p class="task-note">Find the glitter and the cloth, then choose your next move.</p><div class="choices">${button('investigate-correct', 'Investigate the art room')}${button('investigate-wrong', 'Decide it was stolen without checking')}</div>`;
   if (step === 3)
-    return `<p class="task-note">The trophy is safe. How do they feel now?</p><div class="choices">${button('relieved-correct', 'Relieved')}${button('relieved-wrong', 'Puzzled')}</div>`;
+    return `<p class="task-note">The trophy is safe. How do they feel now?</p><div class="choices">${button('relieved-correct', `${wordScene({term:'relieved'})}<span>Relieved</span>`,'picture-answer')}${button('relieved-wrong', `${wordScene({term:'puzzled'})}<span>Puzzled</span>`,'picture-answer')}</div>`;
   if (step === 4)
     return `<p class="task-note">Tap the blocks in order. Tap a chosen block to return it.</p><div id="sentence-output" class="sentence-output" aria-label="Your sentence"></div><div id="blocks" class="blocks">${['the trophy was safe.', 'because', 'I felt', 'relieved'].map((x, i) => button('block-' + i, x)).join('')}</div><div class="choices">${button('sentence-check', 'Seal the report', 'primary')}${button('sentence-hint', 'Show a model', 'quiet')}</div><p class="task-note">Optional: tell someone about a time you felt relieved, or think of a sentence. No recording or speech scoring.</p>`;
   if (step === 6)
@@ -341,7 +320,7 @@ function wordCard(id: string) {
   discoverWord(window.localStorage,state.activeProfile,{term:w.label,definition:w.definition,example:w.example},'The missing trophy');
   openDialog(
     w.label,
-    `<div class="word-illustration">${icon(w.icon)}</div><p class="definition">${w.definition}</p><blockquote>${w.example}</blockquote><div class="choices">${button('notebook-one:'+esc(w.label),'Practise this word','primary')}${button('hear-' + id, `${icon('sound')} Hear in the original story`, 'secondary')}${button('slow-' + id, 'Gentler replay', 'quiet')}</div><p class="muted">You may try saying it, think it, or simply listen. Take as long as you like.</p>${button(view==='mission'?'close':'journal',view==='mission'?'Back to the investigation →':'← All collected words','primary')}`,
+    `<div class="word-illustration">${wordScene(w,'story-picture')||icon(w.icon)}</div><p class="definition">${w.definition}</p><blockquote>${w.example}</blockquote><div class="choices">${button('notebook-one:'+esc(w.label),'Practise this word','primary')}${button('hear-' + id, `${icon('sound')} Hear in the original story`, 'secondary')}${button('slow-' + id, 'Gentler replay', 'quiet')}</div><p class="muted">You may try saying it, think it, or simply listen. Take as long as you like.</p>${button(view==='mission'?'close':'journal',view==='mission'?'Back to the investigation →':'← All collected words','primary')}`,
   );
 }
 function journal() {
@@ -358,7 +337,7 @@ function journal() {
   for(const entry of entries) combined.set(entry.term.toLowerCase(),{...combined.get(entry.term.toLowerCase()),...entry});
   const list=[...combined.values()].sort((a,b)=>a.term.localeCompare(b.term,'en-GB'));
   openDialog('Detective notebook',
-    `<p class="notebook-intro">Your discoveries across stories, Word Kingdom and science. Finding a word starts its journey; mastery comes from later independent practice.</p>${button('notebook-review','Start a short recall trail →','primary')}<div class="notebook-toolbar"><span>${list.length} collected words</span><label class="sr-only" for="notebook-search">Find a collected word</label><input id="notebook-search" type="search" placeholder="Find a word…" autocomplete="off"></div><div class="journal-grid notebook-collection">${list.map(w=>`<button class="journal-word" data-notebook-term="${esc(w.term.toLowerCase())}" data-action="notebook:${esc(w.term.toLowerCase())}"><span class="notebook-mark">${icon(w.original?words.find(x=>x.id===w.original)!.icon:'book')}</span><strong>${esc(w.term)}</strong><small>${esc(w.sources.join(' · '))}</small><small>${(()=>{const all=[0,1,2].map(i=>profile().skills['notebook:'+w.term+':'+i]).filter(Boolean);const due=all.map(x=>x.due).filter(Boolean).sort()[0];return due?'Review '+new Date(due).toLocaleDateString('en-GB'):'Ready for first recall';})()}</small><span class="notebook-state">${w.original?status(profile().skills[w.original]):w.practised?'Practising':'Discovered'}</span></button>`).join('')}</div><p id="notebook-empty" hidden>No collected words match that search.</p><details class="notebook-evidence"><summary>Evidence pouch · ${state.clues.length} clues</summary><p>${state.clues.length?state.clues.map((k:string)=>({empty:'Empty trophy stand',glitter:'Gold glitter trail',cloth:'Polishing cloth',trophy:'Trophy safe with Mr Clark'}[k]||k)).join(' · '):'Your first clue is waiting at the school.'}</p></details>`);
+    `<p class="notebook-intro">Your discoveries across stories, Word Kingdom and science. Finding a word starts its journey; mastery comes from later independent practice.</p>${button('notebook-review','Start a short recall trail →','primary')}<div class="notebook-toolbar"><span>${list.length} collected words</span><label class="sr-only" for="notebook-search">Find a collected word</label><input id="notebook-search" type="search" placeholder="Find a word…" autocomplete="off"></div><div class="journal-grid notebook-collection">${list.map(w=>`<button class="journal-word" data-notebook-term="${esc(w.term.toLowerCase())}" data-action="notebook:${esc(w.term.toLowerCase())}"><span class="notebook-mark">${wordScene(w,'notebook-picture')||icon(w.original?words.find(x=>x.id===w.original)!.icon:'book')}</span><strong>${esc(w.term)}</strong><small>${esc(w.sources.join(' · '))}</small><small>${(()=>{const all=[0,1,2].map(i=>profile().skills['notebook:'+w.term+':'+i]).filter(Boolean);const due=all.map(x=>x.due).filter(Boolean).sort()[0];return due?'Review '+new Date(due).toLocaleDateString('en-GB'):'Ready for first recall';})()}</small><span class="notebook-state">${w.original?status(profile().skills[w.original]):w.practised?'Practising':'Discovered'}</span></button>`).join('')}</div><p id="notebook-empty" hidden>No collected words match that search.</p><details class="notebook-evidence"><summary>Evidence pouch · ${state.clues.length} clues</summary><p>${state.clues.length?state.clues.map((k:string)=>({empty:'Empty trophy stand',glitter:'Gold glitter trail',cloth:'Polishing cloth',trophy:'Trophy safe with Mr Clark'}[k]||k)).join(' · '):'Your first clue is waiting at the school.'}</p></details>`);
   document.querySelector('#overlay')?.classList.add('notebook-dialog');
   document.querySelector('#notebook-search')?.addEventListener('input',(event)=>{
     const query=(event.target as HTMLInputElement).value.trim().toLowerCase();let count=0;
@@ -371,7 +350,7 @@ function collectedWord(term:string) {
   const original=words.find(w=>w.label===term);
   if(original)return wordCard(original.id);
   if(!stored)return;
-  openDialog(esc(stored.term),`<p class="definition">${esc(stored.definition)}</p><blockquote>${esc(stored.example)}</blockquote><p class="muted">Found in ${esc(stored.sources.join(' · '))}. Discovery is separate from mastery.</p><div class="choices">${button('notebook-one:'+esc(term),'Practise this word','primary')}${button('notebook-hear:'+esc(term),'♫ Hear word','secondary')}${button('journal','← All collected words','quiet')}</div>`);
+  openDialog(esc(stored.term),`${wordScene(stored,'story-picture')}<p class="definition">${esc(stored.definition)}</p><blockquote>${esc(stored.example)}</blockquote><p class="muted">Found in ${esc(stored.sources.join(' · '))}. Discovery is separate from mastery.</p><div class="choices">${button('notebook-one:'+esc(term),'Practise this word','primary')}${button('notebook-hear:'+esc(term),'♫ Hear word','secondary')}${button('journal','← All collected words','quiet')}</div>`);
 }
 
 function renderRecall(review: boolean) {
@@ -401,13 +380,14 @@ let beaconStage=0,beaconAssisted=false,beaconIndependent=true,beaconDay=0;
 let notebookQueue:any[]=[],notebookIndex=0,notebookFacet=0,notebookAssisted=false,notebookChosen:number[]=[];
 function daily(){
  state=load(storage);stop();view='daily';const plan=dailyPlan(profile());const lab=readScience(window.localStorage,state.activeProfile);if(plan.scienceAtStart===undefined)plan.scienceAtStart=!!lab.completed;if(completedDiscoveryToday(profile(),lab))finishDaily(profile(),'discovery');save();
- const tasks=[['words','Recall trail','Three collected words, one small activity each.'],['maths','Build a maths skill','A worked example, guided practice and a fresh challenge.'],['discovery','Make a discovery','Continue a story, approved mission or science experiment.']];
- shell(`<section class="daily-world"><span class="eyebrow">MY ADVENTURE TODAY · ${esc(plan.day)}</span><h1>A little learning.<br>A real adventure.</h1><p>About 10–15 minutes, at your pace. There is no timer or daily streak.</p><ol class="daily-steps">${tasks.map(([id,title,copy])=>`<li class="${plan.completed.includes(id)?'done':''}"><span class="daily-seal">${plan.completed.includes(id)?'✓':tasks.findIndex(t=>t[0]===id)+1}</span><div><h2>${title}</h2><p>${copy}</p><button class="${plan.completed.includes(id)?'quiet':'primary'}" data-action="daily-${id}">${plan.completed.includes(id)?'Revisit':'Begin'} →</button></div></li>`).join('')}</ol>${plan.completed.length===3?'<p class="daily-finish" role="status">Today’s journey is complete. This is a good place to rest or do something offline.</p>':'<p class="muted">Your completed steps stay saved if you leave. Opening an activity earns no XP.</p>'}${button('map','← Adventure Atlas','quiet')}</section>`,'Today’s adventure');
+ const tasks=[['words','Recall trail','Three words. Look, listen, remember.'],['maths','Build a maths skill','Build it. Try it. Light the beacon.'],['discovery','Make a discovery','Follow a clue or try an experiment.']];
+ shell(`<section class="daily-world"><span class="eyebrow">MY ADVENTURE TODAY · ${esc(plan.day)}</span><h1>A little learning.<br>A real adventure.</h1><p>About 10–15 minutes, at your pace. There is no timer or daily streak.</p><ol class="daily-steps">${tasks.map(([id,title,copy])=>`<li class="${plan.completed.includes(id)?'done':''}"><span class="daily-stop-art">${id==='words'?wordScene({term:'investigate'}):id==='maths'?'<span class="daily-maths-art"></span>':`<img src="${PLAY_ART.school}" alt="Trophy cabinet mystery" loading="lazy">`}</span><span class="daily-seal">${plan.completed.includes(id)?'✓':tasks.findIndex(t=>t[0]===id)+1}</span><div><h2>${title}</h2><p>${copy}</p><button class="${plan.completed.includes(id)?'quiet':'primary'}" data-action="daily-${id}">${plan.completed.includes(id)?'Revisit':'Begin'} →</button></div></li>`).join('')}</ol>${plan.completed.length===3?'<p class="daily-finish" role="status">Today’s journey is complete. This is a good place to rest or do something offline.</p>':'<p class="muted">Your completed steps stay saved if you leave. Opening an activity earns no XP.</p>'}${button('map','← Adventure Atlas','quiet')}</section>`,'Today’s adventure');
 }
 function startBeacon(){stop();view='beacon';beaconStage=0;beaconAssisted=false;beaconIndependent=true;beaconDay=Date.now();drawBeacon();}
 function drawBeacon(){
  const e=beaconExample(beaconStage,beaconDay),guided=beaconStage<2;
- shell(`<section class="daily-world beacon-world"><span class="eyebrow">NUMBER KINGDOM · STEP ${beaconStage+1} OF 4</span><h1>${beaconLesson.title}</h1><p class="lesson-stage">${beaconLesson.stages[beaconStage]}</p><section class="beacon-panel"><p>A digit is a single number symbol. Its <b>value</b> tells us how much it represents in this position.</p><h2>What is the value of ${e.digit} in ${e.number}?</h2><div class="beacon-columns" aria-label="Place value columns">${e.number.replace(',','').split('').map((d:string,i:number)=>`<span class="${Number(d)===e.digit?'lit':''}"><small>${["10,000s","1,000s","100s","10s","1s"][i]}</small><b>${d}</b></span>`).join('')}</div>${guided?`<p>${e.digit} is in the <b>${e.column}</b> column. Each one is worth ${e.unit.toLocaleString('en-GB')}.</p><p class="math-equation">${e.digit} × ${e.unit.toLocaleString('en-GB')} = ${beaconStage===0?e.answer.toLocaleString('en-GB'):'?'}</p>`:'<p>Use the column headings if they help. The picture does not show the answer.</p>'}${beaconStage===0?button('beacon-next','Now let me try →','primary'):`<form id="beacon-form"><label for="beacon-answer">The digit represents</label><input id="beacon-answer" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="Enter its value"><button class="primary">Check my thinking →</button></form>${button('beacon-hint','Show a smaller step','quiet')}`}<p id="beacon-feedback" role="status" class="feedback"></p><div id="beacon-next"></div></section>${button('daily','← Today’s adventure','quiet')}${button('maths','All maths paths','quiet')}</section>`,'The place-value beacon');
+ shell(`<section class="daily-world beacon-world"><span class="eyebrow">NUMBER KINGDOM · STEP ${beaconStage+1} OF 4</span><h1>${beaconLesson.title}</h1><p class="lesson-stage">${beaconLesson.stages[beaconStage]}</p><section class="beacon-panel"><div class="beacon-lights" aria-label="${beaconStage} of 4 steps reached">${[0,1,2,3].map(i=>`<span class="${i<beaconStage?'lit':''}" aria-hidden="true">◆</span>`).join('')}</div><h2>What is the value of ${e.digit} in ${e.number}?</h2><div class="beacon-columns" aria-label="Place value columns">${e.number.replace(',','').split('').map((d:string,i:number)=>`<span class="${Number(d)===e.digit?'lit':''}"><small>${["10,000s","1,000s","100s","10s","1s"][i]}</small><b>${d}</b></span>`).join('')}</div>${guided?`<p>${e.digit} is in the <b>${e.column}</b> column. Each one is worth ${e.unit.toLocaleString('en-GB')}.</p><p class="math-equation">${e.digit} × ${e.unit.toLocaleString('en-GB')} = ${beaconStage===0?e.answer.toLocaleString('en-GB'):'?'}</p>`:'<p>Use the column headings if they help. Choose a value below.</p>'}${beaconStage===0?button('beacon-next','Now let me try →','primary'):`<div id="value-forge"></div><form id="beacon-form"><label for="beacon-answer">The digit represents</label><input id="beacon-answer" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="Enter its value"><button class="primary">Check my thinking →</button></form>${button('beacon-hint','Show a smaller step','quiet')}`}<p id="beacon-feedback" role="status" class="feedback"></p><div id="beacon-next"></div></section>${button('daily','← Today’s adventure','quiet')}${button('maths','All maths paths','quiet')}</section>`,'The place-value beacon');
+ const forge=document.querySelector<HTMLElement>('#value-forge');if(forge)mountValueForge(forge,e,(value:number)=>{document.querySelector<HTMLInputElement>('#beacon-answer')!.value=String(value);});
  document.querySelector('#beacon-form')?.addEventListener('submit',event=>{
   event.preventDefault();const input=document.querySelector<HTMLInputElement>('#beacon-answer')!;
   const raw=input.value.replace(/[ ,]/g,'');if(!raw)return;
@@ -415,9 +395,14 @@ function drawBeacon(){
   const target=document.querySelector('#beacon-feedback')!;
   if(!correct){beaconAssisted=true;recordEvent(state,'skill_attempted',{skill:'place-value',correct:false,assisted:true});save();target.textContent=`Look at the ${e.column} column. The digit ${e.digit} represents ${e.digit} groups of ${e.unit.toLocaleString('en-GB')}. Try again when ready.`;recordEvent(state,'math_language_support',{skill:'place-value',attempt:beaconStage});save();return;}
   input.disabled=true;document.querySelector<HTMLButtonElement>('#beacon-form button')!.disabled=true;
+  document.querySelectorAll<HTMLButtonElement>('.value-crate').forEach(b=>b.disabled=true);
+  const valueStatus=document.querySelector('.value-forge output');
+  if(valueStatus)valueStatus.textContent=`${e.answer.toLocaleString('en-GB')} confirmed. This part of the beacon is powered.`;
   if(beaconStage>=2)beaconIndependent=beaconIndependent&&!beaconAssisted;
   target.textContent=`${e.digit} ${e.column} means ${e.answer.toLocaleString('en-GB')}. ${beaconAssisted||beaconStage===1?'That was useful supported practice.':'You worked out the value yourself.'}`;
   if(beaconStage===3){
+   document.querySelectorAll('.beacon-lights span').forEach(light=>light.classList.add('lit'));
+   document.querySelector('.beacon-lights')?.setAttribute('aria-label','4 of 4 steps reached · beacon restored');
    evidence(state,'place-value',true,!beaconIndependent);if(!state.maths.includes('place-value'))state.maths.push('place-value');
    xp('engine:place-value',state.settings.missionXP);if(beaconIndependent)xp('independent:place-value',state.settings.independentXP);
    finishDaily(profile(),'maths');save();
@@ -519,6 +504,7 @@ function drawMaths() {
   const tools = document.createElement('div');
   document.querySelector('#math-model')!.after(tools);
   mountVisualTool(tools, p.model, () => { hinted = true; });
+  if(tools.childElementCount)document.querySelector<HTMLElement>('#math-model')!.hidden=true;
   document.querySelector('#math-form')!.addEventListener('submit', (e) => {
     e.preventDefault();
     checkMath();
@@ -750,6 +736,7 @@ function cloudHooks() {
   };
 }
 async function action(id: string, b: HTMLButtonElement) {
+  if(id.startsWith('kit:')){const names:any={trophy:['Detective badge','Solve the missing trophy case.'],crystal:['Beacon crystal','Complete a maths path.'],book:['Word keeper','Complete independent Word Kingdom activities.'],flask:['Evidence explorer','Finish the dissolving investigation.']};const item=names[id.slice(4)];if(item)openDialog(item[0],`<p>${item[1]}</p><p>Your kit reflects completed learning. Reopening it earns no points.</p>${button('close','Back to exploring','primary')}`);return;}
   if(id==='daily'){closeDialog();daily();return;}
   if(id==='daily-words'||id==='notebook-review'){notebookReview();return;}
   if(id.startsWith('notebook-one:')){const term=id.slice(13),w=notebookWords(window.localStorage,state.activeProfile).find((x:any)=>x.term===term);if(w){notebookQueue=[w];notebookIndex=0;drawNotebookReview();}return;}
@@ -905,14 +892,15 @@ async function action(id: string, b: HTMLButtonElement) {
     }
     return;
   }
-  if (id === 'listen') {
+  if (id === 'listen'||id==='replay-chapter') {
     const c = chapters[Math.min(storyStep(), 5)];
     if (!state.settings.sound) {
       feedback('Sound is off. Use Read instead, or turn it on in Settings.');
       return;
     }
     try {
-      await segment(c.start, c.end, readReady);
+      const from=id==='listen'&&narration.paused&&narration.currentTime>c.start&&narration.currentTime<c.end?narration.currentTime:c.start;
+      await segment(from, c.end, readReady);
       document.querySelector('#audio-status')!.textContent =
         'Narration playing · pause whenever you like';
     } catch {
@@ -922,13 +910,16 @@ async function action(id: string, b: HTMLButtonElement) {
   }
   if (id === 'pause') {
     narration.pause();
+    const play=document.querySelector('[data-action="listen"]');if(play)play.innerHTML=icon('play')+' Continue story';
     document.querySelector('#audio-status')!.textContent =
-      'Paused · Hear the story replays this chapter';
+      'Paused · continue when ready';
     return;
   }
   if (id === 'read') {
     stop();
     readReady();
+    const caption=document.querySelector<HTMLDetailsElement>('.story-caption');
+    if(caption)caption.open=true;
     feedback('Read the caption above. The investigation will wait for you.');
     return;
   }
@@ -942,12 +933,12 @@ async function action(id: string, b: HTMLButtonElement) {
       ['empty', 'glitter', 'cloth', 'trophy'].includes(k) &&
       !state.clues.includes(k)
     )
-      state.clues.push(k);
+      {state.clues.push(k);celebrate(app,'Evidence collected',{motion:state.settings.motion});}
     save();
     const facts: Record<string, [string, string]> = {
       empty: [
         'notice',
-        'The other trophies are still here. The green stand is empty. You notice the gap.',
+        'The other trophies are still here. The round stand is empty. You notice the gap.',
       ],
       glitter: [
         'investigate',
@@ -1025,7 +1016,7 @@ async function action(id: string, b: HTMLButtonElement) {
     hinted = true;
     feedback(
       id.startsWith('notice')
-        ? 'Look at the cabinet: one green stand is empty.'
+        ? 'Look at the cabinet: one round stand is empty.'
         : 'Check the evidence. What does it tell us?',
     );
     return;

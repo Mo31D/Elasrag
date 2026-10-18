@@ -24,6 +24,7 @@ for (const file of ['main', 'content', 'audio']) {
     .replace(/from ["']\.\/content["']/, "from './content.mjs'")
     .replace(/from ["']\.\/audio["']/, "from './audio.mjs'")
     .replace(/from ["']\.\/visual-tools\.js["']/, "from '../src/visual-tools.js'")
+    .replace(/from ["']\.\/play-world\.js["']/, "from '../src/play-world.js'")
     .replace(/from ["']\.\/daily-learning\.js["']/, "from '../src/daily-learning.js'")
     .replace(/from ["']\.\/progress\.js["']/, "from '../src/progress.js'");
   await writeFile(
@@ -105,22 +106,33 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   const text = () => document.querySelector('#app').textContent;
   const stored = () => JSON.parse(localStorage.getItem('ala-adventure-v1'));
   assert.ok(document.querySelectorAll('.adventure-card').length >= 4);
-  assert.match(text(), /LESSON 01/);
-  assert.match(text(), /MATHS QUEST/);
-  assert.match(text(), /WORD COLLECTION/);
+  assert.match(text(), /Mystery City/);
+  assert.match(text(), /Number Kingdom/);
+  assert.match(text(), /Word Kingdom/);
   assert.ok(document.querySelector('.adventure-card[data-action="mission"]'));
   assert.ok(document.querySelector('.adventure-card[data-action="maths"]'));
   assert.ok(document.querySelector('.adventure-card[data-action="words"]'));
   assert.ok(document.querySelector('.adventure-card[data-action="science"]'));
-  assert.match(text(), /Begin investigation/);
+  assert.match(text(), /New case/);
   assert.match(text(), /Family missions/);
   click('mission');
+  const {narration}=await import(new URL('audio.mjs',temp));
+  click('listen');await tick();
+  narration.currentTime=12;
+  click('pause');
+  click('clue-empty');click('close');
+  click('listen');await tick();
+  assert.equal(narration.currentTime,12,'continue resumes the paused chapter after examining a word');
+  click('replay-chapter');await tick();
+  assert.equal(narration.currentTime,0,'replay restarts the scene deliberately');
+  click('pause');
   click('next');
   assert.match(text(), /inspect the empty stand/);
   click('clue-empty');
   assert.match(document.querySelector('dialog').textContent, /notice/);
   click('close');
   click('read');
+  assert.equal(document.querySelector('.story-caption').open,true,'Read instead reveals the caption');
   click('next');
   assert.match(text(), /A puzzling discovery/);
   click('notice-correct');
@@ -164,7 +176,7 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   click('map');
   // Reload the module as a fresh application, keeping persisted local state.
   await import(new URL('main.mjs?reload=1', temp));
-  assert.match(text(), /Reopen case/);
+  assert.match(text(), /Case solved/);
   click('maths');
   assert.match(text(), /Small steps/);
   click('engine-0');
@@ -223,7 +235,7 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   document
     .querySelector('#profile-form')
     .dispatchEvent(new win.Event('submit', { cancelable: true }));
-  assert.match(text(), /Welcome, Joseph/);
+  assert.match(text(), /Where next, Joseph/);
   assert.equal(stored().profiles[stored().activeProfile].xp, 0);
   click('maths');
   click('engine-0');
@@ -244,7 +256,7 @@ test('complete detective and maths journey in simulated DOM, including refresh a
   click('parent');
   click('profiles');
   click('profile:explorer');
-  assert.match(text(), /Welcome, Adam/);
+  assert.match(text(), /Where next, Adam/);
   assert.equal(stored().maths.length, 6);
   click('daily');
   assert.match(text(),/A little learning/);
