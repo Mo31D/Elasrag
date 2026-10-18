@@ -51,14 +51,14 @@ for(const size of sizes){
   // The artwork is a playable scene. Optional text opens on request, without a new route.
   await page.locator('[data-action="mission"]').click();
   await page.locator('.scene-art').waitFor();
-  assert.ok(await page.locator('.scene-art').evaluate(e=>e.complete&&e.naturalWidth>0));
+  await page.waitForFunction(()=>{const e=document.querySelector('.scene-art');return e?.complete&&e.naturalWidth>0;});
   const scene=await page.locator('.scene-art').boundingBox(),clue=await page.locator('[data-action="clue-empty"]').boundingBox();
   assert.ok(clue.x>=0&&clue.x+clue.width<=size.width+1&&clue.y+clue.height<=scene.y+scene.height+1,'clue is outside its scene');
   await page.locator('[data-action="read"]').click();
   assert.equal(await page.locator('.story-caption').getAttribute('open'),'');
   await page.locator('[data-action="clue-empty"]').click();
   assert.equal(await page.locator('.word-illustration .word-story-art').count(),1,'discovered word has a contextual picture');
-  await page.locator('[data-action="close"]').click();
+  await page.locator('#overlay .close').click();
   await page.screenshot({path:shots+'/'+size.name+'-detective.png',fullPage:true});
   await page.getByRole('button',{name:'Adventure map',exact:true}).click();
   // Exercise the actual visual tools at every viewport, not just the atlas.
@@ -101,7 +101,7 @@ for(const size of sizes){
   await page.getByRole('button',{name:'Detective notebook',exact:true}).click();
   await page.locator('#notebook-search').fill('soluble');
   assert.ok(await page.locator('[data-notebook-term="soluble"]').isVisible());
-  await page.locator('[data-action="close"]').click();
+  await page.locator('#overlay .close').click();
   await page.getByRole('button',{name:'Enter Word Kingdom',exact:true}).click();
   await page.getByRole('button',{name:'Open apple card',exact:true}).click();
   await page.screenshot({path:shots+'/'+size.name+'-word-card.png',fullPage:true});
@@ -111,7 +111,7 @@ for(const size of sizes){
   await page.locator('#notebook-search').fill('apple');
   assert.ok(await page.locator('[data-notebook-term="apple"]').isVisible());
   await page.screenshot({path:shots+'/'+size.name+'-notebook.png',fullPage:true});
-  await page.locator('[data-action="close"]').click();
+  await page.locator('#overlay .close').click();
   await page.locator('[data-action="daily"]').click();
   assert.match(await page.locator('.daily-world').innerText(),/A little learning/);
   await page.locator('[data-action="daily-maths"]').click();
@@ -147,7 +147,7 @@ for(const size of sizes){
    await page.locator('[data-action="notebook-next"]').click();
   }
   assert.match(await page.locator('#overlay').innerText(),/Recall trail complete/);
-  await page.locator('[data-action="close"]').click();
+  await page.locator('#overlay .close').click();
   await page.getByRole('button',{name:'Adventure map',exact:true}).click();
   await page.getByRole('button',{name:'Open Number Kingdom',exact:true}).click();await page.locator('[data-action="engine-0"]').click();
   await page.locator('#math-form button').click();assert.match(await page.locator('#feedback').innerText(),/Enter an answer when/);
