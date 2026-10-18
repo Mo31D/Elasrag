@@ -21,7 +21,7 @@ const browser=await chromium.launch({headless:true});
 let failures=[];
 for(const size of sizes){
  const ctx=await browser.newContext({viewport:{width:size.width,height:size.height},isMobile:size.touch,hasTouch:size.touch,deviceScaleFactor:1});
- const page=await ctx.newPage();
+ const page=await ctx.newPage();page.setDefaultTimeout(15000);
  try{
   const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
@@ -68,7 +68,7 @@ for(const size of sizes){
   if(size.width<=650)assert.ok(selector.y+selector.height<=question.y+2,'path selector covers the question');
   assert.equal(await page.locator('.visual-tool').getAttribute('open'),'','visual help should be visible without hunting for it');
   await page.locator('[data-piece="0"]').click();
-  assert.match(await page.locator('.visual-tool output').innerText(),/1\/4.*25%/);
+  assert.match(await page.locator('.visual-tool output').innerText(),/1\/4 of 20 = 5 lanterns/);
   await page.locator('.visual-tool').scrollIntoViewIfNeeded();
   await page.screenshot({path:shots+'/'+size.name+'-fractions.png',fullPage:true});
   await page.locator('[data-action="maths"]').click();
@@ -106,6 +106,25 @@ for(const size of sizes){
   await page.getByRole('button',{name:'Open apple card',exact:true}).click();
   await page.screenshot({path:shots+'/'+size.name+'-word-card.png',fullPage:true});
   await page.getByRole('button',{name:'Close card',exact:true}).click();
+  await page.locator('#wk-collection').selectOption('all');
+  await page.locator('#wk-search').fill('puzzled');
+  await page.getByRole('button',{name:'Open puzzled card',exact:true}).click();
+  const art=await page.locator('.wk-card-front .word-story-art').boundingBox();
+  assert.ok(Math.abs(art.width-art.height)<2,'context art must preserve square proportions');
+  await page.screenshot({path:shots+'/'+size.name+'-word-story.png',fullPage:true});
+  await page.locator('#wk-flip').click();
+  const meaning=await page.locator('.wk-definition').innerText();
+  await page.locator('#wk-practise').click();
+  await page.locator('.wk-answer').filter({hasNotText:meaning}).first().click();
+  assert.match(await page.locator('#wk-feedback').innerText(),/try again/i);
+  await page.locator('#wk-again').click();
+  await page.locator('.wk-answer').filter({hasText:meaning}).click();
+  assert.match(await page.locator('#wk-feedback').innerText(),/Good thinking/);
+  await page.locator('#wk-next-skill').click();
+  await page.locator('#wk-spell').fill('puzzled');
+  await page.locator('#wk-spell-form button[type="submit"]').click();
+  assert.match(await page.locator('#wk-feedback').innerText(),/word stars/);
+  await page.getByRole('button',{name:'Close card',exact:true}).click();
   await page.getByRole('link',{name:'Return to Adventure Atlas',exact:true}).click();
   await page.getByRole('button',{name:'Detective notebook',exact:true}).click();
   await page.locator('#notebook-search').fill('apple');
@@ -131,6 +150,8 @@ for(const size of sizes){
    if(stage===2)await page.locator('[data-action="beacon-next"]').click();
   }
   assert.match(await page.locator('#beacon-next').innerText(),/review is scheduled/);
+  assert.equal(await page.locator('.beacon-lights .lit').count(),4,'completed beacon lights all four crystals');
+  assert.equal(await page.locator('.value-crate:disabled').count(),4,'a solved choice cannot be accidentally changed');
   assert.match(await page.locator('.xp').innerText(),/\b18\s+XP\b/,'HUD must update immediately after the new lesson awards XP');
   await page.screenshot({path:shots+'/'+size.name+'-beacon.png',fullPage:true});
   await page.locator('[data-action="daily"]').first().click();
@@ -161,6 +182,7 @@ for(const size of sizes){
   await page.goto('http://127.0.0.1:4174/adam/',{waitUntil:'networkidle'});
   assert.equal(await page.locator('.world-site').count(),4,'unavailable map image must not block navigation');
   await page.getByRole('button',{name:'Open Number Kingdom',exact:true}).click();
+  await page.locator('[data-action="engine-0"]').click();
   assert.ok(await page.locator('.engine-world').isVisible(),'game still works with missing artwork');
   console.log('PASS',size.name,geometry);
  }catch(e){

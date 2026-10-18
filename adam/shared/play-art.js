@@ -12,5 +12,5 @@ const contexts=Object.freeze({
 export function wordScene(word,cls=''){
  const key=String(word?.term||word?.word||word?.label||'').toLowerCase();const item=contexts[key];if(!item)return '';
  const safeClass=String(cls).replace(/[^a-zA-Z0-9 _-]/g,'');
- return `<span class="word-story-art ${safeClass}" role="img" aria-label="${item[2]}" style="--scene-x:${item[0]}%;--scene-y:${item[1]}%"></span>`;
+ return `<span class="word-story-art ${safeClass}" role="img" aria-label="${item[2]}" style="--scene-image:url(${PLAY_ART.words});--scene-x:${item[0]}%;--scene-y:${item[1]}%"></span>`;
 }

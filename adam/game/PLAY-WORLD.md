@@ -47,8 +47,7 @@ They are not presented as hundreds of newly illustrated premium assets.
 Mathematical and scientific models remain deterministic HTML/SVG, not generated
 images. Narration has not been regenerated or changed.
 
-To replace art, add a new versioned file, update the registry and corresponding
-CSS sprite URL, and review composition/hotspot coordinates before building.
+To replace art, add a new versioned file, update the registry, and review composition/hotspot coordinates before building.
 The word sheet must keep the exact 2×3 panel order. Keep descriptions accurate.
 
 ## Interactions and rewards
@@ -56,7 +55,9 @@ The word sheet must keep the exact 2×3 panel order. Keep descriptions accurate.
 * Island destinations open the existing missions and collections.
 * Captions are optional; the original story can pause, continue or replay.
 * Value crates select an answer; checking is a separate deliberate action.
-* Fractions, garden, coordinates and particle tools are visible when useful.
+* Fraction-of-an-amount practice uses four groups of five lanterns. Percentage
+  comparison stays in its own activity. Garden, coordinates and particle tools
+  are visible when useful.
 * The explorer kit reflects existing completion records. Opening a tool or
   picture does not create XP or mastery. Victory feedback follows actual awards.
 * XP, Word Stars, educational mastery and disabled Reward Credits remain separate.

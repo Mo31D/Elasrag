@@ -163,7 +163,7 @@ function xp(id: string, amount: number) {
   const total=learningSummary(window.localStorage,state.activeProfile).xp;
   const hud=document.querySelector('.hud-actions .xp');
   if(hud)hud.innerHTML=`${icon('star')} <b>${total}</b> XP <small>LV ${1+Math.floor(total/25)}</small>`;
-  if (n) {toast(`+${n} XP · Adventure progress saved`);celebrate(app,`+${n} Adventure XP`,{motion:state.settings.motion,sound:false});}
+  if (n) celebrate(app,`+${n} Adventure XP`,{motion:state.settings.motion,sound:false});
 }
 function toast(text: string) {
   let t = document.querySelector('#toast');
@@ -395,9 +395,14 @@ function drawBeacon(){
   const target=document.querySelector('#beacon-feedback')!;
   if(!correct){beaconAssisted=true;recordEvent(state,'skill_attempted',{skill:'place-value',correct:false,assisted:true});save();target.textContent=`Look at the ${e.column} column. The digit ${e.digit} represents ${e.digit} groups of ${e.unit.toLocaleString('en-GB')}. Try again when ready.`;recordEvent(state,'math_language_support',{skill:'place-value',attempt:beaconStage});save();return;}
   input.disabled=true;document.querySelector<HTMLButtonElement>('#beacon-form button')!.disabled=true;
+  document.querySelectorAll<HTMLButtonElement>('.value-crate').forEach(b=>b.disabled=true);
+  const valueStatus=document.querySelector('.value-forge output');
+  if(valueStatus)valueStatus.textContent=`${e.answer.toLocaleString('en-GB')} confirmed. This part of the beacon is powered.`;
   if(beaconStage>=2)beaconIndependent=beaconIndependent&&!beaconAssisted;
   target.textContent=`${e.digit} ${e.column} means ${e.answer.toLocaleString('en-GB')}. ${beaconAssisted||beaconStage===1?'That was useful supported practice.':'You worked out the value yourself.'}`;
   if(beaconStage===3){
+   document.querySelectorAll('.beacon-lights span').forEach(light=>light.classList.add('lit'));
+   document.querySelector('.beacon-lights')?.setAttribute('aria-label','4 of 4 steps reached · beacon restored');
    evidence(state,'place-value',true,!beaconIndependent);if(!state.maths.includes('place-value'))state.maths.push('place-value');
    xp('engine:place-value',state.settings.missionXP);if(beaconIndependent)xp('independent:place-value',state.settings.independentXP);
    finishDaily(profile(),'maths');save();

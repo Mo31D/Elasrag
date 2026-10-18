@@ -4,12 +4,20 @@ export function mountVisualTool(host, model, onExplore = () => {}) {
   const kind = model === 'fraction-amount' || model === 'percent' ? 'fractions'
     : model === 'rectangle' ? 'garden' : model === 'coordinates' ? 'map' : null;
   if (!kind) return;
-  host.innerHTML = `<details class="visual-tool" open><summary>✦ Open the hands-on ${kind === 'fractions' ? 'fraction lanterns' : kind === 'garden' ? 'garden builder' : 'treasure grid'}</summary><div class="visual-tool-body"></div></details>`;
+  host.innerHTML = `<details class="visual-tool" open><summary>✦ ${kind === 'fractions' ? 'Fraction lanterns' : kind === 'garden' ? 'Garden builder' : 'Treasure grid'} · tap to explore</summary><div class="visual-tool-body"></div></details>`;
   const body = host.querySelector('.visual-tool-body');
   const details = host.querySelector('details');
   details.addEventListener('toggle', () => { if (details.open) onExplore(); });
-  if (kind === 'fractions') {
-    body.innerHTML = `<p>Tap equal pieces to light them. Compare a fraction with a percentage.</p><label>Equal parts <select aria-label="Number of equal parts"><option value="4">4 quarters</option><option value="2">2 halves</option><option value="10">10 tenths</option></select></label><div class="visual-pieces"></div><output aria-live="polite"></output><p class="visual-note">Each piece is an equal part of the same whole. This sandbox does not submit an answer.</p>`;
+  if (model === 'fraction-amount') {
+    let selected=new Set();
+    body.innerHTML='<p>20 lanterns. Four equal groups. Tap a group to light its 5 lanterns.</p><div class="visual-pieces fraction-groups"></div><output aria-live="polite"></output>';
+    const draw=()=>{
+      body.querySelector('.visual-pieces').innerHTML=Array.from({length:4},(_,i)=>`<button type="button" data-piece="${i}" aria-label="Group ${i+1}, 5 lanterns" aria-pressed="${selected.has(i)}"><span class="lantern-dots" aria-hidden="true">${'<i>✦</i>'.repeat(5)}</span><small>5 lanterns</small></button>`).join('');
+      body.querySelector('output').textContent=`${selected.size}/4 of 20 = ${selected.size*5} lanterns lit.`;
+      body.querySelectorAll('[data-piece]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.piece);selected.has(i)?selected.delete(i):selected.add(i);onExplore();draw();});
+    };draw();
+  } else if (kind === 'fractions') {
+    body.innerHTML = `<p>Tap equal pieces to light them. Compare a fraction with a percentage.</p><label>Equal parts <select aria-label="Number of equal parts"><option value="4">4 quarters</option><option value="2">2 halves</option><option value="10">10 tenths</option></select></label><div class="visual-pieces"></div><output aria-live="polite"></output><p class="visual-note">Each piece is an equal part of the same whole.</p>`;
     let denominator = 4, selected = new Set();
     const draw = () => {
       const pieces = body.querySelector('.visual-pieces');
