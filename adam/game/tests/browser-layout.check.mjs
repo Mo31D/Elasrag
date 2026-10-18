@@ -92,6 +92,7 @@ for(const size of sizes){
   await page.getByRole('button',{name:'Sugar will dissolve',exact:true}).click();
   await page.locator('[data-action="test-sugar"]').click();
   await page.locator('[data-action="test-sand"]').click();
+  await page.waitForFunction(()=>[...document.querySelectorAll('.material-grains.sugar em')].every(e=>getComputedStyle(e).opacity==='0'));
   await page.locator('[data-stir]').click();
   assert.match(await page.locator('.particle-host [role="status"]').innerText(),/still present/);
   await page.screenshot({path:shots+'/'+size.name+'-science.png',fullPage:true});
