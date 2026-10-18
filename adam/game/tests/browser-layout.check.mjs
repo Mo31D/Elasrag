@@ -131,6 +131,15 @@ for(const size of sizes){
    await page.locator('[data-action="notebook-next"]').click();
   }
   assert.match(await page.locator('#overlay').innerText(),/Recall trail complete/);
+  await page.locator('[data-action="close"]').click();
+  await page.getByRole('button',{name:'Adventure map',exact:true}).click();
+  await page.getByRole('button',{name:'Open Number Kingdom',exact:true}).click();await page.locator('[data-action="engine-0"]').click();
+  await page.locator('#math-form button').click();assert.match(await page.locator('#feedback').innerText(),/Enter an answer when/);
+  await page.locator('#math-answer').fill('700');await page.locator('#math-form button').click();assert.equal(await page.locator('#math-form button').isDisabled(),true);
+  await page.locator('[data-action="extension"]').click();
+  for(let attempt=0;attempt<2;attempt++){await page.locator('#math-answer').fill('0');await page.locator('#math-form button').click();}
+  assert.match(await page.locator('#feedback').innerText(),/8,000/);assert.doesNotMatch(await page.locator('#feedback').innerText(),/700/);
+  await page.locator('#math-answer').fill('8000');await page.locator('#math-form button').click();assert.match(await page.locator('.xp').innerText(),/\b18\s+XP\b/);
   assert.equal(errors.length,0,'cross-game runtime errors: '+errors.join('; '));
   console.log('PASS',size.name,geometry);
  }catch(e){

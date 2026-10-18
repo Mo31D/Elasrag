@@ -1,3 +1,4 @@
+import {dayKey} from './daily-learning.js';
 export const KEY = 'ala-adventure-v1';
 export const intervals = [1, 3, 7, 14, 30];
 export function fresh() {
@@ -59,6 +60,7 @@ export function evidence(
     contexts: [],
   };
   if (!correct || assisted) {
+    if(s.independent>0&&s.due&&s.due<=now)s.reviewDue??=s.due;
     s.assisted++;
     s.due = now + 86400000;
     s.last = now;
@@ -67,8 +69,9 @@ export function evidence(
   }
   // Independent evidence counts once per day. Later recall must happen on a later day.
   const lastIndependent=s.lastIndependent ?? (s.independent>0?s.last:0);
-  if (!lastIndependent || new Date(lastIndependent).toDateString() !== new Date(now).toDateString()) {
-    if (s.independent > 0 && now >= s.due) s.reviewCount++;
+  if (!lastIndependent || dayKey(lastIndependent) !== dayKey(now)) {
+    if (s.independent > 0 && now >= (s.reviewDue||s.due)) s.reviewCount++;
+    delete s.reviewDue;
     s.independent++;
     s.lastIndependent=now;
     s.due = now + intervals[Math.min(s.reviewCount, 4)] * 86400000;
