@@ -71,3 +71,8 @@ viewport/touch configurations, real routes, retries, notebook persistence,
 visual models, reward deduplication, image failures and mobile layout geometry.
 Screenshots are retained as a workflow artifact for visual review.
 These are emulated viewports, not physical Samsung/iPad Safari certification.
+
+Story-picture positions are external CSS classes, compatible with Word Kingdom’s
+strict Content Security Policy. Native progress elements also avoid inline
+styles. The policy remains unchanged; browser checks assert the computed image
+and correct sprite position, not only the dimensions of an empty element.

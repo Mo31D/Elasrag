@@ -2,6 +2,7 @@ import {worldMarkup,celebrate,mountValueForge} from './play-world.js';
 import {wordScene,PLAY_ART} from '../public/shared/play-art.js';
 import {dailyPlan,finishDaily,reviewOrder,beaconLesson,beaconExample,nextNotebookFacet,completedDiscoveryToday} from './daily-learning.js';
 import './style.css';
+import '../public/shared/play-art.css';
 import {discoverWord,notebookWords,SCIENCE_VOCABULARY} from '../public/shared/notebook.js';
 import {WORDS} from '../../words/words-data.js';
 import { mountVisualTool } from './visual-tools.js';

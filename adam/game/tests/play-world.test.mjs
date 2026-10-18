@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {Window} from 'happy-dom';
 import {worldMarkup,mountValueForge} from '../src/play-world.js';
 import {wordScene,PLAY_ART} from '../public/shared/play-art.js';
+import {readFile} from 'node:fs/promises';
 
 test('world destinations and explorer tools reflect real completed learning, with escaped content',()=>{
  const win=new Window();const host=win.document.createElement('main');
@@ -37,8 +38,23 @@ test('visual base-ten choices select values without submitting or recording prog
 
 test('only reviewed vocabulary contexts receive story artwork and arbitrary CSS is rejected',()=>{
  assert.match(wordScene({term:'RELIEVED'}),/finds his lost dog safe/);
- assert.match(wordScene({term:'notice'}),/--scene-x:0%/);
+ assert.match(wordScene({term:'notice'}),/word-scene-notice/);
+ assert.doesNotMatch(wordScene({term:'notice'}),/style=/);
+ assert.equal(wordScene({term:'constructor'}),'');
  assert.equal(wordScene({term:'fraction'}),'');
  assert.doesNotMatch(wordScene({term:'notice'},'x" onclick="alert(1)'),/onclick=/);
  assert.match(PLAY_ART.world,/^\/adam\/assets\/play\/.+\.webp$/);
+});
+
+test('word context styling is self-hosted and works without weakening the strict CSP',async()=>{
+ const html=await readFile(new URL('../../words/index.html',import.meta.url),'utf8');
+ const css=await readFile(new URL('../public/shared/play-art.css',import.meta.url),'utf8');
+ assert.match(html,/style-src 'self';/);
+ assert.doesNotMatch(html,/unsafe-inline/);
+ assert.match(html,/shared\/play-art\.css/);
+ for(const term of ['notice','puzzled','investigate','relieved','curious','confident']){
+  assert.match(wordScene({term}),new RegExp('word-scene-'+term));
+  assert.ok(css.includes('.word-scene-'+term+'{'));
+  assert.doesNotMatch(wordScene({term}),/style=/);
+ }
 });

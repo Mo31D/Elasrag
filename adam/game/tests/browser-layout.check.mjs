@@ -48,7 +48,7 @@ for(const size of sizes){
   if(size.width<=700)assert.ok(geometry.camp.top>=geometry.frame.bottom,'camp covers the map');
   assert.ok(geometry.documentWidth<=geometry.viewport+2,'horizontal overflow');
   assert.equal(errors.length,0,'runtime errors: '+errors.join('; '));
-  await page.screenshot({path:shots+'/'+size.name+'.png',fullPage:true});
+  await page.screenshot({animations:'disabled',path:shots+'/'+size.name+'.png',fullPage:true});
   // The artwork is a playable scene. Optional text opens on request, without a new route.
   await page.locator('[data-action="mission"]').click();
   await page.locator('.scene-art').waitFor();
@@ -60,7 +60,7 @@ for(const size of sizes){
   await page.locator('[data-action="clue-empty"]').click();
   assert.equal(await page.locator('.word-illustration .word-story-art').count(),1,'discovered word has a contextual picture');
   await page.locator('#overlay .close').click();
-  await page.screenshot({path:shots+'/'+size.name+'-detective.png',fullPage:true});
+  await page.screenshot({animations:'disabled',path:shots+'/'+size.name+'-detective.png',fullPage:true});
   await page.getByRole('button',{name:'Adventure map',exact:true}).click();
   // Exercise the actual visual tools at every viewport, not just the atlas.
   await page.locator('[data-action="maths"]').click();
@@ -71,7 +71,7 @@ for(const size of sizes){
   await page.locator('[data-piece="0"]').click();
   assert.match(await page.locator('.visual-tool output').innerText(),/1\/4 of 20 = 5 lanterns/);
   await page.locator('.visual-tool').scrollIntoViewIfNeeded();
-  await page.screenshot({path:shots+'/'+size.name+'-fractions.png',fullPage:true});
+  await page.screenshot({animations:'disabled',path:shots+'/'+size.name+'-fractions.png',fullPage:true});
   await page.locator('[data-action="maths"]').click();
   await page.locator('[data-action="engine-8"]').click();
   assert.equal(await page.locator('.visual-tool').getAttribute('open'),'','visual help should be visible without hunting for it');
@@ -95,7 +95,7 @@ for(const size of sizes){
   await page.waitForFunction(()=>[...document.querySelectorAll('.material-grains.sugar em')].every(e=>getComputedStyle(e).opacity==='0'));
   await page.locator('[data-stir]').click();
   assert.match(await page.locator('.particle-host [role="status"]').innerText(),/still present/);
-  await page.screenshot({path:shots+'/'+size.name+'-science.png',fullPage:true});
+  await page.screenshot({animations:'disabled',path:shots+'/'+size.name+'-science.png',fullPage:true});
   await page.getByRole('button',{name:'Record observations →',exact:true}).click();
   await page.getByRole('button',{name:'Sugar is soluble in water; sand is insoluble.',exact:true}).click();
   await page.getByRole('link',{name:'Return to the Adventure Atlas',exact:true}).click();
@@ -106,14 +106,18 @@ for(const size of sizes){
   await page.locator('#overlay .close').click();
   await page.getByRole('button',{name:'Enter Word Kingdom',exact:true}).click();
   await page.getByRole('button',{name:'Open apple card',exact:true}).click();
-  await page.screenshot({path:shots+'/'+size.name+'-word-card.png',fullPage:true});
+  await page.screenshot({animations:'disabled',path:shots+'/'+size.name+'-word-card.png',fullPage:true});
   await page.getByRole('button',{name:'Close card',exact:true}).click();
   await page.locator('#wk-collection').selectOption('all');
   await page.locator('#wk-search').fill('puzzled');
   await page.getByRole('button',{name:'Open puzzled card',exact:true}).click();
+  const sceneStyle=await page.locator('.wk-card-front .word-story-art').evaluate(e=>({image:getComputedStyle(e).backgroundImage,position:getComputedStyle(e).backgroundPosition}));
+  assert.match(sceneStyle.image,/word-stories-v1\.webp/,'story art must render under the real strict CSP, not only reserve space');
+  assert.equal(sceneStyle.position,'100% 0%','puzzled must show its own context, not the first sprite');
+  await page.evaluate(async()=>{const img=new Image();img.src='/adam/assets/play/word-stories-v1.webp';await img.decode();});
   const art=await page.locator('.wk-card-front .word-story-art').boundingBox();
   assert.ok(Math.abs(art.width-art.height)<2,'context art must preserve square proportions');
-  await page.screenshot({path:shots+'/'+size.name+'-word-story.png',fullPage:true});
+  await page.screenshot({animations:'disabled',path:shots+'/'+size.name+'-word-story.png',fullPage:true});
   await page.locator('#wk-flip').click();
   const meaning=await page.locator('.wk-definition').innerText();
   await page.locator('#wk-practise').click();
@@ -127,11 +131,12 @@ for(const size of sizes){
   await page.locator('#wk-spell-form button[type="submit"]').click();
   assert.match(await page.locator('#wk-feedback').innerText(),/word stars/);
   await page.getByRole('button',{name:'Close card',exact:true}).click();
+  assert.ok(await page.locator('.wk-word progress').evaluate(e=>e.value>=1&&e.max===3),'saved learning is visible in the CSP-safe progress indicator');
   await page.getByRole('link',{name:'Return to Adventure Atlas',exact:true}).click();
   await page.getByRole('button',{name:'Detective notebook',exact:true}).click();
   await page.locator('#notebook-search').fill('apple');
   assert.ok(await page.locator('[data-notebook-term="apple"]').isVisible());
-  await page.screenshot({path:shots+'/'+size.name+'-notebook.png',fullPage:true});
+  await page.screenshot({animations:'disabled',path:shots+'/'+size.name+'-notebook.png',fullPage:true});
   await page.locator('#overlay .close').click();
   await page.locator('[data-action="daily"]').click();
   assert.match(await page.locator('.daily-world').innerText(),/A little learning/);
@@ -155,7 +160,7 @@ for(const size of sizes){
   assert.equal(await page.locator('.beacon-lights .lit').count(),4,'completed beacon lights all four crystals');
   assert.equal(await page.locator('.value-crate:disabled').count(),4,'a solved choice cannot be accidentally changed');
   assert.match(await page.locator('.xp').innerText(),/\b18\s+XP\b/,'HUD must update immediately after the new lesson awards XP');
-  await page.screenshot({path:shots+'/'+size.name+'-beacon.png',fullPage:true});
+  await page.screenshot({animations:'disabled',path:shots+'/'+size.name+'-beacon.png',fullPage:true});
   await page.locator('[data-action="daily"]').first().click();
   assert.ok(await page.locator('.daily-steps li.done').count()>=1);
   await page.reload();await page.locator('[data-action="daily"]').click();assert.ok(await page.locator('.daily-steps li.done').count()>=1);
@@ -190,7 +195,7 @@ for(const size of sizes){
   console.log('PASS',size.name,geometry);
  }catch(e){
   failures.push(size.name+': '+e.message);
-  await page.screenshot({path:shots+'/'+size.name+'-failed.png',fullPage:true}).catch(()=>{});
+  await page.screenshot({animations:'disabled',path:shots+'/'+size.name+'-failed.png',fullPage:true}).catch(()=>{});
  }finally{await ctx.close();}
 }
 await browser.close();
