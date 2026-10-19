@@ -1,0 +1,8 @@
+/* Scene positioning belongs in a self-hosted stylesheet: Word Kingdom forbids inline styles. */
+.word-story-art{--scene-image:url('/adam/assets/play/word-stories-v1.webp')}
+.word-scene-notice{--scene-x:0%;--scene-y:0%}
+.word-scene-puzzled{--scene-x:100%;--scene-y:0%}
+.word-scene-investigate{--scene-x:0%;--scene-y:50%}
+.word-scene-relieved{--scene-x:100%;--scene-y:50%}
+.word-scene-curious{--scene-x:0%;--scene-y:100%}
+.word-scene-confident{--scene-x:100%;--scene-y:100%}

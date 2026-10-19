@@ -64,3 +64,5 @@
 @media(max-width:700px){.wk-hero{padding:25px 18px 20px;grid-template-columns:minmax(0,1fr)}.wk-hero-visual{display:none}.wk-hero h1{font-size:34px;max-width:330px;margin:10px 0}.wk-hero p{font-size:14px}.wk-section-bar{padding-top:16px}.wk-card-art{min-height:190px}.wk-picture:has(.word-story-art){padding:0;overflow:hidden}}
 
 .wk-card-art:has(.word-story-art){display:flex;align-items:center;justify-content:center}.wk-card-art .word-story-art{flex:0 0 auto;width:min(100%,300px);height:auto;aspect-ratio:1}.wk-picture:has(.word-story-art){display:grid;place-items:center}.wk-picture .word-story-art{width:100%;height:auto;aspect-ratio:1}
+
+progress.wk-mastery-track{appearance:none;-webkit-appearance:none;border:0;width:100%;height:4px;display:block;flex-shrink:0;background:#071e2b80}progress.wk-mastery-track::-webkit-progress-bar{background:#071e2b80;border-radius:99px}progress.wk-mastery-track::-webkit-progress-value{background:linear-gradient(90deg,#5ac4b4,#f0cb79);border-radius:99px}progress.wk-mastery-track::-moz-progress-bar{background:linear-gradient(90deg,#5ac4b4,#f0cb79);border-radius:99px}
