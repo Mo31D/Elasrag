@@ -1,0 +1,2515 @@
+{
+  "schemaVersion": 1,
+  "lessons": [
+    {
+      "wordId": "word-receipt",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-receipt-sense-1",
+          "lexemeId": "word-receipt-noun",
+          "translationAr": "إيصال",
+          "explanationAr": "ورقة أو رسالة بتثبت إنك دفعت.",
+          "context": "Shopping"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-receipt-example-1",
+          "senseId": "word-receipt-sense-1",
+          "kind": "everyday",
+          "en": "Can I have a receipt, please?",
+          "ar": "ممكن آخد إيصال، لو سمحت؟",
+          "audioId": null
+        },
+        {
+          "id": "word-receipt-example-2",
+          "senseId": "word-receipt-sense-1",
+          "kind": "different_context",
+          "en": "I kept the receipt in my coat pocket.",
+          "ar": "احتفظت بالإيصال في جيب الجاكيت.",
+          "audioId": null
+        },
+        {
+          "id": "word-receipt-example-3",
+          "senseId": "word-receipt-sense-1",
+          "kind": "extended",
+          "en": "You may need the receipt if you want to return the kettle.",
+          "ar": "ممكن تحتاج الإيصال لو عايز ترجع الغلاية.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "keep the receipt",
+        "noteAr": "قول a receipt لو إيصال واحد؛ recipe معناها وصفة، مش إيصال."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-receipt",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "re",
+          "ceipt"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "حرف p هنا ساكت. ركّز على آخر مقطع، ومتضيفش حركة بعد t.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل إيصال جنب غلاية عايز ترجعها.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-receipt-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى receipt إيه في الموقف ده؟",
+          "answer": "إيصال"
+        },
+        {
+          "id": "word-receipt-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: receipt",
+          "answer": "إيصال",
+          "options": [
+            "إيصال",
+            "مناسب ومريح",
+            "يتطلب"
+          ]
+        },
+        {
+          "id": "word-receipt-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Please keep your ____ as proof of payment.",
+          "answer": "receipt"
+        },
+        {
+          "id": "word-receipt-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام receipt. راجع التركيب: keep the receipt",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-receipt-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-queue",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-queue-sense-1",
+          "lexemeId": "word-queue-noun",
+          "translationAr": "طابور",
+          "explanationAr": "ناس واقفين مستنيين دورهم.",
+          "context": "Transport"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-queue-example-1",
+          "senseId": "word-queue-sense-1",
+          "kind": "everyday",
+          "en": "There is a queue at the bus stop.",
+          "ar": "في طابور عند موقف الأتوبيس.",
+          "audioId": null
+        },
+        {
+          "id": "word-queue-example-2",
+          "senseId": "word-queue-sense-1",
+          "kind": "different_context",
+          "en": "We joined the queue outside the shop.",
+          "ar": "وقفنا في الطابور برّه المحل.",
+          "audioId": null
+        },
+        {
+          "id": "word-queue-example-3",
+          "senseId": "word-queue-sense-1",
+          "kind": "extended",
+          "en": "I left the queue when I realised I could buy the ticket online.",
+          "ar": "سيبت الطابور لما اكتشفت إني أقدر أشتري التذكرة أونلاين.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "join a queue",
+        "noteAr": "قول in a queue؛ queue اسم هنا، وممكن تبقى فعل في درس استخدام لاحق."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-queue",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "queue"
+        ],
+        "primaryStress": 1,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الكلمة مقطع واحد؛ حروفها الخمسة مش خمسة أصوات. محتاجة نموذج مسموع لتوضيح بدايتها.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل ناس مستنية الأتوبيس بالترتيب.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-queue-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى queue إيه في الموقف ده؟",
+          "answer": "طابور"
+        },
+        {
+          "id": "word-queue-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: queue",
+          "answer": "طابور",
+          "options": [
+            "يأكد",
+            "مناسب للغرض",
+            "طابور"
+          ]
+        },
+        {
+          "id": "word-queue-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Please join the ____ and wait your turn.",
+          "answer": "queue"
+        },
+        {
+          "id": "word-queue-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام queue. راجع التركيب: join a queue",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-queue-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-reliable",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-reliable-sense-1",
+          "lexemeId": "word-reliable-adjective",
+          "translationAr": "ممكن تعتمد عليه",
+          "explanationAr": "شخص أو حاجة تقدر تعتمد عليهم.",
+          "context": "Work"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-reliable-example-1",
+          "senseId": "word-reliable-sense-1",
+          "kind": "everyday",
+          "en": "The bus service is reliable.",
+          "ar": "خدمة الأتوبيس ممكن تعتمد عليها.",
+          "audioId": null
+        },
+        {
+          "id": "word-reliable-example-2",
+          "senseId": "word-reliable-sense-1",
+          "kind": "different_context",
+          "en": "We need a reliable person to open the shop.",
+          "ar": "محتاجين حد نقدر نعتمد عليه يفتح المحل.",
+          "audioId": null
+        },
+        {
+          "id": "word-reliable-example-3",
+          "senseId": "word-reliable-sense-1",
+          "kind": "extended",
+          "en": "She is reliable enough to manage the shift on her own.",
+          "ar": "هي قد المسؤولية ونقدر نعتمد عليها تدير الوردية لوحدها.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "a reliable service",
+        "noteAr": "الصفة قبل الاسم: a reliable colleague. مش reliably colleague."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-reliable",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "re",
+          "li",
+          "a",
+          "ble"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "خلّي المقطع التاني أوضح، وآخر مقطع خفيف. تقسيم الكتابة مساعد، مش نطق عربي بديل.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "اربطها بزميل بييجي في ميعاده كل مرة.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-reliable-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى reliable إيه في الموقف ده؟",
+          "answer": "ممكن تعتمد عليه"
+        },
+        {
+          "id": "word-reliable-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: reliable",
+          "answer": "ممكن تعتمد عليه",
+          "options": [
+            "ممتن",
+            "ممكن تعتمد عليه",
+            "يوصّل"
+          ]
+        },
+        {
+          "id": "word-reliable-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "We need a ____ service that arrives on time.",
+          "answer": "reliable"
+        },
+        {
+          "id": "word-reliable-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام reliable. راجع التركيب: a reliable service",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-reliable-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-convenient",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-convenient-sense-1",
+          "lexemeId": "word-convenient-adjective",
+          "translationAr": "مناسب ومريح",
+          "explanationAr": "يناسب ظروفك أو يوفر عليك وقت ومجهود.",
+          "context": "Appointments"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-convenient-example-1",
+          "senseId": "word-convenient-sense-1",
+          "kind": "everyday",
+          "en": "Is Friday convenient for you?",
+          "ar": "يوم الجمعة مناسب ليك؟",
+          "audioId": null
+        },
+        {
+          "id": "word-convenient-example-2",
+          "senseId": "word-convenient-sense-1",
+          "kind": "different_context",
+          "en": "The station is in a convenient location.",
+          "ar": "المحطة في مكان سهل الوصول ليه.",
+          "audioId": null
+        },
+        {
+          "id": "word-convenient-example-3",
+          "senseId": "word-convenient-sense-1",
+          "kind": "extended",
+          "en": "It would be more convenient to collect the parcel after work.",
+          "ar": "هيبقى أسهل أستلم الطرد بعد الشغل.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "convenient for you",
+        "noteAr": "مناسب من ناحية الوقت أو السهولة؛ مش معناها comfortable بمعنى مريح للجسم."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-convenient",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "con",
+          "ven",
+          "ient"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الضغط على المقطع التاني؛ صوت v محتاج الشفة السفلية تلمس الأسنان العلوية مع اهتزاز.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل استلام طرد من محل جنب شغلك.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-convenient-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى convenient إيه في الموقف ده؟",
+          "answer": "مناسب ومريح"
+        },
+        {
+          "id": "word-convenient-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: convenient",
+          "answer": "مناسب ومريح",
+          "options": [
+            "مناسب ومريح",
+            "يفكّر حد بحاجة",
+            "دقيق وصحيح"
+          ]
+        },
+        {
+          "id": "word-convenient-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Is this time ____ for you?",
+          "answer": "convenient"
+        },
+        {
+          "id": "word-convenient-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام convenient. راجع التركيب: convenient for you",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-convenient-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-confirm",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-confirm-sense-1",
+          "lexemeId": "word-confirm-verb",
+          "translationAr": "يأكد",
+          "explanationAr": "يأكد إن معلومة أو ترتيب صحيح.",
+          "context": "Appointments"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-confirm-example-1",
+          "senseId": "word-confirm-sense-1",
+          "kind": "everyday",
+          "en": "Please confirm the time.",
+          "ar": "لو سمحت أكد الميعاد.",
+          "audioId": null
+        },
+        {
+          "id": "word-confirm-example-2",
+          "senseId": "word-confirm-sense-1",
+          "kind": "different_context",
+          "en": "The hotel has confirmed our booking.",
+          "ar": "الفندق أكد حجزنا.",
+          "audioId": null
+        },
+        {
+          "id": "word-confirm-example-3",
+          "senseId": "word-confirm-sense-1",
+          "kind": "extended",
+          "en": "Could you confirm whether the appointment is still going ahead?",
+          "ar": "ممكن تأكد إذا كان المعاد لسه قائم؟",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "confirm a booking",
+        "noteAr": "confirm the time، من غير on بين الفعل والمفعول."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-confirm",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "con",
+          "firm"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الضغط في الآخر. في المرجع البريطاني المختار، r مش بتتنطق هنا قبل m.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "اربطها برسالة تأكيد حجز.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-confirm-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى confirm إيه في الموقف ده؟",
+          "answer": "يأكد"
+        },
+        {
+          "id": "word-confirm-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: confirm",
+          "answer": "يأكد",
+          "options": [
+            "يتطلب",
+            "مناسب للموقف",
+            "يأكد"
+          ]
+        },
+        {
+          "id": "word-confirm-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Please ____ your booking by email.",
+          "answer": "confirm"
+        },
+        {
+          "id": "word-confirm-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام confirm. راجع التركيب: confirm a booking",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-confirm-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-deliver",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-deliver-sense-1",
+          "lexemeId": "word-deliver-verb",
+          "translationAr": "يوصّل",
+          "explanationAr": "يوصل حاجة لحد أو لمكان.",
+          "context": "Shopping"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-deliver-example-1",
+          "senseId": "word-deliver-sense-1",
+          "kind": "everyday",
+          "en": "They deliver groceries.",
+          "ar": "هما بيوصلوا طلبات البقالة.",
+          "audioId": null
+        },
+        {
+          "id": "word-deliver-example-2",
+          "senseId": "word-deliver-sense-1",
+          "kind": "different_context",
+          "en": "Can you deliver the parcel to my office?",
+          "ar": "ممكن توصل الطرد لمكتبي؟",
+          "audioId": null
+        },
+        {
+          "id": "word-deliver-example-3",
+          "senseId": "word-deliver-sense-1",
+          "kind": "extended",
+          "en": "The shop will deliver the sofa once we have agreed a date.",
+          "ar": "المحل هيوصل الكنبة أول ما نتفق على معاد.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "deliver to an address",
+        "noteAr": "deliver something to someone؛ delivery اسم الخدمة."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-deliver",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "de",
+          "liv",
+          "er"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "اضغط المقطع اللي في النص؛ v بصوت، مش f. آخر r مش بتتنطق قبل وقفة في المرجع المختار.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل طرد عند باب البيت.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-deliver-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى deliver إيه في الموقف ده؟",
+          "answer": "يوصّل"
+        },
+        {
+          "id": "word-deliver-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: deliver",
+          "answer": "يوصّل",
+          "options": [
+            "يلغي",
+            "يوصّل",
+            "مناسب للغرض"
+          ]
+        },
+        {
+          "id": "word-deliver-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Can you ____ this parcel to my address?",
+          "answer": "deliver"
+        },
+        {
+          "id": "word-deliver-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام deliver. راجع التركيب: deliver to an address",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-deliver-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-remind",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-remind-sense-1",
+          "lexemeId": "word-remind-verb",
+          "translationAr": "يفكّر حد بحاجة",
+          "explanationAr": "يساعد حد يفتكر حاجة نسيها أو ممكن ينساها.",
+          "context": "Work"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-remind-example-1",
+          "senseId": "word-remind-sense-1",
+          "kind": "everyday",
+          "en": "Please remind me tomorrow.",
+          "ar": "لو سمحت فكرني بكرة.",
+          "audioId": null
+        },
+        {
+          "id": "word-remind-example-2",
+          "senseId": "word-remind-sense-1",
+          "kind": "different_context",
+          "en": "Can you remind me to bring my ID?",
+          "ar": "ممكن تفكرني أجيب بطاقتي؟",
+          "audioId": null
+        },
+        {
+          "id": "word-remind-example-3",
+          "senseId": "word-remind-sense-1",
+          "kind": "extended",
+          "en": "This message is to remind you that your appointment is on Monday.",
+          "ar": "الرسالة دي عشان تفكرك إن معادك يوم الاتنين.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "remind someone to do something",
+        "noteAr": "remind me to call، مش remind me call. remember هو إنك إنت تفتكر."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-remind",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "re",
+          "mind"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "اضغط المقطع التاني؛ حافظ على نهاية nd من غير حركة زيادة.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل تنبيه على الموبايل قبل المعاد.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-remind-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى remind إيه في الموقف ده؟",
+          "answer": "يفكّر حد بحاجة"
+        },
+        {
+          "id": "word-remind-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: remind",
+          "answer": "يفكّر حد بحاجة",
+          "options": [
+            "يفكّر حد بحاجة",
+            "ممتن",
+            "ميزانية"
+          ]
+        },
+        {
+          "id": "word-remind-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Please ____ me to bring my ID.",
+          "answer": "remind"
+        },
+        {
+          "id": "word-remind-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام remind. راجع التركيب: remind someone to do something",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-remind-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-require",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-require-sense-1",
+          "lexemeId": "word-require-verb",
+          "translationAr": "يتطلب",
+          "explanationAr": "يحتاج حاجة كشرط؛ رسمي أكتر من need.",
+          "context": "Work"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-require-example-1",
+          "senseId": "word-require-sense-1",
+          "kind": "everyday",
+          "en": "We require proof of address.",
+          "ar": "محتاجين إثبات عنوان.",
+          "audioId": null
+        },
+        {
+          "id": "word-require-example-2",
+          "senseId": "word-require-sense-1",
+          "kind": "different_context",
+          "en": "This job requires some experience.",
+          "ar": "الشغلانة دي محتاجة شوية خبرة.",
+          "audioId": null
+        },
+        {
+          "id": "word-require-example-3",
+          "senseId": "word-require-sense-1",
+          "kind": "extended",
+          "en": "Visitors are required to sign in before entering the building.",
+          "ar": "مطلوب من الزوار يسجلوا دخولهم قبل ما يدخلوا المبنى.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "require proof of address",
+        "noteAr": "require someone to do something؛ في المبني للمجهول: be required to."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-require",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "re",
+          "quire"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الضغط على الجزء التاني. نهاية الكلمة ممكن يختلف تحقيقها بين المتكلمين؛ استنى مرجع مسموع قبل التقليد.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "اربطها بخانة مستند مطلوب في استمارة.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-require-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى require إيه في الموقف ده؟",
+          "answer": "يتطلب"
+        },
+        {
+          "id": "word-require-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: require",
+          "answer": "يتطلب",
+          "options": [
+            "دقيق وصحيح",
+            "دَين",
+            "يتطلب"
+          ]
+        },
+        {
+          "id": "word-require-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "We ____ proof of address before opening an account.",
+          "answer": "require"
+        },
+        {
+          "id": "word-require-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام require. راجع التركيب: require proof of address",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-require-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-suitable",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-suitable-sense-1",
+          "lexemeId": "word-suitable-adjective",
+          "translationAr": "مناسب للغرض",
+          "explanationAr": "ينفع لشخص أو غرض معين.",
+          "context": "Shopping"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-suitable-example-1",
+          "senseId": "word-suitable-sense-1",
+          "kind": "everyday",
+          "en": "Are these shoes suitable for work?",
+          "ar": "الجزمة دي مناسبة للشغل؟",
+          "audioId": null
+        },
+        {
+          "id": "word-suitable-example-2",
+          "senseId": "word-suitable-sense-1",
+          "kind": "different_context",
+          "en": "This film is not suitable for young children.",
+          "ar": "الفيلم ده مش مناسب للأطفال الصغيرين.",
+          "audioId": null
+        },
+        {
+          "id": "word-suitable-example-3",
+          "senseId": "word-suitable-sense-1",
+          "kind": "extended",
+          "en": "We need to find a room that is suitable for a confidential meeting.",
+          "ar": "محتاجين نلاقي أوضة تنفع لاجتماع سري.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "suitable for",
+        "noteAr": "suitable for children، مش suitable to children في المعنى ده."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-suitable",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "suit",
+          "a",
+          "ble"
+        ],
+        "primaryStress": 1,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الضغط على أول مقطع؛ النهاية خفيفة. متقسمش كل حرف في النهاية لصوت لوحده.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل جزمة مناسبة لقواعد اللبس في الشغل.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-suitable-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى suitable إيه في الموقف ده؟",
+          "answer": "مناسب للغرض"
+        },
+        {
+          "id": "word-suitable-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: suitable",
+          "answer": "مناسب للغرض",
+          "options": [
+            "قادر",
+            "مناسب للغرض",
+            "مناسب للموقف"
+          ]
+        },
+        {
+          "id": "word-suitable-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Is this room ____ for a meeting?",
+          "answer": "suitable"
+        },
+        {
+          "id": "word-suitable-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام suitable. راجع التركيب: suitable for",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-suitable-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-grateful",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-grateful-sense-1",
+          "lexemeId": "word-grateful-adjective",
+          "translationAr": "ممتن",
+          "explanationAr": "حاسس بالتقدير لمساعدة أو معروف.",
+          "context": "Customer service"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-grateful-example-1",
+          "senseId": "word-grateful-sense-1",
+          "kind": "everyday",
+          "en": "I am grateful for your help.",
+          "ar": "أنا ممتن لمساعدتك.",
+          "audioId": null
+        },
+        {
+          "id": "word-grateful-example-2",
+          "senseId": "word-grateful-sense-1",
+          "kind": "different_context",
+          "en": "She was grateful to her neighbour for the lift.",
+          "ar": "هي كانت ممتنة لجارها عشان وصلها بالعربية.",
+          "audioId": null
+        },
+        {
+          "id": "word-grateful-example-3",
+          "senseId": "word-grateful-sense-1",
+          "kind": "extended",
+          "en": "I would be grateful if you could send me a copy of the invoice.",
+          "ar": "أكون شاكر ليك لو ممكن تبعتلي نسخة من الفاتورة.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "grateful to someone for something",
+        "noteAr": "grateful for your help؛ مش grateful of your help."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-grateful",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "grate",
+          "ful"
+        ],
+        "primaryStress": 1,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "اضغط أول مقطع، وخلي آخر مقطع خفيف؛ نهاية ful مش بالضرورة زي كلمة full لوحدها.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "افتكر حد ساعدك لما كنت محتاج مساعدة.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-grateful-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى grateful إيه في الموقف ده؟",
+          "answer": "ممتن"
+        },
+        {
+          "id": "word-grateful-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: grateful",
+          "answer": "ممتن",
+          "options": [
+            "ممتن",
+            "يلغي",
+            "يوافق رسميًا"
+          ]
+        },
+        {
+          "id": "word-grateful-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "I am ____ for your help.",
+          "answer": "grateful"
+        },
+        {
+          "id": "word-grateful-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام grateful. راجع التركيب: grateful to someone for something",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-grateful-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-accurate",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-accurate-sense-1",
+          "lexemeId": "word-accurate-adjective",
+          "translationAr": "دقيق وصحيح",
+          "explanationAr": "معلومات أو قياسات قريبة من الحقيقة ومن غير أخطاء.",
+          "context": "Work"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-accurate-example-1",
+          "senseId": "word-accurate-sense-1",
+          "kind": "everyday",
+          "en": "Is this address accurate?",
+          "ar": "العنوان ده صحيح؟",
+          "audioId": null
+        },
+        {
+          "id": "word-accurate-example-2",
+          "senseId": "word-accurate-sense-1",
+          "kind": "different_context",
+          "en": "We need accurate measurements before ordering the shelves.",
+          "ar": "محتاجين مقاسات دقيقة قبل ما نطلب الرفوف.",
+          "audioId": null
+        },
+        {
+          "id": "word-accurate-example-3",
+          "senseId": "word-accurate-sense-1",
+          "kind": "extended",
+          "en": "The report is broadly accurate, although one figure needs checking.",
+          "ar": "التقرير دقيق بشكل عام، بس في رقم محتاج مراجعة.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "accurate information",
+        "noteAr": "accurate صفة؛ accurately حال لوصف طريقة عمل حاجة."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-accurate",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "ac",
+          "cu",
+          "rate"
+        ],
+        "primaryStress": 1,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الضغط على الأول. نهاية الكلمة دي مش زي نطق الفعل rate؛ محتاجة نموذج مسموع.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل قياس رف مرتين قبل الشراء.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-accurate-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى accurate إيه في الموقف ده؟",
+          "answer": "دقيق وصحيح"
+        },
+        {
+          "id": "word-accurate-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: accurate",
+          "answer": "دقيق وصحيح",
+          "options": [
+            "ميزانية",
+            "يقرّ أو يأكد الاستلام",
+            "دقيق وصحيح"
+          ]
+        },
+        {
+          "id": "word-accurate-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "We need ____ measurements before ordering.",
+          "answer": "accurate"
+        },
+        {
+          "id": "word-accurate-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام accurate. راجع التركيب: accurate information",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-accurate-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-appropriate",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-appropriate-sense-1",
+          "lexemeId": "word-appropriate-adjective",
+          "translationAr": "مناسب للموقف",
+          "explanationAr": "مناسب لطبيعة الموقف أو قواعده.",
+          "context": "Work"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-appropriate-example-1",
+          "senseId": "word-appropriate-sense-1",
+          "kind": "everyday",
+          "en": "Is this jacket appropriate for the interview?",
+          "ar": "الجاكيت ده مناسب للمقابلة؟",
+          "audioId": null
+        },
+        {
+          "id": "word-appropriate-example-2",
+          "senseId": "word-appropriate-sense-1",
+          "kind": "different_context",
+          "en": "Please use appropriate language at work.",
+          "ar": "لو سمحت استخدم كلام مناسب في الشغل.",
+          "audioId": null
+        },
+        {
+          "id": "word-appropriate-example-3",
+          "senseId": "word-appropriate-sense-1",
+          "kind": "extended",
+          "en": "It may be more appropriate to discuss the complaint in private.",
+          "ar": "ممكن يكون الأنسب نتكلم عن الشكوى على انفراد.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "appropriate for",
+        "noteAr": "appropriate for a formal meeting؛ ممكن suitable تبقى قريبة، لكن هنا فيه مراعاة للموقف."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-appropriate",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "ap",
+          "pro",
+          "pri",
+          "ate"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "اضغط التاني. دي الصفة؛ الفعل بنفس الكتابة له نهاية مختلفة، فلا تعمم النطق على الاتنين.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل اختيار لبس لمقابلة شغل.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-appropriate-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى appropriate إيه في الموقف ده؟",
+          "answer": "مناسب للموقف"
+        },
+        {
+          "id": "word-appropriate-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: appropriate",
+          "answer": "مناسب للموقف",
+          "options": [
+            "إضافي",
+            "مناسب للموقف",
+            "دَين"
+          ]
+        },
+        {
+          "id": "word-appropriate-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Please wear clothes that are ____ for the interview.",
+          "answer": "appropriate"
+        },
+        {
+          "id": "word-appropriate-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام appropriate. راجع التركيب: appropriate for",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-appropriate-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-cancel",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-cancel-sense-1",
+          "lexemeId": "word-cancel-verb",
+          "translationAr": "يلغي",
+          "explanationAr": "يقرر إن حاجة مترتبة مش هتحصل.",
+          "context": "Appointments"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-cancel-example-1",
+          "senseId": "word-cancel-sense-1",
+          "kind": "everyday",
+          "en": "I need to cancel my appointment.",
+          "ar": "محتاج ألغي معادي.",
+          "audioId": null
+        },
+        {
+          "id": "word-cancel-example-2",
+          "senseId": "word-cancel-sense-1",
+          "kind": "different_context",
+          "en": "They cancelled the last train.",
+          "ar": "هما لغوا آخر قطر.",
+          "audioId": null
+        },
+        {
+          "id": "word-cancel-example-3",
+          "senseId": "word-cancel-sense-1",
+          "kind": "extended",
+          "en": "If you cancel at short notice, you may still have to pay.",
+          "ar": "لو لغيت قبل المعاد بوقت قليل، ممكن تفضل مطالب بالدفع.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "cancel an appointment",
+        "noteAr": "في الكتابة البريطانية المعتادة: cancelled وcancelling بحرفي l."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-cancel",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "can",
+          "cel"
+        ],
+        "primaryStress": 1,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الضغط على الأول؛ حرف c الأول غير التاني في الصوت. متفترضش إن نفس الحرف له صوت ثابت.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل شطب معاد من التقويم.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-cancel-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى cancel إيه في الموقف ده؟",
+          "answer": "يلغي"
+        },
+        {
+          "id": "word-cancel-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: cancel",
+          "answer": "يلغي",
+          "options": [
+            "يلغي",
+            "قادر",
+            "حاجة مقلقاك"
+          ]
+        },
+        {
+          "id": "word-cancel-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "I need to ____ my appointment.",
+          "answer": "cancel"
+        },
+        {
+          "id": "word-cancel-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام cancel. راجع التركيب: cancel an appointment",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-cancel-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-budget",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-budget-sense-1",
+          "lexemeId": "word-budget-noun",
+          "translationAr": "ميزانية",
+          "explanationAr": "مبلغ متاح أو خطة للصرف.",
+          "context": "Shopping"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-budget-example-1",
+          "senseId": "word-budget-sense-1",
+          "kind": "everyday",
+          "en": "Our budget is £200.",
+          "ar": "ميزانيتنا ميتين جنيه إسترليني.",
+          "audioId": null
+        },
+        {
+          "id": "word-budget-example-2",
+          "senseId": "word-budget-sense-1",
+          "kind": "different_context",
+          "en": "We are travelling on a tight budget.",
+          "ar": "إحنا مسافرين بميزانية محدودة.",
+          "audioId": null
+        },
+        {
+          "id": "word-budget-example-3",
+          "senseId": "word-budget-sense-1",
+          "kind": "extended",
+          "en": "The repairs will cost more than we allowed for in the budget.",
+          "ar": "التصليحات هتكلف أكتر من المبلغ اللي حسبناه في الميزانية.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "within a budget",
+        "noteAr": "on a tight budget يعني الفلوس المتاحة محدودة."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-budget",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "bud",
+          "get"
+        ],
+        "primaryStress": 1,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الضغط على الأول؛ dg مجموعة بتساهم في صوت واحد، مش كل حرف مقطع.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل ظرف فيه فلوس مخصصة للتصليح.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-budget-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى budget إيه في الموقف ده؟",
+          "answer": "ميزانية"
+        },
+        {
+          "id": "word-budget-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: budget",
+          "answer": "ميزانية",
+          "options": [
+            "يوافق رسميًا",
+            "إيصال",
+            "ميزانية"
+          ]
+        },
+        {
+          "id": "word-budget-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "We have a ____ of £200 for repairs.",
+          "answer": "budget"
+        },
+        {
+          "id": "word-budget-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام budget. راجع التركيب: within a budget",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-budget-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-debt",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-debt-sense-1",
+          "lexemeId": "word-debt-noun",
+          "translationAr": "دَين",
+          "explanationAr": "فلوس مطلوب منك ترجعها لحد.",
+          "context": "Money"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-debt-example-1",
+          "senseId": "word-debt-sense-1",
+          "kind": "everyday",
+          "en": "He wants to pay off his debt.",
+          "ar": "هو عايز يسدد دينه كله.",
+          "audioId": null
+        },
+        {
+          "id": "word-debt-example-2",
+          "senseId": "word-debt-sense-1",
+          "kind": "different_context",
+          "en": "The family is struggling with debt.",
+          "ar": "الأسرة بتعاني من الديون.",
+          "audioId": null
+        },
+        {
+          "id": "word-debt-example-3",
+          "senseId": "word-debt-sense-1",
+          "kind": "extended",
+          "en": "She made a repayment plan to avoid getting further into debt.",
+          "ar": "هي عملت خطة سداد عشان تتجنب إنها تغرق في ديون أكتر.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "in debt",
+        "noteAr": "in debt حالة، وpay off a debt يعني يسدد الدين كله."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-debt",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "debt"
+        ],
+        "primaryStress": 1,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "حرف b ساكت؛ حافظ على صوت t في النهاية من غير ما تضيف حركة بعده.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "اربطها بمبلغ مستلف لسه محتاج ترجعه.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-debt-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى debt إيه في الموقف ده؟",
+          "answer": "دَين"
+        },
+        {
+          "id": "word-debt-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: debt",
+          "answer": "دَين",
+          "options": [
+            "طابور",
+            "دَين",
+            "يقرّ أو يأكد الاستلام"
+          ]
+        },
+        {
+          "id": "word-debt-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "He borrowed money and is now in ____.",
+          "answer": "debt"
+        },
+        {
+          "id": "word-debt-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام debt. راجع التركيب: in debt",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-debt-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-capable",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-capable-sense-1",
+          "lexemeId": "word-capable-adjective",
+          "translationAr": "قادر",
+          "explanationAr": "عنده القدرة أو المهارة يعمل حاجة.",
+          "context": "Work"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-capable-example-1",
+          "senseId": "word-capable-sense-1",
+          "kind": "everyday",
+          "en": "She is a capable manager.",
+          "ar": "هي مديرة كفء.",
+          "audioId": null
+        },
+        {
+          "id": "word-capable-example-2",
+          "senseId": "word-capable-sense-1",
+          "kind": "different_context",
+          "en": "I am capable of doing the job.",
+          "ar": "أنا قادر أعمل الشغلانة.",
+          "audioId": null
+        },
+        {
+          "id": "word-capable-example-3",
+          "senseId": "word-capable-sense-1",
+          "kind": "extended",
+          "en": "The team is capable of handling complaints without supervision.",
+          "ar": "الفريق قادر يتعامل مع الشكاوى من غير إشراف.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "capable of doing",
+        "noteAr": "capable of managing، مش capable to manage."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-capable",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "ca",
+          "pa",
+          "ble"
+        ],
+        "primaryStress": 1,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "اضغط الأول وخفف الباقي. جرّب بداية p بإغلاق الشفتين وإطلاق الهواء من غير اهتزاز في البداية.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "افتكر مهمة قدرت تعملها لوحدك.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-capable-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى capable إيه في الموقف ده؟",
+          "answer": "قادر"
+        },
+        {
+          "id": "word-capable-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: capable",
+          "answer": "قادر",
+          "options": [
+            "قادر",
+            "إضافي",
+            "ممكن تعتمد عليه"
+          ]
+        },
+        {
+          "id": "word-capable-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "She is ____ of managing the team.",
+          "answer": "capable"
+        },
+        {
+          "id": "word-capable-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام capable. راجع التركيب: capable of doing",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-capable-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-approve",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-approve-sense-1",
+          "lexemeId": "word-approve-verb",
+          "translationAr": "يوافق رسميًا",
+          "explanationAr": "يدي موافقة رسمية على طلب أو قرار.",
+          "context": "Work"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-approve-example-1",
+          "senseId": "word-approve-sense-1",
+          "kind": "everyday",
+          "en": "The manager must approve the request.",
+          "ar": "المدير لازم يوافق على الطلب.",
+          "audioId": null
+        },
+        {
+          "id": "word-approve-example-2",
+          "senseId": "word-approve-sense-1",
+          "kind": "different_context",
+          "en": "They approved my annual leave.",
+          "ar": "هما وافقوا على إجازتي السنوية.",
+          "audioId": null
+        },
+        {
+          "id": "word-approve-example-3",
+          "senseId": "word-approve-sense-1",
+          "kind": "extended",
+          "en": "We cannot order the equipment until finance approves the cost.",
+          "ar": "مش هنقدر نطلب المعدات لحد ما الإدارة المالية توافق على التكلفة.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "approve a request",
+        "noteAr": "approve a request موافقة رسمية؛ approve of something يعني يستحسنه، وده استخدام مختلف."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-approve",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "ap",
+          "prove"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "اضغط المقطع التاني؛ في آخره v بصوت، مش f.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل طلب إجازة اتوافق عليه.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-approve-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى approve إيه في الموقف ده؟",
+          "answer": "يوافق رسميًا"
+        },
+        {
+          "id": "word-approve-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: approve",
+          "answer": "يوافق رسميًا",
+          "options": [
+            "حاجة مقلقاك",
+            "مناسب ومريح",
+            "يوافق رسميًا"
+          ]
+        },
+        {
+          "id": "word-approve-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "The manager needs to ____ my leave request.",
+          "answer": "approve"
+        },
+        {
+          "id": "word-approve-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام approve. راجع التركيب: approve a request",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-approve-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-acknowledge",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-acknowledge-sense-1",
+          "lexemeId": "word-acknowledge-verb",
+          "translationAr": "يقرّ أو يأكد الاستلام",
+          "explanationAr": "يعترف بوجود حاجة أو يؤكد إنه استلم رسالة.",
+          "context": "Work"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-acknowledge-example-1",
+          "senseId": "word-acknowledge-sense-1",
+          "kind": "everyday",
+          "en": "Please acknowledge this email.",
+          "ar": "لو سمحت أكد استلام الإيميل ده.",
+          "audioId": null
+        },
+        {
+          "id": "word-acknowledge-example-2",
+          "senseId": "word-acknowledge-sense-1",
+          "kind": "different_context",
+          "en": "He acknowledged that he had made a mistake.",
+          "ar": "هو اعترف إنه غلط.",
+          "audioId": null
+        },
+        {
+          "id": "word-acknowledge-example-3",
+          "senseId": "word-acknowledge-sense-1",
+          "kind": "extended",
+          "en": "We will acknowledge receipt of your complaint within two working days.",
+          "ar": "هنأكد استلام شكوتك خلال يومين عمل.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "acknowledge receipt",
+        "noteAr": "acknowledge that + جملة؛ تأكيد استلام الطلب مش بالضرورة موافقة عليه."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-acknowledge",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "ac",
+          "knowl",
+          "edge"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الضغط في النص؛ k ساكتة في جزء know، لكن بداية الكلمة فيها صوت k.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل رد بيأكد وصول رسالة، من غير قرار فيها لسه.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-acknowledge-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى acknowledge إيه في الموقف ده؟",
+          "answer": "يقرّ أو يأكد الاستلام"
+        },
+        {
+          "id": "word-acknowledge-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: acknowledge",
+          "answer": "يقرّ أو يأكد الاستلام",
+          "options": [
+            "يأكد",
+            "يقرّ أو يأكد الاستلام",
+            "إيصال"
+          ]
+        },
+        {
+          "id": "word-acknowledge-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Please ____ receipt of this email.",
+          "answer": "acknowledge"
+        },
+        {
+          "id": "word-acknowledge-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام acknowledge. راجع التركيب: acknowledge receipt",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-acknowledge-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-additional",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-additional-sense-1",
+          "lexemeId": "word-additional-adjective",
+          "translationAr": "إضافي",
+          "explanationAr": "زيادة على الموجود أو المطلوب أساسًا.",
+          "context": "Customer service"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-additional-example-1",
+          "senseId": "word-additional-sense-1",
+          "kind": "everyday",
+          "en": "There is an additional charge.",
+          "ar": "في رسوم إضافية.",
+          "audioId": null
+        },
+        {
+          "id": "word-additional-example-2",
+          "senseId": "word-additional-sense-1",
+          "kind": "different_context",
+          "en": "Do you need any additional information?",
+          "ar": "محتاج أي معلومات إضافية؟",
+          "audioId": null
+        },
+        {
+          "id": "word-additional-example-3",
+          "senseId": "word-additional-sense-1",
+          "kind": "extended",
+          "en": "We can arrange additional support if you let us know in advance.",
+          "ar": "نقدر نرتب دعم إضافي لو بلغتنا من قبلها.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "additional information",
+        "noteAr": "additional قبل الاسم؛ additionally بتربط إضافة في الكلام."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-additional",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "ad",
+          "di",
+          "tion",
+          "al"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "اضغط التاني؛ tion مش حروف بتتنطق منفصلة. اتعلم المجموعة من نموذج صوتي لما يتوفر.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل رسوم التوصيل مضافة للسعر الأصلي.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-additional-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى additional إيه في الموقف ده؟",
+          "answer": "إضافي"
+        },
+        {
+          "id": "word-additional-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: additional",
+          "answer": "إضافي",
+          "options": [
+            "إضافي",
+            "طابور",
+            "يوصّل"
+          ]
+        },
+        {
+          "id": "word-additional-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "There is an ____ charge for delivery.",
+          "answer": "additional"
+        },
+        {
+          "id": "word-additional-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام additional. راجع التركيب: additional information",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-additional-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    },
+    {
+      "wordId": "word-concern",
+      "authorship": "original_project_content",
+      "reviewStatus": "editorial_draft",
+      "senses": [
+        {
+          "id": "word-concern-sense-1",
+          "lexemeId": "word-concern-noun",
+          "translationAr": "حاجة مقلقاك",
+          "explanationAr": "قلق أو موضوع شايف إنه محتاج اهتمام.",
+          "context": "Work"
+        }
+      ],
+      "examples": [
+        {
+          "id": "word-concern-example-1",
+          "senseId": "word-concern-sense-1",
+          "kind": "everyday",
+          "en": "Safety is our main concern.",
+          "ar": "السلامة هي أهم حاجة شاغلانا.",
+          "audioId": null
+        },
+        {
+          "id": "word-concern-example-2",
+          "senseId": "word-concern-sense-1",
+          "kind": "different_context",
+          "en": "I have a concern about the new rota.",
+          "ar": "عندي حاجة مقلقاني بخصوص جدول الورديات الجديد.",
+          "audioId": null
+        },
+        {
+          "id": "word-concern-example-3",
+          "senseId": "word-concern-sense-1",
+          "kind": "extended",
+          "en": "Please raise any concerns with your manager before the changes take effect.",
+          "ar": "لو سمحت ناقش أي مخاوف مع مديرك قبل ما التغييرات تبدأ تتطبق.",
+          "audioId": null
+        }
+      ],
+      "usage": {
+        "pattern": "raise a concern",
+        "noteAr": "a concern about something؛ concerned صفة، مش نفس الوظيفة النحوية."
+      },
+      "pronunciation": {
+        "referenceAccent": "Modern Standard Southern British English",
+        "verificationStatus": "awaiting_reference_verification",
+        "audioId": "audio-concern",
+        "ipa": null,
+        "arabicApproximation": null,
+        "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
+        "syllableGuide": [
+          "con",
+          "cern"
+        ],
+        "primaryStress": 2,
+        "guideStatus": "author_proposed_not_reference_verified",
+        "guidanceAr": "الضغط في الآخر؛ r مش بتتنطق هنا قبل n في المرجع المختار.",
+        "practiceSequence": [
+          "listen",
+          "discriminate",
+          "articulation",
+          "imitate",
+          "record_optional",
+          "compare",
+          "sentence"
+        ],
+        "listeningStatus": "blocked_missing_audio",
+        "recordingPolicy": "explicit_permission_local_only",
+        "assessment": "self_comparison_no_automated_score",
+        "playbackModes": [
+          "normal",
+          "slow_preserve_pitch_if_supported",
+          "repeat"
+        ]
+      },
+      "memory": {
+        "visualAssetId": null,
+        "visualStatus": "no_asset_needed",
+        "associationAr": "تخيّل نقطة محتاجة مناقشة قبل تغيير جدول الشغل.",
+        "repetitionAr": "افتكر المعنى من غير ما تبص، وبعد نشاط تاني ارجع كوّن جملة جديدة."
+      },
+      "exercises": [
+        {
+          "id": "word-concern-recall",
+          "dimension": "comprehension",
+          "type": "recall",
+          "promptAr": "من غير ما تبص: معنى concern إيه في الموقف ده؟",
+          "answer": "حاجة مقلقاك"
+        },
+        {
+          "id": "word-concern-recognise",
+          "dimension": "comprehension",
+          "type": "recognition",
+          "promptAr": "اختار المعنى المناسب للكلمة: concern",
+          "answer": "حاجة مقلقاك",
+          "options": [
+            "ممكن تعتمد عليه",
+            "يفكّر حد بحاجة",
+            "حاجة مقلقاك"
+          ]
+        },
+        {
+          "id": "word-concern-gap",
+          "dimension": "usage",
+          "type": "completion",
+          "promptAr": "كمّل الجملة بالكلمة المناسبة.",
+          "promptEn": "Safety is our main ____.",
+          "answer": "concern"
+        },
+        {
+          "id": "word-concern-construct",
+          "dimension": "usage",
+          "type": "construction",
+          "promptAr": "اكتب جملة من حياتك باستخدام concern. راجع التركيب: raise a concern",
+          "answer": "Open response; check meaning, word form and the taught pattern."
+        },
+        {
+          "id": "word-concern-speak",
+          "dimension": "pronunciation",
+          "type": "self_comparison",
+          "promptAr": "لما المرجع يتوفر: اسمع وكرر الكلمة، وبعدها أول جملة. سجّل بإذنك وقارن. تقدر تأجل النشاط.",
+          "answer": "No automatic score; reference unavailable, so comparison is deferred."
+        }
+      ]
+    }
+  ]
+}

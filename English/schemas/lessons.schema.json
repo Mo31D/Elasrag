@@ -1,0 +1,356 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "lessons": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "wordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "authorship": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewStatus": {
+            "enum": [
+              "editorial_draft",
+              "linguistically_reviewed"
+            ]
+          },
+          "senses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "lexemeId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "translationAr": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "explanationAr": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "context": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "lexemeId",
+                "translationAr",
+                "explanationAr",
+                "context"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "senseId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "kind": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "en": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "ar": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "audioId": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "id",
+                "senseId",
+                "kind",
+                "en",
+                "ar",
+                "audioId"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 3
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "minLength": 1
+              },
+              "noteAr": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "pattern",
+              "noteAr"
+            ],
+            "additionalProperties": false
+          },
+          "pronunciation": {
+            "type": "object",
+            "properties": {
+              "referenceAccent": {
+                "type": "string",
+                "minLength": 1
+              },
+              "verificationStatus": {
+                "enum": [
+                  "awaiting_reference_verification",
+                  "verified"
+                ]
+              },
+              "audioId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "ipa": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "arabicApproximation": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "approximationWarningAr": {
+                "type": "string",
+                "minLength": 1
+              },
+              "syllableGuide": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 0
+              },
+              "primaryStress": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "guideStatus": {
+                "type": "string",
+                "minLength": 1
+              },
+              "guidanceAr": {
+                "type": "string",
+                "minLength": 1
+              },
+              "practiceSequence": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 0
+              },
+              "listeningStatus": {
+                "type": "string",
+                "minLength": 1
+              },
+              "recordingPolicy": {
+                "type": "string",
+                "minLength": 1
+              },
+              "assessment": {
+                "type": "string",
+                "minLength": 1
+              },
+              "playbackModes": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "minItems": 0
+              }
+            },
+            "required": [
+              "referenceAccent",
+              "verificationStatus",
+              "audioId",
+              "ipa",
+              "arabicApproximation",
+              "approximationWarningAr",
+              "syllableGuide",
+              "primaryStress",
+              "guideStatus",
+              "guidanceAr",
+              "practiceSequence",
+              "listeningStatus",
+              "recordingPolicy",
+              "assessment",
+              "playbackModes"
+            ],
+            "additionalProperties": false
+          },
+          "memory": {
+            "type": "object",
+            "properties": {
+              "visualAssetId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "visualStatus": {
+                "type": "string",
+                "minLength": 1
+              },
+              "associationAr": {
+                "type": "string",
+                "minLength": 1
+              },
+              "repetitionAr": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "visualAssetId",
+              "visualStatus",
+              "associationAr",
+              "repetitionAr"
+            ],
+            "additionalProperties": false
+          },
+          "exercises": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "dimension": {
+                  "enum": [
+                    "comprehension",
+                    "pronunciation",
+                    "usage"
+                  ]
+                },
+                "type": {
+                  "enum": [
+                    "recall",
+                    "recognition",
+                    "completion",
+                    "construction",
+                    "self_comparison"
+                  ]
+                },
+                "promptAr": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "answer": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "promptEn": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 2
+                }
+              },
+              "required": [
+                "id",
+                "dimension",
+                "type",
+                "promptAr",
+                "answer"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 5
+          }
+        },
+        "required": [
+          "wordId",
+          "authorship",
+          "reviewStatus",
+          "senses",
+          "examples",
+          "usage",
+          "pronunciation",
+          "memory",
+          "exercises"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "lessons"
+  ],
+  "additionalProperties": false
+}

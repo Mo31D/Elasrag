@@ -1,0 +1,249 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "words": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "headword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lexemes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "partOfSpeech": {
+                  "enum": [
+                    "noun",
+                    "verb",
+                    "adjective",
+                    "adverb",
+                    "preposition",
+                    "pronoun",
+                    "determiner",
+                    "conjunction",
+                    "interjection",
+                    "auxiliary",
+                    "modal"
+                  ]
+                },
+                "senseIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "minItems": 1
+                }
+              },
+              "required": [
+                "id",
+                "partOfSpeech",
+                "senseIds"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "cefr": {
+            "enum": [
+              "A1",
+              "A2",
+              "B1",
+              "B2",
+              "C1",
+              "C2",
+              null
+            ]
+          },
+          "cefrStatus": {
+            "enum": [
+              "verified_permitted",
+              "withheld_pending_rights",
+              "unavailable"
+            ]
+          },
+          "sourceMemberships": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "sourceId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sourceEntryId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "collection": {
+                  "enum": [
+                    "oxford3000",
+                    "oxford5000_additional",
+                    "other"
+                  ]
+                },
+                "lexemeId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "cefr": {
+                  "enum": [
+                    "A1",
+                    "A2",
+                    "B1",
+                    "B2",
+                    "C1",
+                    "C2",
+                    null
+                  ]
+                },
+                "locator": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "rightsStatus": {
+                  "enum": [
+                    "permitted",
+                    "withheld_pending_rights"
+                  ]
+                }
+              },
+              "required": [
+                "sourceId",
+                "sourceEntryId",
+                "collection",
+                "lexemeId",
+                "cefr",
+                "locator",
+                "rightsStatus"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          },
+          "frequency": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "enum": [
+                  "matched",
+                  "ambiguous",
+                  "unmatched",
+                  "source_not_supplied"
+                ]
+              },
+              "sourceId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "rank": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "perMillion": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "match": {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "sourceEntryId": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "lemma": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "partOfSpeech": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "method": {
+                        "enum": [
+                          "exact_lemma_pos",
+                          "manual_review"
+                        ]
+                      },
+                      "evidence": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "sourceEntryId",
+                      "lemma",
+                      "partOfSpeech",
+                      "method",
+                      "evidence"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "status",
+              "sourceId",
+              "rank",
+              "perMillion",
+              "match"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "id",
+          "headword",
+          "lexemes",
+          "cefr",
+          "cefrStatus",
+          "sourceMemberships",
+          "frequency"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "words"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,465 @@
+{
+  "schemaVersion": 1,
+  "words": [
+    {
+      "id": "word-receipt",
+      "headword": "receipt",
+      "lexemes": [
+        {
+          "id": "word-receipt-noun",
+          "partOfSpeech": "noun",
+          "senseIds": [
+            "word-receipt-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-queue",
+      "headword": "queue",
+      "lexemes": [
+        {
+          "id": "word-queue-noun",
+          "partOfSpeech": "noun",
+          "senseIds": [
+            "word-queue-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-reliable",
+      "headword": "reliable",
+      "lexemes": [
+        {
+          "id": "word-reliable-adjective",
+          "partOfSpeech": "adjective",
+          "senseIds": [
+            "word-reliable-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-convenient",
+      "headword": "convenient",
+      "lexemes": [
+        {
+          "id": "word-convenient-adjective",
+          "partOfSpeech": "adjective",
+          "senseIds": [
+            "word-convenient-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-confirm",
+      "headword": "confirm",
+      "lexemes": [
+        {
+          "id": "word-confirm-verb",
+          "partOfSpeech": "verb",
+          "senseIds": [
+            "word-confirm-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-deliver",
+      "headword": "deliver",
+      "lexemes": [
+        {
+          "id": "word-deliver-verb",
+          "partOfSpeech": "verb",
+          "senseIds": [
+            "word-deliver-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-remind",
+      "headword": "remind",
+      "lexemes": [
+        {
+          "id": "word-remind-verb",
+          "partOfSpeech": "verb",
+          "senseIds": [
+            "word-remind-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-require",
+      "headword": "require",
+      "lexemes": [
+        {
+          "id": "word-require-verb",
+          "partOfSpeech": "verb",
+          "senseIds": [
+            "word-require-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-suitable",
+      "headword": "suitable",
+      "lexemes": [
+        {
+          "id": "word-suitable-adjective",
+          "partOfSpeech": "adjective",
+          "senseIds": [
+            "word-suitable-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-grateful",
+      "headword": "grateful",
+      "lexemes": [
+        {
+          "id": "word-grateful-adjective",
+          "partOfSpeech": "adjective",
+          "senseIds": [
+            "word-grateful-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-accurate",
+      "headword": "accurate",
+      "lexemes": [
+        {
+          "id": "word-accurate-adjective",
+          "partOfSpeech": "adjective",
+          "senseIds": [
+            "word-accurate-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-appropriate",
+      "headword": "appropriate",
+      "lexemes": [
+        {
+          "id": "word-appropriate-adjective",
+          "partOfSpeech": "adjective",
+          "senseIds": [
+            "word-appropriate-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-cancel",
+      "headword": "cancel",
+      "lexemes": [
+        {
+          "id": "word-cancel-verb",
+          "partOfSpeech": "verb",
+          "senseIds": [
+            "word-cancel-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-budget",
+      "headword": "budget",
+      "lexemes": [
+        {
+          "id": "word-budget-noun",
+          "partOfSpeech": "noun",
+          "senseIds": [
+            "word-budget-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-debt",
+      "headword": "debt",
+      "lexemes": [
+        {
+          "id": "word-debt-noun",
+          "partOfSpeech": "noun",
+          "senseIds": [
+            "word-debt-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-capable",
+      "headword": "capable",
+      "lexemes": [
+        {
+          "id": "word-capable-adjective",
+          "partOfSpeech": "adjective",
+          "senseIds": [
+            "word-capable-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-approve",
+      "headword": "approve",
+      "lexemes": [
+        {
+          "id": "word-approve-verb",
+          "partOfSpeech": "verb",
+          "senseIds": [
+            "word-approve-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-acknowledge",
+      "headword": "acknowledge",
+      "lexemes": [
+        {
+          "id": "word-acknowledge-verb",
+          "partOfSpeech": "verb",
+          "senseIds": [
+            "word-acknowledge-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-additional",
+      "headword": "additional",
+      "lexemes": [
+        {
+          "id": "word-additional-adjective",
+          "partOfSpeech": "adjective",
+          "senseIds": [
+            "word-additional-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    },
+    {
+      "id": "word-concern",
+      "headword": "concern",
+      "lexemes": [
+        {
+          "id": "word-concern-noun",
+          "partOfSpeech": "noun",
+          "senseIds": [
+            "word-concern-sense-1"
+          ]
+        }
+      ],
+      "cefr": null,
+      "cefrStatus": "withheld_pending_rights",
+      "sourceMemberships": [],
+      "frequency": {
+        "status": "source_not_supplied",
+        "sourceId": "bnc2014",
+        "rank": null,
+        "perMillion": null,
+        "match": null
+      }
+    }
+  ]
+}

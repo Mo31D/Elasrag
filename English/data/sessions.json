@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "sessions": [
+    {
+      "id": "session-1",
+      "type": "new_vocabulary",
+      "status": "content_review_only",
+      "wordIds": [
+        "word-receipt",
+        "word-queue",
+        "word-reliable",
+        "word-convenient",
+        "word-confirm",
+        "word-deliver",
+        "word-remind",
+        "word-require",
+        "word-suitable",
+        "word-grateful"
+      ],
+      "reviewWordIds": []
+    },
+    {
+      "id": "session-2",
+      "type": "new_vocabulary",
+      "status": "content_review_only",
+      "wordIds": [
+        "word-accurate",
+        "word-appropriate",
+        "word-cancel",
+        "word-budget",
+        "word-debt",
+        "word-capable",
+        "word-approve",
+        "word-acknowledge",
+        "word-additional",
+        "word-concern"
+      ],
+      "reviewWordIds": []
+    }
+  ]
+}
