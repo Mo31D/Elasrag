@@ -18,6 +18,7 @@ class ValidationTests(unittest.TestCase):
             lambda d: d['sessions']['sessions'][0]['wordIds'].__setitem__(0, 'missing'),
             lambda d: d['vocabulary']['words'][0].__setitem__('cefr', 'B3'),
             lambda d: d['vocabulary']['words'][0]['frequency'].__setitem__('rank', 10),
+            lambda d: d['vocabulary']['words'][0]['frequency'].__setitem__('count', 10),
             lambda d: d['lessons']['lessons'][0]['senses'][0].__setitem__('translationAr', ''),
             lambda d: d['lessons']['lessons'][0]['examples'].pop(),
             lambda d: d['lessons']['lessons'][0]['pronunciation'].__setitem__('audioId', 'missing'),
@@ -42,7 +43,7 @@ class ValidationTests(unittest.TestCase):
             lesson['pronunciation']['verificationStatus'] = 'verified'
         errors = validate(data, release=True)
         self.assertTrue(any('playable reference missing' in e for e in errors))
-        self.assertTrue(any('frequency matching incomplete' in e for e in errors))
+        self.assertTrue(any('public frequency evidence withheld or incomplete' in e for e in errors))
 
 
 if __name__ == '__main__':

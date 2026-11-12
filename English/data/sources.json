@@ -19,15 +19,15 @@
       "id": "bnc2014",
       "title": "LancsLex BNC2014-lemma",
       "provider": "Lancaster University",
-      "availability": "download_blocked",
-      "format": "Official download link ends in .tsv; byte-level format and headers not inspected",
-      "sha256": null,
+      "availability": "supplied",
+      "format": "UTF-8 without BOM; literal tab-separated fields; CRLF; 8 columns; 889969 data rows",
+      "sha256": "fb8fbd3e41980c452be03faa7358e269a560aea52da74e51c192e91f68b80c75",
       "licence": {
         "status": "identified_restricted",
         "evidence": "https://lancslex.lancaster.ac.uk/ links CC BY-NC-ND 4.0 https://creativecommons.org/licenses/by-nc-nd/4.0/ ; inspected 2026-11-12.",
         "redistribution": "withheld"
       },
-      "notes": "Official URL: https://lancslex.lancaster.ac.uk/lists/BNC2014-lemma.tsv . Workspace CONNECT returned 403; web reader rejected application/octet-stream. No bytes, hash, columns or observations available. Private matching prepared; public derived data withheld pending rights review."
+      "notes": "User-supplied six ZIP parts reconstructed privately in numerical order, skipping repeated headers 2–6. All archive/member hashes, CRCs, per-part rows, original bytes and SHA-256 match MANIFEST.json. Official origin not independently byte-compared. Position 1 encodes lemma_class; Frequency is absolute count. No rank or per-million field. Private matching: 19 exact, 1 ambiguous, 0 unmatched. Source and derived observations remain private under unresolved publication rights."
     },
     {
       "id": "original-project",

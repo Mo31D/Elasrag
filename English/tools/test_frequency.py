@@ -54,4 +54,39 @@ class FrequencyTests(unittest.TestCase):
             write_private('English/data/leaked-frequency.json', {})
 
 
+
+class LancsLexAdapterTests(unittest.TestCase):
+    def run_adapter(self, body, word=WORD, corrupt_hash=False):
+        import tempfile
+        from pathlib import Path
+        from match_frequency import LANCSLEX_HEADER, parse_lancslex
+        raw = ('\t'.join(LANCSLEX_HEADER)+'\r\n'+body).encode()
+        config = {**CONFIG, 'sha256': hashlib.sha256(raw).hexdigest(),
+                  'posMap': {'N':'noun','V':'verb','J':'adjective','I':'preposition'}}
+        if corrupt_hash:config['sha256']='0'*64
+        with tempfile.TemporaryDirectory() as d:
+            path=Path(d)/'synthetic.tsv';path.write_bytes(raw)
+            return parse_lancslex(path, config, [word])
+
+    def test_combined_key_not_rank_and_pos_separation(self):
+        meta, rows=self.run_adapter('record_N\t15\t1\t1\t1\t1\t1\t1\r\nrecord_V\t30\t1\t1\t1\t1\t1\t1\r\n')
+        result=match([WORD],rows)[0]
+        self.assertEqual(meta['rowCount'],2)
+        self.assertEqual(result['observation']['count'],15)
+        self.assertIsNone(result['observation']['rank'])
+        self.assertIsNone(result['observation']['perMillion'])
+
+    def test_unknown_class_remains_ambiguous(self):
+        _,rows=self.run_adapter('record_N\t15\t1\t1\t1\t1\t1\t1\r\nrecord_F\t1\t1\t1\t1\t1\t1\t1\r\n')
+        self.assertEqual(match([WORD],rows)[0]['status'],'ambiguous')
+
+    def test_last_underscore_and_literal_quote(self):
+        word={**WORD,'headword':'a_"b'}
+        _,rows=self.run_adapter('a_"b_N\t2\t1\t1\t1\t1\t1\t1\r\n',word)
+        self.assertEqual(match([word],rows)[0]['status'],'matched')
+
+    def test_malformed_count_and_hash(self):
+        with self.assertRaises(ValueError):self.run_adapter('record_N\tNaN\t1\t1\t1\t1\t1\t1\r\n')
+        with self.assertRaises(ValueError):self.run_adapter('record_N\t1\t1\t1\t1\t1\t1\t1\r\n',corrupt_hash=True)
+
 if __name__ == '__main__': unittest.main()

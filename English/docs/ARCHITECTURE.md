@@ -97,3 +97,10 @@ source from a never-supplied one. `text_reference_checked` and
 The release gate now explicitly rejects missing playable references, missing
 audition/signoff and incomplete frequency matches, as well as source and content
 review gaps. It cannot pass merely by changing lesson status labels.
+
+The supplied Lancaster export adds a nullable absolute `count` attribute alongside
+rank/perMillion, without changing any IDs or session order. `withheld_pending_rights`
+means source data is available privately but public values are deliberately null.
+The validator rejects any numeric observation in a withheld record, and prevents
+matched public records from referencing a source whose redistribution is withheld.
+Private matching and public publication readiness are distinct.

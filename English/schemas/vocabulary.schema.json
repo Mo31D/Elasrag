@@ -146,7 +146,8 @@
                   "ambiguous",
                   "unmatched",
                   "source_not_supplied",
-                  "source_access_blocked"
+                  "source_access_blocked",
+                  "withheld_pending_rights"
                 ]
               },
               "sourceId": {
@@ -216,6 +217,17 @@
                     "type": "null"
                   }
                 ]
+              },
+              "count": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             },
             "required": [
@@ -223,7 +235,8 @@
               "sourceId",
               "rank",
               "perMillion",
-              "match"
+              "match",
+              "count"
             ],
             "additionalProperties": false
           }

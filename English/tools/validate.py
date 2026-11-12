@@ -60,10 +60,12 @@ def validate(data, release=False):
         f = w['frequency']
         check(f['sourceId'] in si, f'{wid}: unknown frequency source')
         if f['status'] != 'matched':
-            check(all(f[k] is None for k in ('rank', 'perMillion', 'match')), f'{wid}: fabricated unmatched frequency')
+            check(all(f[k] is None for k in ('rank', 'perMillion', 'count', 'match')), f'{wid}: fabricated or published withheld frequency')
         else:
-            check(f['match'] is not None and (f['rank'] is not None or f['perMillion'] is not None), f'{wid}: missing frequency evidence')
-            check(si[f['sourceId']]['availability'] == 'supplied', f'{wid}: frequency source unavailable')
+            check(f['match'] is not None and any(f[k] is not None for k in ('rank', 'perMillion', 'count')), f'{wid}: missing frequency evidence')
+            source = si.get(f['sourceId'])
+            check(source is not None and source['availability'] == 'supplied', f'{wid}: frequency source unavailable')
+            check(source is not None and source['licence']['redistribution'] != 'withheld', f'{wid}: source rights block public observations')
         if w['cefrStatus'] != 'verified_permitted':
             check(w['cefr'] is None, f'{wid}: unpublished CEFR must be null')
         else:
@@ -113,7 +115,7 @@ def validate(data, release=False):
             check(p['verificationStatus'] == 'verified', f'{wid}: pronunciation reference unverified')
             check(p['audioId'] in ai and ai[p['audioId']]['status'] == 'available', f'{wid}: playable reference missing')
             check(wid in vi and vi[wid]['auditionStatus'] == 'passed' and vi[wid]['humanSignoff'], f'{wid}: independent teaching/audio signoff pending')
-            check(f['status'] == 'matched', f'{wid}: verified frequency matching incomplete')
+            check(f['status'] == 'matched', f'{wid}: public frequency evidence withheld or incomplete')
     for a in assets:
         if a['status'] == 'unavailable':
             check(bool(a['reason']) and all(a[k] is None for k in ('origin','recordingType','accent','creator','url','format')), f"{a['id']}: misleading unavailable resource")
@@ -134,4 +136,4 @@ if __name__ == '__main__':
         print('\n'.join(errors))
         raise SystemExit(1)
     print('PASS: 20 words, 2 sessions of 10, 60 translated examples, 100 exercises; schemas and references valid.')
-    print('Draft only: UK written references checked; independent review, playable audio, source publication rights and real-data frequency matching remain blocked.')
+    print('Draft only: independent review, playable audio and public source rights remain blocked. Private frequency audit: 19 exact matches, 1 unresolved class ambiguity.')

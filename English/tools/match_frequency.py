@@ -15,6 +15,49 @@ import unicodedata
 ROOT = Path(__file__).resolve().parents[1]
 POS = {'noun', 'verb', 'adjective', 'adverb', 'preposition', 'pronoun',
        'determiner', 'conjunction', 'interjection', 'auxiliary', 'modal'}
+LANCSLEX_HEADER = ['Position 1', 'Frequency', 'ARF (average reduced frequency)',
+                  'Range', 'Range %', 'CV (coefficient of variation)',
+                  "Juilland's D", 'DP (deviation of proportions)']
+
+
+def parse_lancslex(path, config, words):
+    """Stream the inspected eight-column export, retaining target candidates only.
+
+    Position 1 is a lemma_class key, not a rank. Unknown classes stay unresolved.
+    Raw count is the only imported measure; dispersion is not relative frequency.
+    """
+    if config['localUse'] != 'noncommercial_private' or not config['licenceEvidenceUrl'].startswith('https://'):
+        raise ValueError('Document local use and licensing evidence')
+    if config['posMap'] != {'N': 'noun', 'V': 'verb', 'J': 'adjective', 'I': 'preposition'}:
+        raise ValueError('This adapter requires the reviewed N/V/J/I mapping')
+    wanted = {canonical(w['headword']) for w in words}
+    h = hashlib.sha256()
+    candidates = []
+    row_count = 0
+    with Path(path).open('rb') as f:
+        header = f.readline(); h.update(header)
+        if header.decode('utf-8').rstrip('\r\n').split('\t') != LANCSLEX_HEADER:
+            raise ValueError('Unexpected LancsLex headers')
+        for line_number, raw in enumerate(f, 2):
+            h.update(raw)
+            fields = raw.decode('utf-8').rstrip('\r\n').split('\t')
+            if len(fields) != 8:
+                raise ValueError(f'Wrong field count at line {line_number}')
+            key, count = fields[:2]
+            if not count.isascii() or not count.isdecimal():
+                raise ValueError(f'Invalid absolute count at line {line_number}')
+            lemma, separator, tag = key.rpartition('_')
+            if not separator or not tag:
+                raise ValueError(f'Missing word-class suffix at line {line_number}')
+            row_count += 1
+            if canonical(lemma) in wanted:
+                candidates.append({'lemma': canonical(lemma), 'partOfSpeech': config['posMap'].get(tag),
+                                   'rawPos': tag, 'sourceEntryId': key, 'sourceLine': line_number,
+                                   'rank': None, 'perMillion': None, 'count': int(count)})
+    if h.hexdigest() != config['sha256']:
+        raise ValueError('Source hash changed; inspect and approve its mapping again')
+    return {'sha256': h.hexdigest(), 'rowCount': row_count, 'headers': LANCSLEX_HEADER,
+            'encoding': 'utf-8', 'delimiter': 'tab', 'adapter': 'lancslex_lemma'}, candidates
 
 
 def canonical(value):
@@ -123,18 +166,21 @@ def main():
     parser.add_argument('--config', type=Path)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    raw = args.source.read_bytes()
     if args.config:
         config = json.loads(args.config.read_text())
-        meta, rows = parse(raw, config)
         words = json.loads((ROOT / 'data/vocabulary.json').read_text())['words']
+        if config.get('adapter') == 'lancslex_lemma':
+            meta, rows = parse_lancslex(args.source, config, words)
+        else:
+            meta, rows = parse(args.source.read_bytes(), config)
         results = match(words, rows)
         write_private(args.output, {'source': meta, 'licenceEvidenceUrl': config['licenceEvidenceUrl'],
-                                    'publication': 'withheld_pending_rights', 'matches': results})
+                                    'publication': 'withheld_pending_rights', 'matches': results,
+                                    'sourceCandidates': rows})
         print(json.dumps({s: sum(r['status'] == s for r in results)
                           for s in ('matched', 'ambiguous', 'unmatched')}))
     else:
-        meta, _ = inspect(raw)
+        meta, _ = inspect(args.source.read_bytes())
         write_private(args.output, meta)
         print('Private format inspection saved; no matching or publication performed.')
 

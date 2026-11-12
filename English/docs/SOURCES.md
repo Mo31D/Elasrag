@@ -38,10 +38,15 @@ to third-party material. Attribution is not permission. No dictionary definition
 examples or audio have been copied. The original project content is identified as
 such; a project-wide licensing decision remains with the owner.
 
-The follow-up located the official Lancaster lemma download and identified its
-CC BY-NC-ND 4.0 terms, but could not acquire its bytes due to a proxy 403. Actual
-columns and observations remain uninspected. See [frequency investigation](FREQUENCY-MATCHING.md)
-for exact source/licence URLs, access evidence and the implemented private matcher.
+The official Lancaster lemma download and CC BY-NC-ND 4.0 terms were located.
+After the online request failed, the user supplied six archives plus a manifest.
+All hashes, row counts and reconstructed bytes now verify. The actual eight-column
+format and combined lemma/class keys have been inspected; private matching produced
+19 exact matches, one ambiguity and zero unmatched targets. See
+[frequency investigation](FREQUENCY-MATCHING.md) for integrity, field definitions,
+POS evidence, rights and reproduction commands. Source data and observations stay
+private; public publication rights are still unresolved.
+
 No Oxford 5000 source has been supplied. Five UK-labelled recording candidates
 were found; two individual licences were confirmed, but none is yet accepted or
 playable. See [verification](VERIFICATION.md).
@@ -72,6 +77,6 @@ PDF permission remains unresolved. The conservative withholding decision stays.
 7. Promote only mappings with verified evidence and permitted public fields.
    Import source updates without regenerating IDs or deleting learning history.
 
-A configurable private matcher is now implemented and tested on synthetic data;
-its actual Lancaster adapter cannot be verified against unavailable bytes. Publication of more source-derived data is blocked by this
+The private matcher now has a verified, streaming Lancaster combined-key adapter,
+tested on synthetic fixtures and run against the reconstructed uploaded artifact. Publication of more source-derived data is blocked by this
 project's explicit source-integrity requirements.
