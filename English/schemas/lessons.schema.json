@@ -21,7 +21,8 @@
           "reviewStatus": {
             "enum": [
               "editorial_draft",
-              "linguistically_reviewed"
+              "linguistically_reviewed",
+              "assistant_editorially_reviewed"
             ]
           },
           "senses": {
@@ -138,7 +139,8 @@
               "verificationStatus": {
                 "enum": [
                   "awaiting_reference_verification",
-                  "verified"
+                  "verified",
+                  "text_reference_checked"
                 ]
               },
               "audioId": {

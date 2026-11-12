@@ -5,7 +5,7 @@ array position is never identity. `vocabulary.json` contains identities and sour
 attributes, `lessons.json` contains authored teaching content, `audio.json` contains
 resource metadata, `sources.json` contains provenance and rights, and
 `sessions.json` freezes target membership. Progress has a separate schema and is
-never loaded from public content. No application persistence is implemented yet.
+never loaded from public content. No application persistence is implemented yet. `verification.json` keeps dated reference/editorial evidence and lesson hashes separate from content and learner state.
 
 One headword groups lexemes (part of speech) and senses under one word ID.
 Homographs retain separate lexeme/sense IDs and source-entry mappings, including
@@ -87,3 +87,13 @@ Do not commit exports, recordings, credentials, private annotations or learner
 profiles. `private/` is ignored as defence in depth, not a substitute for checking
 the staged diff. Future private sync requires authentication, consent and conflict
 resolution; no Workers, D1 or R2 infrastructure is needed for this phase.
+
+## Follow-up validation boundary
+
+The private matcher operates per lexeme and does not change public word frequency
+or source records. `source_access_blocked` distinguishes a located but inaccessible
+source from a never-supplied one. `text_reference_checked` and
+`assistant_editorially_reviewed` record partial checks without granting release.
+The release gate now explicitly rejects missing playable references, missing
+audition/signoff and incomplete frequency matches, as well as source and content
+review gaps. It cannot pass merely by changing lesson status labels.

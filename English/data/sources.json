@@ -10,24 +10,24 @@
       "sha256": "441aa79b39a720afbe78bf944f8df49bce9f61977c8ac2be9fbcbc81cd94046f",
       "licence": {
         "status": "unresolved",
-        "evidence": "Copyright notice in supplied PDF; no explicit redistribution grant identified.",
+        "evidence": "Supplied PDF copyright notice and https://www.oxfordlearnersdictionaries.com/terms-and-conditions.html (sections 2, 3 and 7) inspected 2026-11-12; no public dataset redistribution grant established.",
         "redistribution": "withheld"
       },
       "notes": "PDF and extracted entries excluded. CEFR and collection mappings withheld from public content pending permission."
     },
     {
       "id": "bnc2014",
-      "title": "BNC2014 frequency resource (specific edition not supplied)",
+      "title": "LancsLex BNC2014-lemma",
       "provider": "Lancaster University",
-      "availability": "not_supplied",
-      "format": null,
+      "availability": "download_blocked",
+      "format": "Official download link ends in .tsv; byte-level format and headers not inspected",
       "sha256": null,
       "licence": {
-        "status": "unresolved",
-        "evidence": "No dataset or applicable licence supplied; do not infer rights from corpus branding.",
+        "status": "identified_restricted",
+        "evidence": "https://lancslex.lancaster.ac.uk/ links CC BY-NC-ND 4.0 https://creativecommons.org/licenses/by-nc-nd/4.0/ ; inspected 2026-11-12.",
         "redistribution": "withheld"
       },
-      "notes": "No ranks, counts, POS tagset or frequency denominator verified."
+      "notes": "Official URL: https://lancslex.lancaster.ac.uk/lists/BNC2014-lemma.tsv . Workspace CONNECT returned 403; web reader rejected application/octet-stream. No bytes, hash, columns or observations available. Private matching prepared; public derived data withheld pending rights review."
     },
     {
       "id": "original-project",

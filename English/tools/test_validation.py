@@ -25,12 +25,24 @@ class ValidationTests(unittest.TestCase):
             lambda d: d['audio']['assets'][0].__setitem__('recordingType', 'human'),
             lambda d: d['audio']['assets'][0].pop('licence'),
             lambda d: d['vocabulary']['words'][0].__setitem__('id', 'wrong'),
+            lambda d: d['lessons']['lessons'][0]['pronunciation'].__setitem__('guidanceAr', 'تعديل بعد المراجعة'),
+            lambda d: d['verification']['records'].pop(),
+            lambda d: d['verification']['records'][0].__setitem__('lessonSha256', '0' * 64),
         ]
         for i, mutate in enumerate(mutations):
             with self.subTest(mutation=i):
                 data = copy.deepcopy(load())
                 mutate(data)
                 self.assertTrue(validate(data))
+
+    def test_release_cannot_pass_by_status_labels_alone(self):
+        data = load()
+        for lesson in data['lessons']['lessons']:
+            lesson['reviewStatus'] = 'linguistically_reviewed'
+            lesson['pronunciation']['verificationStatus'] = 'verified'
+        errors = validate(data, release=True)
+        self.assertTrue(any('playable reference missing' in e for e in errors))
+        self.assertTrue(any('frequency matching incomplete' in e for e in errors))
 
 
 if __name__ == '__main__':

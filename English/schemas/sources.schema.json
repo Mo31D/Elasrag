@@ -26,7 +26,8 @@
             "enum": [
               "supplied",
               "not_supplied",
-              "project_authored"
+              "project_authored",
+              "download_blocked"
             ]
           },
           "format": {
@@ -57,7 +58,8 @@
               "status": {
                 "enum": [
                   "unresolved",
-                  "project_authored"
+                  "project_authored",
+                  "identified_restricted"
                 ]
               },
               "evidence": {

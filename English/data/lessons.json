@@ -4,7 +4,7 @@
     {
       "wordId": "word-receipt",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-receipt-sense-1",
@@ -46,7 +46,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-receipt",
         "ipa": null,
         "arabicApproximation": null,
@@ -56,8 +56,8 @@
           "ceipt"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "حرف p هنا ساكت. ركّز على آخر مقطع، ومتضيفش حركة بعد t.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "حرف p هنا ساكت. الكلمة مقطعين والضغط على التاني، وفيه حركة طويلة. متضيفش حركة بعد t الأخيرة.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -129,7 +129,7 @@
     {
       "wordId": "word-queue",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-queue-sense-1",
@@ -171,7 +171,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-queue",
         "ipa": null,
         "arabicApproximation": null,
@@ -180,8 +180,8 @@
           "queue"
         ],
         "primaryStress": 1,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "الكلمة مقطع واحد؛ حروفها الخمسة مش خمسة أصوات. محتاجة نموذج مسموع لتوضيح بدايتها.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "الكلمة مقطع واحد: بداية ك وبعدها انتقال بصوت ي وحركة طويلة. الحروف الخمسة مش خمسة أصوات منفصلة؛ متضيفش مقطع بعد النهاية.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -253,7 +253,7 @@
     {
       "wordId": "word-reliable",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-reliable-sense-1",
@@ -295,7 +295,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-reliable",
         "ipa": null,
         "arabicApproximation": null,
@@ -307,8 +307,8 @@
           "ble"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "خلّي المقطع التاني أوضح، وآخر مقطع خفيف. تقسيم الكتابة مساعد، مش نطق عربي بديل.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "خلّي المقطع التاني أوضح. في النطق الواضح أربع مقاطع؛ آخر مقطع خفيف وممكن ينتهي بصوت l من غير حركة واضحة قبله. التقسيم مساعد، مش نطق عربي بديل.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -380,7 +380,7 @@
     {
       "wordId": "word-convenient",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-convenient-sense-1",
@@ -422,19 +422,20 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-convenient",
         "ipa": null,
         "arabicApproximation": null,
         "approximationWarningAr": "الكتابة العربي لو اتضافت بعدين تقريبية، ومش بديل للصوت الإنجليزي.",
         "syllableGuide": [
           "con",
-          "ven",
-          "ient"
+          "ve",
+          "ni",
+          "ent"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "الضغط على المقطع التاني؛ صوت v محتاج الشفة السفلية تلمس الأسنان العلوية مع اهتزاز.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "في النطق الواضح أربع مقاطع، والضغط على التاني. أول مقطع خفيف؛ صوت v بالشفة السفلية مع الأسنان العلوية وصوت مسموع، مش f.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -506,7 +507,7 @@
     {
       "wordId": "word-confirm",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-confirm-sense-1",
@@ -548,7 +549,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-confirm",
         "ipa": null,
         "arabicApproximation": null,
@@ -558,7 +559,7 @@
           "firm"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "الضغط في الآخر. في المرجع البريطاني المختار، r مش بتتنطق هنا قبل m.",
         "practiceSequence": [
           "listen",
@@ -631,7 +632,7 @@
     {
       "wordId": "word-deliver",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-deliver-sense-1",
@@ -673,7 +674,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-deliver",
         "ipa": null,
         "arabicApproximation": null,
@@ -684,7 +685,7 @@
           "er"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "اضغط المقطع اللي في النص؛ v بصوت، مش f. آخر r مش بتتنطق قبل وقفة في المرجع المختار.",
         "practiceSequence": [
           "listen",
@@ -757,7 +758,7 @@
     {
       "wordId": "word-remind",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-remind-sense-1",
@@ -799,7 +800,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-remind",
         "ipa": null,
         "arabicApproximation": null,
@@ -809,7 +810,7 @@
           "mind"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "اضغط المقطع التاني؛ حافظ على نهاية nd من غير حركة زيادة.",
         "practiceSequence": [
           "listen",
@@ -882,13 +883,13 @@
     {
       "wordId": "word-require",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-require-sense-1",
           "lexemeId": "word-require-verb",
           "translationAr": "يتطلب",
-          "explanationAr": "يحتاج حاجة كشرط؛ رسمي أكتر من need.",
+          "explanationAr": "يحتاج حاجة أو يشترطها؛ رسمي أكتر من need.",
           "context": "Work"
         }
       ],
@@ -924,7 +925,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-require",
         "ipa": null,
         "arabicApproximation": null,
@@ -934,8 +935,8 @@
           "quire"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "الضغط على الجزء التاني. نهاية الكلمة ممكن يختلف تحقيقها بين المتكلمين؛ استنى مرجع مسموع قبل التقليد.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "الضغط على الجزء التاني. نهاية الكلمة فيها حركة متغيرة ممكن تتضغط في الكلام الطبيعي؛ تقسيم الكتابة مش قياس ثابت لعدد الحركات. في المرجع غير الرائي، r الأخيرة مش بتتنطق قبل وقفة، وممكن تظهر قبل حركة في الكلمة اللي بعدها.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -1007,7 +1008,7 @@
     {
       "wordId": "word-suitable",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-suitable-sense-1",
@@ -1049,7 +1050,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-suitable",
         "ipa": null,
         "arabicApproximation": null,
@@ -1060,8 +1061,8 @@
           "ble"
         ],
         "primaryStress": 1,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "الضغط على أول مقطع؛ النهاية خفيفة. متقسمش كل حرف في النهاية لصوت لوحده.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "الضغط على أول مقطع، والنهاية خفيفة. المرجع البريطاني بيقبل البداية بصوت س وبعده الحركة الطويلة، أو س ومعاها صوت ي خفيف؛ الاتنين صحيحين.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -1133,7 +1134,7 @@
     {
       "wordId": "word-grateful",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-grateful-sense-1",
@@ -1175,7 +1176,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-grateful",
         "ipa": null,
         "arabicApproximation": null,
@@ -1185,7 +1186,7 @@
           "ful"
         ],
         "primaryStress": 1,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "اضغط أول مقطع، وخلي آخر مقطع خفيف؛ نهاية ful مش بالضرورة زي كلمة full لوحدها.",
         "practiceSequence": [
           "listen",
@@ -1258,7 +1259,7 @@
     {
       "wordId": "word-accurate",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-accurate-sense-1",
@@ -1300,7 +1301,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-accurate",
         "ipa": null,
         "arabicApproximation": null,
@@ -1311,8 +1312,8 @@
           "rate"
         ],
         "primaryStress": 1,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "الضغط على الأول. نهاية الكلمة دي مش زي نطق الفعل rate؛ محتاجة نموذج مسموع.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "الضغط على الأول؛ بعد صوت ك فيه انتقال خفيف بصوت ي. نهاية الصفة دي فيها حركة ضعيفة، مش زي نطق الفعل rate.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -1384,7 +1385,7 @@
     {
       "wordId": "word-appropriate",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-appropriate-sense-1",
@@ -1426,7 +1427,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-appropriate",
         "ipa": null,
         "arabicApproximation": null,
@@ -1438,7 +1439,7 @@
           "ate"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "اضغط التاني. دي الصفة؛ الفعل بنفس الكتابة له نهاية مختلفة، فلا تعمم النطق على الاتنين.",
         "practiceSequence": [
           "listen",
@@ -1511,7 +1512,7 @@
     {
       "wordId": "word-cancel",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-cancel-sense-1",
@@ -1553,7 +1554,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-cancel",
         "ipa": null,
         "arabicApproximation": null,
@@ -1563,7 +1564,7 @@
           "cel"
         ],
         "primaryStress": 1,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "الضغط على الأول؛ حرف c الأول غير التاني في الصوت. متفترضش إن نفس الحرف له صوت ثابت.",
         "practiceSequence": [
           "listen",
@@ -1606,7 +1607,7 @@
           "options": [
             "يلغي",
             "قادر",
-            "حاجة مقلقاك"
+            "اهتمام أو حاجة مقلقاك"
           ]
         },
         {
@@ -1636,7 +1637,7 @@
     {
       "wordId": "word-budget",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-budget-sense-1",
@@ -1678,7 +1679,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-budget",
         "ipa": null,
         "arabicApproximation": null,
@@ -1688,8 +1689,8 @@
           "get"
         ],
         "primaryStress": 1,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "الضغط على الأول؛ dg مجموعة بتساهم في صوت واحد، مش كل حرف مقطع.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "الضغط على الأول. الحرفين dg بيساهموا مع بعض في صوت واحد؛ متحطش حركة بينهم. حركة المقطع التاني قصيرة.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -1761,7 +1762,7 @@
     {
       "wordId": "word-debt",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-debt-sense-1",
@@ -1803,7 +1804,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-debt",
         "ipa": null,
         "arabicApproximation": null,
@@ -1812,7 +1813,7 @@
           "debt"
         ],
         "primaryStress": 1,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "حرف b ساكت؛ حافظ على صوت t في النهاية من غير ما تضيف حركة بعده.",
         "practiceSequence": [
           "listen",
@@ -1885,7 +1886,7 @@
     {
       "wordId": "word-capable",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-capable-sense-1",
@@ -1901,7 +1902,7 @@
           "senseId": "word-capable-sense-1",
           "kind": "everyday",
           "en": "She is a capable manager.",
-          "ar": "هي مديرة كفء.",
+          "ar": "هي مديرة كفؤة.",
           "audioId": null
         },
         {
@@ -1927,7 +1928,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-capable",
         "ipa": null,
         "arabicApproximation": null,
@@ -1938,7 +1939,7 @@
           "ble"
         ],
         "primaryStress": 1,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "اضغط الأول وخفف الباقي. جرّب بداية p بإغلاق الشفتين وإطلاق الهواء من غير اهتزاز في البداية.",
         "practiceSequence": [
           "listen",
@@ -2011,7 +2012,7 @@
     {
       "wordId": "word-approve",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-approve-sense-1",
@@ -2053,7 +2054,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-approve",
         "ipa": null,
         "arabicApproximation": null,
@@ -2063,7 +2064,7 @@
           "prove"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "اضغط المقطع التاني؛ في آخره v بصوت، مش f.",
         "practiceSequence": [
           "listen",
@@ -2104,7 +2105,7 @@
           "promptAr": "اختار المعنى المناسب للكلمة: approve",
           "answer": "يوافق رسميًا",
           "options": [
-            "حاجة مقلقاك",
+            "اهتمام أو حاجة مقلقاك",
             "مناسب ومريح",
             "يوافق رسميًا"
           ]
@@ -2136,7 +2137,7 @@
     {
       "wordId": "word-acknowledge",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-acknowledge-sense-1",
@@ -2151,7 +2152,7 @@
           "id": "word-acknowledge-example-1",
           "senseId": "word-acknowledge-sense-1",
           "kind": "everyday",
-          "en": "Please acknowledge this email.",
+          "en": "Please acknowledge receipt of this email.",
           "ar": "لو سمحت أكد استلام الإيميل ده.",
           "audioId": null
         },
@@ -2174,11 +2175,11 @@
       ],
       "usage": {
         "pattern": "acknowledge receipt",
-        "noteAr": "acknowledge that + جملة؛ تأكيد استلام الطلب مش بالضرورة موافقة عليه."
+        "noteAr": "acknowledge that وبعدها جملة؛ acknowledge receipt of لتأكيد الاستلام. تأكيد استلام الطلب مش معناه الموافقة عليه."
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-acknowledge",
         "ipa": null,
         "arabicApproximation": null,
@@ -2189,8 +2190,8 @@
           "edge"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "الضغط في النص؛ k ساكتة في جزء know، لكن بداية الكلمة فيها صوت k.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "الضغط على المقطع التاني. أول جزء ack فيه صوت ك واحد قبل n؛ متتعاملش مع know هنا كأنها كلمة لوحدها. آخر dge مجموعة لصوت واحد.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -2262,7 +2263,7 @@
     {
       "wordId": "word-additional",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-additional-sense-1",
@@ -2304,7 +2305,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-additional",
         "ipa": null,
         "arabicApproximation": null,
@@ -2316,8 +2317,8 @@
           "al"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
-        "guidanceAr": "اضغط التاني؛ tion مش حروف بتتنطق منفصلة. اتعلم المجموعة من نموذج صوتي لما يتوفر.",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
+        "guidanceAr": "الضغط على المقطع التاني. ti هنا بتساهم في صوت ش؛ الحركات الضعيفة بعده ممكن تتختصر في الكلام الطبيعي. التقسيم المكتوب للتدريب الواضح، مش قاعدة ثابتة لكل سرعة.",
         "practiceSequence": [
           "listen",
           "discriminate",
@@ -2389,13 +2390,13 @@
     {
       "wordId": "word-concern",
       "authorship": "original_project_content",
-      "reviewStatus": "editorial_draft",
+      "reviewStatus": "assistant_editorially_reviewed",
       "senses": [
         {
           "id": "word-concern-sense-1",
           "lexemeId": "word-concern-noun",
-          "translationAr": "حاجة مقلقاك",
-          "explanationAr": "قلق أو موضوع شايف إنه محتاج اهتمام.",
+          "translationAr": "اهتمام أو حاجة مقلقاك",
+          "explanationAr": "حاجة شاغلاك ومحتاجة اهتمام، سواء أولوية مهمة أو مصدر قلق.",
           "context": "Work"
         }
       ],
@@ -2431,7 +2432,7 @@
       },
       "pronunciation": {
         "referenceAccent": "Modern Standard Southern British English",
-        "verificationStatus": "awaiting_reference_verification",
+        "verificationStatus": "text_reference_checked",
         "audioId": "audio-concern",
         "ipa": null,
         "arabicApproximation": null,
@@ -2441,7 +2442,7 @@
           "cern"
         ],
         "primaryStress": 2,
-        "guideStatus": "author_proposed_not_reference_verified",
+        "guideStatus": "spelling_guide_checked_against_uk_reference_not_phonetic_boundaries",
         "guidanceAr": "الضغط في الآخر؛ r مش بتتنطق هنا قبل n في المرجع المختار.",
         "practiceSequence": [
           "listen",
@@ -2473,18 +2474,18 @@
           "dimension": "comprehension",
           "type": "recall",
           "promptAr": "من غير ما تبص: معنى concern إيه في الموقف ده؟",
-          "answer": "حاجة مقلقاك"
+          "answer": "اهتمام أو حاجة مقلقاك"
         },
         {
           "id": "word-concern-recognise",
           "dimension": "comprehension",
           "type": "recognition",
           "promptAr": "اختار المعنى المناسب للكلمة: concern",
-          "answer": "حاجة مقلقاك",
+          "answer": "اهتمام أو حاجة مقلقاك",
           "options": [
             "ممكن تعتمد عليه",
             "يفكّر حد بحاجة",
-            "حاجة مقلقاك"
+            "اهتمام أو حاجة مقلقاك"
           ]
         },
         {

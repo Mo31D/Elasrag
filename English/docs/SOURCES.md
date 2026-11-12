@@ -38,11 +38,19 @@ to third-party material. Attribution is not permission. No dictionary definition
 examples or audio have been copied. The original project content is identified as
 such; a project-wide licensing decision remains with the owner.
 
-No Lancaster/BNC2014 file, edition, licence, tagset or frequency table was supplied
-or found in this repository. Actual file format and fields therefore cannot be
-reported. Corpus access, a frequency-list download, and audio may have different
-terms; check the exact artifact. No ranks/counts/denominators were manufactured.
-No Oxford 5000 material, image asset or British human recording was supplied.
+The follow-up located the official Lancaster lemma download and identified its
+CC BY-NC-ND 4.0 terms, but could not acquire its bytes due to a proxy 403. Actual
+columns and observations remain uninspected. See [frequency investigation](FREQUENCY-MATCHING.md)
+for exact source/licence URLs, access evidence and the implemented private matcher.
+No Oxford 5000 source has been supplied. Five UK-labelled recording candidates
+were found; two individual licences were confirmed, but none is yet accepted or
+playable. See [verification](VERIFICATION.md).
+
+Oxford's [site terms](https://www.oxfordlearnersdictionaries.com/terms-and-conditions.html)
+were inspected, especially sections 2, 3 and 7. They did not establish a public
+redistribution grant for the proposed Oxford-derived database. The paid Product
+clauses should not be carelessly equated with terms for every public PDF; the exact
+PDF permission remains unresolved. The conservative withholding decision stays.
 
 ## Preparation once sources are authorised
 
@@ -64,6 +72,6 @@ No Oxford 5000 material, image asset or British human recording was supplied.
 7. Promote only mappings with verified evidence and permitted public fields.
    Import source updates without regenerating IDs or deleting learning history.
 
-A licensed/source-verified importer is intentionally not implemented against
-missing formats. Publication of more source-derived data is blocked by this
+A configurable private matcher is now implemented and tested on synthetic data;
+its actual Lancaster adapter cannot be verified against unavailable bytes. Publication of more source-derived data is blocked by this
 project's explicit source-integrity requirements.

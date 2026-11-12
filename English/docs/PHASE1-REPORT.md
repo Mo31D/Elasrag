@@ -1,74 +1,90 @@
 # Phase 1 review report
 
-## Repository assessment
+## Repository and scope
 
-Fetched `origin/main` before editing; assessed commit
-`4ea1bb46c53e7e84055b463a155e6e1d3683b225`.
-Read the entire `English/PROJECT-PLAN.md`. Initially `English/` contained only that
-plan. No AGENTS.md instructions were found. Root package.json is an unrelated
-Express application; existing workflows target other projects. Do not inherit
-that backend or change root dependencies/workflows for this static content phase.
-All proposed files are inside `English/`; the plan is preserved unchanged.
-Branch: `feature/english-phase1-foundation`.
+Continued PR #46 on `feature/english-phase1-foundation` from
+`482ac2ab6586d9c3579b9125a37af3d416d09a6c`. Fetched main and the PR branch before
+editing. Read the full PROJECT-PLAN and previous report. Main remains
+`4ea1bb46c53e7e84055b463a155e6e1d3683b225`; English originally contained only the plan.
+No AGENTS.md was found. Root dependencies, backend and workflows belong to other
+projects and remain untouched. All changes stay inside English. The authoritative
+plan, vocabulary IDs and exact two ten-word session memberships are preserved.
 
-The plan describes a complete first application across later phases. This task
-implements only Phase 1 preparatory work. Its conceptual combined Word object has
-been separated into linked vocabulary, lesson, source and resource records as the
-current request requires. This is a storage refinement, not a change to ten-word
-sessions or three-dimensional learning assessment.
+This is still Phase 1. No UI, deployment, backend, learner data or automatic merge.
 
-## Delivered and validated
+## Completed follow-up
 
-- Five public JSON datasets and six JSON Schema contracts, including future private
-  progress/session-resume storage.
-- Two content-review sessions of exactly ten distinct words, no shared targets.
-- Twenty original lesson drafts, sixty original sentences with Egyptian Arabic
-  translations, one hundred exercises, usage notes and memory associations.
-- Twenty explicit unavailable-audio records; no fabricated audio or frequency.
-- Schema/reference validator and mutation tests; architecture, preparation,
-  educational-quality, pronunciation, rights and privacy documentation.
+1. Located Lancaster's official BNC2014-lemma TSV link and verified the landing-page
+   CC BY-NC-ND 4.0 licence. **Download failed**: workspace proxy CONNECT 403; web
+   reader cannot consume the binary content type. Actual headers, counts, hash and
+   POS coverage remain uninspected. The user authorised online retrieval after no
+   supplied Lancaster attachment could be located. Full evidence and rights
+   analysis: [FREQUENCY-MATCHING.md](FREQUENCY-MATCHING.md).
+2. Implemented private, hash-pinned TSV inspection and configurable lemma/POS
+   matching, with no assumed Lancaster columns, invented ranks, stemming or public
+   export. Tested using explicitly synthetic inputs. **No real Lancaster matches
+   are claimed.** Actual integration remains blocked by access and field inspection.
+3. Inspected pronunciation/audio sections for all twenty words. Located five
+   UK-labelled candidates; confirmed speaker and file-level CC BY-SA 4.0 for
+   require and additional. The other three licences remain unconfirmed due to
+   file-page access failures. None auditioned or accepted; twenty production audio
+   entries remain unavailable. This is a scoped search, not proof of global absence.
+4. Checked all twenty written pronunciation references on Cambridge's UK pages.
+   Corrected convenient's four careful syllables; clarified acknowledge's ck,
+   additional's ti, suitable variants, weak vowels and non-rhotic contexts. Written
+   reference checking does not certify accent, audio quality or learner performance.
+5. Reviewed all twenty explanations/patterns/exercise keys and sixty sentence pairs
+   for British usage, grammar and Egyptian Arabic meaning. Refined concern's gloss,
+   require's explanation, acknowledge's email example and capable's Arabic adjective.
+   This is assistant editorial review, not independent human signoff.
+6. Inspected Oxford site terms without finding a clear grant for this public
+   derived dataset; retained the existing CEFR/source-mapping withholding. Recorded
+   Lancaster restrictions without mislabelling every individual fact as protected.
+   No protected dataset, copied definition/example or restricted audio is published.
+7. Added a separate audit dataset/schema with per-word source URLs, source-page
+   hashes, scope, findings, audio candidate evidence and reviewed lesson hashes.
+   Validation rejects edits that would silently retain a stale review.
 
-Validation run: `python English/tools/validate.py` passed.
-`python English/tools/test_validation.py` passed: three test methods, including
-12 corruption subcases and a release-gate rejection check. Tests reject wrong
-session sizes, repeated targets, broken IDs, invalid CEFR, invented frequency,
-missing Arabic, too few examples, missing audio metadata, impossible stress
-positions and misleading human-recording claims.
+## Verified deliverables and tests
 
-`--release` fails intentionally because publication of CEFR metadata is withheld,
-editorial/phonetic review is pending and sessions are not ready. A passing draft
-validator must never be reported as verified learning efficacy or legal clearance.
-No browser testing applies because no UI or audio playback has been implemented.
+Six public JSON datasets and seven JSON Schema contracts now support twenty original
+lesson drafts, sixty translated examples, one hundred exercises and the same two
+sessions of ten distinct target words. Local progress remains a contract only;
+no private learner records are committed.
 
-## Unresolved deliverables
+- `python English/tools/validate.py`: PASS.
+- `python -m unittest discover -s English/tools -p 'test_*.py'`: PASS, 10 test methods;
+  includes 15 corruption subcases, six matcher methods and a check that changing
+  status labels alone cannot bypass missing-audio/frequency release gates.
+- `python English/tools/validate.py --release`: expected exit 1, **122 blockers**:
+  20 CEFR publication gates, 20 independent editorial review gates, 20 final
+  pronunciation verification gates, 20 missing playable references, 20 pending
+  audition/teaching signoffs, 20 incomplete frequency matches and two unready sessions.
+- Diff whitespace checks pass. Stable IDs and session JSON match the previous PR
+  commit. No browser/audio playback tests apply to implemented functionality;
+  audio audition and future iPhone playback checks have not been performed.
 
-This is a preparatory draft, not full acceptance of the twenty verified lessons.
-The supplied Oxford PDF verifies candidate selection privately but does not grant
-clear redistribution rights or contain pronunciation. Public CEFR/source mappings
-are withheld. The original pronunciation guidance is not independently verified.
-Authentic licensed recordings, listening discrimination materials and sentence
-audio are missing. No Lancaster frequency resource or Oxford 5000 source was
-supplied. No licensed image assets are needed for the mental associations.
+No real-data integration success, legal clearance, human review or release readiness
+is inferred from synthetic tests or written-reference checks.
 
-No progress, recordings, credentials or personal learner profile are committed.
-Private source evidence is ignored; it is not part of the deliverable and requires
-the supplied PDF for independent reproduction. No UI, deployment or backend exists
-in this change. No merge is authorised.
+## Remaining blockers and next steps
 
-## Recommended sequence
+1. Obtain the exact official TSV through an accessible authorised connection, then
+   inspect/hash it and document its actual columns/POS/measure semantics. Run private
+   matching with the inspected configuration. Resolve permission for any public
+   combined frequency data; do not copy the dataset into this repository.
+2. Resolve Oxford-derived CEFR publication permission or a documented lawful basis.
+   Keep values withheld until then. Oxford 5000 expansion remains outside this phase.
+3. Complete file-level licence evidence for the three remaining candidates, audition
+   the two confirmed-licence files and seek suitable sources for the other words.
+   Check actual accent and word/POS before accepting any asset. Source sentence audio
+   and listening contrasts separately. Reference links alone are not audio assets.
+4. Have a qualified British-English pronunciation reviewer and Egyptian Arabic
+   reviewer check the corrected content and recordings; retain evidence and update
+   lesson hashes after any edits. Learner trials will test clarity and usefulness.
+5. Rerun all checks and review the foundation before Phase 2. UI, persistence,
+   microphone and Safari implementation remain later work. Do not merge or deploy
+   this partial foundation as a release-ready tutor.
 
-1. Resolve Oxford-derived field publication rights; obtain the exact Lancaster
-   lemma-frequency artifact and its terms. Review source/POS mappings and enable
-   only permitted metadata. Obtain Oxford 5000 separately when expansion is needed.
-2. Verify each pronunciation guide with an appropriate British reference; secure
-   usable human recordings and record rights. Author actual listening contrasts.
-   Complete bilingual editorial review and rerun the release gate.
-3. Submit the corrected educational foundation for review before Phase 2. Then
-   build the minimal expandable Words list and session navigation, with progressive
-   detail and correct RTL/LTR. Do not begin this in Phase 1.
-4. Implement accessible audio/optional local recording; test slow/normal/repeat
-   and microphone denial on real iPhone Safari, iPad and desktop.
-5. Implement transactional IndexedDB progress, exact resume, backup import/export
-   and independent review scheduling; test interruptions, migrations and restores.
-6. Pilot both sessions with the learner, revise from observed needs, then expand
-   content. Consider private sync/backend only when a demonstrated need requires it.
+Detailed review: [VERIFICATION.md](VERIFICATION.md). Rights/source history:
+[SOURCES.md](SOURCES.md). Architecture: [ARCHITECTURE.md](ARCHITECTURE.md).

@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "wordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewedAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewer": {
+            "type": "string",
+            "minLength": 1
+          },
+          "lessonSha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "referenceUrl": {
+            "type": "string",
+            "minLength": 1
+          },
+          "referencePageSha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "referenceScope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "primaryStress": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "spellingGuideGroups": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "finding": {
+            "type": "string",
+            "minLength": 1
+          },
+          "arabicAndUsageReview": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audioSearchUrl": {
+            "type": "string",
+            "minLength": 1
+          },
+          "audioCandidate": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "pageUrl": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "accentLabel": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "accentEvidenceUrl": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "creator": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "licence": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "licenceEvidenceStatus": {
+                    "enum": [
+                      "file_page_checked",
+                      "file_page_access_blocked"
+                    ]
+                  },
+                  "acceptance": {
+                    "const": "pending_audition_and_reference_suitability"
+                  }
+                },
+                "required": [
+                  "pageUrl",
+                  "accentLabel",
+                  "accentEvidenceUrl",
+                  "creator",
+                  "licence",
+                  "licenceEvidenceStatus",
+                  "acceptance"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "auditionStatus": {
+            "enum": [
+              "not_auditioned",
+              "passed",
+              "failed"
+            ]
+          },
+          "humanSignoff": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "wordId",
+          "reviewedAt",
+          "reviewer",
+          "lessonSha256",
+          "referenceUrl",
+          "referencePageSha256",
+          "referenceScope",
+          "primaryStress",
+          "spellingGuideGroups",
+          "finding",
+          "arabicAndUsageReview",
+          "audioSearchUrl",
+          "audioCandidate",
+          "auditionStatus",
+          "humanSignoff"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "records"
+  ],
+  "additionalProperties": false
+}

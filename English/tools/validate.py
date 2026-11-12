@@ -1,12 +1,13 @@
 """Validate public content; --release additionally rejects unresolved teaching gates."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import re
 from jsonschema import Draft202012Validator
 
 ROOT = Path(__file__).resolve().parents[1]
-NAMES = ('vocabulary', 'lessons', 'audio', 'sessions', 'sources')
+NAMES = ('vocabulary', 'lessons', 'audio', 'sessions', 'sources', 'verification')
 
 
 def load(root=ROOT):
@@ -37,6 +38,8 @@ def validate(data, release=False):
     li = index(lessons, 'wordId', 'lesson')
     ai = index(assets, 'id', 'audio id')
     si = index(sources, 'id', 'source id')
+    vi = index(data['verification']['records'], 'wordId', 'verification record')
+    check(set(vi) == set(wi), 'verification must cover exactly the vocabulary')
     index(sessions, 'id', 'session id')
     check(len(words) == 20, 'prototype requires 20 words')
     check(len(sessions) == 2, 'prototype requires two sessions')
@@ -72,6 +75,15 @@ def validate(data, release=False):
         if wid not in li:
             continue
         l = li[wid]
+        if wid in vi:
+            audit = vi[wid]
+            digest = hashlib.sha256(json.dumps(l, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+            check(audit['lessonSha256'] == digest, f'{wid}: lesson changed since review')
+            check(audit['primaryStress'] == l['pronunciation']['primaryStress'], f'{wid}: reviewed stress differs')
+            check(audit['spellingGuideGroups'] == len(l['pronunciation']['syllableGuide']), f'{wid}: reviewed guide differs')
+            candidate = audit['audioCandidate']
+            if candidate and candidate['licenceEvidenceStatus'] == 'file_page_checked':
+                check(bool(candidate['creator']) and bool(candidate['licence']), f'{wid}: missing candidate licence evidence')
         senses = index(l['senses'], 'id', 'sense id')
         check(set(senses) == {s for x in w['lexemes'] for s in x['senseIds']}, f'{wid}: sense links disagree')
         for s in senses.values():
@@ -99,6 +111,9 @@ def validate(data, release=False):
             check(w['cefrStatus'] == 'verified_permitted', f'{wid}: CEFR publication blocked')
             check(l['reviewStatus'] == 'linguistically_reviewed', f'{wid}: editorial review pending')
             check(p['verificationStatus'] == 'verified', f'{wid}: pronunciation reference unverified')
+            check(p['audioId'] in ai and ai[p['audioId']]['status'] == 'available', f'{wid}: playable reference missing')
+            check(wid in vi and vi[wid]['auditionStatus'] == 'passed' and vi[wid]['humanSignoff'], f'{wid}: independent teaching/audio signoff pending')
+            check(f['status'] == 'matched', f'{wid}: verified frequency matching incomplete')
     for a in assets:
         if a['status'] == 'unavailable':
             check(bool(a['reason']) and all(a[k] is None for k in ('origin','recordingType','accent','creator','url','format')), f"{a['id']}: misleading unavailable resource")
@@ -106,6 +121,7 @@ def validate(data, release=False):
         else:
             check(all(a[k] for k in ('origin','recordingType','accent','creator','url','format')), f"{a['id']}: missing audio provenance")
             check(a['licence']['status'] == 'verified' and all(a['licence'][k] for k in ('identifier','evidenceUrl','attribution')), f"{a['id']}: unverified audio licence")
+            check(a['licence']['redistributionAllowed'], f"{a['id']}: available reference lacks publication permission")
     return errors
 
 
@@ -118,4 +134,4 @@ if __name__ == '__main__':
         print('\n'.join(errors))
         raise SystemExit(1)
     print('PASS: 20 words, 2 sessions of 10, 60 translated examples, 100 exercises; schemas and references valid.')
-    print('Draft only: 20 withheld CEFR assignments, 20 unverified pronunciation guides, 20 unavailable recordings; BNC data absent.')
+    print('Draft only: UK written references checked; independent review, playable audio, source publication rights and real-data frequency matching remain blocked.')

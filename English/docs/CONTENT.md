@@ -15,13 +15,13 @@ Open construction requires learner or human judgement; no claim of automatic
 semantic grading is made. Recognition distractors come from other lesson meanings;
 a pilot should test whether these are sufficiently discriminating.
 
-The current syllable guides and stress positions are **author-proposed teaching
-notes, not source-verified phonetic transcriptions**. They are visibly marked
-`awaiting_reference_verification`. No IPA or Arabic pseudo-transcription is
-invented to fill missing source fields. Spelling segments are approximate teaching
-guides, not phoneme boundaries. Silent-letter and articulation notes require
-checking with the selected reference before release. Do not display draft notes
-as verified pronunciation in a future interface.
+The stress, silent-letter notes and spelling guides have now been checked against
+Cambridge UK written pronunciation references. They carry `text_reference_checked`,
+not final `verified`; see [the review evidence](VERIFICATION.md). IPA and Arabic
+pseudo-transcription remain null. Spelling groups are accessible training aids,
+not phoneme boundaries or universally fixed syllable counts. Independent/audio
+review is still pending; do not claim reference-quality audio or tested learning
+efficacy from a written-reference check alone.
 
 Use Modern Standard Southern British English as an initial teaching reference;
 recognise legitimate variation in British speech. Candidate listening assessments
@@ -53,4 +53,4 @@ Practise intelligible speech without promising accent elimination.
 Before release, a qualified British-English pronunciation reviewer and an Egyptian
 Arabic reviewer should check all twenty lessons, document corrections and approve
 only the reviewed content version. Learner testing then determines where concise
-explanations need more support. Neither review has happened in Phase 1.
+explanations need more support. An assistant bilingual/editorial review has happened; independent human review and learner testing have not.
