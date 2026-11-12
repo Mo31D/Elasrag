@@ -1,0 +1,365 @@
+{
+  "schemaVersion": 1,
+  "assets": [
+    {
+      "id": "audio-receipt",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-queue",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-reliable",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-convenient",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-confirm",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-deliver",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-remind",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-require",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-suitable",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-grateful",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-accurate",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-appropriate",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-cancel",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-budget",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-debt",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-capable",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-approve",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-acknowledge",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-additional",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    },
+    {
+      "id": "audio-concern",
+      "status": "unavailable",
+      "reason": "No verified licensed British recording supplied.",
+      "origin": null,
+      "recordingType": null,
+      "accent": null,
+      "creator": null,
+      "url": null,
+      "format": null,
+      "licence": {
+        "status": "unknown",
+        "identifier": null,
+        "evidenceUrl": null,
+        "attribution": null,
+        "redistributionAllowed": false
+      }
+    }
+  ]
+}

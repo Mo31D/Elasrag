@@ -1,0 +1,453 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "contentVersion": {
+      "type": "string",
+      "minLength": 1
+    },
+    "wordProgress": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "wordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "studiedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "comprehension": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "unassessed",
+                  "learning",
+                  "review_due",
+                  "secure"
+                ]
+              },
+              "dueAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "intervalDays": {
+                "type": "number",
+                "minimum": 0
+              },
+              "successfulReviews": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "activityId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "outcome": {
+                      "enum": [
+                        "incorrect",
+                        "partial",
+                        "correct",
+                        "deferred"
+                      ]
+                    },
+                    "at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "method": {
+                      "enum": [
+                        "self_report",
+                        "answer_key",
+                        "human_review"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "activityId",
+                    "outcome",
+                    "at",
+                    "method"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0
+              }
+            },
+            "required": [
+              "state",
+              "dueAt",
+              "intervalDays",
+              "successfulReviews",
+              "evidence"
+            ],
+            "additionalProperties": false
+          },
+          "pronunciation": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "unassessed",
+                  "learning",
+                  "review_due",
+                  "secure"
+                ]
+              },
+              "dueAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "intervalDays": {
+                "type": "number",
+                "minimum": 0
+              },
+              "successfulReviews": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "activityId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "outcome": {
+                      "enum": [
+                        "incorrect",
+                        "partial",
+                        "correct",
+                        "deferred"
+                      ]
+                    },
+                    "at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "method": {
+                      "enum": [
+                        "self_report",
+                        "answer_key",
+                        "human_review"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "activityId",
+                    "outcome",
+                    "at",
+                    "method"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0
+              }
+            },
+            "required": [
+              "state",
+              "dueAt",
+              "intervalDays",
+              "successfulReviews",
+              "evidence"
+            ],
+            "additionalProperties": false
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "state": {
+                "enum": [
+                  "unassessed",
+                  "learning",
+                  "review_due",
+                  "secure"
+                ]
+              },
+              "dueAt": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "intervalDays": {
+                "type": "number",
+                "minimum": 0
+              },
+              "successfulReviews": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "activityId": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "outcome": {
+                      "enum": [
+                        "incorrect",
+                        "partial",
+                        "correct",
+                        "deferred"
+                      ]
+                    },
+                    "at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "method": {
+                      "enum": [
+                        "self_report",
+                        "answer_key",
+                        "human_review"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "activityId",
+                    "outcome",
+                    "at",
+                    "method"
+                  ],
+                  "additionalProperties": false
+                },
+                "minItems": 0
+              }
+            },
+            "required": [
+              "state",
+              "dueAt",
+              "intervalDays",
+              "successfulReviews",
+              "evidence"
+            ],
+            "additionalProperties": false
+          },
+          "mistakes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "dimension": {
+                  "enum": [
+                    "comprehension",
+                    "pronunciation",
+                    "usage"
+                  ]
+                },
+                "note": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "activityId": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "dimension",
+                "note",
+                "activityId"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "wordId",
+          "studiedAt",
+          "comprehension",
+          "pronunciation",
+          "usage",
+          "mistakes"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "sessions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "wordIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 10,
+            "maxItems": 10,
+            "uniqueItems": true
+          },
+          "currentWordIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9
+          },
+          "currentActivityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "active",
+              "paused",
+              "completed"
+            ]
+          },
+          "startedAt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "finishedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "activities": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "activityId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "state": {
+                  "enum": [
+                    "not_started",
+                    "completed",
+                    "deferred"
+                  ]
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "activityId",
+                "state",
+                "updatedAt"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "sessionId",
+          "wordIds",
+          "currentWordIndex",
+          "currentActivityId",
+          "status",
+          "startedAt",
+          "finishedAt",
+          "activities"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "recordings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "wordId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "activityId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "localBlobKey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "consentedAt": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "wordId",
+          "activityId",
+          "localBlobKey",
+          "consentedAt"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "contentVersion",
+    "wordProgress",
+    "sessions",
+    "recordings"
+  ],
+  "additionalProperties": false
+}

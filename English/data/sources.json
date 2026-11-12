@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "sources": [
+    {
+      "id": "oxford-upload",
+      "title": "The Oxford 3000 by CEFR level",
+      "provider": "Oxford University Press",
+      "availability": "supplied",
+      "format": "PDF 1.4; 12 pages; text layer",
+      "sha256": "441aa79b39a720afbe78bf944f8df49bce9f61977c8ac2be9fbcbc81cd94046f",
+      "licence": {
+        "status": "unresolved",
+        "evidence": "Supplied PDF copyright notice and https://www.oxfordlearnersdictionaries.com/terms-and-conditions.html (sections 2, 3 and 7) inspected 2026-11-12; no public dataset redistribution grant established.",
+        "redistribution": "withheld"
+      },
+      "notes": "PDF and extracted entries excluded. CEFR and collection mappings withheld from public content pending permission."
+    },
+    {
+      "id": "bnc2014",
+      "title": "LancsLex BNC2014-lemma",
+      "provider": "Lancaster University",
+      "availability": "supplied",
+      "format": "UTF-8 without BOM; literal tab-separated fields; CRLF; 8 columns; 889969 data rows",
+      "sha256": "fb8fbd3e41980c452be03faa7358e269a560aea52da74e51c192e91f68b80c75",
+      "licence": {
+        "status": "identified_restricted",
+        "evidence": "https://lancslex.lancaster.ac.uk/ links CC BY-NC-ND 4.0 https://creativecommons.org/licenses/by-nc-nd/4.0/ ; inspected 2026-11-12.",
+        "redistribution": "withheld"
+      },
+      "notes": "User-supplied six ZIP parts reconstructed privately in numerical order, skipping repeated headers 2–6. All archive/member hashes, CRCs, per-part rows, original bytes and SHA-256 match MANIFEST.json. Official origin not independently byte-compared. Position 1 encodes lemma_class; Frequency is absolute count. No rank or per-million field. Private matching: 19 exact, 1 ambiguous, 0 unmatched. Source and derived observations remain private under unresolved publication rights."
+    },
+    {
+      "id": "original-project",
+      "title": "Original prototype lessons",
+      "provider": "English project",
+      "availability": "project_authored",
+      "format": "JSON",
+      "sha256": null,
+      "licence": {
+        "status": "project_authored",
+        "evidence": "Explanations, examples and exercises independently authored for this task; no external definitions copied. No blanket repository licence asserted.",
+        "redistribution": "original_text_only"
+      },
+      "notes": "Editorial drafts; no independent pronunciation review or learner testing yet."
+    }
+  ]
+}

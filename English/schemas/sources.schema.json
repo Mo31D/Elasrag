@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "provider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "availability": {
+            "enum": [
+              "supplied",
+              "not_supplied",
+              "project_authored",
+              "download_blocked"
+            ]
+          },
+          "format": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "licence": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "enum": [
+                  "unresolved",
+                  "project_authored",
+                  "identified_restricted"
+                ]
+              },
+              "evidence": {
+                "type": "string",
+                "minLength": 1
+              },
+              "redistribution": {
+                "enum": [
+                  "withheld",
+                  "original_text_only"
+                ]
+              }
+            },
+            "required": [
+              "status",
+              "evidence",
+              "redistribution"
+            ],
+            "additionalProperties": false
+          },
+          "notes": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "provider",
+          "availability",
+          "format",
+          "sha256",
+          "licence",
+          "notes"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "sources"
+  ],
+  "additionalProperties": false
+}
