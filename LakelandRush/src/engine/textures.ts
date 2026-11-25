@@ -202,7 +202,7 @@ export async function loadBuildingSurfaces(maxAnisotropy: number) {
   const fetchSurface = async (name: string, repeat: number) => {
     const channels = ['color', 'normal', 'rough'] as const;
     const results = await Promise.allSettled(channels.map(async (channel) => {
-      const texture = await loader.loadAsync(`/regions/windermere/materials/${name}-${channel}.webp`);
+      const texture = await loader.loadAsync(`${import.meta.env.BASE_URL}regions/windermere/materials/${name}-${channel}.webp`);
       loaded.push(texture);
       texture.colorSpace = channel === 'color' ? THREE.SRGBColorSpace : THREE.NoColorSpace;
       texture.wrapS = texture.wrapT = THREE.RepeatWrapping;

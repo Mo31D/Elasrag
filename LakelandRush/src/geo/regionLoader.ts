@@ -26,7 +26,7 @@ export class RegionManager {
   }
 
   public async initialize(): Promise<void> {
-    const base = `/regions/${this.regionId}`;
+    const base = `${import.meta.env.BASE_URL}regions/${this.regionId}`;
     const [manifestRes, terrainRes, lakeRes] = await Promise.all([
       fetch(`${base}/manifest.json`),
       fetch(`${base}/terrain.json`),
@@ -105,7 +105,7 @@ export class RegionManager {
 
     const promise = (async () => {
       try {
-        const res = await fetch(`/regions/${this.regionId}/chunks/${key}.json`);
+        const res = await fetch(`${import.meta.env.BASE_URL}regions/${this.regionId}/chunks/${key}.json`);
         if (!res.ok) return null;
         const data = (await res.json()) as WorldChunkData;
         this.chunkCache.set(key, data);

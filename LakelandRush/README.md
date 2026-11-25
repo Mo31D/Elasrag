@@ -17,3 +17,8 @@ See [current development status](DEVELOPMENT_STATUS.md), [data regeneration](DAT
 The owner-private playable preview is available at https://lakeland-rush-waterhead.elasrag.chatgpt.site/. Open it using the ChatGPT account that owns the Site. Select **Windermere Free Roam** to arrive at Waterhead near the pier.
 
 A production ZIP contains the static web root. Extract it to the root of an HTTPS static host. To build the export locally with fixed comparison cameras, run `VITE_ENABLE_WATERHEAD_BENCHMARK=1 npm run build`. See VISUAL_BENCHMARKS.md for the capture commands.
+
+GitHub Pages serves the checked-in production output at https://elasrag.com/LakelandRush/.
+Edit `index.source.html` for HTML changes. The Pages workflow builds with
+`--base=/LakelandRush/` and only stages `index.html`, `assets/` and `regions/`
+inside this folder. Normal Vite builds default to `/`.

@@ -372,7 +372,7 @@ export class LakelandEngine {
         this.roofDetailMaps.add(texture);
       }
       const assetResults = await Promise.allSettled(buildingAssets.map(async asset => {
-        const { scene } = await assetLoader.loadAsync(asset.assetUrl);
+        const { scene } = await assetLoader.loadAsync(`${import.meta.env.BASE_URL}${asset.assetUrl}`);
         scene.traverse(object => {
           if (!(object instanceof THREE.Mesh) || !(object.material instanceof THREE.MeshStandardMaterial)) return;
           const material = object.material;

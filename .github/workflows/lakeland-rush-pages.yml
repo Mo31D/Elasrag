@@ -1,0 +1,59 @@
+name: Publish Lakeland Rush to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'LakelandRush/src/**'
+      - 'LakelandRush/public/**'
+      - 'LakelandRush/index.source.html'
+      - 'LakelandRush/vite.config.ts'
+      - 'LakelandRush/tsconfig.json'
+      - 'LakelandRush/package.json'
+      - 'LakelandRush/bun.lock'
+      - 'LakelandRush/scripts/stage-pages.mjs'
+      - '.github/workflows/lakeland-rush-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: lakeland-rush-pages-main
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.5
+      - name: Build and verify Lakeland Rush
+        working-directory: LakelandRush
+        run: |
+          bun install --frozen-lockfile
+          npm run lint
+          node --import tsx --test src/{geo,game}/*.test.ts
+          npm run build -- --base=/LakelandRush/
+          node scripts/stage-pages.mjs
+      - name: Publish game files without changing other project paths
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git add -A -- LakelandRush/index.html LakelandRush/assets LakelandRush/regions
+          if ! git diff --cached --quiet; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'build(lakeland-rush): publish GitHub Pages assets'
+            git push origin HEAD:main
+          fi
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds" --jq '.status'
