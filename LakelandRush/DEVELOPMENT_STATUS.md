@@ -34,3 +34,9 @@ The Waterhead Inn, Lakeside Picnic and adjoining Esplanade shops have reproducib
 For the current asset pipeline, run `GLTF_TRANSFORM=/path/to/gltf-transform bash scripts/build-waterhead-assets.sh` using Blender 4.3 and glTF Transform 4.4.0. The optional CLI applies Meshopt compression. The separate booking office generator remains available. The reusable mesh module cuts facade openings and builds jambs, glazing, joinery, gables and three-dimensional signs.
 
 The production build passed TypeScript checks, the existing unit tests, and desktop and iPad-emulated playthroughs. The private production preview was published at https://lakeland-rush-waterhead.elasrag.chatgpt.site/ and shows a ChatGPT sign-in gate. The local production build was exercised with browser request fixtures. Field dimensions, a current Coffee Shop frontage and a resident recognition review remain open.
+
+## Ambleside and Waterhead corridor
+
+The priority road graph was re-imported from current OSM with both road approaches and Old Lake Road. The arcade centreline follows the imported alignment to Bridge House. An Environment Agency composite DTM extends street-level elevation coverage into Ambleside. Free Roam includes a tappable route and landmark map, fast travel, walking and sprinting, camera look and view options, and an isolated provisional Black Sheep Shop interior. Original exterior GLBs cover Lancaster House, Bridge House and Market Cross. See [accuracy, regeneration and missing references](ROAD_NETWORK_AMBLESIDE.md).
+
+Next, use owner photographs to validate the Black Sheep frontage and interior, then reconstruct and verify recognisable practical sites with current references. Collect labelled and unlabelled physical-device reviews at the same viewpoints.

@@ -7,7 +7,7 @@ type Ground = (x: number, z: number) => number;
 
 export const WATERHEAD_SIDEWALKS = new Set(publicRealm.sidewalk.map(feature => feature.id));
 
-function groundSurface(points: Point[], ground: Ground, offset: number) {
+export function groundSurface(points: Point[], ground: Ground, offset: number) {
   const shape = new THREE.Shape(points.map(([x, z]) => new THREE.Vector2(x, -z)));
   const geo = new THREE.ShapeGeometry(shape);
   geo.rotateX(-Math.PI / 2);

@@ -1,4 +1,5 @@
 import type { RouteDefinition } from '../types/game';
+import navigation from './ambleside-navigation.json';
 
 function calcLength(pts: Array<[number, number]>): number {
   let len = 0;
@@ -8,29 +9,11 @@ function calcLength(pts: Array<[number, number]>): number {
   return Math.round(len);
 }
 
-// Surveyed OpenStreetMap Lake Road -> Kelsick Rd -> Compston Rd -> Rydal Rd -> Rothay Park
-const waterheadPts: Array<[number, number]> = [
-  [204.3, -1.6],     // Waterhead Promenade / A591
-  [194.3, -27.6],    // Waterhead Bay East
-  [179.9, -68.6],    // Waterhead Marine
-  [158.9, -139.0],   // Borrans Park East
-  [140.2, -217.8],   // Lake Road South
-  [129.7, -326.9],   // Rothay Holme
-  [134.3, -780.6],   // Lake Road Central
-  [87.5, -1087.7],   // Ambleside Entry
-  [74.5, -1384.5],   // Kelsick Road Junction
-  [-46.5, -1406.2],  // Market Cross
-  [-70.3, -1410.5],  // Compston Road South
-  [-95.2, -1436.2],  // Compston Street
-  [-59.3, -1512.6],  // Compston Road North
-  [-10.0, -1609.6],  // Bridge House Approach
-  [16.1, -1660.5],   // Bridge House / Rydal Rd
-  [7.3, -1820.3],    // Rydal Road Bend
-  [-61.7, -1879.4],  // Rothay Park North
-  [-164.4, -1916.4], // Under Loughrigg East
-  [-265.3, -1980.8], // Rothay Bridge
-  [-373.9, -2067.1], // Pelter Bridge Approach
-];
+// Connected OSM centreline route. No manually drawn shortcuts.
+const waterheadPts = navigation.arcade as Array<[number, number]>;
+const waterheadLandmarks = navigation.stops
+  .filter(place => ['fork','lake-road','black-sheep','market','bridge-house'].includes(place.id))
+  .map(place => ({ name: place.name, x: place.point[0], z: place.point[1] }));
 
 // Surveyed OpenStreetMap Glebe Road -> Ferry Nab -> Ferry Crossing -> B5285 Far Sawrey
 const bownessPts: Array<[number, number]> = [
@@ -85,22 +68,17 @@ export const LAKELAND_ROUTES: RouteDefinition[] = [
   {
     id: 'waterhead_ambleside',
     title: 'Waterhead & Ambleside Scramble',
-    subtitle: 'Sprint from Waterhead Pier up Lake Road, vault slate walls and Bridge House to Rothay Park.',
+    subtitle: 'Sprint from Waterhead up the mapped A591 corridor through Ambleside to Bridge House.',
     difficulty: 'Accessible',
     mode: 'sprint',
     startName: 'Waterhead Promenade',
-    finishName: 'Rothay Bridge, Ambleside',
+    finishName: 'Bridge House, Ambleside',
     lengthMeters: calcLength(waterheadPts),
     targetTimeSec: 110,
     parScore: 10500,
     waypoints: waterheadPts,
     corridorHalfWidth: 8.5,
-    landmarks: [
-      { name: 'Waterhead Bay', x: waterheadPts[0][0], z: waterheadPts[0][1] },
-      { name: 'Borrans Park', x: waterheadPts[3][0], z: waterheadPts[3][1] },
-      { name: 'Ambleside Market Cross', x: waterheadPts[9][0], z: waterheadPts[9][1] },
-      { name: 'Bridge House', x: waterheadPts[14][0], z: waterheadPts[14][1] },
-    ],
+    landmarks: waterheadLandmarks,
   },
   {
     id: 'bowness_ferry',

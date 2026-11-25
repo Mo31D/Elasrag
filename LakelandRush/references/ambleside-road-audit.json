@@ -1,0 +1,14 @@
+{
+  "retrieved": "2026-11-25",
+  "snapshotSha256": "5696c217d002827c805bd9866a2ee33bb2bfd3141272748251868d6518d056b3",
+  "osm": "https://api.openstreetmap.org/api/0.6/map.json?bbox=-2.978,54.417,-2.950,54.437",
+  "roadWays": 695,
+  "newWayIds": 5,
+  "sharedWayIds": 690,
+  "connectedJunctionNodes": 578,
+  "oldSampleCount": 4346,
+  "oldOffsetMeanM": 0.027,
+  "oldOffsetP95M": 0.053,
+  "oldOffsetMaxM": 0.068,
+  "newOffsetMaxM": 0.0007
+}

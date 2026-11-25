@@ -1,4 +1,5 @@
 import React from 'react';
+import { AmblesideMap, type ExploreStop } from './AmblesideMap';
 import { Play, X } from 'lucide-react';
 import type { LakeData, RegionManifest, RouteDefinition } from '../types/game';
 
@@ -10,6 +11,8 @@ interface InteractiveMapModalProps {
   onSelectAndStart: (route: RouteDefinition) => void;
   onSelectRoute: (route: RouteDefinition) => void;
   onClose: () => void;
+  player?: { x: number; z: number };
+  onTravel: (stop: ExploreStop) => void;
 }
 
 export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
@@ -20,7 +23,10 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
   onSelectAndStart,
   onSelectRoute,
   onClose,
+  player,
+  onTravel,
 }) => {
+  const [local, setLocal] = React.useState(true);
   // Windermere bounding box in world meters: X [-3200..4600], Z [-2200..17000]
   const minX = -3200;
   const maxX = 4800;
@@ -76,6 +82,13 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
           </button>
         </div>
 
+        <div className="flex gap-2 border-b border-white/10 p-2">
+          <button type="button" aria-pressed={local} onClick={() => setLocal(true)}
+            className="rounded-lg px-3 py-1 text-white aria-pressed:bg-slate-800">Ambleside & Waterhead</button>
+          <button type="button" aria-pressed={!local} onClick={() => setLocal(false)}
+            className="rounded-lg px-3 py-1 text-white aria-pressed:bg-slate-800">Windermere basin</button>
+        </div>
+        {local ? <AmblesideMap lake={lakeData} player={player} onTravel={onTravel} /> : (
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 overflow-y-auto">
           {/* Geographic SVG Lake & Settlement Map */}
           <div className="bg-slate-900/70 flex items-center justify-center p-4 border-b md:border-b-0 md:border-r border-white/10">
@@ -190,6 +203,7 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

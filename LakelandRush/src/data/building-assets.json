@@ -96,5 +96,101 @@
       "esplanade-shops.glb"
     ],
     "collision": "Existing footprint bounding box"
+  },
+  {
+    "buildingId": 423598927,
+    "osmType": "way",
+    "name": "Lancaster House and The Black Sheep Shop",
+    "assetUrl": "regions/windermere/assets/black-sheep-shop.glb",
+    "positionSource": "OSM building 423598927 and shop node 4231695543; FSA street address",
+    "orientationSource": "Lake Road-facing edge of the mapped building",
+    "groundElevationM": null,
+    "roofCrestAboveLocalBaseM": 7.22,
+    "heightSource": "Provisional visual proportions",
+    "floorCount": 2,
+    "roofForm": "Estimated hipped massing",
+    "wallMaterial": "Lakeland slate and painted joinery",
+    "facade": "Recessed commercial glazing and original lettering; frontage width, roof and colours awaiting photographs",
+    "frontage": "Approximate",
+    "referenceIds": [
+      "fsa-black-sheep"
+    ],
+    "verification": "verified_geo_approx",
+    "lod": [
+      "black-sheep-shop.glb"
+    ],
+    "collision": "Existing geographic footprint; interior is isolated"
+  },
+  {
+    "buildingId": 389884072,
+    "osmType": "way",
+    "name": "Bridge House",
+    "assetUrl": "regions/windermere/assets/bridge-house.glb",
+    "positionSource": "OSM footprint and EA composite DTM",
+    "orientationSource": "Mapped bridge axis over Stock Beck",
+    "groundElevationM": null,
+    "roofCrestAboveLocalBaseM": 5.66,
+    "heightSource": "Proportions estimated from Geograph photograph",
+    "floorCount": 2,
+    "roofForm": "Slated gable with chimney",
+    "wallMaterial": "Lakeland rubble slate",
+    "facade": "Stone arch, recessed windows and stone stairs",
+    "frontage": null,
+    "referenceIds": [
+      "geograph-1733267"
+    ],
+    "verification": "verified_geo_approx",
+    "lod": [
+      "bridge-house.glb"
+    ],
+    "collision": "Existing geographic footprint"
+  },
+  {
+    "buildingId": 423190096,
+    "osmType": "node",
+    "name": "Market Cross",
+    "assetUrl": "regions/windermere/assets/market-cross.glb",
+    "positionSource": "OSM historic node",
+    "orientationSource": "Octagonal plinth",
+    "groundElevationM": null,
+    "roofCrestAboveLocalBaseM": null,
+    "heightSource": "Approximate proportions from Geograph photograph",
+    "floorCount": null,
+    "roofForm": null,
+    "wallMaterial": "Weathered sandstone",
+    "facade": "Octagonal stepped plinth and tapering shaft",
+    "frontage": null,
+    "referenceIds": [
+      "geograph-1553077"
+    ],
+    "verification": "verified_geo_approx",
+    "lod": [
+      "market-cross.glb"
+    ],
+    "collision": null
+  },
+  {
+    "buildingId": 658735202,
+    "osmType": "way",
+    "name": "Hill’s filling station canopy",
+    "assetUrl": "regions/windermere/assets/hills-canopy.glb",
+    "positionSource": "OSM site way 658735201 and canopy footprint 658735202",
+    "orientationSource": "Canopy footprint",
+    "groundElevationM": null,
+    "roofCrestAboveLocalBaseM": 4.38,
+    "heightSource": "Approximation",
+    "floorCount": 1,
+    "roofForm": "Flat canopy",
+    "wallMaterial": "Painted metal",
+    "facade": "Canopy shape follows the mapped roof. Pumps, fascia and supports are approximate.",
+    "frontage": null,
+    "referenceIds": [
+      "osm-658735202"
+    ],
+    "verification": "verified_geo_approx",
+    "lod": [
+      "hills-canopy.glb"
+    ],
+    "collision": "Open walkable canopy; pumps are visual only"
   }
 ]

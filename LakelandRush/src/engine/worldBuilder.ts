@@ -8,7 +8,9 @@ import type {
 } from '../types/game';
 import { isPointInLake, pointInRing, sampleTerrainHeight } from '../geo/projection';
 import { buildWaterheadShoreDistance, WATERHEAD_WATER_BOUNDS } from './waterhead-water';
-import { buildWaterfrontDetails, WATERHEAD_SIDEWALKS } from './waterfront';
+import { buildWaterfrontDetails, groundSurface, WATERHEAD_SIDEWALKS } from './waterfront';
+import amblesideSurfaces from '../data/ambleside-surfaces.json';
+import amblesideNavigation from '../data/ambleside-navigation.json';
 import buildingAssetMetadata from '../data/building-assets.json';
 import type { loadBuildingSurfaces, ProceduralTextureSet } from './textures';
 
@@ -35,7 +37,8 @@ export interface WorldMaterials {
 export interface BuiltChunkResult {
   key: string;
   group: THREE.Group;
-  colliders: Array<{ minX: number; maxX: number; minZ: number; maxZ: number; topY: number; isRoof: boolean }>;
+  colliders: Array<{ minX: number; maxX: number; minZ: number; maxZ: number; topY: number; isRoof: boolean; outline: Array<[number, number]> }>;
+  roadDecks: Array<{ ax: number; az: number; bx: number; bz: number; ay: number; by: number; halfWidth: number }>;
   pierDecks: Array<{ outline: Array<[number, number]>; y: number }>;
   grindSegments: Array<{ ax: number; az: number; bx: number; bz: number; y: number }>;
   dispose: () => void;
@@ -441,6 +444,7 @@ function buildRoadRibbonGeometry(
   terrain: TerrainGridData | null,
   yOffset: number,
   followDetail = true,
+  deck?: { from: number; to: number; halfWidth: number; segments: BuiltChunkResult['roadDecks'] },
 ): THREE.BufferGeometry | null {
   if (pts.length < 2) return null;
   if (followDetail) pts = resampleRoad(pts, terrain?.detail, halfWidth);
@@ -449,6 +453,9 @@ function buildRoadRibbonGeometry(
   const indices: number[] = [];
 
   let totalLen = 0;
+  const deckLength = deck ? pts.slice(1).reduce((sum, [x, z], i) =>
+    sum + Math.hypot(x - pts[i][0], z - pts[i][1]), 0) : 0;
+  let previousDeckY = deck?.from ?? 0;
   for (let i = 0; i < pts.length; i++) {
     const [x, z] = pts[i];
     const prev = pts[Math.max(0, i - 1)];
@@ -468,8 +475,17 @@ function buildRoadRibbonGeometry(
     const rxp = x + rx * halfWidth;
     const rzp = z + rz * halfWidth;
 
-    const ly = Math.max(0.42, sampleTerrainHeight(terrain, lx, lz)) + yOffset;
-    const ry = Math.max(0.42, sampleTerrainHeight(terrain, rxp, rzp)) + yOffset;
+    let ly = Math.max(0.42, sampleTerrainHeight(terrain, lx, lz)) + yOffset;
+    let ry = Math.max(0.42, sampleTerrainHeight(terrain, rxp, rzp)) + yOffset;
+    if (deck && deckLength > 0) {
+      const height = THREE.MathUtils.lerp(deck.from, deck.to, totalLen / deckLength);
+      if (i > 0) deck.segments.push({
+        ax: prev[0], az: prev[1], bx: x, bz: z, ay: previousDeckY, by: height,
+        halfWidth: deck.halfWidth,
+      });
+      previousDeckY = height;
+      ly = ry = height;
+    }
 
     positions.push(lx, ly, lz, rxp, ry, rzp);
     const vCoord = totalLen / (halfWidth * 2.2);
@@ -677,7 +693,18 @@ export function buildChunkGroup(
       roofs.push(built.roofGeo);
       windows.push(built.windowGeo);
     }
-    colliders.push({ ...built.bounds, isRoof: b.h < 9.5 });
+    if (b.id !== 658735202 || !asset) colliders.push({ ...built.bounds, isRoof: b.h < 9.5, outline: b.pts.map(([x, z]) => [x + b.cx, z + b.cz]) });
+  }
+
+  if (chunk.key === '0_-4') {
+    const cross = amblesideNavigation.stops.find(stop => stop.id === 'market');
+    const prototype = buildingAssets.get(423190096);
+    if (cross && prototype) {
+      const [x, z] = cross.point;
+      const model = prototype.clone();
+      model.position.set(x, sampleTerrainHeight(terrain, x, z) + .12, z);
+      group.add(model);
+    }
   }
 
   const addBatch = (geos: THREE.BufferGeometry[], mat: THREE.Material, castShadow: boolean) => {
@@ -713,31 +740,38 @@ export function buildChunkGroup(
   const pathGeos: THREE.BufferGeometry[] = [];
   const railGeos: THREE.BufferGeometry[] = [];
 
+  const roadDecks: BuiltChunkResult['roadDecks'] = [];
   for (const r of chunk.roads) {
     if (r.kind === 'ferry' || (isWaterhead && WATERHEAD_SIDEWALKS.has(r.id))) continue;
-    if (r.kind === 'primary' || r.kind === 'secondary') {
-      const g = buildRoadRibbonGeometry(r.pts, r.kind === 'primary' ? 4.4 : 3.4, terrain, 0.12);
-      if (g) primaryGeos.push(g);
-    } else if (r.kind === 'lane') {
-      const g = buildRoadRibbonGeometry(r.pts, 2.6, terrain, 0.09);
-      if (g) laneGeos.push(g);
-    } else if (r.kind === 'railway') {
-      const g = buildRoadRibbonGeometry(r.pts, 1.5, terrain, 0.14);
-      if (g) railGeos.push(g);
+    const arterial = r.kind === 'primary' || r.kind === 'secondary';
+    const lane = r.kind === 'lane';
+    const rail = r.kind === 'railway';
+    const halfWidth = r.widthM ? r.widthM / 2
+      : r.kind === 'primary' ? 4.4 : arterial ? 3.4 : lane ? 2.6 : rail ? 1.5 : r.sidewalk ? .85 : 1.35;
+    const offset = arterial ? .12 : lane ? .09 : rail ? .14 : r.sidewalk ? .145 : .06;
+    const start = r.pts[0];
+    const end = r.pts.at(-1);
+    const deck = r.bridge && !rail && start && end ? {
+      from: Math.max(.45, sampleTerrainHeight(terrain, ...start)) + offset,
+      to: Math.max(.45, sampleTerrainHeight(terrain, ...end)) + offset,
+      halfWidth,
+      segments: roadDecks,
+    } : undefined;
+    const geometry = buildRoadRibbonGeometry(r.pts, halfWidth, terrain, offset, true, deck);
+    if (geometry) (arterial ? primaryGeos : lane ? laneGeos : rail ? railGeos : pathGeos).push(geometry);
+    if (rail) {
       for (let i = 0; i < r.pts.length - 1; i++) {
-        const y = Math.max(0.5, sampleTerrainHeight(terrain, r.pts[i][0], r.pts[i][1])) + 0.35;
-        grindSegments.push({
-          ax: r.pts[i][0],
-          az: r.pts[i][1],
-          bx: r.pts[i + 1][0],
-          bz: r.pts[i + 1][1],
-          y,
-        });
+        const [ax, az] = r.pts[i];
+        const [bx, bz] = r.pts[i + 1];
+        const y = Math.max(0.5, sampleTerrainHeight(terrain, ax, az)) + 0.35;
+        grindSegments.push({ ax, az, bx, bz, y });
       }
-    } else {
-      const g = buildRoadRibbonGeometry(r.pts, 1.35, terrain, 0.06);
-      if (g) pathGeos.push(g);
     }
+  }
+
+  const siteSurfaces = amblesideSurfaces[chunk.key as keyof typeof amblesideSurfaces] ?? [];
+  for (const site of siteSurfaces) {
+    laneGeos.push(groundSurface(site.points, (x, z) => sampleTerrainHeight(terrain, x, z), .045));
   }
 
   addBatch(primaryGeos, materials.primaryRoad, false);
@@ -968,6 +1002,7 @@ export function buildChunkGroup(
     key: chunk.key,
     group,
     colliders,
+    roadDecks,
     pierDecks,
     grindSegments,
     dispose: () => {

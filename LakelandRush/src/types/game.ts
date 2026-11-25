@@ -130,6 +130,8 @@ export interface RoadFeature {
   kind: 'primary' | 'secondary' | 'lane' | 'footpath' | 'ferry' | 'railway';
   bridge?: boolean;
   oneway?: boolean;
+  direction?: 1 | -1;
+  access?: string;
   sidewalk?: boolean;
   lit?: boolean;
   surface?: string;
@@ -258,6 +260,8 @@ export interface HudSnapshot {
   cameraViewMode?: CameraViewMode;
   exploreWalkPace?: boolean;
   cleanExploreMode?: boolean;
+  insideShop?: boolean;
+  canEnterShop?: boolean;
 }
 
 export interface RunResult {

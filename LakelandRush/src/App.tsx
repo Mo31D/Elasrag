@@ -4,6 +4,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { ExploreStop } from './components/AmblesideMap';
 import { GameHUD } from './components/GameHUD';
 import { InteractiveMapModal } from './components/InteractiveMapModal';
 import { PauseAndPhotoModal } from './components/PauseAndPhotoModal';
@@ -74,6 +75,8 @@ const INITIAL_HUD: HudSnapshot = {
 };
 
 export default function App() {
+  const mapResume = useRef(false);
+  const lookPointer = useRef<{ id: number; x: number; y: number } | null>(null);
   const mountRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<LakelandEngine | null>(null);
 
@@ -216,6 +219,29 @@ export default function App() {
     engineRef.current?.setGameState('playing');
   }, []);
 
+  const travelToStop = useCallback((stop: ExploreStop) => {
+    const explorer = LAKELAND_ROUTES.find(route => route.mode === 'freeroam');
+    if (!explorer) return;
+    const [x, z] = stop.spawn;
+    const [targetX, targetZ] = stop.heading ?? stop.point;
+    const heading: [number, number] = Math.hypot(targetX - x, targetZ - z) < .1
+      ? [x, z - 8] : [targetX, targetZ];
+    mapResume.current = false;
+    startRouteRun({ ...explorer, startName: stop.name, waypoints: [[x, z], heading] });
+  }, [startRouteRun]);
+
+  const openTravelMap = () => {
+    mapResume.current = gameState === 'playing';
+    if (mapResume.current) handlePause();
+    setShowMapModal(true);
+  };
+
+  const closeTravelMap = useCallback(() => {
+    setShowMapModal(false);
+    if (mapResume.current) handleResume();
+    mapResume.current = false;
+  }, [handleResume]);
+
   const handleReturnToTitle = useCallback(() => {
     setIsPhotoMode(false);
     setLastResult(null);
@@ -245,7 +271,7 @@ export default function App() {
       const anyModal = showMapModal || showSettingsModal || showTutorialModal;
       if (anyModal) {
         if (e.code === 'Escape') {
-          setShowMapModal(false);
+          if (showMapModal) closeTravelMap();
           setShowSettingsModal(false);
           setShowTutorialModal(false);
         }
@@ -279,6 +305,7 @@ export default function App() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [
+    closeTravelMap,
     handlePause,
     handleResume,
     handleStartCurrentRun,
@@ -294,7 +321,20 @@ export default function App() {
       <div
         ref={mountRef}
         data-testid="game-canvas-mount"
-        className="fixed inset-0 w-full h-full"
+        className="fixed inset-0 h-full w-full touch-none"
+        onPointerDown={event => {
+          if (gameState !== 'playing' || selectedRoute.mode !== 'freeroam') return;
+          event.currentTarget.setPointerCapture(event.pointerId);
+          lookPointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+        }}
+        onPointerMove={event => {
+          const pointer = lookPointer.current;
+          if (pointer?.id !== event.pointerId) return;
+          engineRef.current?.rotateExploreView(event.clientX - pointer.x, event.clientY - pointer.y);
+          pointer.x = event.clientX;
+          pointer.y = event.clientY;
+        }}
+        onLostPointerCapture={() => { lookPointer.current = null; }}
       />
 
       {/* Initial Terrain Loading Curtain */}
@@ -349,11 +389,17 @@ export default function App() {
           onTouchSteer={(val) => engineRef.current?.setTouchSteer(val)}
           onTouchJump={() => engineRef.current?.triggerTouchJump()}
           onTouchSlide={() => engineRef.current?.triggerTouchSlide()}
+          onOpenMap={openTravelMap}
+          onTouchAdvance={value => engineRef.current?.setTouchAdvance(value)}
+          onToggleExplorePace={() => engineRef.current?.toggleExplorePace()}
+          onToggleExploreView={() => engineRef.current?.toggleExploreView()}
+          onToggleExploreLabels={() => engineRef.current?.toggleExploreLabels()}
+          onShopDoor={() => engineRef.current?.toggleShop()}
         />
       )}
 
       {/* Pause & Photo Mode Modal */}
-      {gameState === 'paused' && !showSettingsModal && (
+      {gameState === 'paused' && !showSettingsModal && !showMapModal && (
         <PauseAndPhotoModal
           isPhotoMode={isPhotoMode}
           photoPreset={photoPreset}
@@ -392,9 +438,11 @@ export default function App() {
           lakeData={engineRef.current?.getLakeData() ?? null}
           routes={LAKELAND_ROUTES}
           selectedRouteId={selectedRoute.id}
-          onSelectRoute={handleSelectRoute}
-          onSelectAndStart={startRouteRun}
-          onClose={() => setShowMapModal(false)}
+          onSelectRoute={gameState === 'title' ? handleSelectRoute : () => {}}
+          onSelectAndStart={route => { mapResume.current = false; startRouteRun(route); }}
+          player={gameState === 'title' ? undefined : { x: hud.playerX, z: hud.playerZ }}
+          onTravel={travelToStop}
+          onClose={closeTravelMap}
         />
       )}
 

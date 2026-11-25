@@ -20,6 +20,12 @@ interface GameHUDProps {
   onTouchSteer: (val: number) => void;
   onTouchJump: () => void;
   onTouchSlide: () => void;
+  onOpenMap: () => void;
+  onTouchAdvance: (value: number) => void;
+  onToggleExplorePace: () => void;
+  onToggleExploreView: () => void;
+  onToggleExploreLabels: () => void;
+  onShopDoor: () => void;
 }
 
 export const GameHUD: React.FC<GameHUDProps> = ({
@@ -35,6 +41,12 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   onTouchSteer,
   onTouchJump,
   onTouchSlide,
+  onOpenMap,
+  onTouchAdvance,
+  onToggleExplorePace,
+  onToggleExploreView,
+  onToggleExploreLabels,
+  onShopDoor,
 }) => {
   const minimapRef = useRef<HTMLCanvasElement | null>(null);
   const [isTouchViewport, setIsTouchViewport] = useState(false);
@@ -286,6 +298,24 @@ export const GameHUD: React.FC<GameHUDProps> = ({
         </div>
       )}
 
+      {route.mode === 'freeroam' && (
+        <div className="pointer-events-auto mx-auto flex max-w-full flex-wrap justify-center gap-1 rounded-xl border border-white/15 bg-slate-950/90 p-1.5 text-xs text-white [&>button]:rounded-md [&>button]:px-2 [&>button]:py-2">
+          <button type="button" onClick={onOpenMap}>Explore map</button>
+          <button type="button" onClick={onToggleExplorePace} aria-pressed={!hud.exploreWalkPace}>
+            {hud.exploreWalkPace ? 'Walk' : 'Sprint'}
+          </button>
+          <button type="button" onClick={onToggleExploreView} aria-pressed={hud.cameraViewMode === 'first_person'}>
+            {hud.cameraViewMode === 'first_person' ? 'First person' : 'Third person'}
+          </button>
+          <button type="button" onClick={onToggleExploreLabels} aria-pressed={!hud.cleanExploreMode}>Labels</button>
+          {(hud.canEnterShop || hud.insideShop) && <button type="button" onClick={onShopDoor} className="bg-amber-500 text-slate-950">
+            {hud.insideShop ? 'Leave shop' : 'Enter Black Sheep Shop'}
+          </button>}
+          {hud.insideShop && <span className="px-2 py-2">Approximate interior</span>}
+          {!hud.insideShop && !hud.cleanExploreMode && hud.nearLandmark && <span className="px-2 py-2 text-amber-200">{hud.nearLandmark}</span>}
+        </div>
+      )}
+
       {/* Mobile / Touch Controls */}
       {isTouchViewport && (
         <div className="flex items-end justify-between gap-4 pb-2 pointer-events-auto">
@@ -351,6 +381,17 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           )}
 
           <div className="flex items-center gap-2.5">
+            {route.mode === 'freeroam' ? [-1, 1].map(direction => (
+              <button key={direction} type="button" aria-label={direction === 1 ? 'Walk forward' : 'Walk backward'}
+                className="h-14 touch-none rounded-2xl border border-white/20 bg-slate-950/90 px-4 font-bold text-white"
+                onPointerDown={event => {
+                  event.currentTarget.setPointerCapture(event.pointerId);
+                  onTouchAdvance(direction);
+                }}
+                onLostPointerCapture={() => onTouchAdvance(0)}>
+                {direction === 1 ? '↑' : '↓'}
+              </button>
+            )) : <>
             <button
               type="button"
               aria-label="Slide"
@@ -375,6 +416,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
             >
               Jump
             </button>
+            </>}
           </div>
         </div>
       )}

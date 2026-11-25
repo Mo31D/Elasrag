@@ -41,11 +41,11 @@ export class RegionManager {
     this.terrain = (await terrainRes.json()) as TerrainGridData;
     this.lake = (await lakeRes.json()) as LakeData;
     if (this.regionId === 'windermere' && !this.terrain.detail) {
-      const surveyRes = await fetch(`${base}/waterhead-survey.json`);
+      const surveyRes = await fetch(`${base}/ambleside-terrain.json`);
       if (surveyRes.ok) {
         const survey = await surveyRes.json();
         if (survey.schemaVersion !== 1 || survey.lakeDatumM !== this.terrain.lakeDatumM) {
-          throw new Error('Incompatible Waterhead terrain survey');
+          throw new Error('Incompatible Ambleside terrain survey');
         }
         this.terrain.detail = survey.detail;
       }

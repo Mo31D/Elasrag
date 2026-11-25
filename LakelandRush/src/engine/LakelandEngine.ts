@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { createBlackSheepInterior } from './shopInterior';
+import navigation from '../data/ambleside-navigation.json';
 import { createAtmosphere } from './atmosphere';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
@@ -190,6 +192,17 @@ export class LakelandEngine {
   private prevRecord?: RouteRecord;
 
   // Player Physics State
+  private exploreYaw = 0;
+  private explorePitch = 0;
+  private exploreSprint = false;
+  private exploreFirst = false;
+  private exploreLabels = true;
+  private exploreSpeed = 0;
+  private touchAdvance = 0;
+  private shop?: ReturnType<typeof createBlackSheepInterior>;
+  private shopPosition = new THREE.Vector3(0, 1.64, 4.10);
+  private inShop = false;
+
   private playerX = 0;
   private playerY = 1;
   private playerZ = 0;
@@ -676,16 +689,18 @@ export class LakelandEngine {
     this.compiledRoute = compileRoutePolyline(route.waypoints);
     this.prepareRoute(route, prevRecord);
     this.gameState = 'playing';
-    this.skyDropTimer = 0.85; // Neon Scramble sky-drop entrance!
+    this.skyDropTimer = route.mode === 'sprint' ? .85 : 0;
     this.keysHeld.clear();
     void this.updateChunkStreaming(this.playerX, this.playerZ, true);
   }
 
   public setGameState(next: GameState): void {
     this.gameState = next;
+    if (next === 'title') this.inShop = false;
     if (next !== 'playing') {
       this.keysHeld.clear();
       this.virtualSteer = 0;
+      this.touchAdvance = 0;
       this.sound.setGameplayState(false, 0, false);
     } else {
       this.sound.unlock();
@@ -735,8 +750,95 @@ export class LakelandEngine {
     this.virtualSteer = THREE.MathUtils.clamp(val, -1, 1);
   }
 
+  public setTouchAdvance(value: number): void {
+    this.touchAdvance = THREE.MathUtils.clamp(value, -1, 1);
+  }
+
+  public rotateExploreView(dx: number, dy: number): void {
+    if (this.activeRoute.mode !== 'freeroam' || this.gameState !== 'playing') return;
+    const scale = .0038 * this.settings.sensitivity;
+    if (this.inShop || this.exploreFirst) this.playerHeading -= dx * scale;
+    else this.exploreYaw -= dx * scale;
+    this.explorePitch = THREE.MathUtils.clamp(this.explorePitch - dy * scale, -.88, .88);
+  }
+
+  public toggleExplorePace(): void {
+    this.exploreSprint = !this.exploreSprint;
+    this.pushHudSnapshot();
+  }
+
+  public toggleExploreView(): void {
+    this.exploreFirst = !this.exploreFirst;
+    if (this.exploreFirst) this.playerHeading += this.exploreYaw;
+    this.exploreYaw = 0;
+    this.explorePitch = 0;
+    this.pushHudSnapshot();
+  }
+
+  public toggleExploreLabels(): void {
+    this.exploreLabels = !this.exploreLabels;
+    this.routePropsGroup.visible = this.exploreLabels;
+    this.pushHudSnapshot();
+  }
+
+  private nearShopDoor(): boolean {
+    const stop = navigation.stops.find(place => place.id === 'black-sheep')!;
+    return this.activeRoute.mode === 'freeroam'
+      && Math.hypot(this.playerX - stop.spawn[0], this.playerZ - stop.spawn[1]) < 6;
+  }
+
+  public toggleShop(): void {
+    if (this.gameState !== 'playing' || (!this.inShop && !this.nearShopDoor())) return;
+    if (this.inShop) {
+      this.inShop = false;
+      this.playerHeading = Math.PI / 2;
+      this.camera.fov = 62;
+      this.camera.updateProjectionMatrix();
+    } else {
+      this.shop ??= createBlackSheepInterior(this.scene.environment);
+      this.inShop = true;
+      this.shopPosition.set(0, 1.64, 4.10);
+      this.playerHeading = 0;
+    }
+    this.keysHeld.clear();
+    this.touchAdvance = 0;
+    this.virtualSteer = 0;
+    this.explorePitch = 0;
+    this.exploreYaw = 0;
+    this.exploreSpeed = 0;
+    this.pushHudSnapshot();
+  }
+
+  private exploreThrottle(): number {
+    return THREE.MathUtils.clamp(this.touchAdvance
+      + (this.keysHeld.has('KeyW') || this.keysHeld.has('ArrowUp') ? 1 : 0)
+      - (this.keysHeld.has('KeyS') || this.keysHeld.has('ArrowDown') ? 1 : 0), -1, 1);
+  }
+
+  private updateShop(dt: number, steer: number): void {
+    if (!this.shop) return;
+    this.playerHeading -= steer * 1.85 * dt;
+    const delta = this.exploreThrottle() * 1.55 * dt;
+    const x = this.shopPosition.x - Math.sin(this.playerHeading) * delta;
+    const z = this.shopPosition.z - Math.cos(this.playerHeading) * delta;
+    if (this.shop.available(x,this.shopPosition.z)) this.shopPosition.x = x;
+    if (this.shop.available(this.shopPosition.x,z)) this.shopPosition.z = z;
+    this.exploreSpeed = dt > 0 ? Math.abs(delta) / dt : 0;
+    this.camera.position.copy(this.shopPosition);
+    this.camera.lookAt(this.shopPosition.x - Math.sin(this.playerHeading),
+      this.shopPosition.y + Math.tan(this.explorePitch), this.shopPosition.z - Math.cos(this.playerHeading));
+    this.sound.setGameplayState(true,this.exploreSpeed,false);
+  }
+
   private prepareRoute(route: RouteDefinition, prevRecord?: RouteRecord): void {
     this.prevRecord = prevRecord;
+    this.inShop = false;
+    this.exploreYaw = 0;
+    this.explorePitch = 0;
+    this.exploreSpeed = 0;
+    this.touchAdvance = 0;
+    this.virtualSteer = 0;
+    this.routePropsGroup.visible = route.mode === 'sprint' || this.exploreLabels;
     this.scoring = createInitialScoringState();
     this.runElapsedSec = 0;
     this.totalDistanceM = 0;
@@ -776,6 +878,7 @@ export class LakelandEngine {
     const fz = -Math.cos(this.playerHeading);
     this.camPos.set(this.playerX - fx * 7.5, this.playerY + 14.0, this.playerZ - fz * 7.5);
     this.camLook.set(this.playerX + fx * 15, this.playerY + 1.8, this.playerZ + fz * 15);
+    if (route.mode === 'freeroam') this.camPos.y = this.playerY + 2.7;
 
     if (route.mode === 'sprint') {
       this.populateSprintCourse();
@@ -1146,7 +1249,7 @@ export class LakelandEngine {
           this.updatePlaying(subDt);
         }
       }
-    } else if (this.gameState === 'paused') {
+    } else if (this.gameState === 'paused' && !this.inShop) {
       this.updatePhotoCamera(dt);
     }
 
@@ -1171,7 +1274,7 @@ export class LakelandEngine {
       this.materials.waterUniforms.uTime.value = 14;
     }
     this.atmosphere?.dome.position.copy(this.camera.position);
-    this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.inShop && this.shop ? this.shop.scene : this.scene, this.camera);
     if (view) {
       const { render, memory } = this.renderer.info;
       this.renderer.domElement.dataset.benchmark = JSON.stringify({
@@ -1221,6 +1324,10 @@ export class LakelandEngine {
     if (this.keysHeld.has('KeyA') || this.keysHeld.has('ArrowLeft')) steer -= 1;
     if (this.keysHeld.has('KeyD') || this.keysHeld.has('ArrowRight')) steer += 1;
     steer = THREE.MathUtils.clamp(steer, -1, 1);
+    if (this.inShop) {
+      this.updateShop(dt, steer);
+      return;
+    }
 
     // Optional Auto-Pilot assist
     if (this.settings.autoPilot && this.activeRoute.mode === 'sprint') {
@@ -1247,8 +1354,11 @@ export class LakelandEngine {
     this.steerTilt = steer;
 
     // Tick scoring & speed
-    this.scoring = tickScoring(this.scoring, dt, this.isGrinding);
-    const speed = this.scoring.speedMps;
+    const roaming = this.activeRoute.mode === 'freeroam';
+    if (!roaming) this.scoring = tickScoring(this.scoring, dt, this.isGrinding);
+    const throttle = roaming ? this.exploreThrottle() : 0;
+    const fast = this.exploreSprint || this.keysHeld.has('ShiftLeft') || this.keysHeld.has('ShiftRight');
+    let speed = roaming ? (fast ? 5.25 : 1.65) * Math.abs(throttle) : this.scoring.speedMps;
 
     // Jump buffering & Coyote time
     if (this.jumpBufferTimer > 0) this.jumpBufferTimer -= dt;
@@ -1302,9 +1412,8 @@ export class LakelandEngine {
     } else {
       // Free Roam 360° Explorer mode
       this.playerHeading -= steer * 2.1 * this.settings.sensitivity * dt;
-      const forwardInput = this.keysHeld.has('KeyS') || this.keysHeld.has('ArrowDown') ? 0.55 : 1.0;
-      const vx = -Math.sin(this.playerHeading) * speed * forwardInput;
-      const vz = -Math.cos(this.playerHeading) * speed * forwardInput;
+      const vx = -Math.sin(this.playerHeading) * speed * Math.sign(throttle);
+      const vz = -Math.cos(this.playerHeading) * speed * Math.sign(throttle);
       const nextX = this.playerX + vx * dt;
       const nextZ = this.playerZ + vz * dt;
 
@@ -1317,7 +1426,8 @@ export class LakelandEngine {
             nextX <= c.maxX + 0.55 &&
             nextZ >= c.minZ - 0.55 &&
             nextZ <= c.maxZ + 0.55 &&
-            this.playerY < c.topY - 0.6
+            this.playerY < c.topY - 0.6 &&
+            pointInRing(nextX, nextZ, c.outline)
           ) {
             blocked = true;
             break;
@@ -1330,9 +1440,9 @@ export class LakelandEngine {
         this.playerZ = nextZ;
         this.totalDistanceM += Math.hypot(vx * dt, vz * dt);
       } else {
-        this.playerHeading += 0.4;
-        this.cameraTrauma = Math.min(1, this.cameraTrauma + 0.25);
+        speed = 0;
       }
+      this.exploreSpeed = speed;
     }
 
     // Vertical physics & rooftop / terrain / grind rail grounding
@@ -1342,6 +1452,21 @@ export class LakelandEngine {
     for (const chunk of this.loadedChunks.values()) {
       for (const deck of chunk.pierDecks) {
         if (pointInRing(this.playerX, this.playerZ, deck.outline)) deckY = Math.max(deckY, deck.y);
+      }
+    }
+    for (const chunk of this.loadedChunks.values()) {
+      for (const deck of chunk.roadDecks) {
+        const dx = deck.bx - deck.ax;
+        const dz = deck.bz - deck.az;
+        const lengthSq = dx * dx + dz * dz;
+        if (lengthSq === 0) continue;
+        const t = ((this.playerX - deck.ax) * dx + (this.playerZ - deck.az) * dz) / lengthSq;
+        if (t < 0 || t > 1) continue;
+        const ox = this.playerX - deck.ax - dx * t;
+        const oz = this.playerZ - deck.az - dz * t;
+        if (ox * ox + oz * oz <= deck.halfWidth * deck.halfWidth) {
+          deckY = Math.max(deckY, THREE.MathUtils.lerp(deck.ay, deck.by, t));
+        }
       }
     }
     const inWater = overLake && deckY === -Infinity;
@@ -1417,11 +1542,11 @@ export class LakelandEngine {
     }
 
     // Sprint Obstacles, Tokens & Traffic Interactions
-    this.resolveTokensAndObstacles(dt);
+    if (!roaming || this.exploreLabels) this.resolveTokensAndObstacles(dt);
 
     // Distance-synced stride & footsteps
     this.stridePhase += speed * dt * 1.45;
-    if (this.isGrounded && !this.isSliding() && !this.isGrinding) {
+    if (speed > .05 && this.isGrounded && !this.isSliding() && !this.isGrinding) {
       this.footstepTimer -= dt * (speed / 10);
       if (this.footstepTimer <= 0) {
         this.footstepTimer = 0.28;
@@ -1589,12 +1714,21 @@ export class LakelandEngine {
   }
 
   private updateChaseCamera(dt: number, speedMps: number): void {
-    const backDist = 5.2 + (speedMps / 32) * 1.4;
+    const roaming = this.activeRoute.mode === 'freeroam';
+    const lookHeading = this.playerHeading + (roaming ? this.exploreYaw : 0);
+    if (roaming && this.exploreFirst) {
+      this.runner.root.visible = false;
+      this.camera.position.set(this.playerX, this.playerY + 1.65, this.playerZ);
+      this.camera.lookAt(this.playerX - Math.sin(lookHeading), this.playerY + 1.65 + Math.tan(this.explorePitch),
+        this.playerZ - Math.cos(lookHeading));
+      return;
+    }
+    const backDist = roaming ? 4.1 : 5.2 + (speedMps / 32) * 1.4;
     const dropFactor = this.skyDropTimer > 0 ? this.skyDropTimer / 0.85 : 0;
     const height = 2.45 + dropFactor * dropFactor * 14.0;
 
-    const fx = -Math.sin(this.playerHeading);
-    const fz = -Math.cos(this.playerHeading);
+    const fx = -Math.sin(lookHeading);
+    const fz = -Math.cos(lookHeading);
 
     const desiredX = this.playerX - fx * backDist;
     const desiredZ = this.playerZ - fz * backDist;
@@ -1604,7 +1738,7 @@ export class LakelandEngine {
     const damp = 1 - Math.exp(-9.5 * dt);
     this.camPos.lerp(_v1.set(desiredX, desiredY, desiredZ), damp);
     this.camLook.lerp(
-      _v2.set(this.playerX + fx * 15, this.playerY + 1.55, this.playerZ + fz * 15),
+      _v2.set(this.playerX + fx * 15, this.playerY + 1.55 + (roaming ? this.explorePitch * 5 : 0), this.playerZ + fz * 15),
       1 - Math.exp(-12 * dt),
     );
 
@@ -1715,7 +1849,13 @@ export class LakelandEngine {
       score: Math.round(this.scoring.score),
       combo: this.scoring.combo,
       comboTimer: Math.max(0, Math.min(1, this.scoring.comboTimer / 4.2)),
-      speedKmh: speedMpsToKmh(this.scoring.speedMps),
+      speedKmh: speedMpsToKmh(this.activeRoute.mode === 'freeroam' ? this.exploreSpeed : this.scoring.speedMps),
+      cameraViewMode: this.exploreFirst || this.inShop ? 'first_person' : 'third_person',
+      exploreWalkPace: !this.exploreSprint,
+      cleanExploreMode: !this.exploreLabels,
+      insideShop: this.inShop,
+      canEnterShop: this.nearShopDoor(),
+      nearLandmark: navigation.stops.find(stop => Math.hypot(stop.point[0] - this.playerX, stop.point[1] - this.playerZ) < 20)?.name,
       hearts: this.scoring.hearts,
       maxHearts: 3,
       progress,
@@ -1743,6 +1883,13 @@ export class LakelandEngine {
     const firstPress = !this.keysHeld.has(e.code);
     this.keysHeld.add(e.code);
     this.sound.unlock();
+
+    if (this.activeRoute.mode === 'freeroam') {
+      if (firstPress && e.code === 'KeyE') this.toggleShop();
+      if (firstPress && e.code === 'KeyV') this.toggleExploreView();
+      if (firstPress && e.code === 'Space' && !this.inShop) this.jumpBufferTimer = .14;
+      return;
+    }
 
     if (firstPress && (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp')) {
       this.jumpBufferTimer = 0.14;
@@ -1836,6 +1983,7 @@ export class LakelandEngine {
     this.waterMesh?.geometry.dispose();
     this.materials?.waterUniforms.shoreMap.value?.dispose();
     this.materials?.weatheredDeck.dispose();
+    this.shop?.dispose();
     this.textures?.dispose();
     this.sound.dispose();
     this.renderer?.dispose();
