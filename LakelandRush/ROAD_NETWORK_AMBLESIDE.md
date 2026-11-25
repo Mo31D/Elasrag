@@ -36,3 +36,7 @@ Sources for the landmark assets include [the Black Sheep Shop FSA record](https:
 Run `python scripts/import-ambleside-osm.py snapshot.json --baseline /path/to/pre-upgrade/regions/windermere --retrieved 2026-11-25`. Preserve the source snapshot hash when comparing results. Checkout `d68055bc8b75b08b9e6faa114b3b9407e471d6be` to get the exact previous region.
 
 The Ambleside GeoTIFF input is a British National Grid clip with easting 336850–338650 and northing 503375–505235. Run `/usr/bin/python3 scripts/build-ambleside-terrain.py ambleside-dtm.tif waterhead-dtm.tif --ostn15-dir /path/to/grid`. See the shipped terrain header for the input tile hashes and the existing Waterhead download script for the WCS coverage and grid sources. Regenerate original models with `blender -b -t 2 --python-exit-code 1 -P scripts/build-ambleside-landmarks.py`.
+
+## Business-to-business route
+
+The 1,105 m Lakeside Picnic → The Black Sheep Shop course follows connected OSM public walking ways between the selected exterior spawn points. The two short custom links between those spawns and the mapped graph total approximately 10 m. Choose it in the challenge list or highlight it from the Ambleside & Waterhead map and start the course there.

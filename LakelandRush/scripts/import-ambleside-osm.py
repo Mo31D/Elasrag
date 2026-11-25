@@ -89,6 +89,7 @@ def main():
     grouped = defaultdict(list)
     road_map = {}
     degrees = defaultdict(set)
+    pedestrian = defaultdict(list)
     graphs = {key: defaultdict(list) for key in ("east", "west", "old", "arcade")}
     road_names = {
         "east": {"Lake Road", "Kelsick Road"},
@@ -126,9 +127,12 @@ def main():
         for u, v in zip(ids, ids[1:]):
             degrees[u].add(v)
             degrees[v].add(u)
+            length = math.dist(nodes[u], nodes[v])
+            if tags.get("foot") not in ("no", "private") and tags.get("access") not in ("private", "no"):
+                pedestrian[u].append((v, length))
+                pedestrian[v].append((u, length))
             if kind == "footpath" or tags.get("access") in ("private", "no"):
                 continue
-            length = math.dist(nodes[u], nodes[v])
             for key, names in road_names.items():
                 if key == "arcade" or tags.get("name") in names:
                     # These are pedestrian inspection routes. Vehicular direction is recorded separately.
@@ -187,6 +191,25 @@ def main():
         headings[stop] = route["points"][route["nodeIds"].index(node)+1]
     # Face the mapped canopy from the approach on Lake Road.
     headings["hills"] = [85,-1208.7]
+    shop_start = next(spawn for key,_,_,_,spawn,_ in stops if key == "picnic")
+    shop_end = next(spawn for key,_,_,_,spawn,_ in stops if key == "black-sheep")
+    # Join the walking network from the two playable shop approaches.
+    baskets = sorted(pedestrian, key=lambda n: math.dist(nodes[n], shop_start))[:8]
+    targets = sorted(pedestrian, key=lambda n: math.dist(nodes[n], shop_end))[:8]
+    choices = []
+    for start in baskets:
+        for finish in targets:
+            try:
+                shop_nodes, metres = path(pedestrian,start,finish)
+            except ValueError:
+                continue
+            access = math.dist(nodes[start],shop_start) + math.dist(nodes[finish],shop_end)
+            # Prefer short entrance links over cutting across separate paths.
+            choices.append((metres + 4 * access, metres + access, shop_nodes))
+    _, shop_length, shop_nodes = min(choices)
+    routes.append({"id":"shop-link", "name":"Lakeside Picnic → The Black Sheep Shop",
+                   "lengthM":round(shop_length,1), "nodeIds":shop_nodes,
+                   "points":[rounded(p) for p in [shop_start,*(nodes[n] for n in shop_nodes),shop_end]]})
     nav = {"approaches": routes, "arcade": [rounded(nodes[n]) for n in ids],
            "arcadeFinishNode": arcade_end, "arcadeLengthM": round(length,1),
            "stops":[{"id":i,"name":name,"kind":kind,"point":rounded(target),"spawn":rounded(spawn),

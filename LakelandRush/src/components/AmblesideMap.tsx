@@ -4,10 +4,11 @@ import navigation from '../data/ambleside-navigation.json';
 
 export type ExploreStop = (typeof navigation.stops)[number];
 
-export function AmblesideMap({ lake, player, onTravel }: {
+export function AmblesideMap({ lake, player, onTravel, onStartShopRoute }: {
   lake: LakeData | null;
   player?: { x: number; z: number };
   onTravel: (stop: ExploreStop) => void;
+  onStartShopRoute: () => void;
 }) {
   const [selected, select] = useState(navigation.stops[0]);
   const [showLabels, setShowLabels] = useState(true);
@@ -31,7 +32,7 @@ export function AmblesideMap({ lake, player, onTravel }: {
           {lake?.outerRings.map((ring, index) => <polygon key={index} fill="#0c3545"
             points={ring.map(point => point.join(',')).join(' ')} />)}
           {navigation.approaches.filter(route => approach === 'all' || approach === route.id).map(route => (
-            <polyline key={route.id} fill="none" stroke={route.id === 'east' ? '#fbbf24' : route.id === 'west' ? '#38bdf8' : '#86efac'}
+            <polyline key={route.id} fill="none" stroke={route.id === 'east' ? '#fbbf24' : route.id === 'west' ? '#38bdf8' : route.id === 'shop-link' ? '#f472b6' : '#86efac'}
               strokeWidth="9" points={route.points.map(point => point.join(',')).join(' ')} />
           ))}
           {navigation.stops.map(stop => <g key={stop.id}>
@@ -49,6 +50,10 @@ export function AmblesideMap({ lake, player, onTravel }: {
         </svg>
       </div>
       <div>
+        {approach === 'shop-link' && (
+          <button type="button" className="mb-2 w-full rounded-lg bg-pink-300 p-3 font-bold text-slate-950"
+            onClick={onStartShopRoute}>Start Lakeside Picnic to Black Sheep Shop</button>
+        )}
         <button type="button" onClick={() => onTravel(selected)}
           className="mb-2 w-full rounded-lg bg-amber-400 p-3 font-bold text-slate-950">
           Go to {selected.name}

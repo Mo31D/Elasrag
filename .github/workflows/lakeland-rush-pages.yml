@@ -56,4 +56,4 @@ jobs:
             git commit -m 'build(lakeland-rush): publish GitHub Pages assets'
             git push origin HEAD:main
           fi
-          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds" --jq '.status'
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds" --silent

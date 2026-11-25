@@ -11,7 +11,7 @@ test('the two main approaches share the mapped fork and reach distinct town junc
   assert.equal(borransRoad.nodeIds.at(-1), 232028);
   assert.ok(lakeRoad.nodeIds.includes(oldLakeRoad.nodeIds[0]));
   assert.ok(lakeRoad.nodeIds.includes(oldLakeRoad.nodeIds.at(-1)!));
-  for (const route of navigation.approaches) {
+  for (const route of [lakeRoad, borransRoad, oldLakeRoad]) {
     assert.equal(route.nodeIds.length, route.points.length);
     const length = route.points.slice(1).reduce((total, [x, z], i) =>
       total + Math.hypot(x - route.points[i][0], z - route.points[i][1]), 0);
@@ -26,4 +26,14 @@ test('landmark travel includes mapped shop, attractions and practical stops', ()
     assert.ok(stops.get(id)?.osmIds.length, id);
   }
   assert.deepEqual(stops.get('black-sheep')?.osmIds, [4231695543, 423598927]);
+});
+
+test('the playable shop link runs between the two Free Roam entrance approaches', () => {
+  const route = navigation.approaches.find(approach => approach.id === 'shop-link')!;
+  const picnic = navigation.stops.find(stop => stop.id === 'picnic')!;
+  const sheep = navigation.stops.find(stop => stop.id === 'black-sheep')!;
+  assert.deepEqual(route.points[0], picnic.spawn);
+  assert.deepEqual(route.points.at(-1), sheep.spawn);
+  assert.equal(route.points.length, route.nodeIds.length + 2);
+  assert.ok(route.lengthM > 1000 && route.lengthM < 1400);
 });

@@ -15,6 +15,9 @@ const waterheadLandmarks = navigation.stops
   .filter(place => ['fork','lake-road','black-sheep','market','bridge-house'].includes(place.id))
   .map(place => ({ name: place.name, x: place.point[0], z: place.point[1] }));
 
+const shopLink = navigation.approaches.find(route => route.id === 'shop-link')!;
+const shopLinkPoints = shopLink.points as Array<[number, number]>;
+
 // Surveyed OpenStreetMap Glebe Road -> Ferry Nab -> Ferry Crossing -> B5285 Far Sawrey
 const bownessPts: Array<[number, number]> = [
   [2455.7, 6157.3], // Bowness Bay Pier Road
@@ -79,6 +82,22 @@ export const LAKELAND_ROUTES: RouteDefinition[] = [
     waypoints: waterheadPts,
     corridorHalfWidth: 8.5,
     landmarks: waterheadLandmarks,
+  },
+  {
+    id: 'picnic_black_sheep',
+    title: 'Lakeside Picnic → The Black Sheep Shop',
+    subtitle: 'Follow mapped paths and Lake Road from the Waterhead waterfront into Ambleside.',
+    difficulty: 'Accessible',
+    mode: 'sprint',
+    startName: 'Lakeside Picnic',
+    finishName: 'The Black Sheep Shop',
+    lengthMeters: calcLength(shopLinkPoints),
+    targetTimeSec: 90,
+    parScore: 6500,
+    waypoints: shopLinkPoints,
+    corridorHalfWidth: 2.4,
+    landmarks: navigation.stops.filter(stop => ['picnic', 'black-sheep'].includes(stop.id))
+      .map(stop => ({ name: stop.name, x: stop.point[0], z: stop.point[1] })),
   },
   {
     id: 'bowness_ferry',

@@ -1,3 +1,4 @@
+import { LAKELAND_ROUTES } from '../data/routes';
 import React from 'react';
 import { AmblesideMap, type ExploreStop } from './AmblesideMap';
 import { Play, X } from 'lucide-react';
@@ -88,7 +89,11 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
           <button type="button" aria-pressed={!local} onClick={() => setLocal(false)}
             className="rounded-lg px-3 py-1 text-white aria-pressed:bg-slate-800">Windermere basin</button>
         </div>
-        {local ? <AmblesideMap lake={lakeData} player={player} onTravel={onTravel} /> : (
+        {local ? <AmblesideMap lake={lakeData} player={player} onTravel={onTravel}
+          onStartShopRoute={() => {
+            const route = LAKELAND_ROUTES.find(candidate => candidate.id === 'picnic_black_sheep');
+            if (route) onSelectAndStart(route);
+          }} /> : (
         <div className="flex-1 grid grid-cols-1 md:grid-cols-2 overflow-y-auto">
           {/* Geographic SVG Lake & Settlement Map */}
           <div className="bg-slate-900/70 flex items-center justify-center p-4 border-b md:border-b-0 md:border-r border-white/10">
