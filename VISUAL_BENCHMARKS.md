@@ -36,3 +36,8 @@ The newer stills are `production-waterhead-*.jpg`. The Inn, Picnic and Esplanade
 | `waterhead-shops` | 97, 3.95, −250 | 110, 4.95, −236 | 49° |
 
 Set `VITE_ENABLE_WATERHEAD_BENCHMARK=1` at build time for benchmark routes. Set `BENCHMARK_STATIC_DIRECTORY=dist` to capture directly from build files with Playwright's request fixtures. The fixture uses no local server. Main menu and map labels are hidden in the stills. Observed architectural signage remains in the model.
+
+- [Inn comparison](evidence/waterhead-inn-comparison.jpg)
+- [Esplanade comparison](evidence/waterhead-shops-comparison.jpg)
+- [Lakeside Picnic render](evidence/production-waterhead-picnic-desktop.jpg) and [operator photo](https://www.lakesidepicnic.co.uk/about.html)
+- [The waterfront on an iPad-sized viewport](evidence/production-waterhead-ipad.jpg)
