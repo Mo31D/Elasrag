@@ -1,0 +1,11 @@
+# Asset licences
+
+- Geographic vectors and lake outlines are derived from OpenStreetMap data, © OpenStreetMap contributors, [ODbL](https://www.openstreetmap.org/copyright).
+- Waterhead terrain and candidate height evidence contain Environment Agency copyright and/or database right 2022, used under [OGL v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
+- The original hand-modelled booking office GLB uses no photographic textures. Its reference-based appearance is distributed under [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/). Credit David Dixon for *Ambleside booking office and pier, Waterhead* and Shaun Ferguson for *Ambleside Pier Waterhead*, via Geograph and Wikimedia Commons. Adaptation consists of simplified 3D styling and inferred dimensions. The mapped footprint is attributed separately to OpenStreetMap contributors. See [reference metadata](references/waterhead.json).
+- The original export's procedural scene textures and meshes remain in the app. Those remain in use outside the shared building surfaces listed below.
+- [Castle Wall Slates](https://polyhaven.com/a/castle_wall_slates) and [Roof Slates 03](https://polyhaven.com/a/roof_slates_03) by Rob Tuytel for Poly Haven, [CC0](https://polyhaven.com/license). Used as generic slate surface references. Base colour, OpenGL normal and roughness converted from published 1K sources to 512² WebP derivatives. These materials represent approximate local finishes.
+- The Waterhead Inn model and comparison plate use [Nilfanion's Waterhead Bar and Grill photograph](https://commons.wikimedia.org/wiki/File:Waterhead_Bar_and_Grill,_Ambleside_(6783).jpg), CC BY-SA 4.0. The Inn GLB and resized comparison photograph use the same licence. The asset rebuilds geometry, materials and lettering with approximate measurements.
+- The Esplanade model and comparison plate use [Gerald England's Waterhead Shell Shop photograph](https://commons.wikimedia.org/wiki/File:Waterhead_Shell_Shop_-_geograph.org.uk_-_3415475.jpg), CC BY-SA 2.0. The shop GLB and resized comparison photograph use the same licence.
+- Lakeside Picnic geometry and text signage are original. The operator image and logo are excluded.
+- [Wood Planks Grey](https://polyhaven.com/a/wood_planks_grey) by Rob Tuytel, Poly Haven CC0, supplies Waterhead's 512² WebP deck materials.
