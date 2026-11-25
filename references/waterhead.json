@@ -39,5 +39,55 @@
     ],
     "buildingId": 423828335,
     "status": "Catalogue and licence checked. Historical secondary reference."
+  },
+  {
+    "id": "geograph-1732859",
+    "url": "https://commons.wikimedia.org/wiki/File:Waterhead_Hotel_-_geograph.org.uk_-_1732859.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/56/Waterhead_Hotel_-_geograph.org.uk_-_1732859.jpg",
+    "camera": {
+      "lat": 54.41873,
+      "lon": -2.9634,
+      "headingDegrees": 67
+    },
+    "subject": {
+      "lat": 54.41928,
+      "lon": -2.9615
+    },
+    "author": "David Dixon",
+    "captured": "2006-02-19",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "attribution": "Waterhead Hotel by David Dixon, Geograph Britain and Ireland",
+    "permittedUses": [
+      "reuse with attribution",
+      "adaptation with attribution and share-alike"
+    ],
+    "buildingId": null,
+    "status": "Historical panorama checked. The subject coordinates and position relative to the pier do not match the exported hotel building. Retained for shoreline context only until reconciled."
+  },
+  {
+    "id": "geograph-6229665",
+    "url": "https://commons.wikimedia.org/wiki/File:Waterhead_hotel_(2)_-_geograph.org.uk_-_6229665.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Waterhead_hotel_%282%29_-_geograph.org.uk_-_6229665.jpg",
+    "camera": {
+      "lat": 54.421469,
+      "lon": -2.96334,
+      "headingDegrees": 67
+    },
+    "subject": {
+      "lat": 54.421469,
+      "lon": -2.963186
+    },
+    "author": "Michael Dibb",
+    "captured": "2019-06-22",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "attribution": "Waterhead hotel [2] by Michael Dibb, Geograph Britain and Ireland",
+    "permittedUses": [
+      "reuse with attribution",
+      "adaptation with attribution and share-alike"
+    ],
+    "buildingId": null,
+    "status": "Caption and licence verified. Subject pin differs from the exported Waterhead Hotel footprint. Building identity needs independent confirmation."
   }
 ]
