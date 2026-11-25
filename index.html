@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#08090a">
   <meta name="description" content="ELASRAG. Technology. Creativity. Solutions. Exploring possibilities, solving problems and turning ideas into reality. Mohamed El-Asrag, United Kingdom.">
   <link rel="canonical" href="https://elasrag.com/">
-  <title>ELASRAG — Turning ideas into reality.</title>
+  <title>ELASRAG — Mo. Turning ideas into reality.</title>
   <link rel="stylesheet" href="creation-engine/style.css">
-  <link rel="preload" as="image" href="creation-engine/assets/engine-poster.webp">
+  <link rel="preload" as="image" href="creation-engine/assets/mo-poster.webp">
   <script type="importmap">{"imports":{"three":"./creation-engine/vendor/three.module.js"}}</script>
 </head>
 <body data-phase="hero" data-experience="loading">
@@ -23,20 +23,35 @@
       <div class="experience-stage">
         <div class="exhibition-label"><span class="fine-line" aria-hidden="true"></span> THE CREATION ENGINE</div>
         <div class="hero-copy">
+          <p class="personal-greeting">Hi, I’m Mo.</p>
           <h1>Turning ideas<br><span>into reality.</span></h1>
           <p class="hero-introduction">Exploring possibilities. Solving problems.<br>Building what matters.</p>
-          <button id="explore-engine" class="explore-button" type="button"><span class="explore-symbol" aria-hidden="true">+</span> Explore the engine</button>
+          <button id="explore-engine" class="explore-button" type="button"><span class="explore-symbol" aria-hidden="true">+</span> Explore what I create</button>
         </div>
         <div class="stage-copy" aria-live="polite" aria-atomic="true">
           <p class="stage-overline"><span id="stage-index">01</span><span class="stage-overline-line" aria-hidden="true"></span> THE PROCESS</p>
           <h2 id="stage-name">IDEA</h2>
           <p id="stage-description">Everything begins somewhere.</p>
         </div>
-        <div id="engine-viewport" class="engine-viewport" role="img" aria-label="An original titanium Creation Engine with interlocking rings, a luminous core and precision mechanical assemblies">
-          <img id="engine-poster" class="engine-poster" src="creation-engine/assets/engine-poster.webp" width="1200" height="1200" alt="" fetchpriority="high">
+        <div id="engine-viewport" class="engine-viewport" role="group" aria-label="Explore Mo’s work through an original three-dimensional M and O signature sculpture">
+          <img id="engine-poster" class="engine-poster" src="creation-engine/assets/mo-poster.webp" width="1200" height="1200" alt="" fetchpriority="high">
           <canvas id="engine-canvas" aria-hidden="true"></canvas>
           <div class="engine-ground" aria-hidden="true"></div>
+          <div id="capability-hotspots" class="capability-hotspots" role="group" aria-label="Choose an area to explore" hidden>
+            <button class="capability-hotspot" type="button" data-capability="technology" aria-label="Build: technology and digital solutions" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">+</span><span class="hotspot-label">Build</span></button>
+            <button class="capability-hotspot" type="button" data-capability="ai" aria-label="Think: artificial intelligence and innovation" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">+</span><span class="hotspot-label">Think</span></button>
+            <button class="capability-hotspot" type="button" data-capability="design" aria-label="Design: design and development" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">+</span><span class="hotspot-label">Design</span></button>
+            <button class="capability-hotspot" type="button" data-capability="strategy" aria-label="Solve: strategy and problem solving" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">+</span><span class="hotspot-label">Solve</span></button>
+            <button class="capability-hotspot capability-hotspot-mo" type="button" data-capability="mo" aria-label="Meet Mo, Mohamed El-Asrag" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">M</span><span class="hotspot-label">Meet Mo</span></button>
+          </div>
         </div>
+        <section id="capability-panel" class="capability-panel" role="region" aria-labelledby="capability-title" aria-describedby="capability-description" tabindex="-1" hidden>
+          <button class="capability-close" type="button" data-action="close-capability" aria-label="Close this detail"><span aria-hidden="true">×</span></button>
+          <p id="capability-kicker" class="capability-kicker">BEHIND THE SIGNATURE</p>
+          <h2 id="capability-title">Meet Mo.</h2>
+          <p id="capability-description">Mohamed El-Asrag. You can call me Mo.</p>
+          <a id="capability-example" class="capability-example" hidden></a>
+        </section>
         <div class="engine-caption" aria-hidden="true"><span>ELASRAG</span><span>CREATION ENGINE / V.01</span></div>
         <p id="engine-status" class="engine-status" role="status" aria-live="polite">Preparing the experience</p>
         <div id="engine-controls" class="engine-controls" role="group" aria-label="Explore the Creation Engine" hidden>
@@ -49,7 +64,7 @@
             <button type="button" data-action="reset" class="icon-control" aria-label="Reset engine view" title="Reset view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8a8 8 0 1 1-1 7M5 3v5h5"/></svg></button>
             <button type="button" data-action="pause" class="icon-control" aria-label="Pause engine motion" aria-pressed="false" title="Pause motion"><svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 10 7-10 7V5Z"/></svg></button>
           </div>
-          <p class="interaction-hint">Drag to rotate <span aria-hidden="true">·</span> Scroll to discover</p>
+          <p class="interaction-hint">Choose a point. See what it means.</p>
         </div>
         <div class="sequence-navigation page-width">
           <div class="sequence-intro"><span class="sequence-kicker">FROM POSSIBILITY TO PURPOSE</span><span class="sequence-scroll">A process of creation</span></div>
@@ -66,16 +81,16 @@
     <div class="content-surface">
       <section id="work" class="work-section page-width" aria-labelledby="work-title">
         <div class="section-heading"><span class="section-mark" aria-hidden="true">+</span><h2 id="work-title">Areas of work</h2></div>
-        <div class="work-list">
-          <div class="work-item"><h3>Technology &amp; Digital Solutions</h3><span class="work-mark" aria-hidden="true">+</span></div>
-          <div class="work-item"><h3>Artificial Intelligence &amp; Innovation</h3><span class="work-mark" aria-hidden="true">+</span></div>
-          <div class="work-item"><h3>Design &amp; Development</h3><span class="work-mark" aria-hidden="true">+</span></div>
-          <div class="work-item"><h3>Strategy &amp; Problem Solving</h3><span class="work-mark" aria-hidden="true">+</span></div>
+        <div id="capability-directory" class="work-list" role="group" aria-label="Explore areas of work">
+          <button class="work-item" type="button" data-capability="technology" aria-controls="capability-panel" aria-expanded="false"><span class="work-label">Technology &amp; Digital Solutions</span><span class="work-mark" aria-hidden="true">+</span></button>
+          <button class="work-item" type="button" data-capability="ai" aria-controls="capability-panel" aria-expanded="false"><span class="work-label">Artificial Intelligence &amp; Innovation</span><span class="work-mark" aria-hidden="true">+</span></button>
+          <button class="work-item" type="button" data-capability="design" aria-controls="capability-panel" aria-expanded="false"><span class="work-label">Design &amp; Development</span><span class="work-mark" aria-hidden="true">+</span></button>
+          <button class="work-item" type="button" data-capability="strategy" aria-controls="capability-panel" aria-expanded="false"><span class="work-label">Strategy &amp; Problem Solving</span><span class="work-mark" aria-hidden="true">+</span></button>
         </div>
       </section>
       <section class="about-section page-width" aria-labelledby="about-title">
         <div class="section-heading"><span class="section-mark" aria-hidden="true">+</span><p>The person behind the ideas</p></div>
-        <div class="about-content"><h2 id="about-title">Mohamed El-Asrag</h2><p>Driven by curiosity, creativity and a lifelong passion for technology. I turn complex ideas into simple, practical solutions.</p><span class="location">United Kingdom · Working globally</span></div>
+        <div class="about-content"><h2 id="about-title">Mo.</h2><p class="personal-name">Mohamed El-Asrag. You can call me Mo.</p><p>Driven by curiosity, creativity and a lifelong passion for technology. I turn complex ideas into simple, practical solutions.</p><span class="location">United Kingdom · Working globally</span></div>
       </section>
       <section id="contact" class="contact-section page-width" aria-labelledby="contact-title">
         <p class="contact-kicker">LET'S CREATE SOMETHING</p>

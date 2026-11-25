@@ -1,5 +1,5 @@
 // This entry has no imports, so a missing module still leaves a usable homepage.
-import('./main.js').catch(error => {
+import('./discovery.js').then(() => import('./main.js')).catch(error => {
   console.warn('Creation Engine modules unavailable:', error.message);
   document.body.dataset.experience = 'fallback';
   document.body.dataset.phase = 'hero';

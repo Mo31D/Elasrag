@@ -14,3 +14,12 @@ Development branch: `feat/creation-engine`
 Unchanged: all 835 other original tracked files, including `CNAME`, root packages and server, `.github/workflows/`, every application directory, existing `/engine/`, WF APIs and Cloudflare configuration. No unrelated file is deleted, renamed or restructured.
 
 The private review deployment is an independent source copy. No merge to `main` or replacement of the existing public homepage is performed. Production release remains subject to the browser validation recorded in [QA.md](QA.md).
+
+## Personal Mo discovery revision
+
+- Rebuilt the primary sculpture as an original M/O signature with four capability cartridges and central Mo identity; preserved the earlier asset/source.
+- Added five real 3D anchors and direct mesh selection, meaningful capability diagrams and concise personal information/actions.
+- Added the independent discovery/content layer so work-directory buttons still disclose information when rendering fails.
+- Added the friendly Mo introduction and compact responsive detail panel with keyboard disclosure/close behaviour.
+- Added six capability/asset unit tests and four DOM integration tests. Pinned LinkeDOM only inside the isolated experience's development package; root package remains untouched.
+- Updated the same development branch, draft PR and owner-private review Site. Browser release checks remain in QA.md.

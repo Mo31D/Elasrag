@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from '../vendor/loaders/GLTFLoader.js';
 
 export async function loadEngine(renderer, profile) {
-  const gltf = await new GLTFLoader().loadAsync(new URL('../assets/creation-engine.glb', import.meta.url).href);
+  const gltf = await new GLTFLoader().loadAsync(new URL('../assets/mo-signature.glb', import.meta.url).href);
   const model = gltf.scene;
   model.updateMatrixWorld(true);
   const assembly = new THREE.Group();
@@ -10,6 +10,8 @@ export async function loadEngine(renderer, profile) {
   assembly.add(model);
   const components = [];
   const materials = new Set();
+  const highlightColor = new THREE.Color(0xedd1a3);
+  const sourceMaterials = new Set();
   const samples = [];
   let vertexIndex = 0;
   model.traverse(node => {
@@ -17,7 +19,12 @@ export async function loadEngine(renderer, profile) {
       components.push({ node, position: node.position.clone(), quaternion: node.quaternion.clone(), explode: new THREE.Vector3(...(node.userData.explode || [0, 0, 0])), role: node.userData.role });
     }
     if (!node.isMesh) return;
-    const material = node.material;
+    sourceMaterials.add(node.material);
+    const material = node.material = node.material.clone();
+    let ancestor = node;
+    while (ancestor && !ancestor.userData.capability) ancestor = ancestor.parent;
+    material.userData.capability = ancestor?.userData.capability;
+    material.userData.originalColor = material.color.clone();
     materials.add(material);
     node.frustumCulled = true;
     const positions = node.geometry.attributes.position;
@@ -27,6 +34,7 @@ export async function loadEngine(renderer, profile) {
       samples.push(vertex.x, vertex.y, vertex.z);
     }
   });
+  sourceMaterials.forEach(material => material.dispose());
   const wires = [];
   for (const component of components) {
     const wireGroup = new THREE.Group();
@@ -80,21 +88,29 @@ export async function loadEngine(renderer, profile) {
   assembly.add(particles);
   return {
     assembly, model, components, particles,
-    update(state, time, overrides) {
+    anchors: components.filter(component => component.node.userData.capability),
+    update(state, time, overrides, selection) {
       const explode = Math.max(state.explode, overrides.explode);
       const wireOpacity = state.wire + (1 - state.wire) * overrides.wireframe;
       const solidOpacity = state.solid * (1 - overrides.wireframe);
       model.visible = solidOpacity > .003;
       for (const material of materials) {
         const glass = material.userData.isGlass;
-        const transparent = solidOpacity < .995 || glass;
+        const isSignature = material.userData.capability === 'mo';
+        const diagramOpen = selection.id && selection.id !== 'mo';
+        const signatureOpacity = isSignature && diagramOpen ? 1 - selection.amount * .86 : 1;
+        const transparent = solidOpacity * signatureOpacity < .995 || glass;
         if (material.transparent !== transparent) { material.transparent = transparent; material.needsUpdate = true; }
-        material.opacity = material.userData.originalOpacity * solidOpacity;
-        material.depthWrite = solidOpacity > .95 && !glass;
+        material.opacity = material.userData.originalOpacity * solidOpacity * signatureOpacity;
+        material.depthWrite = solidOpacity * signatureOpacity > .95 && !glass;
+        const selected = material.userData.capability === selection.id;
+        material.color.copy(material.userData.originalColor);
+        if (selected) material.color.lerp(highlightColor, selection.amount * .15);
         if (material.userData.isEnergy) material.emissiveIntensity = .6 + state.activation * 2;
       }
       for (const c of components) {
         c.node.position.copy(c.position).addScaledVector(c.explode, explode * .85);
+        if (c.node.userData.capability === selection.id && selection.id !== 'mo') c.node.position.addScaledVector(c.explode, selection.amount*.25);
         c.node.quaternion.copy(c.quaternion);
         if (c.role === 'rotor') c.node.rotateZ(time * .19 * state.activation * (/Rear/.test(c.node.name) ? -1 : 1));
         if (c.role === 'gimbal') c.node.rotateZ(Math.sin(time * .12) * .14 * state.activation);

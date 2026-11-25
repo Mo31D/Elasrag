@@ -1,6 +1,8 @@
 import { createScene } from './scene.js';
 import { createInteraction } from './interaction.js';
 import { creationState, STAGES, clamp } from './timeline.js';
+import { discovery } from './discovery.js';
+import { isSelectionGesture } from './capabilities.js';
 
 const section = document.querySelector('#experience');
 const canvas = document.querySelector('#engine-canvas');
@@ -17,6 +19,10 @@ let target = creationState(3, true), current = { ...target };
 let progress = 3, hero = true, activeStage = -1;
 const overrides = { explode: false, wireframe: false };
 const visualOverrides = { explode: 0, wireframe: 0 };
+const selection = { id: null, amount: 0, reduced };
+const hotspots = new Map([...document.querySelectorAll('#capability-hotspots [data-capability]')].map(button => [button.dataset.capability, button]));
+let gestureStart = null;
+let unsubscribeSelection;
 
 function fallback(message = 'A still view of the Creation Engine. All content is available below.') {
   cancelAnimationFrame(frame); frame = 0;
@@ -25,6 +31,7 @@ function fallback(message = 'A still view of the Creation Engine. All content is
   poster.style.opacity = '1';
   canvas.style.visibility = 'hidden';
   controls.hidden = true;
+  document.querySelector('#capability-hotspots').hidden = true;
   document.querySelector('#explore-engine').hidden = true;
   document.querySelector('.stage-navigation').hidden = true;
   status.textContent = message;
@@ -40,6 +47,12 @@ function tick(now) {
   lastFrame = now;
   if (!paused && !reduced) elapsed += dt;
   let changing = false;
+  const selectionTarget = discovery.selected ? 1 : 0;
+  const selectionDifference = selectionTarget - selection.amount;
+  selection.amount += selectionDifference * (reduced ? 1 : 1 - Math.exp(-dt * 7));
+  if (!discovery.selected && selection.amount < .001) selection.id = null;
+  selection.reduced = reduced;
+  changing ||= Math.abs(selectionDifference) > .001;
   for (const key in target) {
     const difference = target[key] - current[key];
     current[key] = reduced ? target[key] : current[key] + difference * (1 - Math.exp(-dt * 10));
@@ -51,10 +64,19 @@ function tick(now) {
     changing ||= Math.abs(difference) > .001;
   }
   const idle = now - interaction.state.lastInput > 4500 && !interaction.state.dragging;
-  const desiredCinematic = paused ? cinematic : !reduced && idle ? Math.sin(elapsed * .12) * .12 : 0;
+  const desiredCinematic = paused ? cinematic : !reduced && idle && !discovery.selected ? Math.sin(elapsed * .12) * .08 : 0;
   cinematic += (desiredCinematic - cinematic) * (reduced ? 1 : .035);
-  scene.render(current, elapsed, interaction.state, visualOverrides, cinematic, dt);
-  if ((!paused && !reduced) || changing || Math.abs(desiredCinematic - cinematic) > .001) requestFrame();
+  const signalsSettling = scene.render(current, elapsed, interaction.state, visualOverrides, cinematic, dt, selection);
+  const showHotspots = (hero || !!discovery.selected || progress > 2.55) && current.solid > .7;
+  document.querySelector('#capability-hotspots').hidden = !showHotspots;
+  for (const anchor of scene.projectAnchors()) {
+    const button = hotspots.get(anchor.id);
+    if (!button) continue;
+    button.hidden = !anchor.visible;
+    button.style.left = `${anchor.x}px`;
+    button.style.top = `${anchor.y}px`;
+  }
+  if ((!paused && !reduced) || changing || signalsSettling || Math.abs(desiredCinematic - cinematic) > .001) requestFrame();
 }
 
 function setScrollState() {
@@ -63,7 +85,7 @@ function setScrollState() {
   const fraction = clamp(-rect.top / travel);
   hero = fraction < .12;
   progress = clamp((fraction - .12) / .88 * 3, 0, 3);
-  target = creationState(progress, hero);
+  target = creationState(progress, hero || !!discovery.selected);
   const index = hero ? -1 : Math.min(3, Math.floor(progress + .42));
   if (index !== activeStage) {
     activeStage = index;
@@ -82,6 +104,7 @@ function setScrollState() {
   requestFrame();
 }
 function goToStage(index) {
+  discovery.close(false);
   const travel = section.offsetHeight - innerHeight;
   const top = scrollY + section.getBoundingClientRect().top;
   const fraction = .12 + STAGES[index].position / 3 * .88;
@@ -104,6 +127,7 @@ function cleanup() {
   observer?.disconnect();
   resizeObserver?.disconnect();
   interaction?.dispose();
+  unsubscribeSelection?.();
   scene?.dispose();
 }
 let observer, resizeObserver;
@@ -117,20 +141,40 @@ async function init() {
     canvas.removeAttribute('aria-hidden');
     canvas.setAttribute('tabindex', '0');
     canvas.setAttribute('role', 'img');
-    canvas.setAttribute('aria-label', 'Interactive Creation Engine. Drag to rotate. With keyboard focus, use arrow keys to rotate and plus or minus to zoom.');
-    document.querySelector('#engine-viewport').removeAttribute('role');
+    canvas.setAttribute('aria-label', 'Mo’s interactive M and O signature. Click a part to explore, or use the labelled point buttons. Drag to rotate. Arrow keys rotate; plus or minus zoom.');
     document.body.dataset.experience = 'ready';
     controls.hidden = false;
     status.textContent = '';
     setScrollState();
     scene.resize();
     // Hide the poster only after a successful first WebGL frame.
-    scene.render(current, elapsed, interaction.state, visualOverrides, 0, 1 / 60);
+    scene.render(current, elapsed, interaction.state, visualOverrides, 0, 1 / 60, selection);
     poster.style.opacity = '0';
     syncButtons();
     window.addEventListener('scroll', setScrollState, { ...options, passive: true });
     nav.forEach((button, index) => button.addEventListener('click', () => goToStage(index), options));
-    document.querySelector('#explore-engine').addEventListener('click', () => goToStage(0), options);
+    document.querySelector('#explore-engine').addEventListener('click', event => discovery.select('technology', event.currentTarget), options);
+    unsubscribeSelection = discovery.subscribe(id => {
+      if (id) selection.id = id;
+      interaction.reset();
+      if (id) { overrides.explode = overrides.wireframe = false; syncButtons(); }
+      setScrollState(); requestFrame();
+    });
+    if (discovery.selected) { selection.id = discovery.selected; setScrollState(); }
+    document.querySelector('#capability-example').addEventListener('click', event => {
+      if (discovery.selected === 'design') { event.preventDefault(); goToStage(0); }
+    }, options);
+    canvas.addEventListener('pointerdown', event => {
+      if (event.isPrimary && event.button === 0) gestureStart = { x:event.clientX,y:event.clientY,time:performance.now() };
+    }, options);
+    canvas.addEventListener('pointerup', event => {
+      if (isSelectionGesture(gestureStart,{x:event.clientX,y:event.clientY,time:performance.now()}) && current.solid>.7) {
+        const id = scene.pick(event.clientX,event.clientY);
+        if (id) discovery.select(id,canvas);
+      }
+      gestureStart = null;
+    }, options);
+    canvas.addEventListener('pointercancel', () => { gestureStart=null; }, options);
     controls.addEventListener('click', event => {
       const button = event.target.closest('[data-action]');
       if (!button) return;
@@ -145,7 +189,7 @@ async function init() {
           break;
         case 'zoom-in': interaction.zoom(.1); break;
         case 'zoom-out': interaction.zoom(-.1); break;
-        case 'reset': interaction.reset(); overrides.explode = overrides.wireframe = false; cinematic = 0; break;
+        case 'reset': discovery.close(false); interaction.reset(); overrides.explode = overrides.wireframe = false; cinematic = 0; break;
       }
       interaction.state.lastInput = performance.now();
       syncButtons(); requestFrame();
@@ -167,7 +211,7 @@ async function init() {
     }, options);
     canvas.addEventListener('webglcontextlost', event => { event.preventDefault(); fallback('The 3D view is unavailable. A still view is shown instead.'); }, options);
     // Diagnostic information is read-only; useful when profiling future revisions.
-    window.creationEngineDiagnostics = () => ({ fps: Math.round(scene.monitor.fps), pixelRatio: scene.renderer.getPixelRatio(), drawCalls: scene.renderer.info.render.calls, triangles: scene.renderer.info.render.triangles, stage: hero ? 'hero' : STAGES[activeStage].name, paused, reducedMotion: reduced, visible });
+    window.creationEngineDiagnostics = () => ({ fps: Math.round(scene.monitor.fps), pixelRatio: scene.renderer.getPixelRatio(), drawCalls: scene.renderer.info.render.calls, triangles: scene.renderer.info.render.triangles, stage: hero ? 'hero' : STAGES[activeStage].name, selection:discovery.selected, paused, reducedMotion: reduced, visible });
     requestFrame();
   } catch (error) {
     console.warn('Creation Engine could not initialise:', error.message);
