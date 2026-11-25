@@ -14,9 +14,87 @@
     "wallMaterial": "Painted clapboard and timber framing",
     "facade": "Lake-facing green framing, pointed upper window and glazed wing",
     "frontage": null,
-    "referenceIds": ["geograph-1732669", "geograph-1476151"],
+    "referenceIds": [
+      "geograph-1732669",
+      "geograph-1476151"
+    ],
     "verification": "verified_geo_approx",
-    "lod": ["ambleside-pier.glb"],
+    "lod": [
+      "ambleside-pier.glb"
+    ],
+    "collision": "Existing footprint bounding box"
+  },
+  {
+    "buildingId": 423874287,
+    "osmType": "way",
+    "name": "The Waterhead Inn",
+    "assetUrl": "/regions/windermere/assets/waterhead-inn.glb",
+    "positionSource": "OSM way with linked FHRS 299044; Lake Road address",
+    "orientationSource": "Street-facing edges 6 and 8 of OSM footprint",
+    "groundElevationM": 42.26,
+    "roofCrestAboveLocalBaseM": 9.75,
+    "heightSource": "DSM percentiles and street photographs",
+    "floorCount": 2,
+    "roofForm": "Slated cross-gables; approximate secondary roof volumes",
+    "wallMaterial": "Rubble slate and cream-painted joinery",
+    "facade": "Projecting white bay, gabled bays, chimney stacks, veranda and glazed vestibule",
+    "frontage": null,
+    "referenceIds": [
+      "commons-nilfanion-6783",
+      "inn-official-frontage"
+    ],
+    "verification": "verified_geo_approx",
+    "lod": [
+      "waterhead-inn.glb"
+    ],
+    "collision": "Existing footprint bounding box"
+  },
+  {
+    "buildingId": 256765270,
+    "osmType": "way",
+    "name": "Lakeside Picnic",
+    "assetUrl": "/regions/windermere/assets/lakeside-picnic.glb",
+    "positionSource": "OSM node 4233922881 and trading website pin at mapped entrance; parent way 256765270",
+    "orientationSource": "Shop photograph and south-facing edge nearest the mapped POI",
+    "groundElevationM": null,
+    "roofCrestAboveLocalBaseM": 5.18,
+    "heightSource": "Facade image proportions and DSM evidence",
+    "floorCount": 1,
+    "roofForm": "Broad asymmetric-looking gable over the front elevation",
+    "wallMaterial": "White roughcast, dark green trim",
+    "facade": "Central full-height glazing, green gable and gold plaque",
+    "frontage": "Geometry authored from shop reference; photo and logo excluded",
+    "referenceIds": [
+      "picnic-official-frontage"
+    ],
+    "verification": "verified_geo_approx",
+    "lod": [
+      "lakeside-picnic.glb"
+    ],
+    "collision": "Existing footprint bounding box"
+  },
+  {
+    "buildingId": 423828326,
+    "osmType": "way",
+    "name": "Shell Shop and Ambleside Fish & Chips",
+    "assetUrl": "/regions/windermere/assets/esplanade-shops.glb",
+    "positionSource": "OSM way containing both named storefront nodes",
+    "orientationSource": "Long edge on the Esplanade approach",
+    "groundElevationM": null,
+    "roofCrestAboveLocalBaseM": 5.92,
+    "heightSource": "Historic photograph proportions",
+    "floorCount": 1,
+    "roofForm": "Two gabled shop units",
+    "wallMaterial": "Pale roughcast with indigo fascia",
+    "facade": "Blue awning, terrace steps, broad shop windows and dual signbands",
+    "frontage": "Historically documented businesses; logos redrawn as lettering",
+    "referenceIds": [
+      "geograph-3415475"
+    ],
+    "verification": "verified_geo_approx",
+    "lod": [
+      "esplanade-shops.glb"
+    ],
     "collision": "Existing footprint bounding box"
   }
 ]

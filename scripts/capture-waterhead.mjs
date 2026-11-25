@@ -1,5 +1,5 @@
-import { mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { mkdir, stat } from 'node:fs/promises';
+import { join, resolve, sep } from 'node:path';
 
 const { chromium, devices } = await import(process.env.PLAYWRIGHT_MODULE ?? 'playwright-core');
 const output = process.env.BENCHMARK_OUTPUT ?? 'evidence';
@@ -19,14 +19,33 @@ try {
     if (process.env.BENCHMARK_PROFILE && name !== process.env.BENCHMARK_PROFILE) continue;
     const page = await browser.newPage(profile);
     const errors = [];
+    const fixture = process.env.BENCHMARK_STATIC_DIRECTORY;
+    if (fixture) {
+      const root = resolve(fixture);
+      await page.route('**/*', async route => {
+        const url = new URL(route.request().url());
+        if (url.hostname !== 'waterhead.local') return route.abort();
+        const path = resolve(root, '.' + decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname));
+        if (!path.startsWith(root + sep) || !(await stat(path).catch(() => null))?.isFile()) {
+          return route.fulfill({ status: 404, body: 'Missing fixture' });
+        }
+        return route.fulfill({ path });
+      });
+    }
     page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => {
+      const content = message.text();
+      if ((message.type() === 'error' && /THREE|WebGL|shader/i.test(content))
+        || /Waterhead asset could not load/.test(content)) errors.push(content);
+    });
     page.on('response', response => {
       if (response.status() >= 400 && response.url().includes('/regions/')) {
         errors.push(`${response.status()} ${response.url()}`);
       }
     });
     const view = process.env.BENCHMARK_VIEW ?? 'waterhead';
-    await page.goto(`${process.env.GAME_URL ?? 'http://localhost:3000'}/?benchmark=${view}`);
+    const origin = fixture ? 'http://waterhead.local' : process.env.GAME_URL ?? 'http://localhost:3000';
+    await page.goto(`${origin}/?benchmark=${view}`);
     const canvas = page.locator('canvas[data-benchmark]');
     await canvas.waitFor({ timeout: 60_000 });
     await page.getByRole('button', { name: 'Start Run' }).waitFor();

@@ -24,3 +24,15 @@ The capture script defaults to Chromium and forces SwiftShader. It supports `CHR
 - [Historical comparison photograph](https://commons.wikimedia.org/wiki/File:Ambleside_booking_office_and_pier,_Waterhead_-_geograph.org.uk_-_1732669.jpg)
 
 The booking office's pointed upper window, green joinery, front gable and lower wing match visible cues in the reference. The silhouette, proportions and unphotographed sides are approximate. Deck geometry now follows the mapped outline. The concrete/plinth transitions, railings, plaza, roofs surrounding the office, distant ridgeline and other commercial frontages still need work. The benchmark review still needs people familiar with the site.
+
+## Waterfront production views
+
+The newer stills are `production-waterhead-*.jpg`. The Inn, Picnic and Esplanade use fixed pedestrian-height cameras, with approximate eye positions reconstructed from mapped edges and visible reference angles. Exact lens and survey-grade camera poses are unavailable.
+
+| View query | Eye (X, Y, Z) | Aim (X, Y, Z) | Vertical FOV |
+| --- | --- | --- | --- |
+| `waterhead-inn` | 84, 3.92, −337 | 100, 6.95, −352 | 56° |
+| `waterhead-picnic` | 76.9, 3.41, −363 | 75.4, 4, −378 | 47° |
+| `waterhead-shops` | 97, 3.95, −250 | 110, 4.95, −236 | 49° |
+
+Set `VITE_ENABLE_WATERHEAD_BENCHMARK=1` at build time for benchmark routes. Set `BENCHMARK_STATIC_DIRECTORY=dist` to capture directly from build files with Playwright's request fixtures. The fixture uses no local server. Main menu and map labels are hidden in the stills. Observed architectural signage remains in the model.

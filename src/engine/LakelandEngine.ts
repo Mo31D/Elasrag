@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import { createAtmosphere } from './atmosphere';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import {
   applyCollisionPenalty,
@@ -46,6 +48,14 @@ import {
   type BuiltChunkResult,
   type WorldMaterials,
 } from './worldBuilder';
+
+const WATERHEAD_CAMERAS: Record<string, { eye: [number, number, number]; target: [number, number, number]; fov: number }> = {
+  waterhead: { eye: [10, 8.5, -219], target: [89, 4.5, -274], fov: 64 },
+  'waterhead-close': { eye: [45, 3.4, -229], target: [74, 3.5, -239], fov: 64 },
+  'waterhead-inn': { eye: [84, 3.92, -337], target: [100, 6.95, -352], fov: 56 },
+  'waterhead-picnic': { eye: [76.9, 3.41, -363], target: [75.4, 4.0, -378], fov: 47 },
+  'waterhead-shops': { eye: [97, 3.95, -250], target: [110, 4.95, -236], fov: 49 },
+};
 
 interface RouteObstacle {
   id: number;
@@ -130,9 +140,11 @@ export class LakelandEngine {
   private region = new RegionManager('windermere');
   private sound = new SoundEngine();
 
+  private atmosphere?: ReturnType<typeof createAtmosphere>;
+  private readonly roofDetailMaps = new Set<THREE.Texture>();
   private buildingSurfaces: Awaited<ReturnType<typeof loadBuildingSurfaces>> = null;
   private readonly buildingAssets = new Map<number, THREE.Object3D>();
-  private readonly benchmarkView = import.meta.env.DEV
+  private readonly benchmarkView = import.meta.env.DEV || import.meta.env.VITE_ENABLE_WATERHEAD_BENCHMARK === '1'
     ? new URLSearchParams(location.search).get('benchmark')
     : null;
   private renderer!: THREE.WebGLRenderer;
@@ -146,7 +158,7 @@ export class LakelandEngine {
   private materials!: WorldMaterials;
   private runner!: RunnerRig;
 
-  private terrainMesh: THREE.Mesh | null = null;
+  private terrainMesh: THREE.Group | null = null;
   private waterMesh: THREE.Mesh | null = null;
   private rainMesh: THREE.Points | null = null;
 
@@ -276,6 +288,8 @@ export class LakelandEngine {
       this.fog = new THREE.FogExp2(0x9fb8c9, 0.0011);
       this.scene.fog = this.fog;
       this.scene.background = new THREE.Color(0x9fb8c9);
+      this.atmosphere = createAtmosphere();
+      this.scene.add(this.atmosphere.dome);
 
       this.camera = new THREE.PerspectiveCamera(64, width / height, 0.4, 2400);
 
@@ -346,10 +360,42 @@ export class LakelandEngine {
       this.applyWeatherPreset(this.settings.weather);
 
       const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
-      const assetLoader = new GLTFLoader();
-      for (const asset of buildingAssets) {
-        const model = await assetLoader.loadAsync(asset.assetUrl);
-        this.buildingAssets.set(asset.buildingId, model.scene);
+      const assetLoader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+      const roofMaps = surfaces && {
+        map: surfaces.roof.map.clone(),
+        normalMap: surfaces.roof.normalMap.clone(),
+        roughnessMap: surfaces.roof.roughnessMap.clone(),
+      };
+      for (const texture of Object.values(roofMaps ?? {})) {
+        texture.repeat.setScalar(.34);
+        texture.needsUpdate = true;
+        this.roofDetailMaps.add(texture);
+      }
+      const assetResults = await Promise.allSettled(buildingAssets.map(async asset => {
+        const { scene } = await assetLoader.loadAsync(asset.assetUrl);
+        scene.traverse(object => {
+          if (!(object instanceof THREE.Mesh) || !(object.material instanceof THREE.MeshStandardMaterial)) return;
+          const material = object.material;
+          if (material.name === 'Lakeland rubble slate' && surfaces) {
+            Object.assign(material, surfaces.wall);
+            material.color.set(0x625f5a);
+            material.normalScale.setScalar(.9);
+          } else if (material.name === 'Lakeland roof slate' && roofMaps) {
+            Object.assign(material, roofMaps);
+            material.color.set(0x777b7d);
+          } else if (material.name === 'White roughcast') {
+            material.color.set(0xc5c4b7);
+            material.bumpMap = this.textures.roughcastBump;
+            material.bumpScale = .025;
+          } else if (material.name === 'Glazing') {
+            material.envMapIntensity = .38;
+          }
+        });
+        return { id: asset.buildingId, scene };
+      }));
+      for (const result of assetResults) {
+        if (result.status === 'fulfilled') this.buildingAssets.set(result.value.id, result.value.scene);
+        else console.warn('Waterhead asset could not load', result.reason);
       }
       if (this.disposed) {
         this.disposeBuildingAssets();
@@ -500,11 +546,11 @@ export class LakelandEngine {
         sky: 0x92bdd9,
         fogDensity: 0.00085,
         sunColor: 0xfff3d6,
-        sunInt: 2.35,
-        hemiSky: 0xdbeafe,
-        hemiGround: 0x3b4d30,
-        hemiInt: 1.0,
-        sunPos: [160, 220, 110],
+        sunInt: 2.55,
+        hemiSky: 0xd4e4ee,
+        hemiGround: 0x454434,
+        hemiInt: 0.78,
+        sunPos: [-125, 170, 145],
         windowGlow: 0.12,
         rain: false,
       },
@@ -580,6 +626,15 @@ export class LakelandEngine {
     this.hemiLight.color.setHex(p.hemiSky);
     this.hemiLight.groundColor.setHex(p.hemiGround);
     this.hemiLight.intensity = p.hemiInt;
+    const sky = this.atmosphere?.uniforms;
+    if (sky) {
+      sky.horizon.value.set(weather === 'clear' ? 0xbacdd3 : p.sky);
+      sky.zenith.value.set(weather === 'clear' ? 0x5282a8 : p.sky).multiplyScalar(weather === 'clear' ? 1 : .53);
+      sky.cloud.value.set(p.sunColor);
+      sky.sunDirection.value.set(...p.sunPos).normalize();
+      sky.daylight.value = weather === 'night' ? 0 : weather === 'sunset' ? .62 : 1;
+      sky.cloudCover.value = weather === 'clear' ? .53 : .77;
+    }
     this.materials.windowGlow.emissiveIntensity = p.windowGlow;
     if (this.rainMesh) this.rainMesh.visible = p.rain;
   }
@@ -1103,22 +1158,21 @@ export class LakelandEngine {
     this.sunLight.target.position.set(this.playerX, this.playerY, this.playerZ);
     this.sunLight.target.updateMatrixWorld();
 
-    const isCloseBenchmark = this.benchmarkView === 'waterhead-close';
-    const isBenchmark = isCloseBenchmark || this.benchmarkView === 'waterhead';
-    if (isBenchmark) {
-      if (isCloseBenchmark) {
-        this.camera.position.set(45, 3.4, -229);
-        this.camera.lookAt(74, 3.5, -239);
-      } else {
-        this.camera.position.set(10, 8.5, -219);
-        this.camera.lookAt(89, 4.5, -274);
-      }
+    const view = this.benchmarkView && Object.hasOwn(WATERHEAD_CAMERAS, this.benchmarkView)
+      ? WATERHEAD_CAMERAS[this.benchmarkView]
+      : null;
+    if (view) {
+      this.camera.fov = view.fov;
+      this.camera.updateProjectionMatrix();
+      this.camera.position.set(...view.eye);
+      this.camera.lookAt(...view.target);
       this.runner.root.visible = false;
       this.routePropsGroup.visible = false;
       this.materials.waterUniforms.uTime.value = 14;
     }
+    this.atmosphere?.dome.position.copy(this.camera.position);
     this.renderer.render(this.scene, this.camera);
-    if (isBenchmark) {
+    if (view) {
       const { render, memory } = this.renderer.info;
       this.renderer.domElement.dataset.benchmark = JSON.stringify({
         calls: render.calls, triangles: render.triangles, textures: memory.textures,
@@ -1773,9 +1827,15 @@ export class LakelandEngine {
     this.loadedChunks.clear();
     this.disposeBuildingAssets();
     this.buildingSurfaces?.dispose();
+    for (const texture of this.roofDetailMaps) texture.dispose();
+    this.roofDetailMaps.clear();
+    this.atmosphere?.dome.geometry.dispose();
+    this.atmosphere?.dome.material.dispose();
 
-    this.terrainMesh?.geometry.dispose();
+    this.terrainMesh?.traverse(object => { if (object instanceof THREE.Mesh) object.geometry.dispose(); });
     this.waterMesh?.geometry.dispose();
+    this.materials?.waterUniforms.shoreMap.value?.dispose();
+    this.materials?.weatheredDeck.dispose();
     this.textures?.dispose();
     this.sound.dispose();
     this.renderer?.dispose();

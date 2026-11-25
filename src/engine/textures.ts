@@ -3,6 +3,7 @@ import * as THREE from 'three';
 export interface ProceduralTextureSet {
   slateStoneMap: THREE.CanvasTexture;
   slateStoneBump: THREE.CanvasTexture;
+  roughcastBump: THREE.CanvasTexture;
   slateRoofMap: THREE.CanvasTexture;
   roadTarmacMap: THREE.CanvasTexture;
   grassTerrainMap: THREE.CanvasTexture;
@@ -86,6 +87,15 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
   const slateStoneMap = configureColorTexture(stoneC, 2, 2, maxAnisotropy);
   const slateStoneBump = configureDataTexture(bumpC, 2, 2, maxAnisotropy);
 
+  const [roughcast, roughcastContext] = makeCanvas(128, 128);
+  const noise = roughcastContext.createImageData(128, 128);
+  for (let i = 0; i < noise.data.length; i += 4) {
+    const grain = 112 + Math.floor(rand() * 75);
+    noise.data.set([grain, grain, grain, 255], i);
+  }
+  roughcastContext.putImageData(noise, 0, 0);
+  const roughcastBump = configureDataTexture(roughcast, 2.5, 2.5, Math.min(maxAnisotropy, 4));
+
   // 2. Dark Westmorland Slate Roof Tiles
   const [roofC, roofCtx] = makeCanvas(256, 256);
   roofCtx.fillStyle = '#2d353c';
@@ -166,6 +176,7 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
   return {
     slateStoneMap,
     slateStoneBump,
+    roughcastBump,
     slateRoofMap,
     roadTarmacMap,
     grassTerrainMap,
@@ -174,6 +185,7 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
     dispose: () => {
       slateStoneMap.dispose();
       slateStoneBump.dispose();
+      roughcastBump.dispose();
       slateRoofMap.dispose();
       roadTarmacMap.dispose();
       grassTerrainMap.dispose();
@@ -183,7 +195,7 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
   };
 }
 
-/** Shared 512² Poly Haven surfaces for mapped buildings. */
+/** Shared 512² Poly Haven surfaces for mapped waterfront features. */
 export async function loadBuildingSurfaces(maxAnisotropy: number) {
   const loader = new THREE.TextureLoader();
   const loaded: THREE.Texture[] = [];
@@ -207,12 +219,13 @@ export async function loadBuildingSurfaces(maxAnisotropy: number) {
   const results = await Promise.allSettled([
     fetchSurface('castle_wall_slates', 0.4),
     fetchSurface('roof_slates_03', 2.5),
+    fetchSurface('wood_planks_grey', 1.5),
   ]);
-  const [wall, roof] = results;
+  const [wall, roof, deck] = results;
   const dispose = () => loaded.forEach(texture => texture.dispose());
-  if (wall.status !== 'fulfilled' || roof.status !== 'fulfilled') {
+  if (wall.status !== 'fulfilled' || roof.status !== 'fulfilled' || deck.status !== 'fulfilled') {
     dispose();
     return null;
   }
-  return { wall: wall.value, roof: roof.value, dispose };
+  return { wall: wall.value, roof: roof.value, deck: deck.value, dispose };
 }

@@ -26,3 +26,9 @@ Google documents `agy` for Antigravity CLI with OAuth for individual plans. The 
 ## Next priority
 
 Complete Stage C by reconstructing the Waterhead Inn's main roadside facade and roof sections, then survey the terraces, railings and approaches between Lake Road and the pier. Compare against current public or owner-supplied photographs and collect an unlabelled review from a local before extending the corridor. See [capture requirements](WATERHEAD_CAPTURE.md) and [current accuracy](GEOGRAPHIC_ACCURACY.md).
+
+## Waterfront production pass
+
+The Waterhead Inn, Lakeside Picnic and adjoining Esplanade shops have reproducible original Blender models. A local public-realm layer uses mapped parking areas, sidewalks, fences and furniture. It adds hand-authored terrace details, weathered decking, near-shore tint, skiffs and a low-cost cloud and lighting pass. Regional arcade and exploration logic remain in place. See [photographic provenance](references/waterhead.json) and [visual benchmarks](VISUAL_BENCHMARKS.md).
+
+For the current asset pipeline, run `GLTF_TRANSFORM=/path/to/gltf-transform bash scripts/build-waterhead-assets.sh` using Blender 4.3 and glTF Transform 4.4.0. The optional CLI applies Meshopt compression. The separate booking office generator remains available. The reusable mesh module cuts facade openings and builds jambs, glazing, joinery, gables and three-dimensional signs.

@@ -7,6 +7,9 @@ import type {
   WorldChunkData,
 } from '../types/game';
 import { isPointInLake, pointInRing, sampleTerrainHeight } from '../geo/projection';
+import { buildWaterheadShoreDistance, WATERHEAD_WATER_BOUNDS } from './waterhead-water';
+import { buildWaterfrontDetails, WATERHEAD_SIDEWALKS } from './waterfront';
+import buildingAssetMetadata from '../data/building-assets.json';
 import type { loadBuildingSurfaces, ProceduralTextureSet } from './textures';
 
 export interface WorldMaterials {
@@ -19,12 +22,13 @@ export interface WorldMaterials {
   countryLane: THREE.MeshStandardMaterial;
   footpath: THREE.MeshStandardMaterial;
   pierTimber: THREE.MeshStandardMaterial;
+  weatheredDeck: THREE.MeshStandardMaterial;
   dryStoneWall: THREE.MeshStandardMaterial;
   railSteel: THREE.MeshStandardMaterial;
   trunkMat: THREE.MeshStandardMaterial;
   foliageMat: THREE.MeshStandardMaterial;
   waterMat: THREE.MeshStandardMaterial;
-  waterUniforms: { uTime: { value: number } };
+  waterUniforms: { uTime: { value: number }; shoreMap: { value: THREE.DataTexture | null } };
   terrainMat: THREE.MeshStandardMaterial;
 }
 
@@ -119,6 +123,12 @@ export function createWorldMaterials(
     roughness: 0.78,
     metalness: 0.04,
   });
+  const weatheredDeck = pierTimber.clone();
+  if (surfaces) {
+    Object.assign(weatheredDeck, surfaces.deck);
+    weatheredDeck.color.set(0xa09a8e);
+    weatheredDeck.normalScale.setScalar(.7);
+  }
 
   const dryStoneWall = new THREE.MeshStandardMaterial({
     color: 0xd1d5db,
@@ -155,16 +165,18 @@ export function createWorldMaterials(
   });
 
   // Animated Lake Windermere Water Material using MeshStandardMaterial + onBeforeCompile
-  const waterUniforms = { uTime: { value: 0 } };
+  const waterUniforms: WorldMaterials['waterUniforms'] = { uTime: { value: 0 }, shoreMap: { value: null } };
   const waterMat = new THREE.MeshStandardMaterial({
-    color: 0x164e63,
-    roughness: 0.36,
-    metalness: 0.26,
+    color: 0x1c3940,
+    roughness: 0.29,
+    metalness: 0.19,
     transparent: true,
     opacity: 0.9,
   });
   waterMat.onBeforeCompile = (shader) => {
     shader.uniforms.uTime = waterUniforms.uTime;
+    shader.uniforms.shoreMap = waterUniforms.shoreMap;
+    shader.uniforms.shoreBounds = { value: new THREE.Vector4(...WATERHEAD_WATER_BOUNDS) };
     shader.vertexShader =
       `uniform float uTime;\nvarying vec3 vWorldPos;\n` +
       shader.vertexShader.replace(
@@ -175,7 +187,7 @@ export function createWorldMaterials(
         `,
       );
     shader.fragmentShader =
-      `uniform float uTime;\nvarying vec3 vWorldPos;\n` +
+      `uniform float uTime;\nuniform sampler2D shoreMap;\nuniform vec4 shoreBounds;\nvarying vec3 vWorldPos;\n` +
       shader.fragmentShader.replace(
         '#include <color_fragment>',
         `
@@ -183,19 +195,27 @@ export function createWorldMaterials(
         float shimmer = sin(vWorldPos.x * 0.14 + vWorldPos.z * 0.09 + uTime * 1.6) *
                         cos(vWorldPos.x * 0.07 - vWorldPos.z * 0.18 - uTime * 1.3);
         vec3 viewDir = normalize(cameraPosition - vWorldPos);
-        float grazing = pow(1.0 - clamp(viewDir.y, 0.0, 1.0), 3.5);
-        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.12, 0.23, 0.28), grazing * 0.65);
-        diffuseColor.rgb += vec3(0.014, 0.031, 0.041) * (0.5 + 0.5 * shimmer);
+        float grazing = pow(1.0 - clamp(viewDir.y, 0.0, 1.0), 4.0);
+        vec3 reflectedSky = mix(vec3(.090,.151,.167),vec3(.27,.37,.39),
+                                .5 + .5*sin(vWorldPos.x*.061 + vWorldPos.z*.098 + shimmer*.45));
+        vec2 shoreUv = (vWorldPos.xz-shoreBounds.xy)/shoreBounds.zw;
+        float inBounds = step(0.0,shoreUv.x)*step(shoreUv.x,1.0)*step(0.0,shoreUv.y)*step(shoreUv.y,1.0);
+        float proximity = texture2D(shoreMap,shoreUv).r;
+        float shallows = inBounds*(1.0-smoothstep(.0,.50,proximity));
+        diffuseColor.rgb = mix(diffuseColor.rgb,vec3(.106,.104,.060),shallows*.77);
+        diffuseColor.rgb = mix(diffuseColor.rgb, reflectedSky, grazing * .73);
+        diffuseColor.rgb += vec3(0.003, 0.008, 0.010) * shimmer;
         `,
       ).replace(
         '#include <normal_fragment_maps>',
         `
         #include <normal_fragment_maps>
         vec2 wave = vec2(
-          cos(vWorldPos.x * 0.63 + vWorldPos.z * 0.27 + uTime * 1.55),
-          sin(vWorldPos.z * 0.8 - vWorldPos.x * 0.37 - uTime * 1.1)
+          cos(vWorldPos.x * 1.24 + vWorldPos.z * 0.67 + uTime * 1.55),
+          sin(vWorldPos.z * 1.65 - vWorldPos.x * 1.01 - uTime * 1.1)
         );
-        normal = normalize(normal + mat3(viewMatrix) * vec3(wave.x, 0.0, wave.y) * 0.028);
+        wave += vec2(sin(vWorldPos.z*2.97+uTime*1.96),cos(vWorldPos.x*3.83-uTime*1.6))*.37;
+        normal = normalize(normal + mat3(viewMatrix) * vec3(wave.x, 0.0, wave.y) * 0.036);
         `,
       );
   };
@@ -210,6 +230,7 @@ export function createWorldMaterials(
     countryLane,
     footpath,
     pierTimber,
+    weatheredDeck,
     dryStoneWall,
     railSteel,
     trunkMat,
@@ -294,7 +315,7 @@ export function buildTerrainAndWaterMeshes(
   terrain: TerrainGridData | null,
   lake: LakeData | null,
   materials: WorldMaterials,
-): { terrainMesh: THREE.Mesh; waterMesh: THREE.Mesh } {
+): { terrainMesh: THREE.Group; waterMesh: THREE.Mesh } {
   const geo = terrainGeometry(terrain);
   const pos = geo.attributes.position;
   const colors = new Float32Array(pos.count * 3);
@@ -342,9 +363,36 @@ export function buildTerrainAndWaterMeshes(
   geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   geo.computeVertexNormals();
 
-  const terrainMesh = new THREE.Mesh(geo, materials.terrainMat);
-  terrainMesh.receiveShadow = true;
+  // Keep the shared vertex attributes and give each index tile a tight culling sphere.
+  const terrainMesh = new THREE.Group();
+  const tiles = new Map<string, { indices: number[]; box: THREE.Box3 }>();
+  const index = geo.index!;
+  const corner = new THREE.Vector3();
+  for (let i = 0; i < index.count; i += 3) {
+    const a = index.getX(i), b = index.getX(i + 1), c = index.getX(i + 2);
+    const x = (pos.getX(a) + pos.getX(b) + pos.getX(c)) / 3;
+    const z = (pos.getZ(a) + pos.getZ(b) + pos.getZ(c)) / 3;
+    const key = `${Math.floor(x / 960)}:${Math.floor(z / 960)}`;
+    const tile = tiles.get(key) ?? { indices: [], box: new THREE.Box3() };
+    tile.indices.push(a, b, c);
+    for (const vertex of [a, b, c]) {
+      tile.box.expandByPoint(corner.fromBufferAttribute(pos, vertex));
+    }
+    tiles.set(key, tile);
+  }
+  for (const tile of tiles.values()) {
+    const patch = new THREE.BufferGeometry();
+    for (const [name, attribute] of Object.entries(geo.attributes)) patch.setAttribute(name, attribute);
+    patch.setIndex(tile.indices);
+    patch.boundingBox = tile.box;
+    patch.boundingSphere = tile.box.getBoundingSphere(new THREE.Sphere());
+    const mesh = new THREE.Mesh(patch, materials.terrainMat);
+    mesh.receiveShadow = true;
+    terrainMesh.add(mesh);
+  }
+  geo.dispose();
 
+  materials.waterUniforms.shoreMap.value = buildWaterheadShoreDistance(lake);
   const waterMesh = new THREE.Mesh(lakeGeometry(lake), materials.waterMat);
   waterMesh.receiveShadow = true;
 
@@ -583,6 +631,11 @@ export function buildChunkGroup(
   buildingAssets: ReadonlyMap<number, THREE.Object3D>,
 ): BuiltChunkResult {
   const group = new THREE.Group();
+  const isWaterhead = chunk.key === '0_-1' && Boolean(terrain?.detail);
+  const waterfront = isWaterhead ? buildWaterfrontDetails(
+    (x, z) => Math.max(.45, sampleTerrainHeight(terrain, x, z)), (x, z) => isPointInLake(lake, x, z),
+  ) : null;
+  if (waterfront) group.add(waterfront.group);
   const disposables: THREE.BufferGeometry[] = [];
   const colliders: BuiltChunkResult['colliders'] = [];
   const grindSegments: BuiltChunkResult['grindSegments'] = [];
@@ -599,7 +652,16 @@ export function buildChunkGroup(
     const asset = buildingAssets.get(b.id);
     if (asset) {
       const model = asset.clone();
-      model.position.set(b.cx, Math.max(0.45, sampleTerrainHeight(terrain, b.cx, b.cz)), b.cz);
+      const authoredGround = buildingAssetMetadata.find(entry => entry.buildingId === b.id)?.groundElevationM;
+      const ground = authoredGround == null ? sampleTerrainHeight(terrain, b.cx, b.cz)
+        : authoredGround - (terrain?.lakeDatumM ?? 39);
+      model.position.set(b.cx, Math.max(.45, ground), b.cz);
+      model.traverse(object => {
+        if (object instanceof THREE.Mesh) {
+          object.castShadow = true;
+          object.receiveShadow = true;
+        }
+      });
       group.add(model);
       built.wallGeo.dispose();
       built.roofGeo.dispose();
@@ -652,7 +714,7 @@ export function buildChunkGroup(
   const railGeos: THREE.BufferGeometry[] = [];
 
   for (const r of chunk.roads) {
-    if (r.kind === 'ferry') continue;
+    if (r.kind === 'ferry' || (isWaterhead && WATERHEAD_SIDEWALKS.has(r.id))) continue;
     if (r.kind === 'primary' || r.kind === 'secondary') {
       const g = buildRoadRibbonGeometry(r.pts, r.kind === 'primary' ? 4.4 : 3.4, terrain, 0.12);
       if (g) primaryGeos.push(g);
@@ -730,7 +792,7 @@ export function buildChunkGroup(
       }
     }
   }
-  addBatch(pierGeos, materials.pierTimber, true);
+  addBatch(pierGeos, isWaterhead ? materials.weatheredDeck : materials.pierTimber, true);
 
   // Fast squared-distance exclusion check so trees NEVER spawn on roads, paths, piers, or buildings
   const distSqToSeg = (
@@ -910,6 +972,7 @@ export function buildChunkGroup(
     grindSegments,
     dispose: () => {
       disposables.forEach((g) => g.dispose());
+      waterfront?.dispose();
     },
   };
 }

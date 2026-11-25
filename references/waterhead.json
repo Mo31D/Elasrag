@@ -89,5 +89,68 @@
     ],
     "buildingId": null,
     "status": "Caption and licence verified. Subject pin differs from the exported Waterhead Hotel footprint. Building identity needs independent confirmation."
+  },
+  {
+    "id": "commons-nilfanion-6783",
+    "title": "Waterhead Bar and Grill, Ambleside (6783)",
+    "url": "https://commons.wikimedia.org/wiki/File:Waterhead_Bar_and_Grill,_Ambleside_(6783).jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/52/Waterhead_Bar_and_Grill%2C_Ambleside_%286783%29.jpg",
+    "author": "Nilfanion",
+    "captured": "2014-06-10",
+    "license": "CC BY-SA 4.0",
+    "buildingId": 423874287,
+    "status": "Licensed street approach matched to the current operator photograph and the OSM address. Camera approximated.",
+    "permittedUses": [
+      "attributed reuse and adaptation under share-alike"
+    ],
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/"
+  },
+  {
+    "id": "inn-official-frontage",
+    "title": "The Waterhead Inn exterior",
+    "url": "https://www.inncollectiongroup.com/waterhead-inn/",
+    "imageUrl": "https://www.inncollectiongroup.com/wp-content/uploads/2024/01/4-4-1350x901.jpg",
+    "author": "The Inn Collection Group (publisher)",
+    "captured": null,
+    "license": "No open image licence identified",
+    "buildingId": 423874287,
+    "status": "Current visual cross-check; photo and brand artwork excluded.",
+    "permittedUses": [
+      "visual architectural cross-check; photo excluded"
+    ]
+  },
+  {
+    "id": "picnic-official-frontage",
+    "title": "Lakeside Picnic at Waterhead",
+    "url": "https://www.lakesidepicnic.co.uk/about.html",
+    "imageUrl": "https://www.lakesidepicnic.co.uk/optimized/responsive/Today-960.webp",
+    "author": "Lakeside Picnic (publisher)",
+    "captured": null,
+    "license": "No open image licence identified",
+    "buildingId": 256765270,
+    "status": "The shop photo and website pin match OSM entrance node 4233922881. The FSA point with the same FHRS ID is farther east. Photo excluded.",
+    "permittedUses": [
+      "visual architectural cross-check; photo excluded"
+    ]
+  },
+  {
+    "id": "geograph-3415475",
+    "title": "Waterhead Shell Shop",
+    "url": "https://commons.wikimedia.org/wiki/File:Waterhead_Shell_Shop_-_geograph.org.uk_-_3415475.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/a/a5/Waterhead_Shell_Shop_-_geograph.org.uk_-_3415475.jpg",
+    "author": "Gerald England",
+    "captured": "2013-04-11",
+    "license": "CC BY-SA 2.0",
+    "buildingId": 423828326,
+    "status": "Blue awning and dual frontage match mapped shop and takeaway nodes. Current shopfit unverified.",
+    "permittedUses": [
+      "attributed reuse and adaptation under share-alike"
+    ],
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "camera": {
+      "lat": 54.419594,
+      "lon": -2.961909,
+      "precision": "shared with object pin; eye station approximate"
+    }
   }
 ]
