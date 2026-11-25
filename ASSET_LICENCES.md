@@ -1,0 +1,7 @@
+# Asset licences
+
+- Geographic vectors and lake outlines are derived from OpenStreetMap data, © OpenStreetMap contributors, [ODbL](https://www.openstreetmap.org/copyright).
+- Waterhead terrain and candidate height evidence contain Environment Agency copyright and/or database right 2022, used under [OGL v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
+- The original hand-modelled booking office GLB uses no photographic textures. Its reference-based appearance is distributed under [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/). Credit David Dixon for *Ambleside booking office and pier, Waterhead* and Shaun Ferguson for *Ambleside Pier Waterhead*, via Geograph and Wikimedia Commons. Adaptation consists of simplified 3D styling and inferred dimensions. The mapped footprint is attributed separately to OpenStreetMap contributors. See [reference metadata](references/waterhead.json).
+- The original export's procedural scene textures and meshes remain in the app. Those remain in use outside the shared building surfaces listed below.
+- [Castle Wall Slates](https://polyhaven.com/a/castle_wall_slates) and [Roof Slates 03](https://polyhaven.com/a/roof_slates_03) by Rob Tuytel for Poly Haven, [CC0](https://polyhaven.com/license). Used as generic slate surface references. Base colour, OpenGL normal and roughness converted from published 1K sources to 512² WebP derivatives. These materials represent approximate local finishes.

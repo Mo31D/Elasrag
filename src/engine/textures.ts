@@ -182,3 +182,37 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
     },
   };
 }
+
+/** Shared 512² Poly Haven surfaces for mapped buildings. */
+export async function loadBuildingSurfaces(maxAnisotropy: number) {
+  const loader = new THREE.TextureLoader();
+  const loaded: THREE.Texture[] = [];
+  const fetchSurface = async (name: string, repeat: number) => {
+    const channels = ['color', 'normal', 'rough'] as const;
+    const results = await Promise.allSettled(channels.map(async (channel) => {
+      const texture = await loader.loadAsync(`/regions/windermere/materials/${name}-${channel}.webp`);
+      loaded.push(texture);
+      texture.colorSpace = channel === 'color' ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.setScalar(repeat);
+      texture.anisotropy = Math.min(maxAnisotropy, 4);
+      return texture;
+    }));
+    const [color, normal, rough] = results;
+    if (color.status !== 'fulfilled' || normal.status !== 'fulfilled' || rough.status !== 'fulfilled') {
+      throw new Error(`Could not load building surface ${name}`);
+    }
+    return { map: color.value, normalMap: normal.value, roughnessMap: rough.value };
+  };
+  const results = await Promise.allSettled([
+    fetchSurface('castle_wall_slates', 0.4),
+    fetchSurface('roof_slates_03', 2.5),
+  ]);
+  const [wall, roof] = results;
+  const dispose = () => loaded.forEach(texture => texture.dispose());
+  if (wall.status !== 'fulfilled' || roof.status !== 'fulfilled') {
+    dispose();
+    return null;
+  }
+  return { wall: wall.value, roof: roof.value, dispose };
+}

@@ -1,0 +1,43 @@
+[
+  {
+    "id": "geograph-1732669",
+    "url": "https://commons.wikimedia.org/wiki/File:Ambleside_booking_office_and_pier,_Waterhead_-_geograph.org.uk_-_1732669.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/84/Ambleside_booking_office_and_pier%2C_Waterhead_-_geograph.org.uk_-_1732669.jpg",
+    "camera": {
+      "lat": 54.41929,
+      "lon": -2.9632,
+      "headingDegrees": 67
+    },
+    "subject": {
+      "lat": 54.419575,
+      "lon": -2.96239
+    },
+    "author": "David Dixon",
+    "captured": "2006-02-19",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "attribution": "Ambleside booking office and pier, Waterhead, by David Dixon, Geograph Britain and Ireland",
+    "permittedUses": [
+      "reuse with attribution",
+      "adaptation with attribution and share-alike"
+    ],
+    "buildingId": 423828335,
+    "status": "Visually matched its waterside gable to the mapped booking office. Historical reference."
+  },
+  {
+    "id": "geograph-1476151",
+    "url": "https://commons.wikimedia.org/wiki/File:Ambleside_Pier_Waterhead_-_geograph.org.uk_-_1476151.jpg",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/55/Ambleside_Pier_Waterhead_-_geograph.org.uk_-_1476151.jpg",
+    "author": "Shaun Ferguson",
+    "captured": "2009-05-23",
+    "license": "CC BY-SA 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+    "attribution": "Ambleside Pier Waterhead, by Shaun Ferguson, Geograph Britain and Ireland",
+    "permittedUses": [
+      "reuse with attribution",
+      "adaptation with attribution and share-alike"
+    ],
+    "buildingId": 423828335,
+    "status": "Catalogue and licence checked. Historical secondary reference."
+  }
+]

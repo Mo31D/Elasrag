@@ -40,6 +40,16 @@ export class RegionManager {
     this.manifest = (await manifestRes.json()) as RegionManifest;
     this.terrain = (await terrainRes.json()) as TerrainGridData;
     this.lake = (await lakeRes.json()) as LakeData;
+    if (this.regionId === 'windermere' && !this.terrain.detail) {
+      const surveyRes = await fetch(`${base}/waterhead-survey.json`);
+      if (surveyRes.ok) {
+        const survey = await surveyRes.json();
+        if (survey.schemaVersion !== 1 || survey.lakeDatumM !== this.terrain.lakeDatumM) {
+          throw new Error('Incompatible Waterhead terrain survey');
+        }
+        this.terrain.detail = survey.detail;
+      }
+    }
     this.availableChunkSet = new Set(this.manifest.availableChunks);
   }
 
@@ -82,15 +92,15 @@ export class RegionManager {
     if (cached) return cached;
 
     if (!this.availableChunkSet.has(key)) {
-      const procedural = this.createProceduralFallbackChunk(cx, cz);
-      this.chunkCache.set(key, procedural);
-      return procedural;
+      const empty = this.createEmptyChunk(cx, cz);
+      this.chunkCache.set(key, empty);
+      return empty;
     }
 
     const inflight = this.loadingChunks.get(key);
     if (inflight) {
       const res = await inflight;
-      return res ?? this.createProceduralFallbackChunk(cx, cz);
+      return res ?? this.createEmptyChunk(cx, cz);
     }
 
     const promise = (async () => {
@@ -109,7 +119,7 @@ export class RegionManager {
 
     this.loadingChunks.set(key, promise);
     const loaded = await promise;
-    return loaded ?? this.createProceduralFallbackChunk(cx, cz);
+    return loaded ?? this.createEmptyChunk(cx, cz);
   }
 
   public evictDistantChunks(centerCx: number, centerCz: number, keepRadius = 3): string[] {
@@ -126,96 +136,16 @@ export class RegionManager {
     return evicted;
   }
 
-  /**
-   * Deterministic procedural rural Lakeland chunk for areas between surveyed OSM village tiles
-   * (stone walls, copses, farmsteads). Never labeled as surveyed data.
-   */
-  private createProceduralFallbackChunk(cx: number, cz: number): WorldChunkData {
-    const size = this.getChunkSize();
-    const minX = cx * size;
-    const minZ = cz * size;
-    let seed = ((cx * 73856093) ^ (cz * 19349663)) >>> 0;
-    const rand = () => {
-      seed = (seed * 1664525 + 1013904223) >>> 0;
-      return seed / 4294967296;
-    };
-
-    const buildings: WorldChunkData['buildings'] = [];
-    const walls: WorldChunkData['walls'] = [];
-    const woodlands: WorldChunkData['woodlands'] = [];
-
-    // Add 2-4 stone farmhouses/barns on dry land outside the lake
-    for (let i = 0; i < 4; i++) {
-      const bx = minX + 60 + rand() * (size - 120);
-      const bz = minZ + 60 + rand() * (size - 120);
-      const h = this.getTerrainHeight(bx, bz);
-      if (!this.isInWater(bx, bz) && h > 1.5 && h < 190) {
-        const w = 6 + rand() * 5;
-        const d = 4.5 + rand() * 3.5;
-        buildings.push({
-          id: -(Math.abs(cx * 1000 + cz * 10 + i) + 1),
-          kind: i === 0 ? 'cottage' : 'boathouse',
-          cx: bx,
-          cz: bz,
-          h: 5.5 + rand() * 2.5,
-          pts: [
-            [-w / 2, -d / 2],
-            [w / 2, -d / 2],
-            [w / 2, d / 2],
-            [-w / 2, d / 2],
-          ],
-        });
-      }
-    }
-
-    // Add dry-stone boundary wall segments on gentle slopes
-    for (let i = 0; i < 3; i++) {
-      const wx = minX + 40 + rand() * (size - 80);
-      const wz = minZ + 40 + rand() * (size - 80);
-      const ang = rand() * Math.PI;
-      const len = 35 + rand() * 45;
-      const ex = wx + Math.cos(ang) * len;
-      const ez = wz + Math.sin(ang) * len;
-      if (!this.isInWater(wx, wz) && !this.isInWater(ex, ez)) {
-        walls.push({
-          id: -(Math.abs(cx * 500 + cz * 20 + i) + 1),
-          pts: [
-            [wx, wz],
-            [ex, ez],
-          ],
-        });
-      }
-    }
-
-    // Add woodland copses
-    for (let i = 0; i < 2; i++) {
-      const fx = minX + 80 + rand() * (size - 160);
-      const fz = minZ + 80 + rand() * (size - 160);
-      if (!this.isInWater(fx, fz)) {
-        const r = 28 + rand() * 22;
-        woodlands.push({
-          id: -(Math.abs(cx * 300 + cz * 30 + i) + 1),
-          cx: fx,
-          cz: fz,
-          pts: [
-            [fx - r, fz - r],
-            [fx + r, fz - r],
-            [fx + r, fz + r],
-            [fx - r, fz + r],
-          ],
-        });
-      }
-    }
-
+  private createEmptyChunk(cx: number, cz: number): WorldChunkData {
     return {
       key: `${cx}_${cz}`,
       cx,
       cz,
-      buildings,
+      buildings: [],
       roads: [],
-      walls,
+      walls: [],
       piers: [],
-      woodlands,
+      woodlands: [],
     };
   }
 }

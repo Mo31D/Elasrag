@@ -11,11 +11,13 @@ import {
 } from '../game/rules';
 import {
   compileRoutePolyline,
+  pointInRing,
   sampleCompiledRoute,
   type CompiledRoute,
 } from '../geo/projection';
 import { RegionManager } from '../geo/regionLoader';
 import { SoundEngine } from '../audio/soundEngine';
+import buildingAssets from '../data/building-assets.json';
 import type {
   GameSettings,
   GameState,
@@ -36,7 +38,7 @@ import {
   createRunnerModel,
   type RunnerRig,
 } from './models';
-import { createProceduralTextureSet, type ProceduralTextureSet } from './textures';
+import { createProceduralTextureSet, loadBuildingSurfaces, type ProceduralTextureSet } from './textures';
 import {
   buildChunkGroup,
   buildTerrainAndWaterMeshes,
@@ -128,6 +130,11 @@ export class LakelandEngine {
   private region = new RegionManager('windermere');
   private sound = new SoundEngine();
 
+  private buildingSurfaces: Awaited<ReturnType<typeof loadBuildingSurfaces>> = null;
+  private readonly buildingAssets = new Map<number, THREE.Object3D>();
+  private readonly benchmarkView = import.meta.env.DEV
+    ? new URLSearchParams(location.search).get('benchmark')
+    : null;
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
@@ -299,11 +306,21 @@ export class LakelandEngine {
 
       const maxAniso = this.renderer.capabilities.getMaxAnisotropy();
       this.textures = createProceduralTextureSet(maxAniso);
-      this.materials = createWorldMaterials(this.textures);
-
-      // Load real Windermere GIS data
-      await this.region.initialize();
-      if (this.disposed) return;
+      const [surfaceResult, regionResult] = await Promise.allSettled([
+        loadBuildingSurfaces(maxAniso),
+        this.region.initialize(),
+      ]);
+      const surfaces = surfaceResult.status === 'fulfilled' ? surfaceResult.value : null;
+      if (regionResult.status === 'rejected') {
+        surfaces?.dispose();
+        throw regionResult.reason;
+      }
+      if (this.disposed) {
+        surfaces?.dispose();
+        return;
+      }
+      this.buildingSurfaces = surfaces;
+      this.materials = createWorldMaterials(this.textures, surfaces);
 
       const { terrainMesh, waterMesh } = buildTerrainAndWaterMeshes(
         this.region.terrain,
@@ -327,6 +344,17 @@ export class LakelandEngine {
       this.spawnLakeSteamers();
 
       this.applyWeatherPreset(this.settings.weather);
+
+      const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+      const assetLoader = new GLTFLoader();
+      for (const asset of buildingAssets) {
+        const model = await assetLoader.loadAsync(asset.assetUrl);
+        this.buildingAssets.set(asset.buildingId, model.scene);
+      }
+      if (this.disposed) {
+        this.disposeBuildingAssets();
+        return;
+      }
 
       // Stage initial Waterhead & Ambleside chunks before first paint
       this.prepareRoute(this.activeRoute, this.prevRecord);
@@ -977,6 +1005,7 @@ export class LakelandEngine {
               this.region.terrain,
               this.region.lake,
               this.materials,
+              this.buildingAssets,
             );
             this.loadedChunks.set(key, built);
             this.scene.add(built.group);
@@ -1074,7 +1103,28 @@ export class LakelandEngine {
     this.sunLight.target.position.set(this.playerX, this.playerY, this.playerZ);
     this.sunLight.target.updateMatrixWorld();
 
+    const isCloseBenchmark = this.benchmarkView === 'waterhead-close';
+    const isBenchmark = isCloseBenchmark || this.benchmarkView === 'waterhead';
+    if (isBenchmark) {
+      if (isCloseBenchmark) {
+        this.camera.position.set(45, 3.4, -229);
+        this.camera.lookAt(74, 3.5, -239);
+      } else {
+        this.camera.position.set(10, 8.5, -219);
+        this.camera.lookAt(89, 4.5, -274);
+      }
+      this.runner.root.visible = false;
+      this.routePropsGroup.visible = false;
+      this.materials.waterUniforms.uTime.value = 14;
+    }
     this.renderer.render(this.scene, this.camera);
+    if (isBenchmark) {
+      const { render, memory } = this.renderer.info;
+      this.renderer.domElement.dataset.benchmark = JSON.stringify({
+        calls: render.calls, triangles: render.triangles, textures: memory.textures,
+        geometries: memory.geometries, fps: this.currentFps,
+      });
+    }
     this.scheduleNextFrame();
   }
 
@@ -1233,12 +1283,15 @@ export class LakelandEngine {
 
     // Vertical physics & rooftop / terrain / grind rail grounding
     let floorY = this.region.getTerrainHeight(this.playerX, this.playerZ);
-    const inWater = this.region.isInWater(this.playerX, this.playerZ);
-    if (!inWater) {
-      floorY = Math.max(0.45, floorY);
-    } else {
-      floorY = -0.6;
+    const overLake = this.region.isInWater(this.playerX, this.playerZ);
+    let deckY = -Infinity;
+    for (const chunk of this.loadedChunks.values()) {
+      for (const deck of chunk.pierDecks) {
+        if (pointInRing(this.playerX, this.playerZ, deck.outline)) deckY = Math.max(deckY, deck.y);
+      }
     }
+    const inWater = overLake && deckY === -Infinity;
+    floorY = Math.max(overLake ? -0.6 : Math.max(0.45, floorY), deckY);
 
     // Check building roofs for landing
     for (const chunk of this.loadedChunks.values()) {
@@ -1689,6 +1742,20 @@ export class LakelandEngine {
     return this.region.lake;
   }
 
+  private disposeBuildingAssets(): void {
+    for (const asset of this.buildingAssets.values()) {
+      const materials = new Set<THREE.Material>();
+      asset.traverse(object => {
+        if (!(object instanceof THREE.Mesh)) return;
+        object.geometry.dispose();
+        const slots = Array.isArray(object.material) ? object.material : [object.material];
+        slots.forEach(material => materials.add(material));
+      });
+      materials.forEach(material => material.dispose());
+    }
+    this.buildingAssets.clear();
+  }
+
   public dispose(): void {
     this.disposed = true;
     cancelAnimationFrame(this.frameId);
@@ -1704,6 +1771,8 @@ export class LakelandEngine {
       chunk.dispose();
     }
     this.loadedChunks.clear();
+    this.disposeBuildingAssets();
+    this.buildingSurfaces?.dispose();
 
     this.terrainMesh?.geometry.dispose();
     this.waterMesh?.geometry.dispose();

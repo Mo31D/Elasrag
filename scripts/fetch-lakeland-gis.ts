@@ -1,15 +1,6 @@
-/**
- * Lakeland Rush — Real-World Digital Twin GIS & LiDAR Ingestion Pipeline
- *
- * Fetches and aligns verified geographic datasets into local chunked JSON assets:
- * 1. OpenStreetMap (ODbL) building footprints, commercial POIs, road networks,
- *    street furniture (crossings, street lamps, bus stops, mapped trees, benches),
- *    parks, dry-stone walls, piers, and waterways across 12 Windermere zones.
- * 2. UK Environment Agency LiDAR 1m DTM & First-Return DSM (Open Government Licence v3.0)
- *    over the Waterhead -> Lake Road -> Ambleside -> Rothay Park priority corridor.
- * 3. Copernicus EU-DEM 25m regional elevation grid for the full 18 km Windermere basin.
+/** Refresh regional OSM vectors and the coarse OpenTopoData background.
+ * Environment Agency terrain and roof evidence are built separately by waterhead-lidar.py.
  */
-
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -27,92 +18,12 @@ function projectLatLon(lat: number, lon: number): [number, number] {
   return [Math.round(x * 10) / 10, Math.round(z * 10) / 10];
 }
 
-function wgs84ToOsgb36(latDeg: number, lonDeg: number): [number, number] {
-  const rad = Math.PI / 180;
-  const phi1 = latDeg * rad;
-  const lam1 = lonDeg * rad;
-  const a1 = 6378137.0;
-  const b1 = 6356752.3141;
-  const e2_1 = (a1 * a1 - b1 * b1) / (a1 * a1);
-  const nu1 = a1 / Math.sqrt(1 - e2_1 * Math.sin(phi1) ** 2);
-  const x1 = nu1 * Math.cos(phi1) * Math.cos(lam1);
-  const y1 = nu1 * Math.cos(phi1) * Math.sin(lam1);
-  const z1 = (1 - e2_1) * nu1 * Math.sin(phi1);
-
-  const tx = -446.448;
-  const ty = 125.157;
-  const tz = -542.06;
-  const s = 20.4894e-6;
-  const rx = (-0.1502 / 3600) * rad;
-  const ry = (-0.247 / 3600) * rad;
-  const rz = (-0.8421 / 3600) * rad;
-  const x2 = tx + (1 + s) * x1 - rz * y1 + ry * z1;
-  const y2 = ty + rz * x1 + (1 + s) * y1 - rx * z1;
-  const z2 = tz - ry * x1 + rx * y1 + (1 + s) * z1;
-
-  const a = 6377563.396;
-  const b = 6356256.909;
-  const e2 = (a * a - b * b) / (a * a);
-  const p = Math.hypot(x2, y2);
-  let phi = Math.atan2(z2, p * (1 - e2));
-  for (let i = 0; i < 6; i++) {
-    const nu = a / Math.sqrt(1 - e2 * Math.sin(phi) ** 2);
-    phi = Math.atan2(z2 + e2 * nu * Math.sin(phi), p);
-  }
-  const lam = Math.atan2(y2, x2);
-
-  const F0 = 0.9996012717;
-  const phi0 = 49 * rad;
-  const lam0 = -2 * rad;
-  const N0 = -100000;
-  const E0 = 400000;
-  const n = (a - b) / (a + b);
-  const n2 = n * n;
-  const n3 = n * n * n;
-  const cosP = Math.cos(phi);
-  const sinP = Math.sin(phi);
-  const tanP = Math.tan(phi);
-  const nu = (a * F0) / Math.sqrt(1 - e2 * sinP * sinP);
-  const rho = (a * F0 * (1 - e2)) / Math.pow(1 - e2 * sinP * sinP, 1.5);
-  const eta2 = nu / rho - 1;
-  const Ma = (1 + n + 1.25 * n2 + 1.25 * n3) * (phi - phi0);
-  const Mb = (3 * n + 3 * n2 + 2.625 * n3) * Math.sin(phi - phi0) * Math.cos(phi + phi0);
-  const Mc = (1.875 * n2 + 1.875 * n3) * Math.sin(2 * (phi - phi0)) * Math.cos(2 * (phi + phi0));
-  const Md = (35 / 24) * n3 * Math.sin(3 * (phi - phi0)) * Math.cos(3 * (phi + phi0));
-  const M = b * F0 * (Ma - Mb + Mc - Md);
-  const I = M + N0;
-  const II = (nu / 2) * sinP * cosP;
-  const III = (nu / 24) * sinP * cosP ** 3 * (5 - tanP ** 2 + 9 * eta2);
-  const IIIA = (nu / 720) * sinP * cosP ** 5 * (61 - 58 * tanP ** 2 + tanP ** 4);
-  const IV = nu * cosP;
-  const V = (nu / 6) * cosP ** 3 * (nu / rho - tanP ** 2);
-  const VI = (nu / 120) * cosP ** 5 * (5 - 18 * tanP ** 2 + tanP ** 4 + 14 * eta2 - 58 * tanP ** 2 * eta2);
-  const dL = lam - lam0;
-  const N = I + II * dL ** 2 + III * dL ** 4 + IIIA * dL ** 6;
-  const E = E0 + IV * dL + V * dL ** 3 + VI * dL ** 5;
-  return [E, N];
-}
-
-function worldToLatLon(x: number, z: number): [number, number] {
-  const lat = ORIGIN_LAT - z / METERS_PER_DEG_LAT;
-  const lon = ORIGIN_LON + x / METERS_PER_DEG_LON;
-  return [lat, lon];
-}
-
 // Region Bounds covering all 18km of Windermere + surrounding fells & villages
 const REGION_BOUNDS = {
   minLat: 54.258,
   maxLat: 54.442,
   minLon: -3.015,
   maxLon: -2.885,
-};
-
-// Priority Waterhead -> Lake Road -> Ambleside -> Rothay Park LiDAR Corridor
-const DETAIL_BOUNDS = {
-  minLat: 54.414,
-  maxLat: 54.4375,
-  minLon: -2.971,
-  maxLon: -2.953,
 };
 
 interface OsmNode {
@@ -181,192 +92,7 @@ async function fetchJsonWithRetry(url: string, retries = 6): Promise<any> {
   throw lastErr;
 }
 
-function parseTiledFloat32GeoTiff(buf: Buffer): { w: number; h: number; data: Float32Array; nodata: number } {
-  const be = buf.toString('ascii', 0, 2) === 'MM';
-  const u16 = (o: number) => (be ? buf.readUInt16BE(o) : buf.readUInt16LE(o));
-  const u32 = (o: number) => (be ? buf.readUInt32BE(o) : buf.readUInt32LE(o));
-  const f32 = (o: number) => (be ? buf.readFloatBE(o) : buf.readFloatLE(o));
-
-  const ifdOff = u32(4);
-  const n = u16(ifdOff);
-  let w = 0;
-  let h = 0;
-  let tw = 0;
-  let th = 0;
-  let tileOffsets: number[] = [];
-  let nodata = -9999;
-
-  for (let i = 0; i < n; i++) {
-    const off = ifdOff + 2 + i * 12;
-    const tag = u16(off);
-    const type = u16(off + 2);
-    const cnt = u32(off + 4);
-    const valOff = off + 8;
-    const read16 = () => (type === 3 ? u16(valOff) : u32(valOff));
-    const readOffsets = (): number[] => {
-      if (cnt === 1) return [u32(valOff)];
-      const ptr = u32(valOff);
-      return Array.from({ length: cnt }, (_, k) => u32(ptr + k * 4));
-    };
-    if (tag === 256) w = read16();
-    if (tag === 257) h = read16();
-    if (tag === 322) tw = read16();
-    if (tag === 323) th = read16();
-    if (tag === 324) tileOffsets = readOffsets();
-    if (tag === 42113) {
-      const ptr = cnt <= 4 ? valOff : u32(valOff);
-      nodata = parseFloat(buf.toString('ascii', ptr, ptr + cnt - 1));
-    }
-  }
-
-  const out = new Float32Array(w * h);
-  if (tw === 0 || th === 0 || tileOffsets.length === 0) return { w, h, data: out, nodata };
-  const tilesX = Math.ceil(w / tw);
-
-  for (let r = 0; r < h; r++) {
-    const tyIdx = Math.floor(r / th);
-    const localR = r % th;
-    for (let c = 0; c < w; c++) {
-      const txIdx = Math.floor(c / tw);
-      const localC = c % tw;
-      const tOff = tileOffsets[tyIdx * tilesX + txIdx];
-      const byteOff = tOff + (localR * tw + localC) * 4;
-      out[r * w + c] = byteOff + 4 <= buf.length ? f32(byteOff) : nodata;
-    }
-  }
-  return { w, h, data: out, nodata };
-}
-
-interface LidarCorridorGrid {
-  minE: number;
-  maxE: number;
-  minN: number;
-  maxN: number;
-  cols: number;
-  rows: number;
-  dtm: Float32Array;
-  dsm: Float32Array;
-}
-
-async function fetchEaLidarTile(
-  datasetUuid: string,
-  coverage: string,
-  minE: number,
-  minN: number,
-  maxE: number,
-  maxN: number,
-  width: number,
-  height: number,
-): Promise<Float32Array> {
-  const url =
-    `https://environment.data.gov.uk/geoservices/datasets/${datasetUuid}/wcs` +
-    `?service=WCS&version=1.0.0&request=GetCoverage` +
-    `&coverage=${encodeURIComponent(coverage)}` +
-    `&bbox=${minE},${minN},${maxE},${maxN}` +
-    `&crs=EPSG:27700&response_crs=EPSG:27700&format=GeoTIFF&width=${width}&height=${height}`;
-
-  for (let attempt = 0; attempt < 4; attempt++) {
-    const res = await fetch(url, { signal: AbortSignal.timeout(25000) });
-    if (res.ok && res.headers.get('content-type')?.includes('tiff')) {
-      const buf = Buffer.from(await res.arrayBuffer());
-      return parseTiledFloat32GeoTiff(buf).data;
-    }
-    await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
-  }
-  throw new Error(`EA LiDAR fetch failed for ${coverage} bbox=${minE},${minN},${maxE},${maxN}`);
-}
-
-async function fetchWaterheadAmblesideLidar(): Promise<LidarCorridorGrid> {
-  // Exact OSGB36 corridor covering Waterhead Pier -> Lake Rd -> Ambleside -> Rothay Park
-  const minE = 336900;
-  const maxE = 338300; // 1,400m East-West
-  const minN = 502400;
-  const maxN = 505200; // 2,800m South-North
-  const stepM = 4; // 4m grid derived from 1m EA composite LiDAR
-  const cols = (maxE - minE) / stepM; // 350
-  const rows = (maxN - minN) / stepM; // 700
-  const dtm = new Float32Array(cols * rows);
-  const dsm = new Float32Array(cols * rows);
-
-  // Fetch in 2 clean vertical halves (each 350x350) so GeoServer returns fast uncompressed tiles
-  const midN = (minN + maxN) / 2;
-  const halfRows = rows / 2;
-  console.log(`Fetching UK Environment Agency 1m LiDAR DTM & DSM (${cols}x${rows} @ ${stepM}m)...`);
-
-  const [dtmSouth, dtmNorth, dsmSouth, dsmNorth] = await Promise.all([
-    fetchEaLidarTile(
-      '13787b9a-26a4-4775-8523-806d13af58fc',
-      '13787b9a-26a4-4775-8523-806d13af58fc:Lidar_Composite_Elevation_DTM_1m',
-      minE,
-      minN,
-      maxE,
-      midN,
-      cols,
-      halfRows,
-    ),
-    fetchEaLidarTile(
-      '13787b9a-26a4-4775-8523-806d13af58fc',
-      '13787b9a-26a4-4775-8523-806d13af58fc:Lidar_Composite_Elevation_DTM_1m',
-      minE,
-      midN,
-      maxE,
-      maxN,
-      cols,
-      halfRows,
-    ),
-    fetchEaLidarTile(
-      'df4e3ec3-315e-48aa-aaaf-b5ae74d7b2bb',
-      'df4e3ec3-315e-48aa-aaaf-b5ae74d7b2bb:Lidar_Composite_Elevation_FZ_DSM_1m',
-      minE,
-      minN,
-      maxE,
-      midN,
-      cols,
-      halfRows,
-    ),
-    fetchEaLidarTile(
-      'df4e3ec3-315e-48aa-aaaf-b5ae74d7b2bb',
-      'df4e3ec3-315e-48aa-aaaf-b5ae74d7b2bb:Lidar_Composite_Elevation_FZ_DSM_1m',
-      minE,
-      midN,
-      maxE,
-      maxN,
-      cols,
-      halfRows,
-    ),
-  ]);
-
-  // Note: GeoTIFF row 0 is Top (North), row halfRows-1 is Bottom (South)
-  dtm.set(dtmNorth, 0);
-  dtm.set(dtmSouth, cols * halfRows);
-  dsm.set(dsmNorth, 0);
-  dsm.set(dsmSouth, cols * halfRows);
-
-  console.log('EA LiDAR DTM + DSM acquired!');
-  return { minE, maxE, minN, maxN, cols, rows, dtm, dsm };
-}
-
-function sampleLidarAtLatLon(
-  lidar: LidarCorridorGrid,
-  lat: number,
-  lon: number,
-): { dtm: number; dsm: number } | null {
-  const [e, n] = wgs84ToOsgb36(lat, lon);
-  if (e < lidar.minE || e > lidar.maxE || n < lidar.minN || n > lidar.maxN) return null;
-  const col = Math.min(lidar.cols - 1, Math.max(0, Math.round(((e - lidar.minE) / (lidar.maxE - lidar.minE)) * (lidar.cols - 1))));
-  // GeoTIFF row 0 = maxN (north), row rows-1 = minN (south)
-  const row = Math.min(lidar.rows - 1, Math.max(0, Math.round(((lidar.maxN - n) / (lidar.maxN - lidar.minN)) * (lidar.rows - 1))));
-  const idx = row * lidar.cols + col;
-  const vDtm = lidar.dtm[idx];
-  const vDsm = lidar.dsm[idx];
-  if (!Number.isFinite(vDtm) || vDtm < 0 || vDtm > 1000) return null;
-  return {
-    dtm: vDtm,
-    dsm: Number.isFinite(vDsm) && vDsm > 0 && vDsm < 1000 ? vDsm : vDtm,
-  };
-}
-
-async function fetchElevationGrid(lidar: LidarCorridorGrid) {
+async function fetchElevationGrid() {
   const rows = 42;
   const cols = 32;
   const coords: Array<{ lat: number; lon: number }> = [];
@@ -399,23 +125,8 @@ async function fetchElevationGrid(lidar: LidarCorridorGrid) {
   }
   console.log(' done!');
 
-  // Build compact 8m-spaced detail terrain overlay from EA 1m LiDAR DTM
-  const dRows = 280;
-  const dCols = 140;
-  const dHeights: number[] = new Array(dRows * dCols).fill(0);
-  for (let r = 0; r < dRows; r++) {
-    const lat = DETAIL_BOUNDS.minLat + (r / (dRows - 1)) * (DETAIL_BOUNDS.maxLat - DETAIL_BOUNDS.minLat);
-    for (let c = 0; c < dCols; c++) {
-      const lon = DETAIL_BOUNDS.minLon + (c / (dCols - 1)) * (DETAIL_BOUNDS.maxLon - DETAIL_BOUNDS.minLon);
-      const sample = sampleLidarAtLatLon(lidar, lat, lon);
-      dHeights[r * dCols + c] = sample ? Math.round((sample.dtm - LAKE_DATUM_M) * 10) / 10 : 0;
-    }
-  }
-
   const minCorner = projectLatLon(REGION_BOUNDS.minLat, REGION_BOUNDS.minLon);
   const maxCorner = projectLatLon(REGION_BOUNDS.maxLat, REGION_BOUNDS.maxLon);
-  const dMinCorner = projectLatLon(DETAIL_BOUNDS.minLat, DETAIL_BOUNDS.minLon);
-  const dMaxCorner = projectLatLon(DETAIL_BOUNDS.maxLat, DETAIL_BOUNDS.maxLon);
 
   return {
     rows,
@@ -426,16 +137,6 @@ async function fetchElevationGrid(lidar: LidarCorridorGrid) {
     maxZ: minCorner[1],
     lakeDatumM: LAKE_DATUM_M,
     heights: elevations,
-    detail: {
-      rows: dRows,
-      cols: dCols,
-      minX: dMinCorner[0],
-      maxX: dMaxCorner[0],
-      minZ: dMaxCorner[1],
-      maxZ: dMinCorner[1],
-      heights: dHeights,
-      source: 'UK Environment Agency LiDAR DTM 1m (Open Government Licence v3.0)',
-    },
   };
 }
 
@@ -563,24 +264,10 @@ function inferMaterial(tags: Record<string, string>, zone: string): string {
 function estimateBuildingHeight(
   tags: Record<string, string>,
   kind: string,
-  centroidLat: number,
-  centroidLon: number,
-  lidar: LidarCorridorGrid,
-): { h: number; levels?: number; source: 'ea_lidar_dsm' | 'osm_tag' | 'estimated' } {
+): { h: number; levels?: number; source: 'osm_tag' | 'estimated' } {
   const parsedLevels = tags['building:levels'] ? parseFloat(tags['building:levels']) : NaN;
   const levels = !Number.isNaN(parsedLevels) && parsedLevels > 0 && parsedLevels < 12 ? parsedLevels : undefined;
 
-  const lidarSample = sampleLidarAtLatLon(lidar, centroidLat, centroidLon);
-  if (lidarSample) {
-    const diff = lidarSample.dsm - lidarSample.dtm;
-    if (diff >= 2.8 && diff <= 26.0) {
-      return {
-        h: Math.round(diff * 10) / 10,
-        levels: levels ?? Math.max(1, Math.round((diff - 1.4) / 3.0)),
-        source: 'ea_lidar_dsm',
-      };
-    }
-  }
   if (tags.height) {
     const parsed = parseFloat(tags.height);
     if (!Number.isNaN(parsed) && parsed > 2 && parsed < 45) {
@@ -619,20 +306,9 @@ function classifyRoad(tags: Record<string, string>): string | null {
   return null;
 }
 
-const VERIFIED_HERO_NAMES = new Set([
-  'Bridge House',
-  'Market Cross',
-  'Ambleside Pier',
-  'Waterhead Hotel',
-  'YHA Ambleside',
-  'Waterhead Coffee Shop',
-  'Queens Hotel',
-  'White Lion Hotel',
-  'The Market Hall',
-  'Ambleside Salutation Hotel',
-]);
 
-async function fetchZoneTiles(lidar: LidarCorridorGrid) {
+
+async function fetchZoneTiles() {
   const buildings: any[] = [];
   const roads: any[] = [];
   const walls: any[] = [];
@@ -691,7 +367,7 @@ async function fetchZoneTiles(lidar: LidarCorridorGrid) {
               z,
               outdoorSeating: t.outdoor_seating === 'yes',
               street: t['addr:street'] || undefined,
-              verification: VERIFIED_HERO_NAMES.has(t.name) ? 'verified_geo_visual' : 'verified_geo_approx',
+              verification: 'verified_geo_approx',
             });
           }
         }
@@ -715,21 +391,15 @@ async function fetchZoneTiles(lidar: LidarCorridorGrid) {
         const ring = rawNodes.slice(0, -1);
         let cx = 0;
         let cz = 0;
-        let cLat = 0;
-        let cLon = 0;
         for (const p of ring) {
           cx += p.x;
           cz += p.z;
-          cLat += p.lat;
-          cLon += p.lon;
         }
         cx /= ring.length;
         cz /= ring.length;
-        cLat /= ring.length;
-        cLon /= ring.length;
 
         const kind = classifyBuilding(tags);
-        const hInfo = estimateBuildingHeight(tags, kind, cLat, cLon, lidar);
+        const hInfo = estimateBuildingHeight(tags, kind);
         const bName = tags.name || undefined;
         const bObj = {
           id: el.id,
@@ -751,7 +421,7 @@ async function fetchZoneTiles(lidar: LidarCorridorGrid) {
           historic: tags.historic || undefined,
           streetName: tags['addr:street'] || undefined,
           verification:
-            bName && VERIFIED_HERO_NAMES.has(bName) ? 'verified_geo_visual' : 'verified_geo_approx',
+            'verified_geo_approx',
           pts: ring.map((p) => [Math.round((p.x - cx) * 10) / 10, Math.round((p.z - cz) * 10) / 10]),
         };
         buildings.push(bObj);
@@ -869,14 +539,15 @@ async function fetchZoneTiles(lidar: LidarCorridorGrid) {
 }
 
 async function main() {
-  const outDir = path.resolve(process.cwd(), 'public/regions/windermere');
+  const output = process.argv[2];
+  if (!output) throw new Error('Pass an output directory to stage the regional data refresh.');
+  const outDir = path.resolve(output);
   fs.mkdirSync(path.join(outDir, 'chunks'), { recursive: true });
 
-  const lidar = await fetchWaterheadAmblesideLidar();
   const [terrain, lake, zones] = await Promise.all([
-    fetchElevationGrid(lidar),
+    fetchElevationGrid(),
     fetchWindermereLake(),
-    fetchZoneTiles(lidar),
+    fetchZoneTiles(),
   ]);
 
   const CHUNK_SIZE = 500;
@@ -950,90 +621,6 @@ async function main() {
     return { ...s, x, z };
   });
 
-  // Build transparent digital-twin verification registry
-  const verificationEntries = [
-    {
-      id: 'bridge_house',
-      name: 'Bridge House (National Trust)',
-      zone: 'Ambleside North',
-      kind: 'Historic Landmark',
-      x: 17.5,
-      z: -1661.0,
-      status: 'verified_geo_visual',
-      sources: ['OpenStreetMap ODbL', 'EA LiDAR 1m DTM/DSM', 'Geograph UK CC BY-SA 2.0 (#8136228)'],
-      notes: 'Custom multi-part stone arch spanning Stock Ghyll Beck, asymmetric side steps, 2-storey rubble slate cottage, mossy pitched roof & chimney.',
-    },
-    {
-      id: 'market_hall_cross',
-      name: 'Ambleside Market Hall & Market Cross',
-      zone: 'Ambleside Centre',
-      kind: 'Civic / Historic Landmark',
-      x: -46.5,
-      z: -1406.2,
-      status: 'verified_geo_visual',
-      sources: ['OpenStreetMap ODbL', 'EA LiDAR 1m DTM/DSM', 'Geograph UK CC BY-SA 2.0 (#6516196, #6964864)'],
-      notes: 'Gothic dark-slate Market Hall with clock tower spire + octagonal stepped Market Cross monument.',
-    },
-    {
-      id: 'waterhead_pier',
-      name: 'Waterhead Pier & Steamer Terminal',
-      zone: 'Waterhead Waterfront',
-      kind: 'Pier & Waterfront Landmark',
-      x: 0,
-      z: 0,
-      status: 'verified_geo_visual',
-      sources: ['OpenStreetMap ODbL', 'EA LiDAR 1m DTM/DSM', 'Geograph UK CC BY-SA 2.0 (#1476151, #1549859)'],
-      notes: 'Piled timber jetties, green-and-cream mock-Tudor ticket pavilion, moored yachts, and promenade kiosks.',
-    },
-    {
-      id: 'waterhead_hotel_yha',
-      name: 'Waterhead Hotel & YHA Ambleside',
-      zone: 'Waterhead Waterfront',
-      kind: 'Hotel / Hostel',
-      x: 162,
-      z: -15,
-      status: 'verified_geo_visual',
-      sources: ['OpenStreetMap ODbL', 'EA LiDAR 1m DTM/DSM', 'Geograph UK CC BY-SA 2.0 (#1549859)'],
-      notes: 'Multi-gabled Lakeland slate bay hotel & whitewashed lakeside YHA terrace.',
-    },
-    {
-      id: 'queens_white_lion',
-      name: 'Queens Hotel & White Lion Hotel',
-      zone: 'Ambleside Market Place',
-      kind: 'Historic Hotel / Pub',
-      x: -38,
-      z: -1548,
-      status: 'verified_geo_visual',
-      sources: ['OpenStreetMap ODbL', 'EA LiDAR 1m DTM/DSM', 'Geograph UK CC BY-SA 2.0 (#3814743, #6964864)'],
-      notes: 'Multi-gabled Victorian dark-slate Queens Hotel & whitewashed corner White Lion Hotel with bracket pub sign.',
-    },
-    {
-      id: 'rothay_bridge',
-      name: 'Rothay Bridge & Rothay Park',
-      zone: 'Ambleside West',
-      kind: 'Bridge & Public Park',
-      x: -265.3,
-      z: -1980.8,
-      status: 'verified_geo_visual',
-      sources: ['OpenStreetMap ODbL', 'EA LiDAR 1m DTM/DSM'],
-      notes: 'Stone arch parapet bridge crossing River Rothay adjacent to mapped Rothay Park meadow.',
-    },
-    ...zones.pois
-      .filter((p) => p.street || p.category === 'shop' || p.category === 'cafe' || p.category === 'pub')
-      .slice(0, 24)
-      .map((p) => ({
-        id: `poi_${p.id}`,
-        name: p.name,
-        zone: p.street || 'Windermere Corridor',
-        kind: p.category,
-        x: p.x,
-        z: p.z,
-        status: p.verification,
-        sources: ['OpenStreetMap ODbL', 'EA LiDAR 1m DTM/DSM'],
-        notes: 'Verified OSM commercial location and name mounted on surveyed footprint facade.',
-      })),
-  ];
-
   const manifest = {
     id: 'windermere',
     name: 'Windermere & Lake District',
@@ -1043,17 +630,9 @@ async function main() {
     settlements,
     attribution: [
       'Map data © OpenStreetMap contributors (ODbL)',
-      'Elevation & roof heights: UK Environment Agency LiDAR 1m DTM & DSM (Open Government Licence v3.0)',
       'Basin elevation: Copernicus EU-DEM 25m via OpenTopoData',
-      'Architectural references: Geograph Britain & Ireland / Wikimedia Commons (CC BY-SA 2.0)',
     ],
-    verificationSummary: {
-      verifiedGeoVisual: verificationEntries.filter((e) => e.status === 'verified_geo_visual').length,
-      verifiedGeoApprox: zones.buildings.length,
-      proceduralEst: 0,
-      priorityCorridor: 'Waterhead Waterfront → Lake Road (A591) → Ambleside Town Centre → Bridge House → Rothay Park',
-      entries: verificationEntries,
-    },
+
   };
 
   fs.writeFileSync(path.join(outDir, 'manifest.json'), JSON.stringify(manifest));
@@ -1061,7 +640,7 @@ async function main() {
   fs.writeFileSync(path.join(outDir, 'lake.json'), JSON.stringify({ ...lake, waterways: zones.waterways }));
 
   console.log(
-    `Digital Twin GIS pipeline complete! ${chunkMap.size} chunks, EA LiDAR 1m detail grid + ${zones.pois.length} verified POIs written to public/regions/windermere/`,
+    `Digital Twin GIS pipeline complete! ${chunkMap.size} chunks, ${zones.pois.length} mapped POIs written to ${outDir}`,
   );
 }
 

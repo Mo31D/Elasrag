@@ -43,7 +43,7 @@ export interface TerrainGridData {
     maxX: number;
     minZ: number;
     maxZ: number;
-    heights: number[];
+    heights: Array<number | null>;
     source: string;
   };
 }

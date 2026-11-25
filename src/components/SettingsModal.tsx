@@ -195,9 +195,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Geographic Attribution */}
           <div className="pt-3 border-t border-white/10 text-xs text-slate-400 leading-relaxed">
-            Geographic data © OpenStreetMap contributors (ODbL). Terrain elevations derived from
-            Copernicus EU-DEM 25m via OpenTopoData. Sparse rural areas outside surveyed village tiles
-            use deterministic procedural dry-stone walls and woodland copses.
+            Geographic data © OpenStreetMap contributors (ODbL). Waterhead terrain contains Environment Agency copyright
+            and/or database right 2022 (OGL v3.0). Regional elevations derive from Copernicus EU-DEM via OpenTopoData. Sparse rural areas outside surveyed village tiles
+            show only the available terrain and mapped features. The Ambleside Pier model references
+            photos by David Dixon and Shaun Ferguson (Geograph, CC BY-SA 2.0).
           </div>
         </div>
       </div>

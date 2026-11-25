@@ -6,8 +6,8 @@ import type {
   TerrainGridData,
   WorldChunkData,
 } from '../types/game';
-import { isPointInLake, sampleTerrainHeight } from '../geo/projection';
-import type { ProceduralTextureSet } from './textures';
+import { isPointInLake, pointInRing, sampleTerrainHeight } from '../geo/projection';
+import type { loadBuildingSurfaces, ProceduralTextureSet } from './textures';
 
 export interface WorldMaterials {
   stoneWall: THREE.MeshStandardMaterial;
@@ -32,11 +32,15 @@ export interface BuiltChunkResult {
   key: string;
   group: THREE.Group;
   colliders: Array<{ minX: number; maxX: number; minZ: number; maxZ: number; topY: number; isRoof: boolean }>;
+  pierDecks: Array<{ outline: Array<[number, number]>; y: number }>;
   grindSegments: Array<{ ax: number; az: number; bx: number; bz: number; y: number }>;
   dispose: () => void;
 }
 
-export function createWorldMaterials(textures: ProceduralTextureSet): WorldMaterials {
+export function createWorldMaterials(
+  textures: ProceduralTextureSet,
+  surfaces: Awaited<ReturnType<typeof loadBuildingSurfaces>>,
+): WorldMaterials {
   const stoneWall = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     map: textures.slateStoneMap,
@@ -44,6 +48,7 @@ export function createWorldMaterials(textures: ProceduralTextureSet): WorldMater
     bumpScale: 0.08,
     roughness: 0.85,
     metalness: 0.05,
+    ...(surfaces && { ...surfaces.wall, bumpMap: null, normalScale: new THREE.Vector2(0.75, 0.75) }),
   });
 
   const whitewashWall = new THREE.MeshStandardMaterial({
@@ -61,6 +66,7 @@ export function createWorldMaterials(textures: ProceduralTextureSet): WorldMater
     bumpScale: 0.05,
     roughness: 0.78,
     metalness: 0.06,
+    ...(surfaces && { ...surfaces.wall, bumpMap: null, normalScale: new THREE.Vector2(0.75, 0.75) }),
   });
 
   const slateRoof = new THREE.MeshStandardMaterial({
@@ -68,6 +74,7 @@ export function createWorldMaterials(textures: ProceduralTextureSet): WorldMater
     map: textures.slateRoofMap,
     roughness: 0.52,
     metalness: 0.16,
+    ...(surfaces && { ...surfaces.roof, roughness: 0.93, metalness: 0 }),
   });
 
   const windowGlow = new THREE.MeshStandardMaterial({
@@ -151,8 +158,8 @@ export function createWorldMaterials(textures: ProceduralTextureSet): WorldMater
   const waterUniforms = { uTime: { value: 0 } };
   const waterMat = new THREE.MeshStandardMaterial({
     color: 0x164e63,
-    roughness: 0.28,
-    metalness: 0.34,
+    roughness: 0.36,
+    metalness: 0.26,
     transparent: true,
     opacity: 0.9,
   });
@@ -164,10 +171,6 @@ export function createWorldMaterials(textures: ProceduralTextureSet): WorldMater
         '#include <begin_vertex>',
         `
         #include <begin_vertex>
-        vec4 wp = modelMatrix * vec4(transformed, 1.0);
-        float w1 = sin(wp.x * 0.045 + wp.z * 0.032 + uTime * 1.2) * 0.07;
-        float w2 = cos(wp.x * 0.028 - wp.z * 0.062 - uTime * 0.95) * 0.06;
-        transformed.y += w1 + w2;
         vWorldPos = (modelMatrix * vec4(transformed, 1.0)).xyz;
         `,
       );
@@ -179,7 +182,20 @@ export function createWorldMaterials(textures: ProceduralTextureSet): WorldMater
         #include <color_fragment>
         float shimmer = sin(vWorldPos.x * 0.14 + vWorldPos.z * 0.09 + uTime * 1.6) *
                         cos(vWorldPos.x * 0.07 - vWorldPos.z * 0.18 - uTime * 1.3);
-        diffuseColor.rgb += vec3(0.02, 0.055, 0.08) * (0.5 + 0.5 * shimmer);
+        vec3 viewDir = normalize(cameraPosition - vWorldPos);
+        float grazing = pow(1.0 - clamp(viewDir.y, 0.0, 1.0), 3.5);
+        diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.12, 0.23, 0.28), grazing * 0.65);
+        diffuseColor.rgb += vec3(0.014, 0.031, 0.041) * (0.5 + 0.5 * shimmer);
+        `,
+      ).replace(
+        '#include <normal_fragment_maps>',
+        `
+        #include <normal_fragment_maps>
+        vec2 wave = vec2(
+          cos(vWorldPos.x * 0.63 + vWorldPos.z * 0.27 + uTime * 1.55),
+          sin(vWorldPos.z * 0.8 - vWorldPos.x * 0.37 - uTime * 1.1)
+        );
+        normal = normalize(normal + mat3(viewMatrix) * vec3(wave.x, 0.0, wave.y) * 0.028);
         `,
       );
   };
@@ -204,31 +220,82 @@ export function createWorldMaterials(textures: ProceduralTextureSet): WorldMater
   };
 }
 
-/**
- * Generates the continuous EU-DEM 25m derived Windermere terrain mesh + Lake Windermere water sheet.
- */
+function coordinateAxis(min: number, max: number, segments: number): number[] {
+  return Array.from({ length: segments + 1 }, (_, i) => min + (max - min) * i / segments);
+}
+
+function insertDetail(coarse: number[], fine: number[]): number[] {
+  return [
+    ...coarse.filter(value => value < fine[0]),
+    ...fine,
+    ...coarse.filter(value => value > fine[fine.length - 1]),
+  ];
+}
+
+function terrainGeometry(terrain: TerrainGridData | null): THREE.BufferGeometry {
+  const coarseX = coordinateAxis(terrain?.minX ?? -3500, terrain?.maxX ?? 5000, 150);
+  const coarseZ = coordinateAxis(terrain?.minZ ?? -3000, terrain?.maxZ ?? 17500, 260);
+  const detail = terrain?.detail;
+  const fineX = detail
+    ? insertDetail(coarseX, coordinateAxis(detail.minX, detail.maxX, detail.cols - 1))
+    : coarseX;
+  const rows = detail
+    ? insertDetail(coarseZ, coordinateAxis(detail.minZ, detail.maxZ, detail.rows - 1))
+    : coarseZ;
+  const positions: number[] = [];
+  const indices: number[] = [];
+  const uv: number[] = [];
+  let previousX: number[] = [];
+  let previousStart = 0;
+  for (const z of rows) {
+    const start = positions.length / 3;
+    const axis = detail && z >= detail.minZ && z <= detail.maxZ ? fineX : coarseX;
+    for (const x of axis) {
+      positions.push(x, 0, z);
+      uv.push((x - coarseX[0]) / (coarseX.at(-1)! - coarseX[0]),
+        (coarseZ.at(-1)! - z) / (coarseZ.at(-1)! - coarseZ[0]));
+    }
+    // Stitch adjacent rows by advancing whichever side has the next vertex.
+    // The detail boundary shares vertices with the coarse mesh, avoiding cracks.
+    let a = 0;
+    let b = 0;
+    while (previousX.length && (a + 1 < previousX.length || b + 1 < axis.length)) {
+      if ((previousX[a + 1] ?? Infinity) <= (axis[b + 1] ?? Infinity)) {
+        indices.push(previousStart + a, start + b, previousStart + ++a);
+      } else {
+        indices.push(previousStart + a, start + b, start + ++b);
+      }
+    }
+    previousX = axis;
+    previousStart = start;
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  geometry.setIndex(indices);
+  return geometry;
+}
+
+function lakeGeometry(lake: LakeData | null): THREE.ShapeGeometry {
+  const shapes = (lake?.outerRings ?? []).map(ring => {
+    const shape = new THREE.Shape(ring.map(([x, z]) => new THREE.Vector2(x, -z)));
+    for (const island of lake?.innerRings ?? []) {
+      if (island.length < 3 || !pointInRing(island[0][0], island[0][1], ring)) continue;
+      shape.holes.push(new THREE.Path(island.map(([x, z]) => new THREE.Vector2(x, -z))));
+    }
+    return shape;
+  });
+  const geometry = new THREE.ShapeGeometry(shapes);
+  geometry.rotateX(-Math.PI / 2);
+  return geometry;
+}
+
 export function buildTerrainAndWaterMeshes(
   terrain: TerrainGridData | null,
   lake: LakeData | null,
   materials: WorldMaterials,
 ): { terrainMesh: THREE.Mesh; waterMesh: THREE.Mesh } {
-  const minX = terrain?.minX ?? -3500;
-  const maxX = terrain?.maxX ?? 5000;
-  const minZ = terrain?.minZ ?? -3000;
-  const maxZ = terrain?.maxZ ?? 17500;
-
-  const segX = 240;
-  const segZ = 400;
-  const width = maxX - minX;
-  const depth = maxZ - minZ;
-
-  const geo = new THREE.PlaneGeometry(width, depth, segX, segZ);
-  geo.rotateX(-Math.PI / 2);
-
-  const centerX = (minX + maxX) / 2;
-  const centerZ = (minZ + maxZ) / 2;
-  geo.translate(centerX, 0, centerZ);
-
+  const geo = terrainGeometry(terrain);
   const pos = geo.attributes.position;
   const colors = new Float32Array(pos.count * 3);
   const cShore = new THREE.Color(0x8c8470);
@@ -237,12 +304,17 @@ export function buildTerrainAndWaterMeshes(
   const cCrag = new THREE.Color(0x666e75);
   const cBed = new THREE.Color(0x1f3640);
   const tmpColor = new THREE.Color();
+  const shoreBounds = new THREE.Box2();
+  for (const ring of lake?.outerRings ?? []) {
+    for (const [x, z] of ring) shoreBounds.expandByPoint(new THREE.Vector2(x, z));
+  }
 
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i);
     const z = pos.getZ(i);
     let h = sampleTerrainHeight(terrain, x, z);
-    const inLake = isPointInLake(lake, x, z);
+    const inLake = x >= shoreBounds.min.x && x <= shoreBounds.max.x
+      && z >= shoreBounds.min.y && z <= shoreBounds.max.y && isPointInLake(lake, x, z);
 
     if (inLake) {
       // Carve natural lakebed below 0m water surface
@@ -250,7 +322,7 @@ export function buildTerrainAndWaterMeshes(
       tmpColor.copy(cBed);
     } else {
       // Keep dry land subtly above water datum so shoreline is crisp
-      h = Math.max(0.35, h);
+      h = Math.max(0.45, h);
       if (h < 3.2) {
         tmpColor.copy(cShore).lerp(cValley, (h - 0.35) / 2.85);
       } else if (h < 75) {
@@ -273,14 +345,46 @@ export function buildTerrainAndWaterMeshes(
   const terrainMesh = new THREE.Mesh(geo, materials.terrainMat);
   terrainMesh.receiveShadow = true;
 
-  // Water plane covering the basin at y = 0.0m
-  const waterGeo = new THREE.PlaneGeometry(width * 0.9, depth * 0.96, 72, 112);
-  waterGeo.rotateX(-Math.PI / 2);
-  waterGeo.translate(centerX, 0, centerZ);
-  const waterMesh = new THREE.Mesh(waterGeo, materials.waterMat);
+  const waterMesh = new THREE.Mesh(lakeGeometry(lake), materials.waterMat);
   waterMesh.receiveShadow = true;
 
   return { terrainMesh, waterMesh };
+}
+
+function resampleRoad(
+  points: Array<[number, number]>,
+  detail: TerrainGridData['detail'],
+  margin: number,
+): Array<[number, number]> {
+  if (!detail) return points;
+  const result: Array<[number, number]> = [points[0]];
+  for (let i = 1; i < points.length; i++) {
+    const [ax, az] = points[i - 1];
+    const [bx, bz] = points[i];
+    const overlaps = Math.min(ax, bx) <= detail.maxX + margin && Math.max(ax, bx) >= detail.minX - margin
+      && Math.min(az, bz) <= detail.maxZ + margin && Math.max(az, bz) >= detail.minZ - margin;
+    const steps = overlaps ? Math.max(1, Math.ceil(Math.hypot(bx - ax, bz - az) / 4)) : 1;
+    for (let j = 1; j < steps; j++) {
+      result.push([ax + (bx - ax) * j / steps, az + (bz - az) * j / steps]);
+    }
+    result.push(points[i]);
+  }
+  return result;
+}
+
+function buildPierDeck(points: Array<[number, number]>, y: number): THREE.BufferGeometry | null {
+  const first = points[0];
+  const last = points.at(-1);
+  if (points.length < 4 || !last || first[0] !== last[0] || first[1] !== last[1]) return null;
+  const outline = points.slice(0, -1).map(([x, z]) => new THREE.Vector2(x, -z));
+  const shape = new THREE.Shape(outline);
+  const geometry = new THREE.ExtrudeGeometry(shape, { depth: 0.24, bevelEnabled: false });
+  geometry.rotateX(-Math.PI / 2);
+  geometry.translate(0, y - 0.24, 0);
+  // Use world-space metres for a consistent deck grain scale across pier outlines.
+  const uv = geometry.attributes.uv;
+  for (let i = 0; i < uv.count; i++) uv.setXY(i, uv.getX(i) * 0.28, uv.getY(i) * 0.28);
+  return geometry;
 }
 
 function buildRoadRibbonGeometry(
@@ -288,8 +392,10 @@ function buildRoadRibbonGeometry(
   halfWidth: number,
   terrain: TerrainGridData | null,
   yOffset: number,
+  followDetail = true,
 ): THREE.BufferGeometry | null {
   if (pts.length < 2) return null;
+  if (followDetail) pts = resampleRoad(pts, terrain?.detail, halfWidth);
   const positions: number[] = [];
   const uvs: number[] = [];
   const indices: number[] = [];
@@ -416,10 +522,18 @@ function buildLakelandBuildingGeometries(
   const spanZ = Math.max(3.2, Math.min(28, maxZ - minZ));
   const roofH = b.kind === 'historic' ? 3.2 : 1.95;
 
-  const roofPrism = new THREE.ConeGeometry(Math.max(spanX, spanZ) * 0.68, roofH, 4);
-  roofPrism.rotateY(Math.PI / 4 + yaw);
-  roofPrism.scale(spanX / Math.max(spanX, spanZ), 1, spanZ / Math.max(spanX, spanZ));
-  roofPrism.translate(b.cx, baseTerrainY + wallH + roofH * 0.5 - 0.05, b.cz);
+  let roofPrism: THREE.BufferGeometry;
+  if (b.pts.length > 24) {
+    // Approximate the cap of complex footprints without overhanging adjacent streets.
+    roofPrism = new THREE.ExtrudeGeometry(shape, { depth: 0.2, bevelEnabled: false });
+    roofPrism.rotateX(-Math.PI / 2);
+    roofPrism.translate(b.cx, baseTerrainY + wallH, b.cz);
+  } else {
+    roofPrism = new THREE.ConeGeometry(Math.max(spanX, spanZ) * 0.68, roofH, 4);
+    roofPrism.rotateY(Math.PI / 4 + yaw);
+    roofPrism.scale(spanX / Math.max(spanX, spanZ), 1, spanZ / Math.max(spanX, spanZ));
+    roofPrism.translate(b.cx, baseTerrainY + wallH + roofH * 0.5 - 0.05, b.cz);
+  }
 
   const chimney = new THREE.BoxGeometry(0.68, 1.35, 0.68);
   chimney.translate(
@@ -433,7 +547,11 @@ function buildLakelandBuildingGeometries(
   winBand.rotateY(yaw);
   winBand.translate(b.cx, baseTerrainY + wallH * 0.62, b.cz);
 
-  const roofMerged = mergeGeometries([roofPrism, chimney], false)!;
+  const roofCap = roofPrism.index ? roofPrism.toNonIndexed() : roofPrism;
+  const chimneyFaces = chimney.toNonIndexed();
+  const roofMerged = mergeGeometries([roofCap, chimneyFaces], false)!;
+  if (roofCap !== roofPrism) roofCap.dispose();
+  chimneyFaces.dispose();
   roofPrism.dispose();
   chimney.dispose();
 
@@ -462,6 +580,7 @@ export function buildChunkGroup(
   terrain: TerrainGridData | null,
   lake: LakeData | null,
   materials: WorldMaterials,
+  buildingAssets: ReadonlyMap<number, THREE.Object3D>,
 ): BuiltChunkResult {
   const group = new THREE.Group();
   const disposables: THREE.BufferGeometry[] = [];
@@ -475,19 +594,27 @@ export function buildChunkGroup(
   const windows: THREE.BufferGeometry[] = [];
 
   for (const b of chunk.buildings) {
-    // Limit huge outlier polygons so extrusion stays crisp
-    if (b.pts.length > 24) continue;
     const built = buildLakelandBuildingGeometries(b, terrain);
     if (!built) continue;
-    if (b.kind === 'shop' || b.kind === 'hotel') {
+    const asset = buildingAssets.get(b.id);
+    if (asset) {
+      const model = asset.clone();
+      model.position.set(b.cx, Math.max(0.45, sampleTerrainHeight(terrain, b.cx, b.cz)), b.cz);
+      group.add(model);
+      built.wallGeo.dispose();
+      built.roofGeo.dispose();
+      built.windowGeo.dispose();
+    } else if (b.kind === 'shop' || b.kind === 'hotel') {
       hotelWalls.push(built.wallGeo);
     } else if (b.zone === 'hawkshead' || b.zone === 'far_sawrey' || b.zone === 'near_sawrey') {
       whiteWalls.push(built.wallGeo);
     } else {
       stoneWalls.push(built.wallGeo);
     }
-    roofs.push(built.roofGeo);
-    windows.push(built.windowGeo);
+    if (!asset) {
+      roofs.push(built.roofGeo);
+      windows.push(built.windowGeo);
+    }
     colliders.push({ ...built.bounds, isRoof: b.h < 9.5 });
   }
 
@@ -577,12 +704,20 @@ export function buildChunkGroup(
 
   // Wooden Piers & Jetties (crisp 2.5m-wide jetties with timber support pilings)
   const pierGeos: THREE.BufferGeometry[] = [];
+  const pierDecks: BuiltChunkResult['pierDecks'] = [];
   for (const p of chunk.piers) {
-    const g = buildRoadRibbonGeometry(p.pts, 1.25, terrain, 0.55);
-    if (g) pierGeos.push(g);
+    const detail = terrain?.detail;
+    const surveyed = detail && p.pts.some(([x, z]) =>
+      x > detail.minX && x < detail.maxX && z > detail.minZ && z < detail.maxZ);
+    // The deck elevation is a game approximation independent of unsurveyed lakebed heights.
+    const deckHeight = 1.32;
+    const deck = surveyed ? buildPierDeck(p.pts, deckHeight) : null;
+    if (deck) pierDecks.push({ outline: p.pts, y: deckHeight });
+    const geometry = deck ?? buildRoadRibbonGeometry(p.pts, 1.25, terrain, 0.55, false);
+    if (geometry) pierGeos.push(geometry);
     for (let i = 0; i < p.pts.length; i++) {
       const [px, pz] = p.pts[i];
-      const py = Math.max(0.45, sampleTerrainHeight(terrain, px, pz)) + 0.55;
+      const py = deck ? deckHeight : Math.max(0.45, sampleTerrainHeight(terrain, px, pz)) + 0.55;
       pierGeos.push(createOrientedBox(px, py - 2.0, pz, 0.22, 2.05, 0.22, 0).toNonIndexed());
       if (i < p.pts.length - 1) {
         grindSegments.push({
@@ -771,6 +906,7 @@ export function buildChunkGroup(
     key: chunk.key,
     group,
     colliders,
+    pierDecks,
     grindSegments,
     dispose: () => {
       disposables.forEach((g) => g.dispose());

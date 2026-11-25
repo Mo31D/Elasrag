@@ -1,0 +1,22 @@
+[
+  {
+    "buildingId": 423828335,
+    "osmType": "way",
+    "name": "Ambleside Pier booking office",
+    "assetUrl": "/regions/windermere/assets/ambleside-pier.glb",
+    "positionSource": "OSM footprint centroid and blended Waterhead DTM",
+    "orientationSource": "Lakeside edge of the mapped footprint",
+    "groundElevationM": null,
+    "roofCrestAboveLocalBaseM": 6.05,
+    "heightSource": "Approximation informed by paired DTM/DSM footprint samples",
+    "floorCount": 1,
+    "roofForm": "Main cross-gable and lower wing",
+    "wallMaterial": "Painted clapboard and timber framing",
+    "facade": "Lake-facing green framing, pointed upper window and glazed wing",
+    "frontage": null,
+    "referenceIds": ["geograph-1732669", "geograph-1476151"],
+    "verification": "verified_geo_approx",
+    "lod": ["ambleside-pier.glb"],
+    "collision": "Existing footprint bounding box"
+  }
+]

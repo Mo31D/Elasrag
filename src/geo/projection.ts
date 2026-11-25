@@ -26,10 +26,10 @@ export function distance2D(ax: number, az: number, bx: number, bz: number): numb
 }
 
 function sampleGrid(
-  grid: { rows: number; cols: number; minX: number; maxX: number; minZ: number; maxZ: number; heights: number[] },
+  grid: { rows: number; cols: number; minX: number; maxX: number; minZ: number; maxZ: number; heights: Array<number | null> },
   x: number,
   z: number,
-): number {
+): number | null {
   const { rows, cols, minX, maxX, minZ, maxZ, heights } = grid;
   const u = Math.max(0, Math.min(1, (x - minX) / (maxX - minX)));
   // row 0 corresponds to minLat (maxZ, southernmost), row rows-1 corresponds to maxLat (minZ, northernmost)
@@ -44,44 +44,64 @@ function sampleGrid(
   const tx = fc - c0;
   const tz = fr - r0;
 
-  const h00 = heights[r0 * cols + c0] ?? 0;
-  const h10 = heights[r0 * cols + c1] ?? 0;
-  const h01 = heights[r1 * cols + c0] ?? 0;
-  const h11 = heights[r1 * cols + c1] ?? 0;
-
-  const h0 = h00 + (h10 - h00) * tx;
-  const h1 = h01 + (h11 - h01) * tx;
-  return h0 + (h1 - h0) * tz;
+  const corners: Array<[number | null, number]> = [
+    [heights[r0 * cols + c0], (1 - tx) * (1 - tz)],
+    [heights[r0 * cols + c1], tx * (1 - tz)],
+    [heights[r1 * cols + c0], (1 - tx) * tz],
+    [heights[r1 * cols + c1], tx * tz],
+  ];
+  let result = 0;
+  for (const [height, weight] of corners) {
+    if (weight <= 1e-9) continue;
+    if (height == null) return null;
+    result += height * weight;
+  }
+  return result;
 }
 
 /**
- * Bilinearly interpolates terrain height (in meters relative to Windermere lake datum 0m).
- * Uses high-resolution UK Environment Agency LiDAR DTM inside the Waterhead–Ambleside corridor
- * and smoothly blends into the wider Copernicus EU-DEM 25m basin grid at boundaries.
+ * Samples the coarse grid or the fine mesh triangles in the Waterhead survey.
+ * Null survey nodes borrow the coarse elevation. The outer 85 m blends the datums.
  */
 export function sampleTerrainHeight(
   terrain: TerrainGridData | null,
   x: number,
   z: number,
 ): number {
-  if (!terrain || terrain.heights.length === 0) {
-    return proceduralFallbackHeight(x, z);
+  if (!terrain || terrain.heights.length === 0) return proceduralFallbackHeight(x, z);
+  const detail = terrain.detail;
+  const base = (px: number, pz: number) => sampleGrid(terrain, px, pz) ?? proceduralFallbackHeight(px, pz);
+  if (!detail || x < detail.minX || x > detail.maxX || z < detail.minZ || z > detail.maxZ) {
+    return base(x, z);
   }
-  const baseH = sampleGrid(terrain, x, z);
-  const d = terrain.detail;
-  if (!d || d.heights.length === 0) return baseH;
 
-  if (x >= d.minX && x <= d.maxX && z >= d.minZ && z <= d.maxZ) {
-    const detH = sampleGrid(d, x, z);
-    const margin = 85;
-    const dx = Math.min(x - d.minX, d.maxX - x);
-    const dz = Math.min(z - d.minZ, d.maxZ - z);
-    const edge = Math.min(dx, dz);
-    if (edge >= margin) return detH;
-    const t = Math.max(0, Math.min(1, edge / margin));
-    return baseH + (detH - baseH) * t;
+  const { rows, cols, minX, maxX, minZ, maxZ, heights } = detail;
+  const dx = (maxX - minX) / (cols - 1);
+  const dz = (maxZ - minZ) / (rows - 1);
+  const col = (x - minX) / dx;
+  const row = (z - minZ) / dz;
+  const c = Math.min(cols - 2, Math.floor(col));
+  const r = Math.min(rows - 2, Math.floor(row));
+  const u = col - c;
+  const v = row - r;
+
+  const node = (nr: number, nc: number): number => {
+    const px = minX + nc * dx;
+    const pz = minZ + nr * dz;
+    // The package stores southern rows first, while the mesh builds north to south.
+    const measured = heights[(rows - 1 - nr) * cols + nc];
+    const blend = Math.min(1, Math.min(px - minX, maxX - px, pz - minZ, maxZ - pz) / 85);
+    if (measured != null && blend === 1) return measured;
+    const coarse = base(px, pz);
+    return measured == null ? coarse : coarse + (measured - coarse) * blend;
+  };
+  if (Math.abs(col - Math.round(col)) < 1e-8 && Math.abs(row - Math.round(row)) < 1e-8) {
+    return node(Math.round(row), Math.round(col));
   }
-  return baseH;
+  // The terrain index buffer uses the diagonal from south-west to north-east.
+  return u + v <= 1
+    ? (1 - u - v) * node(r, c) + u * node(r, c + 1) + v * node(r + 1, c)
+    : (u + v - 1) * node(r + 1, c + 1) + (1 - v) * node(r, c + 1) + (1 - u) * node(r + 1, c);
 }
 
 export function proceduralFallbackHeight(x: number, z: number): number {

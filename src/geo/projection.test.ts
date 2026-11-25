@@ -41,6 +41,25 @@ test('sampleTerrainHeight bilinearly interpolates elevation grid', () => {
   assert.equal(Math.round(sampleTerrainHeight(grid, 50, -50)), 15);
 });
 
+test('survey terrain uses the rendered triangle and falls back at missing nodes', () => {
+  const terrain: TerrainGridData = {
+    rows: 2, cols: 2, minX: 0, maxX: 400, minZ: 0, maxZ: 400,
+    lakeDatumM: 39, heights: [3, 3, 3, 3],
+    detail: {
+      rows: 5, cols: 5, minX: 0, maxX: 400, minZ: 0, maxZ: 400, source: 'test',
+      heights: Array.from({ length: 25 }, () => 3),
+    },
+  };
+  const mesh = terrain.detail!;
+  mesh.heights[6] = 11; // south-west
+  mesh.heights[7] = null; // south-east
+  mesh.heights[11] = 3; // north-west
+  mesh.heights[12] = 7; // north-east
+  assert.equal(sampleTerrainHeight(terrain, 150, 250), 9);
+  assert.equal(sampleTerrainHeight(terrain, 200, 300), 3);
+  assert.equal(sampleTerrainHeight(terrain, 0, 220), 3);
+});
+
 test('isPointInLake respects outer shoreline and excludes islands like Belle Isle', () => {
   const lake: LakeData = {
     outerRings: [

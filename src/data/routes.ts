@@ -75,10 +75,10 @@ const lakesidePts: Array<[number, number]> = [
   [1076.2, 14929.4], // Lakeside Steamer Pier
 ];
 
-// Explorer starts on dry land at Waterhead Promenade facing North up Lake Road
+// Start on The Esplanade and face the booking office approach.
 const explorerPts: Array<[number, number]> = [
-  [204.3, -1.6],
-  [158.9, -139.0],
+  [86.2, -235],
+  [92.6, -247.8],
 ];
 
 export const LAKELAND_ROUTES: RouteDefinition[] = [
