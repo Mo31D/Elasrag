@@ -3,222 +3,63 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#aaa7a8">
-<title>Elasrag</title>
+<meta name="theme-color" content="#0a0b0d">
+<meta name="description" content="Elasrag — technology, creativity and practical digital solutions. Mohamed El-Asrag, UK.">
+<link rel="canonical" href="https://elasrag.com/">
+<title>ELASRAG — Technology &amp; Digital Solutions</title>
 <style>
-html,body{
-  margin:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#aaa7a8;
-}
-body{
-  display:grid;
-  place-items:center;
-  background:linear-gradient(180deg,#adacad 0%,#aaa9a9 46%,#aa9293 84%,#e44132 100%);
-}
-svg{
-  width:100%;
-  height:100%;
-  display:block;
-}
+:root{color-scheme:dark;--bg:#0a0b0d;--ink:#f5f5f3;--muted:#a8adb4;--line:#303238;--accent:#c8e1dc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.6}a{color:inherit;text-decoration:none}a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:6px}a:hover{color:var(--accent)}.wrap{width:min(1160px,calc(100% - 48px));margin:auto}.top{display:flex;justify-content:space-between;align-items:center;padding:28px 0;border-bottom:1px solid var(--line)}.brand{font-weight:750;letter-spacing:.22em;font-size:19px}.link{font-size:14px;color:var(--muted)}.hero{min-height: min(760px,85svh);display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:12px;padding:64px 0}.eyebrow{font-size:11px;letter-spacing:.19em;text-transform:uppercase;color:var(--accent);font-weight:600}h1,h2,p{margin:0}h1{font-size:clamp(52px,7.2vw,108px);line-height:.98;letter-spacing:-.065em;margin:22px 0 26px;font-weight:650}h1 span{color:#a8adb4}.lead{font-size:clamp(17px,2vw,21px);color:var(--muted);max-width:480px}.cta{display:inline-flex;align-items:center;gap:24px;border:1px solid #62676e;border-radius:99px;padding:13px 22px;margin-top:32px;font-size:14px}.cta:hover{background:var(--ink);color:var(--bg)}.scene{position:relative;aspect-ratio:1;min-width:0;background:radial-gradient(ellipse,#20292c 0%,transparent 68%);isolation:isolate}.scene canvas{position:absolute;inset:0;width:100%;height:100%}.fallback{position:absolute;inset:14%;width:72%;height:72%;opacity:.8}.scene.ready .fallback{visibility:hidden}.scene-label{position:absolute;bottom:3%;right:4%;font:10px monospace;color:var(--muted);letter-spacing:.12em}.motion{position:absolute;bottom:3%;left:4%;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:6px 12px;font:inherit;font-size:11px;cursor:pointer}.motion[hidden]{display:none}.section{border-top:1px solid var(--line);padding:56px 0;display:grid;grid-template-columns:1fr 2fr;gap:30px}.services{display:grid}.service{padding:16px 0;border-bottom:1px solid var(--line);font-size:clamp(19px,2.7vw,30px);letter-spacing:-.03em;display:flex;justify-content:space-between;gap:15px}.service:first-child{padding-top:0}.service span{font-size:12px;color:var(--muted);letter-spacing:0}.about h2,.contact h2{font-size:clamp(30px,5vw,56px);letter-spacing:-.05em;line-height:1.1;margin-bottom:20px}.about p{max-width:650px;color:var(--muted);font-size:18px}.contact{border-top:1px solid var(--line);padding:72px 0;text-align:center}.contact a{font-size:clamp(18px,3vw,27px);border-bottom:1px solid #666}.contact p{color:var(--muted);margin-top:18px;font-size:13px}footer{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:24px 0 36px;font-size:12px;color:var(--muted)}@media(max-width:760px){.wrap{width:calc(100% - 36px)}.hero{grid-template-columns:1fr;min-height:auto;padding:52px 0 20px}.scene{max-width:440px;width:100%;margin:auto}.section{grid-template-columns:1fr;gap:22px;padding:40px 0}.contact{padding:48px 0}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
-<svg viewBox="0 0 1120 1440" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-label="Geometric horseman artwork">
-<defs>
-  <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#aaa9aa"/>
-    <stop offset=".58" stop-color="#aaa9a9"/>
-    <stop offset=".86" stop-color="#ad8e90"/>
-    <stop offset="1" stop-color="#df3e30"/>
-  </linearGradient>
-  <pattern id="dots" width="16" height="16" patternUnits="userSpaceOnUse">
-    <circle cx="8" cy="8" r="1.8" fill="#eee4da" opacity=".65"/>
-  </pattern>
-  <pattern id="tinyDots" width="8" height="8" patternUnits="userSpaceOnUse">
-    <circle cx="4" cy="4" r="1.05" fill="#f1e8de" opacity=".67"/>
-  </pattern>
-  <pattern id="zig" width="22" height="18" patternUnits="userSpaceOnUse">
-    <path d="M0 4l6 6 6-6 6 6 6-6" fill="none" stroke="#111" stroke-width="2.2"/>
-    <path d="M0 12l6 6 6-6 6 6 6-6" fill="none" stroke="#111" stroke-width="2.2"/>
-  </pattern>
-  <pattern id="saddle" width="30" height="30" patternUnits="userSpaceOnUse">
-    <path d="M0 15L15 0 30 15 15 30Z" fill="none" stroke="#f1e4d7" stroke-width="2"/>
-    <path d="M7.5 15L15 7.5 22.5 15 15 22.5Z" fill="none" stroke="#f1e4d7" stroke-width="1.2"/>
-  </pattern>
-  <pattern id="bottomPattern" width="72" height="72" patternUnits="userSpaceOnUse">
-    <path d="M36 6L66 36 36 66 6 36Z" fill="none" stroke="#f0d8cd" stroke-width="2" opacity=".44"/>
-    <circle cx="36" cy="36" r="14" fill="none" stroke="#f0d8cd" stroke-width="2" opacity=".42"/>
-    <path d="M18 36H54M36 18V54" stroke="#f0d8cd" stroke-width="1.6" opacity=".35"/>
-  </pattern>
-  <mask id="dotFade"><rect width="1120" height="1000" fill="url(#fade)"/></mask>
-  <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="white"/>
-    <stop offset=".75" stop-color="white"/>
-    <stop offset="1" stop-color="black"/>
-  </linearGradient>
-
-  <pattern id="diamondWeave" width="28" height="28" patternUnits="userSpaceOnUse">
-    <path d="M14 1L27 14 14 27 1 14Z" fill="none" stroke="#eadfd5" stroke-width="2"/>
-    <path d="M14 7L21 14 14 21 7 14Z" fill="none" stroke="#eadfd5" stroke-width="1"/>
-  </pattern>
-  <pattern id="microDot" width="10" height="10" patternUnits="userSpaceOnUse">
-    <circle cx="5" cy="5" r="1.2" fill="#eadfd5" opacity=".7"/>
-  </pattern>
-  <pattern id="chevronFine" width="18" height="12" patternUnits="userSpaceOnUse">
-    <path d="M0 2l4 4 4-4 4 4 4-4 4 4" fill="none" stroke="#111" stroke-width="1.6"/>
-    <path d="M0 8l4 4 4-4 4 4 4-4 4 4" fill="none" stroke="#111" stroke-width="1.6"/>
-  </pattern>
-</defs>
-
-<rect width="1120" height="1440" fill="url(#bg)"/>
-<rect width="1120" height="980" fill="url(#dots)" opacity=".72" mask="url(#dotFade)"/>
-
-<g id="central-art" transform="translate(560 640) scale(.84) translate(-560 -640)">
-  <!-- ceremonial halo -->
-  <circle cx="560" cy="570" r="447" fill="none" stroke="#eadfd5" stroke-width="5" stroke-dasharray="2 18" stroke-linecap="round" opacity=".92"/>
-  <circle cx="560" cy="570" r="395" fill="none" stroke="#e9ddd2" stroke-width="2.2" opacity=".86"/>
-  <circle cx="560" cy="570" r="363" fill="url(#tinyDots)" stroke="#eadfd5" stroke-width="4.5"/>
-  <circle cx="560" cy="570" r="326" fill="#8f9193" opacity=".12"/>
-
-  <!-- ring lattice and spear ornaments -->
-  <g fill="none" stroke="#eadfd5" opacity=".74">
-    <path d="M266 374A365 365 0 0 1 854 374" stroke-width="24"/>
-    <path d="M266 374A365 365 0 0 1 854 374" stroke="#77797b" stroke-width="18" stroke-dasharray="2 15" opacity=".42"/>
-    <path d="M237 514A360 360 0 0 0 212 620M883 514A360 360 0 0 1 908 620" stroke-width="2"/>
-  </g>
-  <g stroke="#eadfd5" fill="none" stroke-width="2.2" opacity=".9">
-    <g transform="translate(560 181)"><path d="M0 44V-14M0-14l-17 26L0 45l17-33Z"/><path d="M0-14l-31 57M0-14l31 57" opacity=".55"/></g>
-    <g transform="translate(725 225) rotate(26)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
-    <g transform="translate(844 350) rotate(55)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
-    <g transform="translate(891 560) rotate(88)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
-    <g transform="translate(395 225) rotate(-26)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
-    <g transform="translate(276 350) rotate(-55)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
-    <g transform="translate(229 560) rotate(-88)"><path d="M0 38V-8M0-8l-14 22L0 39l14-25Z"/></g>
-  </g>
-
-  <!-- subtle orbital guides -->
-  <path d="M60 162C213 310 239 445 154 626S176 1010 399 1162" fill="none" stroke="#eadfd5" stroke-width="2" stroke-dasharray="3 9" opacity=".38"/>
-  <path d="M1030 155C892 312 879 446 978 615s54 376-137 557" fill="none" stroke="#eadfd5" stroke-width="2" stroke-dasharray="3 10" opacity=".34"/>
-
-  <!-- flowing cream sleeves -->
-  <path d="M463 535C420 548 376 567 323 602c-33 22-67 29-99 23-17-3-24-18-22-39 3-39 23-73 54-95 48-33 96-38 147-20l74 25Z" fill="#efdfcd"/>
-  <path d="M647 529c53 8 99 21 145 43 38 18 77 19 113 2 20-9 34-1 36 20 4 41-15 79-49 104-30 22-65 20-101 4l-151-68Z" fill="#efdfcd"/>
-  <path d="M250 544c42 9 80 28 111 56" fill="none" stroke="#c6b6aa" stroke-width="2" stroke-dasharray="2 7" opacity=".72"/>
-  <path d="M765 583c42 5 82 20 122 44" fill="none" stroke="#c6b6aa" stroke-width="2" stroke-dasharray="2 7" opacity=".72"/>
-
-  <!-- horse tail -->
-  <path d="M366 787C319 750 263 747 206 768c-42 15-79 40-111 77 55-8 97 4 127 36-42 5-79 22-111 51 66 6 121 28 168 68-11-46-1-89 28-126 25-30 48-58 59-87Z" fill="#050505"/>
-  <path d="M361 806c-58-3-107 11-148 42 54 1 101 18 140 50" fill="none" stroke="#e9ddd2" stroke-width="3" opacity=".82"/>
-  <path d="M366 840c-50 17-91 45-124 85" fill="none" stroke="#e9ddd2" stroke-width="2.4" opacity=".68"/>
-
-  <!-- horse main body -->
-  <path d="M337 790C411 742 496 739 586 774c55 21 111 23 167 1 73-29 144-27 213 10l41 22-33 30-23 10c-8 78-36 137-84 181-54 49-122 72-204 71-92-1-181-28-267-82l-99-63-35-73 75-91Z" fill="#050505"/>
-  <!-- horse neck/head -->
-  <path d="M783 777c67-32 127-26 189 11l48 28 50-6-24 34-31 15-18 80-30 56-28-8 13-79-27-10-36 72-33-14 36-85-60-36Z" fill="#050505"/>
-  <path d="M1007 811l49-13 39 28-42 18-39-10Z" fill="#efdfcd" stroke="#111" stroke-width="4"/>
-  <path d="M1088 824l31 12-32 20Z" fill="#111"/>
-
-  <!-- horse barding -->
-  <path d="M621 804c72-39 145-45 224-18l-24 196-164 12-98-102Z" fill="#090909" stroke="#eadfd5" stroke-width="3.5"/>
-  <path d="M642 823c57-25 116-29 174-12l-17 116-130 10-68-69Z" fill="url(#diamondWeave)" opacity=".95"/>
-  <path d="M824 800l18 8-11 177-20 20-10-14 10-92Z" fill="#efdfcd"/>
-  <path d="M845 814l11-10 10 10-9 175-14 22-10-16Z" fill="#d94332"/>
-  <path d="M659 944l157-13" stroke="#eadfd5" stroke-width="2.5" stroke-dasharray="1 8"/>
-  <g stroke="#eadfd5" stroke-width="2">
-    <path d="M666 943v44M680 942v49M694 941v50M708 940v51M722 939v52M736 938v52M750 937v50M764 936v47M778 935v44"/>
-  </g>
-
-  <!-- horse tack -->
-  <path d="M850 838c39 1 72 15 101 42l-4 43-28 11-34-25-28 13-22-26Z" fill="none" stroke="#eadfd5" stroke-width="3.3"/>
-  <path d="M946 878l33 2 10 55-25 32-16-8Z" fill="#050505" stroke="#eadfd5" stroke-width="3"/>
-  <path d="M973 880v54" stroke="#d94332" stroke-width="5"/>
-  <circle cx="858" cy="842" r="6" fill="#d94332"/>
-  <path d="M863 842c22 2 34 10 43 24" fill="none" stroke="#d94332" stroke-width="3"/>
-  <path d="M849 842l17-17 17 17-17 17Z" fill="none" stroke="#d94332" stroke-width="3"/>
-
-  <!-- horse legs -->
-  <path d="M477 989l-20 98 43 88-25 57-20-13-7-102-49-96Z" fill="#050505"/>
-  <path d="M559 1001l22 101 76 61-21 36-69-43-38-113Z" fill="#050505"/>
-  <path d="M712 991l12 94-58 105 31 9 73-87 8-112Z" fill="#050505"/>
-  <path d="M790 976l62 62-31 100 29 4 53-105-54-93Z" fill="#050505"/>
-  <path d="M452 1219l31 14-29 45-22-23Z" fill="#efdfcd"/>
-  <path d="M630 1191l29 14-32 38-24-18Z" fill="#efdfcd"/>
-  <path d="M688 1187l31 13-36 38-24-18Z" fill="#efdfcd"/>
-  <path d="M821 1136l31 13-26 39-25-14Z" fill="#efdfcd"/>
-
-  <!-- rider skirt / saddle -->
-  <path d="M438 721h192l-13 179-75 48-107-61Z" fill="#d94332" stroke="#111" stroke-width="4.5"/>
-  <path d="M447 736h172v67H447Z" fill="url(#diamondWeave)" opacity=".38"/>
-  <path d="M447 884l-53 45 64 5-28 55 116-67Z" fill="#efdfcd" stroke="#111" stroke-width="3.2"/>
-  <path d="M418 932l24 55-52-15Z" fill="#050505"/>
-  <path d="M542 905l-77 98 83-38 38 61 32-132Z" fill="#333536" stroke="#eadfd5" stroke-width="3"/>
-  <path d="M530 943l31 73 33-108Z" fill="#d94332" stroke="#eadfd5" stroke-width="2.2"/>
-  <path d="M433 910c31 20 62 22 95 7" fill="none" stroke="#111" stroke-width="4"/>
-
-  <!-- rider torso -->
-  <path d="M463 471C504 445 561 445 606 470l40 88-15 174-191 0-17-178Z" fill="#8d8f90" stroke="#111" stroke-width="5"/>
-  <path d="M566 492h65l14 70-13 171h-68Z" fill="#d94332"/>
-  <path d="M492 513h78v98h-78Z" fill="url(#chevronFine)" stroke="#111" stroke-width="3"/>
-  <path d="M480 617h88v105h-93Z" fill="#3b3d3e" stroke="#111" stroke-width="3"/>
-  <path d="M487 626l72 87M519 618l58 72M478 665l46 55" stroke="#e7d9cf" stroke-width="4"/>
-  <path d="M469 724h171v27H469Z" fill="#090909"/>
-  <path d="M478 730h151" stroke="#efdfcd" stroke-width="4" stroke-dasharray="13 6"/>
-  <path d="M471 753h165" stroke="#eadfd5" stroke-width="4"/>
-  <path d="M478 753l8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10 8-10 8 10" fill="none" stroke="#111" stroke-width="2.2"/>
-
-  <!-- helmet, face, plume -->
-  <path d="M489 476c-20-33-12-78 15-103 35-31 87-24 111 12 19 28 13 65-14 93Z" fill="#efdfcd" stroke="#111" stroke-width="4.7"/>
-  <path d="M496 419c8-29 31-48 60-49 30 0 51 14 66 39-36-10-77-6-126 10Z" fill="#050505"/>
-  <path d="M501 370c-26-61-7-119 18-153-8 59 57 72 61 133-23-8-49 0-79 20Z" fill="#050505"/>
-  <path d="M516 218c-14-28-7-57 9-82-2 35 12 61 40 77Z" fill="#efdfcd" stroke="#111" stroke-width="3.2"/>
-  <path d="M605 405c33-20 62-14 87 9-32-2-54 11-71 33Z" fill="#d94332" stroke="#111" stroke-width="3"/>
-  <path d="M552 426c15-8 31-8 45 1" fill="none" stroke="#111" stroke-width="3"/>
-  <path d="M569 431c-7 3-8 9-4 14 5 5 12 5 20 2" fill="none" stroke="#111" stroke-width="2.6"/>
-  <path d="M596 466l18-24 17 14-16 24Z" fill="#111"/>
-
-  <!-- arms -->
-  <path d="M458 535C417 544 379 557 334 584l23 55 136-34Z" fill="#8d8f90" stroke="#111" stroke-width="4"/>
-  <path d="M637 542l160 30-5 58-164-23Z" fill="#8d8f90" stroke="#111" stroke-width="4"/>
-  <path d="M317 580l41-18 31 67-46 16Z" fill="#050505"/>
-  <path d="M785 565l46 4 2 65-47-7Z" fill="#050505"/>
-  <g stroke="#efdfcd" stroke-width="3.3">
-    <path d="M333 574l33 62M344 570l31 62M356 566l30 59"/>
-    <path d="M800 569l4 59M812 570l4 59M824 571l3 55"/>
-  </g>
-  <path d="M374 587l25-13 25 24-26 24Z" fill="#d94332" stroke="#111" stroke-width="3"/>
-  <path d="M820 583l30 0 12 30-14 27-28-13Z" fill="#d94332" stroke="#111" stroke-width="3"/>
-
-  <!-- bow, arrow, string -->
-  <path d="M394 604H1020" stroke="#111" stroke-width="7"/>
-  <path d="M396 604H1020" stroke="#e7d9cf" stroke-width="2"/>
-  <path d="M1015 588l48 16-48 17 12-17Z" fill="#111" stroke="#eadfd5" stroke-width="2"/>
-  <path d="M1038 604h-10" stroke="#d94332" stroke-width="4"/>
-  <path d="M421 600C519 543 654 442 787 330" fill="none" stroke="#111" stroke-width="2.2"/>
-  <path d="M420 600C514 640 674 666 833 650" fill="none" stroke="#111" stroke-width="2.2" opacity=".72"/>
-
-  <!-- beads and fine costume details -->
-  <path d="M449 496c-32 28-39 66-33 112" fill="none" stroke="#111" stroke-width="5" stroke-dasharray="3 9" stroke-linecap="round"/>
-  <circle cx="421" cy="641" r="7" fill="#111"/>
-  <circle cx="432" cy="661" r="6" fill="#d94332"/>
-  <circle cx="442" cy="682" r="5.5" fill="#111"/>
-  <circle cx="451" cy="700" r="4.5" fill="#eadfd5"/>
-</g>
-
-<g transform="translate(97 163)" stroke="#eadfd5" stroke-width="8" fill="none"><path d="M-46 0h92M0-46v92"/><path d="M-28-28L28 28M28-28L-28 28" stroke="#111" stroke-width="5"/><path d="M0-28L28 0 0 28-28 0Z"/><path d="M0-15L15 0 0 15-15 0Z" fill="#d94332" stroke="#111" stroke-width="4"/></g>
-<g transform="translate(1004 163)" stroke="#eadfd5" stroke-width="8" fill="none"><path d="M-46 0h92M0-46v92"/><path d="M-28-28L28 28M28-28L-28 28" stroke="#111" stroke-width="5"/><path d="M0-28L28 0 0 28-28 0Z"/><path d="M0-15L15 0 0 15-15 0Z" fill="#d94332" stroke="#111" stroke-width="4"/></g>
-<g transform="translate(95 1115) scale(.8)" stroke="#eadfd5" stroke-width="8" fill="none"><path d="M-46 0h92M0-46v92"/><path d="M-28-28L28 28M28-28L-28 28" stroke="#111" stroke-width="5"/><path d="M0-28L28 0 0 28-28 0Z"/><path d="M0-15L15 0 0 15-15 0Z" fill="#d94332" stroke="#111" stroke-width="4"/></g>
-<g transform="translate(1008 1114) scale(.8)" stroke="#eadfd5" stroke-width="8" fill="none"><path d="M-46 0h92M0-46v92"/><path d="M-28-28L28 28M28-28L-28 28" stroke="#111" stroke-width="5"/><path d="M0-28L28 0 0 28-28 0Z"/><path d="M0-15L15 0 0 15-15 0Z" fill="#d94332" stroke="#111" stroke-width="4"/></g>
-
-<rect x="0" y="1242" width="1120" height="88" fill="url(#bottomPattern)" opacity=".63"/>
-<rect x="0" y="1330" width="1120" height="50" fill="#d94131"/>
-<defs>
-<pattern id="redDiamonds" width="58" height="58" patternUnits="userSpaceOnUse"><path d="M29 3L55 29 29 55 3 29Z" fill="none" stroke="#efc4b7" stroke-width="6"/><path d="M29 15L43 29 29 43 15 29Z" fill="none" stroke="#efc4b7" stroke-width="4"/></pattern>
-</defs>
-<rect x="0" y="1330" width="1120" height="50" fill="url(#redDiamonds)" opacity=".76"/>
-<rect x="0" y="1380" width="1120" height="60" fill="#e53d2c"/>
-</svg>
+<div class="wrap">
+<header class="top"><a class="brand" href="/" aria-label="Elasrag home">ELASRAG</a><a class="link" href="mailto:mo@elasrag.com">Get in touch ↗</a></header>
+<main>
+<section class="hero" aria-labelledby="hero-title">
+<div><p class="eyebrow">Technology · Creativity · Solutions</p><h1 id="hero-title">Turning ideas<br><span>into reality.</span></h1><p class="lead">Exploring possibilities. Solving problems. Building what matters.</p><a class="cta" href="mailto:mo@elasrag.com">Let's connect <span aria-hidden="true">↗</span></a></div>
+<!-- Independent visual mount: replace this scene with a future WebGL or glTF experience without changing page content. -->
+<div class="scene" id="hero-scene">
+<svg class="fallback" viewBox="0 0 300 300" aria-hidden="true" fill="none" stroke="#829b9b"><circle cx="150" cy="150" r="120"/><ellipse cx="150" cy="150" rx="55" ry="120"/><ellipse cx="150" cy="150" rx="95" ry="120"/><ellipse cx="150" cy="150" rx="120" ry="55"/><ellipse cx="150" cy="150" rx="120" ry="95"/><path d="M30 150H270M150 30V270"/></svg>
+<canvas aria-hidden="true"></canvas><button class="motion" type="button" hidden>Pause motion</button><span class="scene-label" aria-hidden="true">FORM / 001</span>
+</div>
+</section>
+<section class="section" aria-labelledby="services"><h2 class="eyebrow" id="services">What I do</h2><div class="services"><div class="service">Technology &amp; Digital Solutions <span>01</span></div><div class="service">Artificial Intelligence &amp; Innovation <span>02</span></div><div class="service">Design &amp; Development <span>03</span></div><div class="service">Strategy &amp; Problem Solving <span>04</span></div></div></section>
+<section class="section about" aria-labelledby="about"><p class="eyebrow">The person behind Elasrag</p><div><h2 id="about">Mohamed El-Asrag</h2><p>Driven by curiosity, creativity and a lifelong passion for technology. I turn complex ideas into simple, practical solutions.</p></div></section>
+<section class="contact"><h2>Every solution starts with an idea.</h2><a href="mailto:mo@elasrag.com">mo@elasrag.com ↗</a><p>United Kingdom · Working globally</p></section>
+</main><footer><span>© 2026 ELASRAG</span><a href="https://github.com/Mo31D">GitHub ↗</a></footer>
+</div>
+<script>
+/* Self-contained projected 3D geometry; future scene implementations can replace mountScene. */
+function mountScene(root){
+ const canvas=root.querySelector('canvas'),ctx=canvas.getContext('2d'),button=root.querySelector('button');
+ if(!ctx)return;
+ const media=matchMedia('(prefers-reduced-motion: reduce)');
+ let paused=media.matches,visible=true,frame=0,last=0,angle=.35,w=0,h=0,px=0,py=0,tx=0,ty=0;
+ const rows=19,cols=36,points=[];
+ for(let j=0;j<=rows;j++){const phi=Math.PI*j/rows;for(let i=0;i<cols;i++){const a=2*Math.PI*i/cols;points.push([Math.sin(phi)*Math.cos(a),Math.cos(phi),Math.sin(phi)*Math.sin(a)]);}}
+ function draw(){
+  if(!w||!h)return;ctx.clearRect(0,0,w,h);const r=Math.min(w,h)*.33, cx=w/2,cy=h/2;
+  const ca=Math.cos(angle+px),sa=Math.sin(angle+px),cb=Math.cos(.28+py),sb=Math.sin(.28+py);
+  const p=points.map(([x,y,z])=>{const X=x*ca-z*sa,Z=x*sa+z*ca,Y=y*cb-Z*sb,D=y*sb+Z*cb,k=3.7/(3.7-D);return [cx+X*r*k,cy+Y*r*k,D];});
+  function edge(a,b){const A=p[a],B=p[b],d=(A[2]+B[2])/2;ctx.strokeStyle='rgba(164,199,199,'+(.10+(d+1)*.23)+')';ctx.beginPath();ctx.moveTo(A[0],A[1]);ctx.lineTo(B[0],B[1]);ctx.stroke();}
+  ctx.lineWidth=.8;
+  for(let j=0;j<=rows;j++)for(let i=0;i<cols;i++){const a=j*cols+i;edge(a,j*cols+(i+1)%cols);if(j<rows)edge(a,a+cols);}
+  for(let i=0;i<p.length;i+=17){const [x,y,z]=p[i];if(z>0){ctx.fillStyle='rgba(223,245,240,'+(.35+z*.55)+')';ctx.beginPath();ctx.arc(x,y,1.2+z*1.4,0,Math.PI*2);ctx.fill();}}
+  ctx.strokeStyle='rgba(164,199,199,.2)';ctx.beginPath();ctx.ellipse(cx,cy,r*1.45,r*.36,-.35,0,Math.PI*2);ctx.stroke();
+ }
+ function resize(){const b=root.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);w=b.width;h=b.height;canvas.width=Math.round(w*d);canvas.height=Math.round(h*d);ctx.setTransform(d,0,0,d,0,0);draw();}
+ function tick(t){frame=0;if(paused||!visible||document.hidden)return;const dt=last?Math.min(t-last,50):16;last=t;angle+=dt*.00022;px+=(tx-px)*.05;py+=(ty-py)*.05;draw();frame=requestAnimationFrame(tick);}
+ function sync(){cancelAnimationFrame(frame);frame=0;last=0;button.textContent=paused?'Play motion':'Pause motion';if(!paused&&visible&&!document.hidden)frame=requestAnimationFrame(tick);else draw();}
+ button.hidden=false;button.addEventListener('click',()=>{paused=!paused;sync();});
+ media.addEventListener('change',e=>{paused=e.matches;sync();});
+ root.addEventListener('pointermove',e=>{if(paused||e.pointerType==='touch')return;const b=root.getBoundingClientRect();tx=(e.clientX-b.left-b.width/2)/b.width*.8;ty=(e.clientY-b.top-b.height/2)/b.height*.6;});
+ root.addEventListener('pointerleave',()=>{tx=ty=0;});
+ if('ResizeObserver'in window)new ResizeObserver(resize).observe(root);else window.addEventListener('resize',resize);
+ if('IntersectionObserver'in window)new IntersectionObserver(([e])=>{visible=e.isIntersecting;sync();}).observe(root);
+ document.addEventListener('visibilitychange',sync);resize();root.classList.add('ready');sync();
+}
+try{mountScene(document.getElementById('hero-scene'));}catch(e){document.getElementById('hero-scene').classList.remove('ready');}
+</script>
 </body>
 </html>
