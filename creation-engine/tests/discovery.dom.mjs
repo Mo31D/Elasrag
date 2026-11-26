@@ -160,3 +160,29 @@ test('a second touch cannot rotate or release the first pointer gesture', () => 
     globalThis.window = previousWindow;
   }
 });
+
+test('the poster keeps all five selectors usable without WebGL and yields positioning to the live renderer', () => {
+  const f=fixture();
+  f.document.body.dataset.experience='fallback';
+  const poster=f.document.querySelector('#engine-poster');
+  let bounds={width:600,height:400};
+  poster.getBoundingClientRect=()=>bounds;
+  const controller=createDiscovery(f.document);
+  const container=f.document.querySelector('#capability-hotspots');
+  assert.equal(container.hidden,false);
+  const button=container.querySelector('[data-capability="mo"]');
+  assert.ok(Math.abs(parseFloat(button.style.left)-300)<.01);
+  assert.ok(Math.abs(parseFloat(button.style.top)-200)<.01);
+  click(f.window,button);
+  assert.equal(controller.selected,'mo');
+  assert.equal(f.document.querySelector('#capability-title').textContent,'You can call me Mo.');
+  f.document.body.dataset.experience='ready';
+  bounds={width:400,height:300};
+  controller.refreshPoster();
+  assert.ok(Math.abs(parseFloat(button.style.left)-300)<.01,'Live WebGL owns anchor positioning');
+  f.document.body.dataset.experience='fallback';
+  controller.refreshPoster();
+  assert.ok(Math.abs(parseFloat(button.style.left)-200)<.01);
+  assert.ok(Math.abs(parseFloat(button.style.top)-150)<.01);
+  controller.dispose();
+});

@@ -1,4 +1,5 @@
 import { getCapability } from './capabilities.js';
+import { mountPosterPoints } from './poster-points.js';
 
 // This controller has no renderer dependency. The directory remains interactive
 // even when WebGL, the model, or Three.js cannot load.
@@ -7,6 +8,7 @@ export function createDiscovery(documentRoot = document) {
   const buttons = [...documentRoot.querySelectorAll('[data-capability]')];
   const abort = new AbortController();
   const listeners = new Set();
+  const posterPoints = mountPosterPoints(documentRoot);
   let selected = null, origin = null;
   function update(id, trigger) {
     const content = getCapability(id);
@@ -50,9 +52,9 @@ export function createDiscovery(documentRoot = document) {
   }, { signal: abort.signal });
   return {
     get selected() { return selected; },
-    select: update, close,
+    select: update, close, refreshPoster:posterPoints.refresh,
     subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); },
-    dispose() { abort.abort(); listeners.clear(); },
+    dispose() { abort.abort(); listeners.clear(); posterPoints.dispose(); },
   };
 }
 export const discovery = createDiscovery();

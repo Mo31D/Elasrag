@@ -3,7 +3,8 @@ Run: blender -b --python creation-engine/tools/generate_mo_signature.py -- --ren
 The M is the person; the open O is a framework connecting four capabilities.
 Exports preserve Z depth and front-facing XY typography. Procedural source is master.
 """
-import bpy, math, os, sys, argparse
+import bpy, math, os, sys, argparse, json
+from bpy_extras.object_utils import world_to_camera_view
 from collections import defaultdict
 from mathutils import Vector, Matrix
 p=argparse.ArgumentParser();p.add_argument('--output',default=os.path.abspath(os.path.join(os.path.dirname(__file__),'..','assets')));p.add_argument('--render',action='store_true')
@@ -189,6 +190,21 @@ light('Copper rim',(-4,1,3),1300,(1,.82,.62),4)
 light('Top reflection',(0,5,2),1200,(.8,.9,1),4)
 bpy.ops.object.camera_add(location=(3.4,1.5,12));cam=bpy.context.object;point_at(cam);forward=(-cam.location).normalized();right=forward.cross(Vector((0,1,0))).normalized();up=right.cross(forward);cam.rotation_euler=Matrix((right,up,-forward)).transposed().to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=5.5;bpy.context.scene.camera=cam
 scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=128;scene.cycles.use_denoising=False;scene.render.resolution_x=1200;scene.render.resolution_y=1200;scene.render.resolution_percentage=100;scene.render.film_transparent=True;scene.view_settings.view_transform='AgX';scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA';scene.render.filepath=os.path.join(out,'mo-poster.png')
+def write_poster_hotspots(scene,components,out):
+ # Match the exact offline poster camera. Coordinates are fractions from top-left.
+ # The personal M uses its existing origin anchor, matching the WebGL projection contract.
+ bpy.context.view_layer.update()
+ anchors={}
+ for obj in components:
+  if not obj.get('capability'):continue
+  world=obj.matrix_world @ Vector(obj.get('hotspot',[0,0,0]))
+  point=world_to_camera_view(scene,scene.camera,world)
+  anchors[obj['capability']]={'x':round(point.x,8),'y':round(1-point.y,8)}
+ payload={'width':scene.render.resolution_x,'height':scene.render.resolution_y,'coordinateSystem':'normalized-top-left','anchors':anchors}
+ with open(os.path.join(out,'mo-poster-hotspots.json'),'w') as f:json.dump(payload,f,indent=2);f.write('\n')
+ with open(os.path.join(out,'mo-poster-hotspots.js'),'w') as f:f.write('// Generated from the Blender poster camera. Do not position these by eye.\nexport default '+json.dumps(payload,indent=2)+';\n')
+ return payload
+write_poster_hotspots(scene,components,out)
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'mo-signature.blend'),compress=True)
 if args.render:bpy.ops.render.render(write_still=True)
 print('MO_SIGNATURE_COMPLETE',os.path.join(out,'mo-signature.glb'))

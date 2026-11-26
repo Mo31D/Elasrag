@@ -24,14 +24,14 @@ const hotspots = new Map([...document.querySelectorAll('#capability-hotspots [da
 let gestureStart = null;
 let unsubscribeSelection;
 
-function fallback(message = 'A still view of the Creation Engine. All content is available below.') {
+function fallback(message = 'Choose a point to meet Mo and explore the work.') {
   cancelAnimationFrame(frame); frame = 0;
   document.body.dataset.experience = 'fallback';
   document.body.dataset.phase = 'hero';
   poster.style.opacity = '1';
   canvas.style.visibility = 'hidden';
   controls.hidden = true;
-  document.querySelector('#capability-hotspots').hidden = true;
+  discovery.refreshPoster();
   document.querySelector('#explore-engine').hidden = true;
   document.querySelector('.stage-navigation').hidden = true;
   status.textContent = message;
@@ -215,7 +215,7 @@ async function init() {
       reduced = event.matches; paused = reduced;
       syncButtons(); requestFrame();
     }, options);
-    canvas.addEventListener('webglcontextlost', event => { event.preventDefault(); fallback('The 3D view is unavailable. A still view is shown instead.'); }, options);
+    canvas.addEventListener('webglcontextlost', event => { event.preventDefault(); fallback(); }, options);
     // Diagnostic information is read-only; useful when profiling future revisions.
     window.creationEngineDiagnostics = () => ({ fps: Math.round(scene.monitor.fps), pixelRatio: scene.renderer.getPixelRatio(), drawCalls: scene.renderer.info.render.calls, triangles: scene.renderer.info.render.triangles, stage: hero ? 'hero' : STAGES[activeStage].name, selection:discovery.selected, paused, reducedMotion: reduced, visible });
     requestFrame();
