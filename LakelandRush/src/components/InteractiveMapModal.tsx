@@ -1,6 +1,7 @@
 import { LAKELAND_ROUTES } from '../data/routes';
 import React from 'react';
 import { TRANSIT } from '../data/transit';
+import { PlacesMap } from './PlacesMap';
 import { AmblesideMap, type ExploreStop } from './AmblesideMap';
 import { Play, X } from 'lucide-react';
 import type { LakeData, RegionManifest, RouteDefinition } from '../types/game';
@@ -28,7 +29,7 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
   player,
   onTravel,
 }) => {
-  const [local, setLocal] = React.useState(true);
+  const [tab, setTab] = React.useState<'local'|'regional'|'places'>('local');
   // Windermere bounding box in world meters: X [-3200..4600], Z [-2200..17000]
   const minX = -3200;
   const maxX = 4800;
@@ -85,12 +86,13 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
         </div>
 
         <div className="flex gap-2 border-b border-white/10 p-2">
-          <button type="button" aria-pressed={local} onClick={() => setLocal(true)}
+          <button type="button" aria-pressed={tab==='local'} onClick={() => setTab('local')}
             className="rounded-lg px-3 py-1 text-white aria-pressed:bg-slate-800">Ambleside & Waterhead</button>
-          <button type="button" aria-pressed={!local} onClick={() => setLocal(false)}
+          <button type="button" aria-pressed={tab==='regional'} onClick={() => setTab('regional')}
             className="rounded-lg px-3 py-1 text-white aria-pressed:bg-slate-800">Windermere basin</button>
+          <button type="button" aria-pressed={tab==='places'} onClick={()=>setTab('places')} className="rounded-lg px-3 py-1 text-white aria-pressed:bg-slate-800">Places &amp; roads</button>
         </div>
-        {local ? <AmblesideMap lake={lakeData} player={player} onTravel={onTravel}
+        {tab==='places' ? <PlacesMap manifest={manifest} lake={lakeData} player={player} onTravel={onTravel}/> : tab==='local' ? <AmblesideMap lake={lakeData} player={player} onTravel={onTravel}
           onStartShopRoute={() => {
             const route = LAKELAND_ROUTES.find(candidate => candidate.id === 'picnic_black_sheep');
             if (route) onSelectAndStart(route);

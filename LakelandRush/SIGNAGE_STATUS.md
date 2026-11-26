@@ -6,3 +6,10 @@
 - Chunk-owned geometry/textures/materials are disposed on eviction. Physical signs cull at 110m, at most three labels per chunk within 45m. Cross-chunk overlap, GPU performance, exact sign placement and physical-device readability still require visual testing.
 - New pure tests cover road deduplication, off-road placement, water exclusion and transport data. GitHub Actions existing lint/test/build gate must pass before Pages asset generation. 
 - Next: official NaPTAN bulk import, surveyed directional/welcome signs, verified public POIs and reference-led facades, complete transport infrastructure. No watermarked photos used.
+
+## V2 — directory and frontage pass
+- New Places & roads map reads the existing chunk snapshot on demand for Ambleside/Waterhead, Windermere and Bowness. Search/category filters, mapped road and rail geometry, building identity and safe pre-existing travel stops only. No claim of current business trading status, complete coverage or surveyed appearance. No additional runtime third-party API.
+- Seven additional published bus-stop coordinates from GeoPunk; sources in transit.ts. Full NaPTAN import remains outstanding because the download was not reachable from the editing environment. Local map filters to its own bounds.
+- Footprint-edge plaques for named commercial buildings; custom GLBs unchanged. Original text and approximate location, not authenticated brand art or a reconstructed facade.
+- Illustrative welcome boards on qualifying road anchors and conditional northbound Waterhead fork direction board; not surveyed sign positions. Reference https://www.gov.uk/government/publications/know-your-traffic-signs/direction-signs-on-all-purpose-roads . No Alamy imagery copied.
+- Additional pure unit tests for directory filtering, duplicate building IDs, frontage orientation and water exclusion. Actual sign placements, physical-device performance, complete transport and facade photo survey remain outstanding.

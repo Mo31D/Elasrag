@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import type { LakeData, TerrainGridData, WorldChunkData } from '../types/game';
 import { isPointInLake, sampleTerrainHeight } from '../geo/projection';
-import { planRoadSigns } from '../geo/signagePlan';
+import { planRoadSigns,frontageAnchor,approachAnchor } from '../geo/signagePlan';
+import { classifyBuilding } from '../geo/placeIdentity';
+import buildingAssets from '../data/building-assets.json';
 import { TRANSIT } from '../data/transit';
 import navigation from '../data/ambleside-navigation.json';
 
@@ -12,14 +14,16 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   const materials:THREE.Material[]=[];
   const textures:THREE.Texture[]=[];
   const boards:THREE.Group[]=[];
+  const plaques:THREE.Mesh[]=[];
+  const assetIds=new Set(buildingAssets.map(b=>b.buildingId));
   const labels:THREE.Sprite[]=[];
   const postMat=new THREE.MeshStandardMaterial({color:0x777f80,roughness:.7,metalness:.3});
   materials.push(postMat);
   const ground=(x:number,z:number)=>Math.max(.45,sampleTerrainHeight(terrain,x,z));
-  function artwork(lines:string[],style:'road'|'street'|'bus'|'rail'|'label') {
+  function artwork(lines:string[],style:'road'|'street'|'bus'|'rail'|'label'|'welcome'|'direction'|'facade') {
     const canvas=document.createElement('canvas');canvas.width=512;canvas.height=lines.length>1?192:112;
     const ctx=canvas.getContext('2d')!;
-    const bg=style==='road'?'#087044':style==='bus'?'#f3f5f4':style==='rail'?'#263d70':style==='label'?'#182a31':'#f4f3e9';
+    const bg=style==='direction'||style==='road'?'#087044':style==='welcome'?'#79512c':style==='facade'?'#25352f':style==='bus'?'#f3f5f4':style==='rail'?'#263d70':style==='label'?'#182a31':'#f4f3e9';
     ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.strokeStyle=style==='street'||style==='bus'?'#182425':'#f4f5ef';ctx.lineWidth=7;
     ctx.strokeRect(7,7,canvas.width-14,canvas.height-14);
@@ -33,29 +37,56 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
     const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;textures.push(texture);
     return {texture,ratio:canvas.height/canvas.width};
   }
-  function board(x:number,z:number,yaw:number,lines:string[],style:'road'|'street'|'bus'|'rail',id:string) {
+  function board(x:number,z:number,yaw:number,lines:string[],style:'road'|'street'|'bus'|'rail'|'welcome'|'direction',id:string,oneSided=false) {
     const {texture,ratio}=artwork(lines,style);
-    const w=style==='bus'?1.05:style==='street'?1.45:2.05,h=w*ratio;
+    const w=style==='bus'?1.05:style==='street'?1.45:style==='direction'?2.8:style==='welcome'?2.4:2.05,h=w*ratio;
     const postH=style==='street'?1.15:2.05;
     const root=new THREE.Group();root.position.set(x,ground(x,z),z);root.rotation.y=yaw;root.name=id;
     const pole=new THREE.CylinderGeometry(.045,.055,postH,8);geometries.push(pole);
     const p=new THREE.Mesh(pole,postMat);p.position.y=postH/2;root.add(p);
     const geom=new THREE.PlaneGeometry(w,h);geometries.push(geom);
     const mat=new THREE.MeshBasicMaterial({map:texture,toneMapped:false});materials.push(mat);
-    for(const side of [-1,1]) {
+    for(const side of oneSided?[1]:[-1,1]) {
       const face=new THREE.Mesh(geom,mat);face.position.set(0,postH,side*.035);face.rotation.y=side===1?0:Math.PI;root.add(face);
     }
     const backing=new THREE.BoxGeometry(w,h,.055);geometries.push(backing);
     const back=new THREE.Mesh(backing,postMat);back.position.y=postH;root.add(back);
     root.visible=false;boards.push(root);group.add(root);
   }
-  for(const s of planRoadSigns(chunk,(x,z)=>isPointInLake(lake,x,z))) {
+  const roadSigns=planRoadSigns(chunk,(x,z)=>isPointInLake(lake,x,z));
+  for(const s of roadSigns) {
     const ref=s.ref&&s.ref!==s.name?s.ref:undefined;
-    board(s.x,s.z,s.yaw,ref?[s.name,ref]:[s.name],s.ref?'road':'street',s.id);
+    const welcome=chunk.key==='0_-1'&&s.ref==='A591'?'Ambleside':chunk.key==='7_8'&&(s.name==='A591'||s.ref==='A591')?'Windermere':null;
+    // Illustrative welcome plates, not surveyed boundary signs. Preserve road identity on second line.
+    if(welcome)board(s.x,s.z,s.yaw,['Welcome to '+welcome,ref||s.name],'welcome',s.id+'-welcome');
+    else board(s.x,s.z,s.yaw,ref?[s.name,ref]:[s.name],s.ref?'road':'street',s.id);
   }
   const inChunk=(x:number,z:number)=>Math.floor(x/500)===chunk.cx&&Math.floor(z/500)===chunk.cz;
   for(const t of TRANSIT)if(inChunk(t.x,t.z)&&!isPointInLake(lake,t.x,t.z)){
     board(t.x,t.z,t.bearing*Math.PI/180,[t.mode==='bus'?'BUS STOP':'RAILWAY',t.name],t.mode,t.id);
+  }
+  if(chunk.key==='0_-1'){
+    const approach=navigation.arcade;
+    const fork=navigation.approaches.find(a=>a.id==='east')?.points[0];
+    const i=approach.findIndex(pt=>fork&&pt[0]===fork[0]&&pt[1]===fork[1]);
+    if(i>1){
+      const anchor=approachAnchor(chunk,approach[i-1] as [number,number],approach[i] as [number,number],(x,z)=>isPointInLake(lake,x,z));
+      if(anchor&&!roadSigns.some(s=>Math.hypot(s.x-anchor.x,s.z-anchor.z)<5)){
+        board(anchor.x,anchor.z,anchor.yaw,['↑ Lake Road A591','← Borrans Road A5075'],'direction','waterhead-approach-directions',true);
+      }
+    }
+  }
+  // Original text-only frontage plaques on approximate public/commercial building geometry.
+  // Do not alter custom authored landmark models.
+  const frontageBuildings=chunk.buildings.filter(b=>['shop','food','hotel','fuel','supermarket','rail'].includes(classifyBuilding(b)||'')&&!assetIds.has(b.id)&&inChunk(b.cx,b.cz)).slice(0,70);
+  for(const b of frontageBuildings){
+    const anchor=frontageAnchor(b,chunk.roads);
+    if(!anchor||!b.name)continue;
+    const {texture,ratio}=artwork([b.name],'facade');
+    const geom=new THREE.PlaneGeometry(anchor.width,Math.min(.65,anchor.width*ratio));geometries.push(geom);
+    const mat=new THREE.MeshBasicMaterial({map:texture,toneMapped:false});materials.push(mat);
+    const mesh=new THREE.Mesh(geom,mat);mesh.position.set(anchor.x,ground(b.cx,b.cz)+Math.min(2.55,Math.max(1.5,b.h-2.1)),anchor.z);
+    mesh.rotation.y=anchor.yaw;mesh.name='frontage-'+b.id;mesh.visible=false;plaques.push(mesh);group.add(mesh);
   }
   function label(name:string,x:number,z:number,height:number) {
     const {texture,ratio}=artwork([name],'label');
@@ -71,7 +102,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   for(const b of chunk.buildings) {
     if(!b.name||names.has(b.name.toLowerCase())||!inChunk(b.cx,b.cz))continue;
     // Avoid labelling private cottages by default.
-    if(!['hotel','shop','historic'].includes(b.kind)&&!(/museum|library|restaurant|pizza|cafe|coffee|station|inn\b|pub\b|church|centre|pier|hire|bridge house|zeffirellis|yha/i.test(b.name)))continue;
+    if(!classifyBuilding(b)&&!(/zeffirellis|yha|kayak hire/i.test(b.name)))continue;
     label(b.name,b.cx,b.cz,Math.max(3.5,b.h+.5));names.add(b.name.toLowerCase());
     if(labels.length>=24)break;
   }
@@ -80,6 +111,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   }
   return {group, update(x:number,z:number,showLabels:boolean) {
     for(const b of boards)b.visible=Math.hypot(b.position.x-x,b.position.z-z)<110;
+    for(const plaque of plaques)plaque.visible=Math.hypot(plaque.position.x-x,plaque.position.z-z)<55;
     const nearby=labels.map(l=>({l,d:Math.hypot(l.position.x-x,l.position.z-z)})).filter(v=>v.d<45).sort((a,b)=>a.d-b.d).slice(0,3);
     const visible=new Set(nearby.map(v=>v.l));
     for(const l of labels)l.visible=showLabels&&visible.has(l);

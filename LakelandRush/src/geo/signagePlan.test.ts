@@ -19,3 +19,17 @@ test('transport records are uniquely identified and use mapped coordinates',()=>
   assert.ok(TRANSIT.every(t=>Number.isFinite(t.x)&&Number.isFinite(t.z)&&t.source.startsWith('https://')));
   const rail=TRANSIT.find(t=>t.id==='WDM')!;assert.equal(rail.mode,'rail');assert.ok(rail.x>3500&&rail.z>4000);
 });
+
+import { frontageAnchor, approachAnchor } from './signagePlan';
+import { classifyBuilding,areaChunkKeys,indexPlaces,AREAS } from './placeIdentity';
+test('frontage faces the mapped road and private cottage names are excluded',()=>{
+  const building={id:42,name:'Example Shop',kind:'shop',cx:30,cz:30,h:6,pts:[[-4,-4],[4,-4],[4,4],[-4,4]] as [number,number][]};
+  assert.equal(classifyBuilding(building),'shop');assert.equal(classifyBuilding({...building,name:'Example Cottage',kind:'cottage'}),null);
+  const a=frontageAnchor(building,[{id:3,kind:'lane',pts:[[0,20],[70,20]]}]);
+  assert.ok(a);assert.ok(a.z<26);assert.ok(a.width<=4.2);
+  const records=indexPlaces(AREAS[0],[{...chunk,buildings:[building,building]}]);assert.equal(records.length,1);
+});
+test('directory selects only intersecting chunks and approach anchors exclude water',()=>{
+  assert.deepEqual(areaChunkKeys(AREAS[0],['0_-1','7_8'],500),['0_-1']);
+  assert.equal(approachAnchor(chunk,[50,200],[50,100],()=>true),null);
+});
