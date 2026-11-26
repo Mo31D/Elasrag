@@ -1,0 +1,13 @@
+{
+  "name": "elasrag-creation-engine",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node tools/check-source.mjs && node tools/check-scope.mjs",
+    "test:dom": "node tests/discovery.dom.mjs"
+  },
+  "devDependencies": {
+    "linkedom": "0.18.12"
+  }
+}
