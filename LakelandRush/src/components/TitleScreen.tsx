@@ -175,7 +175,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
               className="flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:bg-slate-700 text-slate-950 font-display font-extrabold text-base tracking-wide transition-colors whitespace-nowrap shrink-0 cursor-pointer shadow-lg"
             >
               <Play className="w-5 h-5 fill-current" />
-              <span>{isReady ? 'Start Run' : 'Loading Terrain...'}</span>
+              <span>{isReady ? (selectedRoute.mode==='freeroam'?'Explore freely':'Start race') : 'Loading Terrain...'}</span>
             </button>
           </div>
 

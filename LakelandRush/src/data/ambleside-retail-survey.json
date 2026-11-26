@@ -1,0 +1,32 @@
+{
+  "status": "initial reconciliation; not complete; exact frontage pending",
+  "records": [
+    {
+      "name": "Greggs",
+      "address": "6 Market Cross",
+      "source": "https://www.greggs.com/shops/ambleside/6-market-cross/5695",
+      "positionStatus": "address verified; exact footprint unassigned"
+    },
+    {
+      "name": "Tesco Express",
+      "address": "Market Place",
+      "source": "https://www.tesco.com/store-locator/ambleside/market-place",
+      "positionStatus": "existing mapped POI 2908529784"
+    },
+    {
+      "name": "BP / SPAR",
+      "address": "Lake Road",
+      "source": "https://www.roadsideplc.com/portfolio/wholly-owned/",
+      "positionStatus": "existing canopy 658735202; frontage survey pending"
+    },
+    {
+      "name": "The Black Sheep Shop",
+      "positionStatus": "existing building 423598927"
+    },
+    {
+      "name": "Lakeside Picnic",
+      "positionStatus": "existing building 256765270"
+    }
+  ],
+  "directorySource": "https://www.amblesideonline.co.uk/shopping-in-ambleside/"
+}

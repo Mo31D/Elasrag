@@ -10,6 +10,7 @@ import { isPointInLake, pointInRing, sampleTerrainHeight } from '../geo/projecti
 import { buildWaterheadShoreDistance, WATERHEAD_WATER_BOUNDS } from './waterhead-water';
 import { buildWaterfrontDetails, groundSurface, WATERHEAD_SIDEWALKS } from './waterfront';
 import { buildSignage } from './signage';
+import { buildSiteDetails } from './siteDetails';
 import amblesideSurfaces from '../data/ambleside-surfaces.json';
 import amblesideNavigation from '../data/ambleside-navigation.json';
 import buildingAssetMetadata from '../data/building-assets.json';
@@ -1003,6 +1004,9 @@ export function buildChunkGroup(
     group.add(trunks, crowns);
   }
 
+  const siteDetails=buildSiteDetails(chunk,terrain,lake);
+  group.add(siteDetails.group);
+  colliders.push(...siteDetails.colliders);
   const signage = buildSignage(chunk, terrain, lake);
   group.add(signage.group);
   return {
@@ -1017,6 +1021,7 @@ export function buildChunkGroup(
       disposables.forEach((g) => g.dispose());
       waterfront?.dispose();
       signage.dispose();
+      siteDetails.dispose();
     },
   };
 }

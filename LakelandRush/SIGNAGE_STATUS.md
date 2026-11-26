@@ -19,3 +19,6 @@
 - Separate compact exploration HUD: place/map, menu, pause, walk/run, jump and contextual shop action. No racing score, combo, hearts or collectible obstacles in Free Roam. Races retain their original HUD and controls.
 - Lower exploration jump, no heart penalty for water, basic footprint collision sliding, camera clearance and wider exploration FOV. Clear-weather ambient light and smoother tree geometry improve the appearance but remain procedural approximations.
 - Added pure input and collision tests. Actual mobile multitouch, visual quality, GPU frame time and real-world facade/signage surveys still require physical testing. No new geographic claim or paid asset.
+
+## V4
+Explicit race exit to free exploration at current position; south approach spawn; graph connectivity test. Static cars inside mapped parking polygons with collision footprints. BP canopy text fascia based on confirmed business identity, not a survey. Initial retail reconciliation register; Greggs address confirmed but exact footprint remains unresolved. No road centerlines altered; actual traversal still needs device testing.

@@ -27,6 +27,7 @@ export interface GameHUDProps {
   onToggleExploreView: () => void;
   onToggleExploreLabels: () => void;
   onShopDoor: () => void;
+  onExploreHere: () => void;
 }
 
 export const GameHUD: React.FC<GameHUDProps> = (props) => props.route.mode === 'freeroam' ? <ExploreHUD {...props}/> : <SprintHUD {...props}/>;
@@ -50,6 +51,7 @@ const SprintHUD: React.FC<GameHUDProps> = ({
   onToggleExploreView,
   onToggleExploreLabels,
   onShopDoor,
+  onExploreHere,
 }) => {
   const minimapRef = useRef<HTMLCanvasElement | null>(null);
   const [isTouchViewport, setIsTouchViewport] = useState(false);
@@ -319,6 +321,7 @@ const SprintHUD: React.FC<GameHUDProps> = ({
         </div>
       )}
 
+      <button type="button" onClick={onExploreHere} className="pointer-events-auto self-center rounded-xl bg-teal-200 px-4 py-2 text-xs font-bold text-slate-950">Leave race · Explore freely</button>
       {/* Mobile / Touch Controls */}
       {isTouchViewport && (
         <div className="flex items-end justify-between gap-4 pb-2 pointer-events-auto">

@@ -393,6 +393,12 @@ export default function App() {
           onTouchSlide={() => engineRef.current?.triggerTouchSlide()}
           onOpenMap={openTravelMap}
           onTouchAdvance={value => engineRef.current?.setTouchAdvance(value)}
+          onExploreHere={() => {
+            const route=LAKELAND_ROUTES.find(r=>r.mode==='freeroam');
+            if(!route)return;
+            const x=hud.playerX,z=hud.playerZ,h=hud.playerHeading;
+            startRouteRun({...route,startName:hud.nearSettlement,waypoints:[[x,z],[x-Math.sin(h)*8,z-Math.cos(h)*8]]});
+          }}
           onToggleExplorePace={() => engineRef.current?.toggleExplorePace()}
           onToggleExploreView={() => engineRef.current?.toggleExploreView()}
           onToggleExploreLabels={() => engineRef.current?.toggleExploreLabels()}
