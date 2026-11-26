@@ -14,6 +14,7 @@ import { TitleScreen } from './components/TitleScreen';
 import { TutorialModal } from './components/TutorialModal';
 import { LAKELAND_ROUTES } from './data/routes';
 import { LakelandEngine } from './engine/LakelandEngine';
+import { recordWorldDiscovery } from './game/worldJournal';
 import { commitRunToSaveData, loadSaveData, STORAGE_KEY } from './game/rules';
 import type {
   GameSettings,
@@ -227,6 +228,7 @@ export default function App() {
     const heading: [number, number] = Math.hypot(targetX - x, targetZ - z) < .1
       ? [x, z - 8] : [targetX, targetZ];
     mapResume.current = false;
+    recordWorldDiscovery(stop.id);
     startRouteRun({ ...explorer, startName: stop.name, waypoints: [[x, z], heading] });
   }, [startRouteRun]);
 

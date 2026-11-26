@@ -40,3 +40,9 @@ The production build passed TypeScript checks, the existing unit tests, and desk
 The priority road graph was re-imported from current OSM with both road approaches and Old Lake Road. The arcade centreline follows the imported alignment to Bridge House. An Environment Agency composite DTM extends street-level elevation coverage into Ambleside. Free Roam includes a tappable route and landmark map, fast travel, walking and sprinting, camera look and view options, and an isolated provisional Black Sheep Shop interior. Original exterior GLBs cover Lancaster House, Bridge House and Market Cross. See [accuracy, regeneration and missing references](ROAD_NETWORK_AMBLESIDE.md).
 
 Next, use owner photographs to validate the Black Sheep frontage and interior, then reconstruct and verify recognisable practical sites with current references. Collect labelled and unlabelled physical-device reviews at the same viewpoints.
+
+## Lakeland World V2 foundation cycle
+
+V1 remains available at the existing public URL and is tagged `lakeland-rush-v1-stable`. V2 work is isolated on `lakeland-world-v2`. The first package normalises OSM geometry into British National Grid, introduces road tile seams and a geographic inspector, and records two pilot premises separately from the businesses. The existing playable Three.js world and arcade challenges provide a V2 test harness. A local virtual passport and fictional social interaction demo are available from My Holiday. No physical location, account, real social profile, checkout or financial reward is processed.
+
+Next acceptance work uses an independent road and footprint source, full player traversal, terrain and collision sampling tests, and founder-reviewed screenshots before new production art. See [master roadmap](MASTER_ROADMAP.md).

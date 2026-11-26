@@ -1,0 +1,31 @@
+{
+  "snapshotBoundingBoxWgs84": [
+    -2.978,
+    54.417,
+    -2.95,
+    54.437
+  ],
+  "matchedRoadWays": 731,
+  "referenceRoadWays": 796,
+  "canonicalRoadWaysWithoutLegacyMatch": 65,
+  "wholeWaysCrossingTheirOwnerTile": 112,
+  "sourceVertexOffsetsM": {
+    "count": 4630,
+    "p95": 0.09953652374265583,
+    "max": 0.2982500208052861
+  },
+  "matchedBuildingFootprintIoU": {
+    "count": 1380,
+    "median": 0.9845563893895017,
+    "atLeast99Percent": 346,
+    "min": 0.8468517464849774
+  },
+  "terrainPipelineOriginDifferenceM": 0.0,
+  "independentSurveyControlAvailable": false,
+  "routeConnections": {
+    "east": true,
+    "west": true,
+    "old": true,
+    "shop-link": true
+  }
+}

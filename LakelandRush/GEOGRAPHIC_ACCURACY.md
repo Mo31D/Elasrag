@@ -17,3 +17,9 @@ The locked archive has 177 chunks at 500 m, 4,822 unique buildings, 3,099 roads 
 | Regional geometry outside the survey | Original mapped records, coarse elevations and procedural appearance. Missing chunk assets are empty. |
 
 The coordinate conversion qualifies the accuracy of the raster-to-game placement. Legacy OSM features retain their local projection, the coverage blend is approximate, and adopted water level and out-of-water terrain clamps are gameplay conventions. No bathymetry was obtained.
+
+## World Core V2
+
+The initial audit found 731 of 796 canonical OSM road ways in the legacy runtime inventory. Sixty-five had no match in this comparison, which uses a defined snapshot envelope and includes mapping and eligibility differences. A further 112 matched ways extended beyond their single owner tile, creating a streaming visibility risk. The p95 source-to-legacy centreline vertex offset was 0.100 m across 4,630 vertices. Median footprint overlap was 98.46% across 1,380 matched valid footprints, using OSM as the shared geometry source. Only 346 reached 99%. This is an adapter consistency comparison, not independent survey accuracy. The GDAL terrain and PyProj canonical origins agreed in the test. The inspector's browser affine approximation had a sampled maximum of 0.230 m against the full OSTN15 conversion.
+
+The adapter emits 759 compatible road ways, including 39 new to gameplay, across 24 tiles. Automated checks cover consecutive OSM node connectivity on both main approaches, Old Lake Road and the shop link, plus road ribbon continuity at tile seams. Conditions outside these tests include exact pavement widths, junction surface construction, bridge crown profiles, vegetation or building obstructions, and complete player traversal. See [the machine-readable audit](references/world-core-v2-audit.json) and [the geographic acceptance standard](GEOGRAPHIC_ACCURACY_STANDARD.md).

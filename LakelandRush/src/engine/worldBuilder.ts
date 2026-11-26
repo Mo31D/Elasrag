@@ -3,6 +3,7 @@ import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js
 import type {
   BuildingFeature,
   LakeData,
+  RoadFeature,
   TerrainGridData,
   WorldChunkData,
 } from '../types/game';
@@ -445,6 +446,7 @@ function buildRoadRibbonGeometry(
   yOffset: number,
   followDetail = true,
   deck?: { from: number; to: number; halfWidth: number; segments: BuiltChunkResult['roadDecks'] },
+  seam?: Pick<RoadFeature, 'beforeTile' | 'afterTile'>,
 ): THREE.BufferGeometry | null {
   if (pts.length < 2) return null;
   if (followDetail) pts = resampleRoad(pts, terrain?.detail, halfWidth);
@@ -458,14 +460,17 @@ function buildRoadRibbonGeometry(
   let previousDeckY = deck?.from ?? 0;
   for (let i = 0; i < pts.length; i++) {
     const [x, z] = pts[i];
-    const prev = pts[Math.max(0, i - 1)];
-    const next = pts[Math.min(pts.length - 1, i + 1)];
+    const prev = pts[i - 1] ?? seam?.beforeTile ?? pts[i];
+    const next = pts[i + 1] ?? seam?.afterTile ?? pts[i];
     if (i > 0) {
       totalLen += Math.hypot(x - prev[0], z - prev[1]);
     }
 
-    const dx = next[0] - prev[0];
-    const dz = next[1] - prev[1];
+    const inX = x - prev[0], inZ = z - prev[1];
+    const outX = next[0] - x, outZ = next[1] - z;
+    const inLen = Math.hypot(inX,inZ) || 1;
+    const outLen = Math.hypot(outX,outZ) || 1;
+    const dx = inX/inLen + outX/outLen, dz = inZ/inLen + outZ/outLen;
     const len = Math.hypot(dx, dz) || 1;
     const rx = -dz / len;
     const rz = dx / len;
@@ -503,6 +508,26 @@ function buildRoadRibbonGeometry(
   geo.setIndex(indices);
   geo.computeVertexNormals();
   return geo;
+}
+
+export function buildGameplayRoad(r: RoadFeature, terrain: TerrainGridData | null,
+  roadDecks: BuiltChunkResult['roadDecks'] = []) {
+  if (r.kind === 'ferry') return null;
+    const arterial = r.kind === 'primary' || r.kind === 'secondary';
+    const lane = r.kind === 'lane';
+    const rail = r.kind === 'railway';
+    const halfWidth = r.widthM ? r.widthM / 2
+      : r.kind === 'primary' ? 4.4 : arterial ? 3.4 : lane ? 2.6 : rail ? 1.5 : r.sidewalk ? .85 : 1.35;
+    const offset = arterial ? .12 : lane ? .09 : rail ? .14 : r.sidewalk ? .145 : .06;
+    const start = r.pts[0];
+    const end = r.pts.at(-1);
+    const deck = r.bridge && !rail && start && end ? {
+      from: Math.max(.45, sampleTerrainHeight(terrain, ...start)) + offset,
+      to: Math.max(.45, sampleTerrainHeight(terrain, ...end)) + offset,
+      halfWidth,
+      segments: roadDecks,
+    } : undefined;
+  return buildRoadRibbonGeometry(r.pts, halfWidth, terrain, offset, true, deck, r);
 }
 
 function createOrientedBox(
@@ -746,18 +771,7 @@ export function buildChunkGroup(
     const arterial = r.kind === 'primary' || r.kind === 'secondary';
     const lane = r.kind === 'lane';
     const rail = r.kind === 'railway';
-    const halfWidth = r.widthM ? r.widthM / 2
-      : r.kind === 'primary' ? 4.4 : arterial ? 3.4 : lane ? 2.6 : rail ? 1.5 : r.sidewalk ? .85 : 1.35;
-    const offset = arterial ? .12 : lane ? .09 : rail ? .14 : r.sidewalk ? .145 : .06;
-    const start = r.pts[0];
-    const end = r.pts.at(-1);
-    const deck = r.bridge && !rail && start && end ? {
-      from: Math.max(.45, sampleTerrainHeight(terrain, ...start)) + offset,
-      to: Math.max(.45, sampleTerrainHeight(terrain, ...end)) + offset,
-      halfWidth,
-      segments: roadDecks,
-    } : undefined;
-    const geometry = buildRoadRibbonGeometry(r.pts, halfWidth, terrain, offset, true, deck);
+    const geometry = buildGameplayRoad(r, terrain, roadDecks);
     if (geometry) (arterial ? primaryGeos : lane ? laneGeos : rail ? railGeos : pathGeos).push(geometry);
     if (rail) {
       for (let i = 0; i < r.pts.length - 1; i++) {

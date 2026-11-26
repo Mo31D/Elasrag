@@ -1,6 +1,7 @@
 import type {
   LakeData,
   RegionManifest,
+  RoadFeature,
   TerrainGridData,
   WorldChunkData,
 } from '../types/game';
@@ -19,6 +20,8 @@ export class RegionManager {
 
   private chunkCache = new Map<string, WorldChunkData>();
   private loadingChunks = new Map<string, Promise<WorldChunkData | null>>();
+  private roadTiles: Record<string, RoadFeature[]> = {};
+  private roadReplacements = new Set<number>();
   private availableChunkSet = new Set<string>();
 
   constructor(regionId = 'windermere') {
@@ -51,6 +54,14 @@ export class RegionManager {
       }
     }
     this.availableChunkSet = new Set(this.manifest.availableChunks);
+    if (this.regionId === 'windermere') {
+      const response = await fetch(`${import.meta.env.BASE_URL}world-core/road-tiles-v2.json`);
+      if (!response.ok) throw new Error('V2 road tiles unavailable');
+      const adapter = await response.json() as { schemaVersion: number; replaces: number[]; tiles: Record<string, RoadFeature[]> };
+      if (adapter.schemaVersion !== 2) throw new Error('Unsupported V2 road tiles');
+      this.roadTiles = adapter.tiles;
+      this.roadReplacements = new Set(adapter.replaces);
+    }
   }
 
   public getChunkSize(): number {
@@ -108,6 +119,7 @@ export class RegionManager {
         const res = await fetch(`${import.meta.env.BASE_URL}regions/${this.regionId}/chunks/${key}.json`);
         if (!res.ok) return null;
         const data = (await res.json()) as WorldChunkData;
+        data.roads = [...data.roads.filter(road => !this.roadReplacements.has(road.id)), ...(this.roadTiles[key] ?? [])];
         this.chunkCache.set(key, data);
         return data;
       } catch {
@@ -142,7 +154,7 @@ export class RegionManager {
       cx,
       cz,
       buildings: [],
-      roads: [],
+      roads: this.roadTiles[`${cx}_${cz}`] ?? [],
       walls: [],
       piers: [],
       woodlands: [],

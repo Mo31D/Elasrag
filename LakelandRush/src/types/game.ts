@@ -136,6 +136,9 @@ export interface RoadFeature {
   lit?: boolean;
   surface?: string;
   widthM?: number;
+  /** Adjacent centreline vertices used to keep ribbon offsets consistent across tile edges. */
+  beforeTile?: [number, number];
+  afterTile?: [number, number];
   pts: Array<[number, number]>;
 }
 
