@@ -30,7 +30,11 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ onClose }) => {
 
         <div className="mt-4 flex flex-col gap-3 text-sm text-slate-300">
           <div className="p-3 rounded-xl bg-slate-900 border border-white/10">
-            <div className="font-semibold text-white">Steer &amp; Weave</div>
+            <div className="font-semibold text-white">Free exploration</div>
+            <p className="mt-1 text-xs text-slate-400">Move in any direction with the left thumbstick (or WASD/arrows). Drag the world to look around, even while moving. Tap Jump, Run or the contextual shop button. Open the map from the place name. No time limit or hearts.</p>
+          </div>
+          <div className="p-3 rounded-xl bg-slate-900 border border-white/10">
+            <div className="font-semibold text-white">Race mode: Steer &amp; Weave</div>
             <p className="mt-0.5 text-xs text-slate-400">
               Use A / D or Left / Right arrows (or touch buttons / joystick) to carve along Lakeland
               roads and dodge left-hand-drive buses and Land Rovers.

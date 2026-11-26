@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { ExploreHUD } from './ExploreHUD';
 import { Camera, Pause, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import type {
   HudSnapshot,
@@ -7,7 +8,7 @@ import type {
   TouchControlMode,
 } from '../types/game';
 
-interface GameHUDProps {
+export interface GameHUDProps {
   hud: HudSnapshot;
   route: RouteDefinition;
   lakeData: LakeData | null;
@@ -28,7 +29,9 @@ interface GameHUDProps {
   onShopDoor: () => void;
 }
 
-export const GameHUD: React.FC<GameHUDProps> = ({
+export const GameHUD: React.FC<GameHUDProps> = (props) => props.route.mode === 'freeroam' ? <ExploreHUD {...props}/> : <SprintHUD {...props}/>;
+
+const SprintHUD: React.FC<GameHUDProps> = ({
   hud,
   route,
   lakeData,

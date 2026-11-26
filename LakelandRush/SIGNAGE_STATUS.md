@@ -13,3 +13,9 @@
 - Footprint-edge plaques for named commercial buildings; custom GLBs unchanged. Original text and approximate location, not authenticated brand art or a reconstructed facade.
 - Illustrative welcome boards on qualifying road anchors and conditional northbound Waterhead fork direction board; not surveyed sign positions. Reference https://www.gov.uk/government/publications/know-your-traffic-signs/direction-signs-on-all-purpose-roads . No Alamy imagery copied.
 - Additional pure unit tests for directory filtering, duplicate building IDs, frontage orientation and water exclusion. Actual sign placements, physical-device performance, complete transport and facade photo survey remain outstanding.
+
+## V3 — exploration controls and display
+- Free Roam now uses an independent two-axis analog joystick / camera-relative WASD and drag-look, with diagonal normalization, pointer capture, cancellation, and an input dead zone. Body turns toward movement while camera remains independent. Indoor movement uses the same axes.
+- Separate compact exploration HUD: place/map, menu, pause, walk/run, jump and contextual shop action. No racing score, combo, hearts or collectible obstacles in Free Roam. Races retain their original HUD and controls.
+- Lower exploration jump, no heart penalty for water, basic footprint collision sliding, camera clearance and wider exploration FOV. Clear-weather ambient light and smoother tree geometry improve the appearance but remain procedural approximations.
+- Added pure input and collision tests. Actual mobile multitouch, visual quality, GPU frame time and real-world facade/signage surveys still require physical testing. No new geographic claim or paid asset.

@@ -142,7 +142,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           <div className="flex flex-col gap-3 pt-2 border-t border-white/10">
             <div className="flex items-center justify-between gap-4">
               <label htmlFor="slider-sensitivity" className="text-slate-300 text-xs w-36 shrink-0">
-                Steering Sensitivity
+                Camera / steering sensitivity
               </label>
               <input
                 id="slider-sensitivity"
@@ -160,7 +160,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
 
             <div className="flex items-center justify-between gap-4">
-              <span className="text-slate-300 text-xs">Mobile Touch Style</span>
+              <span className="text-slate-300 text-xs">Race touch style</span>
               <div className="flex gap-1.5">
                 {(['buttons', 'joystick'] as TouchControlMode[]).map((mode) => (
                   <button

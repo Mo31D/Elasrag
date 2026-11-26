@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { cameraRelative, smoothAngle, slideMove } from '../game/exploreControls';
 import { createBlackSheepInterior } from './shopInterior';
 import navigation from '../data/ambleside-navigation.json';
 import { createAtmosphere } from './atmosphere';
@@ -561,8 +562,8 @@ export class LakelandEngine {
         sunColor: 0xfff3d6,
         sunInt: 2.55,
         hemiSky: 0xd4e4ee,
-        hemiGround: 0x454434,
-        hemiInt: 0.78,
+        hemiGround: 0x777b6a,
+        hemiInt: 1.35,
         sunPos: [-125, 170, 145],
         windowGlow: 0.12,
         rain: false,
@@ -757,8 +758,7 @@ export class LakelandEngine {
   public rotateExploreView(dx: number, dy: number): void {
     if (this.activeRoute.mode !== 'freeroam' || this.gameState !== 'playing') return;
     const scale = .0038 * this.settings.sensitivity;
-    if (this.inShop || this.exploreFirst) this.playerHeading -= dx * scale;
-    else this.exploreYaw -= dx * scale;
+    this.exploreYaw -= dx * scale;
     this.explorePitch = THREE.MathUtils.clamp(this.explorePitch - dy * scale, -.88, .88);
   }
 
@@ -769,15 +769,13 @@ export class LakelandEngine {
 
   public toggleExploreView(): void {
     this.exploreFirst = !this.exploreFirst;
-    if (this.exploreFirst) this.playerHeading += this.exploreYaw;
-    this.exploreYaw = 0;
-    this.explorePitch = 0;
+    // Preserve the direction of view when changing camera modes.
     this.pushHudSnapshot();
   }
 
   public toggleExploreLabels(): void {
     this.exploreLabels = !this.exploreLabels;
-    this.routePropsGroup.visible = this.exploreLabels;
+    // Labels no longer control game props or collectible interactions.
     this.pushHudSnapshot();
   }
 
@@ -804,7 +802,7 @@ export class LakelandEngine {
     this.touchAdvance = 0;
     this.virtualSteer = 0;
     this.explorePitch = 0;
-    this.exploreYaw = 0;
+    this.exploreYaw = this.playerHeading;
     this.exploreSpeed = 0;
     this.pushHudSnapshot();
   }
@@ -817,17 +815,16 @@ export class LakelandEngine {
 
   private updateShop(dt: number, steer: number): void {
     if (!this.shop) return;
-    this.playerHeading -= steer * 1.85 * dt;
-    const delta = this.exploreThrottle() * 1.55 * dt;
-    const x = this.shopPosition.x - Math.sin(this.playerHeading) * delta;
-    const z = this.shopPosition.z - Math.cos(this.playerHeading) * delta;
-    if (this.shop.available(x,this.shopPosition.z)) this.shopPosition.x = x;
-    if (this.shop.available(this.shopPosition.x,z)) this.shopPosition.z = z;
-    this.exploreSpeed = dt > 0 ? Math.abs(delta) / dt : 0;
+    const move=cameraRelative(steer,this.exploreThrottle(),this.exploreYaw);
+    const oldX=this.shopPosition.x,oldZ=this.shopPosition.z;
+    const next=slideMove(oldX,oldZ,move.x*1.55*dt,move.z*1.55*dt,(x,z)=>!this.shop!.available(x,z));
+    this.shopPosition.x=next.x;this.shopPosition.z=next.z;
+    this.exploreSpeed=Math.hypot(next.x-oldX,next.z-oldZ)/Math.max(dt,.001);
     this.camera.position.copy(this.shopPosition);
-    this.camera.lookAt(this.shopPosition.x - Math.sin(this.playerHeading),
-      this.shopPosition.y + Math.tan(this.explorePitch), this.shopPosition.z - Math.cos(this.playerHeading));
+    this.camera.lookAt(this.shopPosition.x-Math.sin(this.exploreYaw),this.shopPosition.y+Math.tan(this.explorePitch),this.shopPosition.z-Math.cos(this.exploreYaw));
     this.sound.setGameplayState(true,this.exploreSpeed,false);
+    this.hudThrottleTimer+=dt;
+    if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
   }
 
   private prepareRoute(route: RouteDefinition, prevRecord?: RouteRecord): void {
@@ -838,7 +835,7 @@ export class LakelandEngine {
     this.exploreSpeed = 0;
     this.touchAdvance = 0;
     this.virtualSteer = 0;
-    this.routePropsGroup.visible = route.mode === 'sprint' || this.exploreLabels;
+    this.routePropsGroup.visible = route.mode === 'sprint';
     this.scoring = createInitialScoringState();
     this.runElapsedSec = 0;
     this.totalDistanceM = 0;
@@ -870,6 +867,7 @@ export class LakelandEngine {
     this.playerZ = startSample.z;
     this.playerY = groundY;
     this.playerHeading = Math.atan2(-startSample.tx, -startSample.tz);
+    this.exploreYaw = this.playerHeading;
     this.runner.root.position.set(this.playerX, this.playerY, this.playerZ);
     this.runner.root.rotation.y = this.playerHeading;
 
@@ -882,8 +880,6 @@ export class LakelandEngine {
 
     if (route.mode === 'sprint') {
       this.populateSprintCourse();
-    } else {
-      this.populateExplorerTokens();
     }
     this.pushHudSnapshot();
   }
@@ -1362,7 +1358,8 @@ export class LakelandEngine {
     if (!roaming) this.scoring = tickScoring(this.scoring, dt, this.isGrinding);
     const throttle = roaming ? this.exploreThrottle() : 0;
     const fast = this.exploreSprint || this.keysHeld.has('ShiftLeft') || this.keysHeld.has('ShiftRight');
-    let speed = roaming ? (fast ? 5.25 : 1.65) * Math.abs(throttle) : this.scoring.speedMps;
+    let speed = roaming ? (fast ? 4.6 : 1.65) * Math.min(1,Math.hypot(steer,throttle)) : this.scoring.speedMps;
+    if(roaming)this.steerTilt=0;
 
     // Jump buffering & Coyote time
     if (this.jumpBufferTimer > 0) this.jumpBufferTimer -= dt;
@@ -1376,7 +1373,7 @@ export class LakelandEngine {
     }
 
     if (this.jumpBufferTimer > 0 && this.coyoteTimer > 0) {
-      this.playerVy = 11.4;
+      this.playerVy = roaming ? 5.8 : 11.4;
       this.isGrounded = false;
       this.isGrinding = false;
       this.coyoteTimer = 0;
@@ -1414,39 +1411,24 @@ export class LakelandEngine {
         return;
       }
     } else {
-      // Free Roam 360° Explorer mode
-      this.playerHeading -= steer * 2.1 * this.settings.sensitivity * dt;
-      const vx = -Math.sin(this.playerHeading) * speed * Math.sign(throttle);
-      const vz = -Math.cos(this.playerHeading) * speed * Math.sign(throttle);
-      const nextX = this.playerX + vx * dt;
-      const nextZ = this.playerZ + vz * dt;
-
-      // Building collision push-out in Free Roam
-      let blocked = false;
-      for (const chunk of this.loadedChunks.values()) {
-        for (const c of chunk.colliders) {
-          if (
-            nextX >= c.minX - 0.55 &&
-            nextX <= c.maxX + 0.55 &&
-            nextZ >= c.minZ - 0.55 &&
-            nextZ <= c.maxZ + 0.55 &&
-            this.playerY < c.topY - 0.6 &&
-            pointInRing(nextX, nextZ, c.outline)
-          ) {
-            blocked = true;
-            break;
-          }
+      // Full two-axis, camera-relative movement. Camera yaw stays independent of body yaw.
+      const move=cameraRelative(steer,throttle,this.exploreYaw);
+      const maxSpeed=fast?4.6:1.65;
+      const oldX=this.playerX,oldZ=this.playerZ;
+      const blocked=(x:number,z:number)=>{
+        for(const chunk of this.loadedChunks.values())for(const c of chunk.colliders){
+          if(x<c.minX-.32||x>c.maxX+.32||z<c.minZ-.32||z>c.maxZ+.32||this.playerY>=c.topY-.6)continue;
+          for(const [ox,oz] of [[0,0],[.27,0],[-.27,0],[0,.27],[0,-.27]])if(pointInRing(x+ox,z+oz,c.outline))return true;
         }
-        if (blocked) break;
-      }
-      if (!blocked) {
-        this.playerX = nextX;
-        this.playerZ = nextZ;
-        this.totalDistanceM += Math.hypot(vx * dt, vz * dt);
-      } else {
-        speed = 0;
-      }
-      this.exploreSpeed = speed;
+        return false;
+      };
+      const next=slideMove(oldX,oldZ,move.x*maxSpeed*dt,move.z*maxSpeed*dt,blocked);
+      this.playerX=next.x;this.playerZ=next.z;
+      const dx=next.x-oldX,dz=next.z-oldZ;
+      speed=Math.hypot(dx,dz)/Math.max(dt,.001);
+      if(speed>.04)this.playerHeading=smoothAngle(this.playerHeading,Math.atan2(-dx,-dz),dt);
+      this.totalDistanceM+=Math.hypot(dx,dz);
+      this.exploreSpeed=speed;
     }
 
     // Vertical physics & rooftop / terrain / grind rail grounding
@@ -1535,7 +1517,8 @@ export class LakelandEngine {
 
       if (inWater && this.activeRoute.mode === 'freeroam' && !this.isGrinding) {
         // Splash penalty if running deep into Windermere off-pier
-        this.handleHazardHit('Fell in Windermere!', true);
+        this.setCallout('Back to safe ground');
+        this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.exploreSpeed=0;
         const start = sampleCompiledRoute(this.compiledRoute, 0);
         this.playerX = start.x;
         this.playerZ = start.z;
@@ -1546,7 +1529,7 @@ export class LakelandEngine {
     }
 
     // Sprint Obstacles, Tokens & Traffic Interactions
-    if (!roaming || this.exploreLabels) this.resolveTokensAndObstacles(dt);
+    if (!roaming) this.resolveTokensAndObstacles(dt);
 
     // Distance-synced stride & footsteps
     this.stridePhase += speed * dt * 1.45;
@@ -1719,7 +1702,7 @@ export class LakelandEngine {
 
   private updateChaseCamera(dt: number, speedMps: number): void {
     const roaming = this.activeRoute.mode === 'freeroam';
-    const lookHeading = this.playerHeading + (roaming ? this.exploreYaw : 0);
+    const lookHeading = roaming ? this.exploreYaw : this.playerHeading;
     if (roaming && this.exploreFirst) {
       this.runner.root.visible = false;
       this.camera.position.set(this.playerX, this.playerY + 1.65, this.playerZ);
@@ -1727,22 +1710,36 @@ export class LakelandEngine {
         this.playerZ - Math.cos(lookHeading));
       return;
     }
-    const backDist = roaming ? 4.1 : 5.2 + (speedMps / 32) * 1.4;
+    const backDist = roaming ? 5.4 : 5.2 + (speedMps / 32) * 1.4;
     const dropFactor = this.skyDropTimer > 0 ? this.skyDropTimer / 0.85 : 0;
     const height = 2.45 + dropFactor * dropFactor * 14.0;
 
     const fx = -Math.sin(lookHeading);
     const fz = -Math.cos(lookHeading);
 
-    const desiredX = this.playerX - fx * backDist;
-    const desiredZ = this.playerZ - fz * backDist;
-    const terrainAtCam = Math.max(0.5, this.region.getTerrainHeight(desiredX, desiredZ));
-    const desiredY = Math.max(terrainAtCam + 1.4, this.playerY + height);
+    let desiredX = this.playerX - fx * backDist;
+    let desiredZ = this.playerZ - fz * backDist;
+    let desiredY = this.playerY + height;
+    if(roaming){
+      const pitch=THREE.MathUtils.clamp(this.explorePitch,-.65,.65);
+      desiredX=this.playerX-fx*backDist*Math.cos(pitch);
+      desiredZ=this.playerZ-fz*backDist*Math.cos(pitch);
+      desiredY=this.playerY+2.0-backDist*Math.sin(pitch);
+      // Pull the camera in before it passes through nearby mapped building footprints.
+      for(let f=.15;f<=1;f+=.15){
+        const x=this.playerX+(desiredX-this.playerX)*f,z=this.playerZ+(desiredZ-this.playerZ)*f,y=this.playerY+1.5+(desiredY-this.playerY-1.5)*f;
+        if([...this.loadedChunks.values()].some(chunk=>chunk.colliders.some(c=>y<c.topY&&x>=c.minX&&x<=c.maxX&&z>=c.minZ&&z<=c.maxZ&&pointInRing(x,z,c.outline)))){
+          const safe=Math.max(.12,f-.15);desiredX=this.playerX+(desiredX-this.playerX)*safe;desiredZ=this.playerZ+(desiredZ-this.playerZ)*safe;desiredY=this.playerY+1.5+(desiredY-this.playerY-1.5)*safe;break;
+        }
+      }
+    }
+    const terrainAtCam=Math.max(.5,this.region.getTerrainHeight(desiredX,desiredZ));
+    desiredY=Math.max(terrainAtCam+(roaming?.65:1.4),desiredY);
 
     const damp = 1 - Math.exp(-9.5 * dt);
     this.camPos.lerp(_v1.set(desiredX, desiredY, desiredZ), damp);
     this.camLook.lerp(
-      _v2.set(this.playerX + fx * 15, this.playerY + 1.55 + (roaming ? this.explorePitch * 5 : 0), this.playerZ + fz * 15),
+      _v2.set(this.playerX + fx * (roaming ? 2.8 : 15), this.playerY + 1.6 + (roaming ? Math.tan(this.explorePitch)*2.8 : 0), this.playerZ + fz * (roaming ? 2.8 : 15)),
       1 - Math.exp(-12 * dt),
     );
 
@@ -1755,7 +1752,7 @@ export class LakelandEngine {
     this.camera.position.set(this.camPos.x + sx, this.camPos.y + sy, this.camPos.z);
     this.camera.lookAt(this.camLook);
 
-    const targetFov = 62 + Math.max(0, speedMps - 10) * 0.65;
+    const targetFov = roaming ? 70 : 62 + Math.max(0, speedMps - 10) * 0.65;
     if (Math.abs(this.camera.fov - targetFov) > 0.1) {
       this.camera.fov = THREE.MathUtils.lerp(this.camera.fov, targetFov, 1 - Math.exp(-5 * dt));
       this.camera.updateProjectionMatrix();
@@ -1907,7 +1904,7 @@ export class LakelandEngine {
     this.keysHeld.delete(e.code);
     // Variable jump height cut
     if (
-      (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp') &&
+      (e.code === 'Space' || (this.activeRoute.mode==='sprint' && (e.code === 'KeyW' || e.code === 'ArrowUp'))) &&
       this.playerVy > 4
     ) {
       this.playerVy *= 0.52;
@@ -1917,6 +1914,7 @@ export class LakelandEngine {
   private onWindowBlur = () => {
     this.keysHeld.clear();
     this.virtualSteer = 0;
+    this.touchAdvance = 0;
   };
 
   private onResize = () => {

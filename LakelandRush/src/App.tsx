@@ -323,7 +323,7 @@ export default function App() {
         data-testid="game-canvas-mount"
         className="fixed inset-0 h-full w-full touch-none"
         onPointerDown={event => {
-          if (gameState !== 'playing' || selectedRoute.mode !== 'freeroam') return;
+          if (gameState !== 'playing' || selectedRoute.mode !== 'freeroam' || lookPointer.current || (event.pointerType==='mouse'&&event.button!==0)) return;
           event.currentTarget.setPointerCapture(event.pointerId);
           lookPointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
         }}
@@ -334,7 +334,9 @@ export default function App() {
           pointer.x = event.clientX;
           pointer.y = event.clientY;
         }}
-        onLostPointerCapture={() => { lookPointer.current = null; }}
+        onPointerUp={event=>{if(lookPointer.current?.id===event.pointerId)lookPointer.current=null;}}
+        onPointerCancel={event=>{if(lookPointer.current?.id===event.pointerId)lookPointer.current=null;}}
+        onLostPointerCapture={event=>{if(lookPointer.current?.id===event.pointerId)lookPointer.current=null;}}
       />
 
       {/* Initial Terrain Loading Curtain */}
