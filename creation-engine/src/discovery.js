@@ -27,9 +27,15 @@ export function createDiscovery(documentRoot = document) {
     const section = documentRoot.querySelector('#experience');
     const bounds = section.getBoundingClientRect();
     // A work-directory choice brings its explanation into view without trapping
-    // subsequent scrolling. Hotspot choices preserve the current scroll position.
+    // subsequent scrolling. Hotspot choices preserve the current scroll position
+    // while their explanation fits; a partly scrolled page may need to reveal it.
     if (trigger?.closest('#capability-directory') || bounds.bottom < 100 || bounds.top > innerHeight) {
       scrollTo({ top: scrollY + bounds.top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+    } else {
+      const panelBounds = panel.getBoundingClientRect?.();
+      if (panelBounds?.height > 0 && (panelBounds.top < 16 || panelBounds.bottom > innerHeight - 16)) {
+        panel.scrollIntoView?.({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
+      }
     }
     panel.focus({ preventScroll: true });
     listeners.forEach(listener => listener(id));
