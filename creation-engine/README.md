@@ -4,7 +4,7 @@ A personal, interactive 3D signature for Mohamed El-Asrag — Mo. A bevelled **M
 
 ## Run and verify
 
-The site is buildless. Serve the repository root through an HTTP static server; ES modules and the GLB should not be opened through `file://`. On a normal development machine, for example:
+Deployment is static: the committed production bundle and stylesheet have content-hashed filenames, preventing stale browser/CDN modules from mixing releases. Serve the repository root through an HTTP static server; ES modules and the GLB should not be opened through `file://`. On a normal development machine, for example:
 
 ```sh
 python3 -m http.server 3000 --bind 0.0.0.0
@@ -14,7 +14,7 @@ Open `http://localhost:3000/`. The repository's existing `npm start` runs a diff
 
 On the managed Codex environment, use its supported `sites-preview` mechanism. Preview transport availability is an environment capability, separate from syntax or unit-test results. See the final QA report for actual browser coverage and any remaining verification limits.
 
-No npm install, build command, CDN, remote model, texture server, backend, API key or paid service is needed to serve the homepage. Three.js and the small required add-on modules are vendored with their MIT license.
+No npm install, build command, CDN, remote model, texture server, backend, API key or paid service is needed on the hosting service. After editing source, rebuild and commit the generated runtime files locally: `npm ci --prefix creation-engine && npm --prefix creation-engine run build`. The isolated esbuild development dependency bundles the local Three.js source; it is not a browser dependency. Three.js and the small required add-on modules are vendored with their MIT license.
 
 Run the deterministic checks from the repository root:
 
@@ -77,7 +77,7 @@ Add `-- --render` to regenerate the transparent offline PNG poster. Export the r
 
 The opening view presents Mo’s completed M/O signature. Click a physical selector, its anchored labelled HTML button, or an area-of-work directory button to explore a capability. Clicking the personal M reveals Mo’s introduction. Content is sourced from the same small capability record for every entry path. A short stationary click/tap selects; movement or a long press is treated as a different gesture. Raycasting handles physical meshes; semantic buttons provide an equivalent keyboard and screen-reader route.
 
-The discovery controller loads before Three.js and has no renderer dependency. If WebGL, the GLB or Three.js fails, the work directory and personal introduction can still open their text panel against the poster. Escape and the visible close button restore the prior trigger’s focus. Without JavaScript, the normal work, introduction and contact content stays readable.
+The discovery controller initializes before the renderer and has no renderer dependency. If WebGL, the GLB or Three.js fails, the work directory and personal introduction can still open their text panel against the poster. Escape and the visible close button restore the prior trigger’s focus. Without JavaScript, the normal work, introduction and contact content stays readable.
 
 Native page scrolling moves through Idea, Design, Build and Reality. Chapter buttons jump to their corresponding scroll positions without trapping page movement. Areas of work, introduction and contact follow in normal document flow.
 
@@ -94,7 +94,7 @@ Control buttons have accessible labels and state attributes. The poster remains 
 
 The renderer caps pixel ratio based on viewport, memory/CPU hints and save-data preference. The asset loader can reduce transmission for glass-bearing assets on mobile/constrained devices; the primary personal sculpture uses no glass. Frame-rate samples can lower or restore rendering density within bounds. Rendering stops while the experience is outside the viewport or the document is hidden; paused/reduced-motion states request frames only for changes. This targets responsive interaction but does not itself prove 60 FPS on any specific physical device.
 
-The primary GLB is 1,181,008 bytes with 46,232 triangles, 32 material primitives and five materials. Its WebP poster is approximately 93 KB; there are no texture downloads. Geometry is joined by component/material in the Blender export. Runtime construction edges and sampled particles are generated once after asset loading. Disposal releases geometry, materials, environment texture, renderer, event listeners and observers.
+The primary GLB is 1,181,008 bytes with 46,232 triangles, 32 material primitives and five materials. Its WebP poster is approximately 108 KB; there are no texture downloads. Geometry is joined by component/material in the Blender export. Runtime construction edges and sampled particles are generated once after asset loading. Disposal releases geometry, materials, environment texture, renderer, event listeners and observers.
 
 For development profiling, read the optional browser diagnostic function:
 
@@ -125,3 +125,9 @@ git diff --stat 88277c7b170d41c164e7338659bf018d4653917a
 ```
 
 For recovery, restore the exact original homepage from `creation-engine/docs/homepage-before.html` and deploy through the existing repository process. See [the repository audit](docs/REPOSITORY.md) for the preserved applications and hosting evidence.
+
+## Production cache and graceful interaction
+
+`npm run build` inside this directory bundles `src/bootstrap.js` into `runtime/home-[content-hash].js`, copies the stylesheet to a content-hashed path and updates only the homepage references. This keeps a production release coherent even when earlier modules remain in browser/CDN caches. All editable modules and vendored licensing remain preserved. Commit generated runtime files alongside source changes; Pages only serves the committed static output.
+
+When WebGL cannot initialize, all five selectors remain interactive over the poster. Their coordinates are exported from the exact Blender camera to `assets/mo-poster-hotspots.json` and its synchronous `.js` counterpart, then mapped through the poster's actual object-fit painted rectangle. Regenerating the personal asset also regenerates this metadata. The live renderer owns projection when running; the poster controller yields to it. This fallback was added during public browser validation on an environment whose GPU disables WebGL.

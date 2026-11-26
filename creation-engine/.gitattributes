@@ -1,0 +1,2 @@
+# Generated Three.js bundles contain verbatim multiline GLSL template strings.
+runtime/*.js whitespace=-blank-at-eol
