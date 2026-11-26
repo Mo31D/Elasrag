@@ -2,9 +2,9 @@
 
 ## Verified against the current source
 
-- Four deterministic Node test files pass: 4 timeline tests, 3 preserved original-asset tests, 3 capability/content/gesture tests, and 4 personal-MO asset tests (**14 total**).
-- `npm --prefix creation-engine run test:dom`: **5 integration tests pass** using the actual homepage markup and renderer-independent discovery controller. These exercise all five hotspot selections, distinct content/actions, disclosure attributes, all four directory choices without WebGL, scroll requests, Escape/close, focus API calls invalid IDs, and secondary-touch isolation. LinkeDOM does not render layout; viewport, focus and scrolling APIs are stubbed. These are **DOM tests, not browser interaction tests**.
-- `node creation-engine/tools/check-source.mjs`: all 11 modules parse and 20 local source/homepage asset references resolve. Contact destinations are present.
+- Five deterministic Node test files pass: 4 timeline tests, 3 preserved original-asset tests, 3 capability/content/gesture tests, 4 personal-MO asset tests and 2 poster-projection tests (**16 total**).
+- `npm --prefix creation-engine run test:dom`: **6 integration tests pass** using the actual homepage markup and renderer-independent discovery controller. These exercise all five hotspot selections, distinct content/actions, disclosure attributes, all four directory choices without WebGL, scroll requests, Escape/close, focus API calls invalid IDs, and secondary-touch isolation. LinkeDOM does not render layout; viewport, focus and scrolling APIs are stubbed. These are **DOM tests, not browser interaction tests**.
+- `node creation-engine/tools/check-source.mjs`: all 12 modules parse and 22 local source/homepage asset references resolve. Contact destinations are present.
 - `node creation-engine/tools/check-scope.mjs`: all 835 protected files from base `88277c7b170d41c164e7338659bf018d4653917a` remain byte-identical; the previous homepage backup is exact.
 - Blender headless generation/export and a 1200×1200 CPU poster render completed for the new MO sculpture. The upright poster was opened and visually inspected. It is an **offline render, not a webpage screenshot**.
 - Independent Three.js GLTFLoader parsing of the actual new binary succeeded. Projecting all five selector anchors from their real component hierarchy at representative desktop/mobile canvas sizes found them inside the default camera frame. This is a framing calculation, not layout verification.
@@ -23,7 +23,7 @@ The content controller loads before Three.js. If rendering fails, the areas-of-w
 
 Review URL: https://elasrag-creation-engine-review.elasrag.chatgpt.site
 
-The isolated Site remains owner-private. Its source is a separate copy with its own manifest; production CNAME, workflows, repository package configuration, APIs and existing routes are unchanged. The development branch/PR is updated without merging into `main` or replacing `elasrag.com`.
+The isolated Site remains owner-private. Its source is a separate copy with its own manifest; production CNAME, workflows, repository package configuration, APIs and existing routes are unchanged. The user authorized production publication on 26 November. PR47 and the reviewed follow-up fixes were merged through the existing main-branch Pages deployment. The homepage is live at https://www.elasrag.com/.
 
 ## Browser limitations and release gate
 
@@ -58,3 +58,17 @@ Repository Pages settings were verified through the live API: legacy branch publ
 A separate Cloudflare check, Workers Builds: wf-backend, failed on the development branch; it is not a homepage Pages build and its cause is unverified. WF files are unchanged. The mo.elasrag.com endpoint returned403 before this release, while the static /wf/ route returned200. Neither is being represented as a successful WF production check.
 
 The private browser preview remains signed out and the managed preview relay has no supported working port override. After available preflight checks, the authorized existing Pages release will be checked immediately through the public homepage. Any material homepage defect discovered there will be fixed or the prior homepage restored; actual public-browser results will be recorded separately below. No unperformed Safari/physical-device test is claimed.
+
+## Actual public browser review — 26 November 2026
+
+The new homepage was opened on the public domain in managed Chromium. This environment disables WebGL (GL_VENDOR Disabled / context creation rejected); the fallback was observed instead of being described as a successful GPU render. That real failure exposed two useful improvements: preserve all five selectors on the poster, and use content-hashed production JS/CSS to avoid old cached source modules mixing with a new release. Both improvements were deployed and the public page was reloaded successfully.
+
+Verified through actual browser interactions:
+
+- All five labelled selectors at measured CSS viewports400×624 and1168×735 disclose their distinct expected title and action. No horizontal document overflow was observed.
+- Escape closes a panel and returns focus to its original selector. A work-directory choice brings its explanation into view; the close button returns focus to the directory.
+- At333×520, the technology selection is readable, all five target centres are reachable according to elementFromPoint, and no horizontal overflow is present. The observed tight text/object gap was addressed by moving the compact object lower. This is a resized/zoomed desktop Chromium viewport, not a physical phone or Safari emulation; DevTools/device emulation are restricted by the browser environment.
+- The initial homepage and five selected states were captured at desktop and narrow widths. See docs/screenshots/. These images show the interactive poster fallback, not a live WebGL render or the four GPU transformation stages.
+- Public HTTP checks confirm200 responses with expected MIME types and matching SHA256 contents for the homepage, production JS/CSS/license, model and poster. Existing /adam/, /wf/ and /LakelandRush/ routes remain200. Evidence is retained in the shared release-http.json artifact.
+
+Still not performed: live GPU/Three.js rendering, 3D raycast/rotation/zoom/exploded/wireframe interaction, physical touch/pinch, the four GPU-stage screenshots, real device frame rates, actual Safari/iPhone/iPad testing, OS reduced-motion emulation and JavaScript-disabled browser testing. These remain explicit compatibility limits; the ordinary content, real fallback disclosure and existing route checks above were performed.

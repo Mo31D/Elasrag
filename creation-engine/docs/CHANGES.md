@@ -13,7 +13,7 @@ Development branch: `feat/creation-engine`
 
 Unchanged: all 835 other original tracked files, including `CNAME`, root packages and server, `.github/workflows/`, every application directory, existing `/engine/`, WF APIs and Cloudflare configuration. No unrelated file is deleted, renamed or restructured.
 
-The private review deployment is an independent source copy. No merge to `main` or replacement of the existing public homepage is performed. Production release remains subject to the browser validation recorded in [QA.md](QA.md).
+The private review deployment is an independent source copy. The initial review stayed isolated; the user later authorized publication on26November and the reviewed changes were merged to main. Actual public browser coverage and remaining device limits are recorded in [QA.md](QA.md).
 
 ## Personal Mo discovery revision
 
@@ -23,3 +23,12 @@ The private review deployment is an independent source copy. No merge to `main` 
 - Added the friendly Mo introduction and compact responsive detail panel with keyboard disclosure/close behaviour.
 - Added six capability/asset unit tests and four DOM integration tests. Pinned LinkeDOM only inside the isolated experience's development package; root package remains untouched.
 - Updated the same development branch, draft PR and owner-private review Site. Browser release checks remain in QA.md.
+
+## Release review and production refinements
+
+- Corrected Blender surface winding and graphite inset; preserved all component/hotspot contracts and mesh budget.
+- Hardened primary-touch selection and drag-versus-click handling.
+- Kept five selectors interactive over the precise Blender camera poster when WebGL is unavailable.
+- Committed a reproducible content-hashed production JS/CSS bundle, with isolated development tooling and licensing.
+- Published through existing main-branch GitHub Pages, without changing unrelated projects or hosting/API configuration.
+- Captured real desktop and narrow-view browser screenshots of the working interactive fallback; documented GPU/Safari testing limits.

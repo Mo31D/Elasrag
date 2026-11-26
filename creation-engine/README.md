@@ -32,7 +32,7 @@ For a deterministic fallback check, open `/?engine=fallback`. This deliberately 
 
 | File | Responsibility |
 | --- | --- |
-| `../index.html` | Semantic homepage content, mount, accessible controls, local import map |
+| `../index.html` | Semantic homepage content, mount, accessible controls, hashed production entry |
 | `style.css` | Desktop, tablet and mobile exhibition composition and reduced-motion styles |
 | `src/bootstrap.js` | Load the renderer-independent discovery controller before attempting the 3D dependency graph |
 | `src/main.js` | Lifecycle, native-scroll chapters, selection coordination, raycast gesture dispatch and fallback |
@@ -44,6 +44,7 @@ For a deterministic fallback check, open `/?engine=fallback`. This deliberately 
 | `src/lighting.js` | Local procedural studio environment, key/rim/fill and core illumination |
 | `src/timeline.js` | Pure reversible state function and chapter metadata |
 | `src/interaction.js` | Mouse/touch/keyboard rotation, bounded zoom and reset |
+| `src/poster-points.js` | Camera-derived HTML selector positions when WebGL is unavailable |
 | `src/performance.js` | Capability profile, pixel-density caps and measured frame-rate quality adaptation |
 | `tools/generate_mo_signature.py` | Primary personal M/O sculpture: editable Blender geometry/material source |
 | `tools/MO-ASSET.md` | Primary model hierarchy, capability IDs, selector-face anchors, materials and rebuild reference |
