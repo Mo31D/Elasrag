@@ -215,7 +215,7 @@ export function animateRunnerRig(
     rig.leftArm.rotation.z = THREE.MathUtils.lerp(rig.leftArm.rotation.z, 0.28, damp);
     rig.rightArm.rotation.z = THREE.MathUtils.lerp(rig.rightArm.rotation.z, -0.28, damp);
   } else {
-    const amp = THREE.MathUtils.clamp(speedMps / 5.5, 0, 1.15);
+    const amp = speedMps < 5.5 ? (speedMps / 5.5) * .35 : THREE.MathUtils.clamp(speedMps / 16, .35, 1.15);
     const swing = Math.sin(stridePhase) * 0.92 * amp;
     const bob = Math.abs(Math.cos(stridePhase)) * 0.09 * amp;
     const forwardLean = -Math.min(.12,speedMps*.025) - (speedMps / 35) * 0.24;

@@ -1,4 +1,4 @@
-import { useEffect,useRef,useState } from 'react';
+import { useEffect,useRef,useState, type PointerEvent } from 'react';
 import { Map,Pause,Volume2,VolumeX,Eye,EyeOff,Footprints,ArrowUp,Camera,Mountain,Menu,X } from 'lucide-react';
 import type { GameHUDProps } from './GameHUD';
 import { radialInput } from '../game/exploreControls';
@@ -19,7 +19,7 @@ export function ExploreHUD(p:GameHUDProps){
     window.addEventListener('blur',clear);document.addEventListener('visibilitychange',clear);media.addEventListener('change',check);
     return()=>{window.removeEventListener('blur',clear);document.removeEventListener('visibilitychange',clear);media.removeEventListener('change',check);callbacks.current.steer(0);callbacks.current.advance(0);};
   },[]);
-  function move(e:React.PointerEvent<HTMLDivElement>){
+  function move(e:PointerEvent<HTMLDivElement>){
     if(pointer.current!==e.pointerId)return;
     const r=e.currentTarget.getBoundingClientRect(),radius=r.width*.33;
     const x=(e.clientX-r.left-r.width/2)/radius,y=(e.clientY-r.top-r.height/2)/radius;

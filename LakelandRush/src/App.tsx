@@ -83,7 +83,7 @@ export default function App() {
   const [gameState, setGameState] = useState<GameState>('title');
   const [isReady, setIsReady] = useState(false);
   const [engineError, setEngineError] = useState<string | null>(null);
-  const [selectedRoute, setSelectedRoute] = useState<RouteDefinition>(LAKELAND_ROUTES[0]);
+  const [selectedRoute, setSelectedRoute] = useState<RouteDefinition>(LAKELAND_ROUTES.find(route=>route.mode==='freeroam')??LAKELAND_ROUTES[0]);
   const [settings, setSettings] = useState<GameSettings>(loadInitialSettings);
   const [saveData, setSaveData] = useState<SaveData>(() =>
     loadSaveData(typeof window !== 'undefined' ? window.localStorage : null),

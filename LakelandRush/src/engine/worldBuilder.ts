@@ -969,10 +969,8 @@ export function buildChunkGroup(
     const trunkGeo = new THREE.CylinderGeometry(0.18, 0.3, 2.2, 6);
     trunkGeo.translate(0, 1.1, 0);
     const b1 = new THREE.IcosahedronGeometry(1.45, 2);
-    b1.computeVertexNormals();
     b1.translate(0, 3.3, 0);
     const b2 = new THREE.IcosahedronGeometry(1.05, 1);
-    b2.computeVertexNormals();
     b2.translate(0.55, 2.9, 0.35);
     const b3 = new THREE.IcosahedronGeometry(1.12, 1);
     b3.scale(.92,1.15,.94);b3.translate(-.55,3.15,-.32);
