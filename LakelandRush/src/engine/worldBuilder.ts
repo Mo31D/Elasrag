@@ -9,6 +9,7 @@ import type {
 import { isPointInLake, pointInRing, sampleTerrainHeight } from '../geo/projection';
 import { buildWaterheadShoreDistance, WATERHEAD_WATER_BOUNDS } from './waterhead-water';
 import { buildWaterfrontDetails, groundSurface, WATERHEAD_SIDEWALKS } from './waterfront';
+import { buildSignage } from './signage';
 import amblesideSurfaces from '../data/ambleside-surfaces.json';
 import amblesideNavigation from '../data/ambleside-navigation.json';
 import buildingAssetMetadata from '../data/building-assets.json';
@@ -41,6 +42,7 @@ export interface BuiltChunkResult {
   roadDecks: Array<{ ax: number; az: number; bx: number; bz: number; ay: number; by: number; halfWidth: number }>;
   pierDecks: Array<{ outline: Array<[number, number]>; y: number }>;
   grindSegments: Array<{ ax: number; az: number; bx: number; bz: number; y: number }>;
+  updateSignage: (x: number, z: number, labels: boolean) => void;
   dispose: () => void;
 }
 
@@ -998,9 +1000,12 @@ export function buildChunkGroup(
     group.add(trunks, crowns);
   }
 
+  const signage = buildSignage(chunk, terrain, lake);
+  group.add(signage.group);
   return {
     key: chunk.key,
     group,
+    updateSignage: signage.update,
     colliders,
     roadDecks,
     pierDecks,
@@ -1008,6 +1013,7 @@ export function buildChunkGroup(
     dispose: () => {
       disposables.forEach((g) => g.dispose());
       waterfront?.dispose();
+      signage.dispose();
     },
   };
 }

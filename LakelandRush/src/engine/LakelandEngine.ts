@@ -1274,6 +1274,10 @@ export class LakelandEngine {
       this.materials.waterUniforms.uTime.value = 14;
     }
     this.atmosphere?.dome.position.copy(this.camera.position);
+    for (const chunk of this.loadedChunks.values()) {
+      chunk.updateSignage(this.camera.position.x, this.camera.position.z,
+        !view && this.gameState === 'playing' && this.activeRoute?.mode === 'freeroam' && this.exploreLabels);
+    }
     this.renderer.render(this.inShop && this.shop ? this.shop.scene : this.scene, this.camera);
     if (view) {
       const { render, memory } = this.renderer.info;

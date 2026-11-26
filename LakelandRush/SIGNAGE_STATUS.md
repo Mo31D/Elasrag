@@ -1,0 +1,8 @@
+# World signage — first pass
+- Road names/references derive from existing OSM road records (© OpenStreetMap contributors, ODbL). Original UK-inspired plates use estimated anchors, not surveyed sign locations or official artwork. No invented directional arrows, boundary signs or crests. Road meshes and collisions are unchanged.
+- Seven bus records from Traveline National Dataset (OGL via UK City Map), plus one Windermere rail location (Geopunk; identity cross-checked against https://www.nationalrail.co.uk/stations/windermere/). Individual sources and original coordinates in src/data/transit.ts. Positions use existing game projection; neither exact pole/shelter placement nor live routes/timetables are verified.
+- Named public buildings and existing local landmarks receive optional nearby labels in Free Roam. Existing mapped business models are unchanged; no claim of authentic facade artwork. No private cottage labels by default.
+- Bus markers on local map, station marker on regional map. No unsafe fast travel to raw stop coordinates.
+- Chunk-owned geometry/textures/materials are disposed on eviction. Physical signs cull at 110m, at most three labels per chunk within 45m. Cross-chunk overlap, GPU performance, exact sign placement and physical-device readability still require visual testing.
+- New pure tests cover road deduplication, off-road placement, water exclusion and transport data. GitHub Actions existing lint/test/build gate must pass before Pages asset generation. 
+- Next: official NaPTAN bulk import, surveyed directional/welcome signs, verified public POIs and reference-led facades, complete transport infrastructure. No watermarked photos used.

@@ -1,5 +1,6 @@
 import { LAKELAND_ROUTES } from '../data/routes';
 import React from 'react';
+import { TRANSIT } from '../data/transit';
 import { AmblesideMap, type ExploreStop } from './AmblesideMap';
 import { Play, X } from 'lucide-react';
 import type { LakeData, RegionManifest, RouteDefinition } from '../types/game';
@@ -137,6 +138,10 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
                   );
                 })}
 
+              {TRANSIT.filter(t=>t.mode==='rail').map(t=>{
+                const [x,y]=toSvg(t.x,t.z);
+                return <g key={t.id}><title>{t.name}</title><rect x={x-4} y={y-4} width="8" height="8" rx="2" fill="#60a5fa" stroke="#0f172a" /><text x={x-6} y={y+13} textAnchor="end" fontSize="9" fill="#93c5fd">Windermere Railway Station</text></g>;
+              })}
               {/* Real Settlements */}
               {manifest?.settlements.map((s) => {
                 const [sx, sy] = toSvg(s.x, s.z);
