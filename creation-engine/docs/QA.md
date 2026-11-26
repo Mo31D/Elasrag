@@ -17,7 +17,7 @@ The primary object is now a personal engineered M inside an open O, with four pu
 
 Build reveals connected interface layers; Think reveals a branching graph; Design reveals construction geometry; Solve reveals an ordered route. The M fades into the diagram's negative space and the selected component extends. The central selector introduces Mohamed El-Asrag as Mo. Semantic HTML buttons track the real 3D selectors, and mesh raycasting also supports direct selection. Drag and tap gestures are distinguished.
 
-The content controller loads before Three.js. If rendering fails, the areas-of-work directory can still disclose the same information and links. “Hi, I’m Mo.” and “Mohamed El-Asrag. You can call me Mo.” are visible in the ordinary homepage content.
+The content controller initializes before the renderer. If rendering fails, the areas-of-work directory can still disclose the same information and links. “Hi, I’m Mo.” and “Mohamed El-Asrag. You can call me Mo.” are visible in the ordinary homepage content.
 
 ## Private preview / production boundary
 
@@ -25,13 +25,13 @@ Review URL: https://elasrag-creation-engine-review.elasrag.chatgpt.site
 
 The isolated Site remains owner-private. Its source is a separate copy with its own manifest; production CNAME, workflows, repository package configuration, APIs and existing routes are unchanged. The user authorized production publication on 26 November. PR47 and the reviewed follow-up fixes were merged through the existing main-branch Pages deployment. The homepage is live at https://www.elasrag.com/.
 
-## Browser limitations and release gate
+## Browser environment and remaining device coverage
 
 A fresh managed preview retry again failed at the browser relay, even with Chromium running. The private hosted review requires owner sign-in. No alternate server, public access change or browser authentication workaround was substituted.
 
-**Unverified:** actual browser rendering and console/network behaviour, pointer/touch raycasting, mobile text/node overlap, native focus/scroll behaviour, real-device FPS, physical iPhone/iPad Safari, reduced-motion/context-loss/no-JS flows, and desktop/mobile webpage screenshots. There are **no browser screenshots of the four stages or selections**. The available `assets/mo-poster.webp` is the inspected offline asset render.
+The managed GPU cannot create a WebGL context. Live GPU rendering, 3D raycasting/motion, physical touch and Safari/device performance remain unverified. Desktop and narrow interactive poster rendering, the five semantic selections, closing/focus behaviour and public asset delivery were subsequently tested, as recorded below. No screenshots of the four GPU transformation stages are claimed.
 
-Complete these checks before production merge:
+The following checklist remains a reference for further device coverage; completed public-browser checks are recorded in the final section:
 
 1. Open the private review as owner or serve this branch on a normal development machine. Check 1440×900, 768×1024, 390×844, 375×667, 320×568 and landscape, with no horizontal overflow or overlapping panel/node controls.
 2. Select all five points using mouse/touch and keyboard buttons; confirm each explanation and matching 3D response. Click the actual M and selector geometry. Dragging must rotate without accidentally opening a panel. Close with its button/Escape; confirm focus returns visibly.
@@ -51,13 +51,13 @@ Three.js r170 remains locally vendored. LinkeDOM is a pinned **development-only*
 
 The user authorized review, concrete Blender improvements and publication to the existing website. The MO identity was retained. Blender corrections give the M consistently outward-facing closed surfaces and a true graphite inset with an even titanium border. The GLB remains 1,181,008 bytes; 32 meshes / 46,232 triangles / seven roots / five capabilities are preserved. Exported-geometry tests verify consistent shared-edge winding and positive enclosed volumes. The cleaner 128-sample fallback render was inspected.
 
-Gesture handling now tracks primary pointer ID and maximum travel: dragging out and back cannot accidentally select a part, and a second touch cannot rotate or release the primary gesture. All 14 deterministic tests and five DOM integration tests pass, along with syntax/reference/scope and whitespace checks.
+Gesture handling now tracks primary pointer ID and maximum travel: dragging out and back cannot accidentally select a part, and a second touch cannot rotate or release the primary gesture. The geometry and touch regression checks passed before the first release; the current complete suite counts are recorded above.
 
 Repository Pages settings were verified through the live API: legacy branch publication from main at /, with CNAME www.elasrag.com. Before rollout the previous homepage was still built at 88277c7; /adam/, /wf/ and /LakelandRush/ returned200. The old homepage backup is exact. No deployment workflow, API or unrelated route is changed.
 
 A separate Cloudflare check, Workers Builds: wf-backend, failed on the development branch; it is not a homepage Pages build and its cause is unverified. WF files are unchanged. The mo.elasrag.com endpoint returned403 before this release, while the static /wf/ route returned200. Neither is being represented as a successful WF production check.
 
-The private browser preview remains signed out and the managed preview relay has no supported working port override. After available preflight checks, the authorized existing Pages release will be checked immediately through the public homepage. Any material homepage defect discovered there will be fixed or the prior homepage restored; actual public-browser results will be recorded separately below. No unperformed Safari/physical-device test is claimed.
+The private browser preview remains signed out and the managed preview relay has no supported working port override. After the available preflight checks, the authorized Pages release was checked on the public homepage. The discovered poster interaction, release-cache coherence and compact-spacing issues were addressed. Actual results are recorded below. No unperformed Safari/physical-device test is claimed.
 
 ## Actual public browser review — 26 November 2026
 
