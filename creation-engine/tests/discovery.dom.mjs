@@ -87,6 +87,58 @@ test('directory buttons work without WebGL and scroll to the explanation', () =>
   controller.dispose();
 });
 
+test('hotspot explanations outside the viewport scroll into view after partial page scrolling', () => {
+  for (const [bounds, reduced] of [
+    [{ top: -80, bottom: 220, height: 300 }, false],
+    [{ top: 650, bottom: 950, height: 300 }, false],
+    [{ top: -80, bottom: 220, height: 300 }, true],
+  ]) {
+    const f = fixture();
+    const panel = f.document.querySelector('#capability-panel');
+    const revealCalls = [];
+    panel.getBoundingClientRect = () => bounds;
+    panel.scrollIntoView = options => revealCalls.push(options);
+    globalThis.matchMedia = () => ({ matches: reduced });
+    const controller = createDiscovery(f.document);
+    click(f.window, f.document.querySelector('#capability-hotspots [data-capability="ai"]'));
+    assert.equal(controller.selected, 'ai');
+    assert.deepEqual(revealCalls, [{ block: 'nearest', behavior: reduced ? 'instant' : 'smooth' }]);
+    assert.equal(f.scrollCalls.length, 0, 'Partly visible sections retain nearest-panel scrolling');
+    controller.dispose();
+  }
+});
+
+test('visible or unmeasured hotspot explanations preserve scrolling; directory choices keep their existing scroll target', () => {
+  for (const bounds of [
+    { top: 16, bottom: 828, height: 812 },
+    { top: 0, bottom: 0, height: 0 },
+  ]) {
+    const f = fixture();
+    const panel = f.document.querySelector('#capability-panel');
+    const revealCalls = [];
+    panel.getBoundingClientRect = () => bounds;
+    if (bounds.height) panel.scrollIntoView = options => revealCalls.push(options);
+    // LinkeDOM has no scrollIntoView: a zero-height rectangle remains safe.
+    else assert.equal(typeof panel.scrollIntoView, 'undefined');
+    const controller = createDiscovery(f.document);
+    click(f.window, f.document.querySelector('#capability-hotspots [data-capability="mo"]'));
+    assert.equal(controller.selected, 'mo');
+    assert.equal(f.scrollCalls.length, 0);
+    assert.deepEqual(revealCalls, []);
+    controller.dispose();
+  }
+  const f = fixture();
+  const panel = f.document.querySelector('#capability-panel');
+  const revealCalls = [];
+  panel.getBoundingClientRect = () => ({ top: -80, bottom: 220, height: 300 });
+  panel.scrollIntoView = options => revealCalls.push(options);
+  const controller = createDiscovery(f.document);
+  click(f.window, f.document.querySelector('#capability-directory [data-capability="ai"]'));
+  assert.deepEqual(f.scrollCalls, [{ top: 0, behavior: 'smooth' }]);
+  assert.deepEqual(revealCalls, [], 'Directory selection uses its existing section scroll');
+  controller.dispose();
+});
+
 test('Escape and close button restore focus and clear disclosure state', () => {
   const f = fixture();
   const controller = createDiscovery(f.document);
