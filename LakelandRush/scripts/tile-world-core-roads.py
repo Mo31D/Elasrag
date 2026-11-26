@@ -46,6 +46,13 @@ def main():
     existing = {r['id']:r for f in chunks.glob('*.json') for r in json.loads(f.read_text())['roads']}
     (e,ex,ez),(n,nx,nz) = core['legacyToBng']
     det = ex*nz-ez*nx
+    def projected(node):
+        east,north = core['nodes'][str(node)]
+        de,dn = east-e,north-n
+        return (round((de*nz-dn*ez)/det,6),round((dn*ex-de*nx)/det,6))
+
+    footprints = {key.rsplit(':',1)[1]: [projected(n) for n in core['ways'][key]['nodeIds'][:-1]]
+                  for key in core['layers']['buildings']}
     tagged = defaultdict(list)
     replaced = []
     new = sorted(int(id.rsplit(':',1)[1]) for id in core['layers']['roads'])
@@ -55,11 +62,7 @@ def main():
         tags = way['tags']
         if tags.get('tunnel') not in (None,'no') or tags.get('indoor') == 'yes':
             continue
-        pts = []
-        for node in way['nodeIds']:
-            east,north = core['nodes'][str(node)]
-            de,dn = east-e,north-n
-            pts.append((round((de*nz-dn*ez)/det,6),round((dn*ex-de*nx)/det,6)))
+        pts = [projected(n) for n in way['nodeIds']]
         if len(pts)<2:
             continue
         if ident not in existing:
@@ -92,7 +95,7 @@ def main():
             if after:
                 entry['afterTile'] = after
             tagged[key].append(entry)
-    output = {'schemaVersion':2,'replaces':replaced,'tiles':tagged,'addedWayCount':added}
+    output = {'schemaVersion':2,'replaces':replaced,'tiles':tagged,'addedWayCount':added,'footprints':footprints}
     (world_dir/'road-tiles-v2.json').write_text(json.dumps(output,separators=(',',':'))+'\n')
     print(f'{len(replaced)} compatible ways, {added} without a legacy record, {len(tagged)} tiles')
 

@@ -1,5 +1,6 @@
+import { doorstep, shopAtDoor, type Shop } from '../data/shopEntrances';
 import * as THREE from 'three';
-import { createBlackSheepInterior } from './shopInterior';
+import { createShopInterior } from './shopInterior';
 import navigation from '../data/ambleside-navigation.json';
 import { createAtmosphere } from './atmosphere';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
@@ -198,8 +199,11 @@ export class LakelandEngine {
   private exploreFirst = false;
   private exploreLabels = true;
   private exploreSpeed = 0;
-  private touchAdvance = 0;
-  private shop?: ReturnType<typeof createBlackSheepInterior>;
+  private exploreInput = new THREE.Vector2();
+  private exploreVelocity = new THREE.Vector2();
+  private activeShop?: Shop;
+  private shops = new Map<Shop["id"], ReturnType<typeof createShopInterior>>();
+  private get shop() { return this.activeShop && this.shops.get(this.activeShop.id); }
   private shopPosition = new THREE.Vector3(0, 1.64, 4.10);
   private inShop = false;
 
@@ -700,7 +704,8 @@ export class LakelandEngine {
     if (next !== 'playing') {
       this.keysHeld.clear();
       this.virtualSteer = 0;
-      this.touchAdvance = 0;
+      this.exploreInput.set(0,0);
+      this.exploreVelocity.set(0,0);
       this.sound.setGameplayState(false, 0, false);
     } else {
       this.sound.unlock();
@@ -750,15 +755,14 @@ export class LakelandEngine {
     this.virtualSteer = THREE.MathUtils.clamp(val, -1, 1);
   }
 
-  public setTouchAdvance(value: number): void {
-    this.touchAdvance = THREE.MathUtils.clamp(value, -1, 1);
+  public setExploreMove(x: number, forward: number): void {
+    this.exploreInput.set(x,forward).clampLength(0,1);
   }
 
   public rotateExploreView(dx: number, dy: number): void {
     if (this.activeRoute.mode !== 'freeroam' || this.gameState !== 'playing') return;
     const scale = .0038 * this.settings.sensitivity;
-    if (this.inShop || this.exploreFirst) this.playerHeading -= dx * scale;
-    else this.exploreYaw -= dx * scale;
+    this.exploreYaw -= dx * scale;
     this.explorePitch = THREE.MathUtils.clamp(this.explorePitch - dy * scale, -.88, .88);
   }
 
@@ -769,9 +773,6 @@ export class LakelandEngine {
 
   public toggleExploreView(): void {
     this.exploreFirst = !this.exploreFirst;
-    if (this.exploreFirst) this.playerHeading += this.exploreYaw;
-    this.exploreYaw = 0;
-    this.explorePitch = 0;
     this.pushHudSnapshot();
   }
 
@@ -781,62 +782,80 @@ export class LakelandEngine {
     this.pushHudSnapshot();
   }
 
-  private nearShopDoor(): boolean {
-    const stop = navigation.stops.find(place => place.id === 'black-sheep')!;
-    return this.activeRoute.mode === 'freeroam'
-      && Math.hypot(this.playerX - stop.spawn[0], this.playerZ - stop.spawn[1]) < 6;
+  private nearShopDoor(): Shop | undefined {
+    return this.activeRoute.mode === 'freeroam' ? shopAtDoor(this.playerX,this.playerZ) : undefined;
   }
 
   public toggleShop(): void {
-    if (this.gameState !== 'playing' || (!this.inShop && !this.nearShopDoor())) return;
+    if (this.gameState !== 'playing') return;
+    const door = this.inShop ? this.activeShop : this.nearShopDoor();
+    if (!door) return;
     if (this.inShop) {
       this.inShop = false;
-      this.playerHeading = Math.PI / 2;
-      this.camera.fov = 62;
-      this.camera.updateProjectionMatrix();
+      [this.playerX,this.playerZ] = doorstep(door);
+      this.playerY = Math.max(.45,this.region.getTerrainHeight(this.playerX,this.playerZ));
+      this.playerVy = 0;
+      this.playerHeading = Math.atan2(-door.outward[0],-door.outward[1]);
+      this.camPos.set(this.playerX,this.playerY+1.65,this.playerZ);
+      this.camLook.set(this.playerX+door.outward[0]*5,this.playerY+1.65,this.playerZ+door.outward[1]*5);
+      this.activeShop = undefined;
     } else {
-      this.shop ??= createBlackSheepInterior(this.scene.environment);
+      this.activeShop = door;
+      if (!this.shops.has(door.id)) this.shops.set(door.id,createShopInterior(this.scene.environment,door));
       this.inShop = true;
-      this.shopPosition.set(0, 1.64, 4.10);
+      this.shopPosition.set(0,1.64,4.10);
       this.playerHeading = 0;
     }
     this.keysHeld.clear();
-    this.touchAdvance = 0;
+    this.exploreInput.set(0,0);
+    this.exploreVelocity.set(0,0);
     this.virtualSteer = 0;
     this.explorePitch = 0;
     this.exploreYaw = 0;
     this.exploreSpeed = 0;
+    if (this.inShop) this.updateShop(0);
+    else this.updateChaseCamera(1,0);
     this.pushHudSnapshot();
   }
 
-  private exploreThrottle(): number {
-    return THREE.MathUtils.clamp(this.touchAdvance
-      + (this.keysHeld.has('KeyW') || this.keysHeld.has('ArrowUp') ? 1 : 0)
-      - (this.keysHeld.has('KeyS') || this.keysHeld.has('ArrowDown') ? 1 : 0), -1, 1);
+  private moveExplore(dt: number, speed: number, heading: number) {
+    const key = (...codes: string[]) => codes.some(code => this.keysHeld.has(code)) ? 1 : 0;
+    const side = this.exploreInput.x + key('KeyD','ArrowRight') - key('KeyA','ArrowLeft');
+    const forward = this.exploreInput.y + key('KeyW','ArrowUp') - key('KeyS','ArrowDown');
+    const scale = speed/Math.max(1, Math.hypot(side,forward));
+    const vx = (Math.cos(heading)*side-Math.sin(heading)*forward)*scale;
+    const vz = (-Math.sin(heading)*side-Math.cos(heading)*forward)*scale;
+    const response = 1-Math.exp(-(side || forward ? 13 : 22)*dt);
+    this.exploreVelocity.x += (vx-this.exploreVelocity.x)*response;
+    this.exploreVelocity.y += (vz-this.exploreVelocity.y)*response;
   }
 
-  private updateShop(dt: number, steer: number): void {
-    if (!this.shop) return;
-    this.playerHeading -= steer * 1.85 * dt;
-    const delta = this.exploreThrottle() * 1.55 * dt;
-    const x = this.shopPosition.x - Math.sin(this.playerHeading) * delta;
-    const z = this.shopPosition.z - Math.cos(this.playerHeading) * delta;
-    if (this.shop.available(x,this.shopPosition.z)) this.shopPosition.x = x;
-    if (this.shop.available(this.shopPosition.x,z)) this.shopPosition.z = z;
-    this.exploreSpeed = dt > 0 ? Math.abs(delta) / dt : 0;
+  private updateShop(dt: number): void {
+    const shop = this.shop;
+    if (!shop) return;
+    const heading = this.playerHeading + this.exploreYaw;
+    this.moveExplore(dt,1.65,heading);
+    const px = this.shopPosition.x, pz = this.shopPosition.z;
+    const x = px + this.exploreVelocity.x*dt;
+    const z = pz + this.exploreVelocity.y*dt;
+    if (shop.available(x,pz)) this.shopPosition.x = x;
+    if (shop.available(this.shopPosition.x,z)) this.shopPosition.z = z;
+    this.exploreSpeed = dt > 0 ? Math.hypot(this.shopPosition.x-px,this.shopPosition.z-pz)/dt : 0;
     this.camera.position.copy(this.shopPosition);
-    this.camera.lookAt(this.shopPosition.x - Math.sin(this.playerHeading),
-      this.shopPosition.y + Math.tan(this.explorePitch), this.shopPosition.z - Math.cos(this.playerHeading));
+    this.camera.lookAt(this.shopPosition.x - Math.sin(heading),
+      this.shopPosition.y + Math.tan(this.explorePitch), this.shopPosition.z - Math.cos(heading));
     this.sound.setGameplayState(true,this.exploreSpeed,false);
   }
 
   private prepareRoute(route: RouteDefinition, prevRecord?: RouteRecord): void {
     this.prevRecord = prevRecord;
     this.inShop = false;
+    this.activeShop = undefined;
     this.exploreYaw = 0;
     this.explorePitch = 0;
     this.exploreSpeed = 0;
-    this.touchAdvance = 0;
+    this.exploreInput.set(0,0);
+    this.exploreVelocity.set(0,0);
     this.virtualSteer = 0;
     this.routePropsGroup.visible = route.mode === 'sprint' || this.exploreLabels;
     this.scoring = createInitialScoringState();
@@ -876,7 +895,9 @@ export class LakelandEngine {
     // Anchor chase camera directly behind the runner at route start so sky-drop swoops cleanly down-road
     const fx = -Math.sin(this.playerHeading);
     const fz = -Math.cos(this.playerHeading);
-    this.camPos.set(this.playerX - fx * 7.5, this.playerY + 14.0, this.playerZ - fz * 7.5);
+    const roaming = route.mode === 'freeroam';
+    const distance = roaming ? 4.1 : 7.5;
+    this.camPos.set(this.playerX - fx * distance, this.playerY + (roaming ? 2.45 : 14), this.playerZ - fz * distance);
     this.camLook.set(this.playerX + fx * 15, this.playerY + 1.8, this.playerZ + fz * 15);
     if (route.mode === 'freeroam') this.camPos.y = this.playerY + 2.7;
 
@@ -1299,6 +1320,16 @@ export class LakelandEngine {
     void dt;
   }
 
+  private hitsBuilding(x: number, z: number, y: number): boolean {
+    for (const chunk of this.loadedChunks.values()) {
+      for (const c of chunk.colliders) {
+        if (x>=c.minX && x<=c.maxX && z>=c.minZ && z<=c.maxZ && y<c.topY
+          && pointInRing(x,z,c.outline)) return true;
+      }
+    }
+    return false;
+  }
+
   private updatePlaying(dt: number): void {
     this.runner.root.visible = true;
     this.runElapsedSec += dt;
@@ -1325,7 +1356,7 @@ export class LakelandEngine {
     if (this.keysHeld.has('KeyD') || this.keysHeld.has('ArrowRight')) steer += 1;
     steer = THREE.MathUtils.clamp(steer, -1, 1);
     if (this.inShop) {
-      this.updateShop(dt, steer);
+      this.updateShop(dt);
       return;
     }
 
@@ -1356,9 +1387,8 @@ export class LakelandEngine {
     // Tick scoring & speed
     const roaming = this.activeRoute.mode === 'freeroam';
     if (!roaming) this.scoring = tickScoring(this.scoring, dt, this.isGrinding);
-    const throttle = roaming ? this.exploreThrottle() : 0;
     const fast = this.exploreSprint || this.keysHeld.has('ShiftLeft') || this.keysHeld.has('ShiftRight');
-    let speed = roaming ? (fast ? 5.25 : 1.65) * Math.abs(throttle) : this.scoring.speedMps;
+    let speed = roaming ? 0 : this.scoring.speedMps;
 
     // Jump buffering & Coyote time
     if (this.jumpBufferTimer > 0) this.jumpBufferTimer -= dt;
@@ -1410,38 +1440,23 @@ export class LakelandEngine {
         return;
       }
     } else {
-      // Free Roam 360° Explorer mode
-      this.playerHeading -= steer * 2.1 * this.settings.sensitivity * dt;
-      const vx = -Math.sin(this.playerHeading) * speed * Math.sign(throttle);
-      const vz = -Math.cos(this.playerHeading) * speed * Math.sign(throttle);
-      const nextX = this.playerX + vx * dt;
-      const nextZ = this.playerZ + vz * dt;
-
-      // Building collision push-out in Free Roam
-      let blocked = false;
-      for (const chunk of this.loadedChunks.values()) {
-        for (const c of chunk.colliders) {
-          if (
-            nextX >= c.minX - 0.55 &&
-            nextX <= c.maxX + 0.55 &&
-            nextZ >= c.minZ - 0.55 &&
-            nextZ <= c.maxZ + 0.55 &&
-            this.playerY < c.topY - 0.6 &&
-            pointInRing(nextX, nextZ, c.outline)
-          ) {
-            blocked = true;
-            break;
-          }
-        }
-        if (blocked) break;
+      const cameraHeading = this.playerHeading + this.exploreYaw;
+      this.moveExplore(dt,fast ? 5.25 : 1.65,cameraHeading);
+      const startX = this.playerX, startZ = this.playerZ;
+      const nextX = startX + this.exploreVelocity.x*dt;
+      const nextZ = startZ + this.exploreVelocity.y*dt;
+      if (!this.hitsBuilding(nextX,startZ,this.playerY+.6)) this.playerX = nextX;
+      if (!this.hitsBuilding(this.playerX,nextZ,this.playerY+.6)) this.playerZ = nextZ;
+      const dx = this.playerX-startX, dz = this.playerZ-startZ;
+      const distance = Math.hypot(dx,dz);
+      speed = dt > 0 ? distance/dt : 0;
+      if (distance > .001 && !this.exploreFirst) {
+        const target = Math.atan2(-dx,-dz);
+        const turn = Math.atan2(Math.sin(target-this.playerHeading),Math.cos(target-this.playerHeading));
+        this.playerHeading += turn*(1-Math.exp(-13*dt));
+        this.exploreYaw = cameraHeading-this.playerHeading;
       }
-      if (!blocked) {
-        this.playerX = nextX;
-        this.playerZ = nextZ;
-        this.totalDistanceM += Math.hypot(vx * dt, vz * dt);
-      } else {
-        speed = 0;
-      }
+      this.totalDistanceM += distance;
       this.exploreSpeed = speed;
     }
 
@@ -1730,13 +1745,20 @@ export class LakelandEngine {
     const fx = -Math.sin(lookHeading);
     const fz = -Math.cos(lookHeading);
 
-    const desiredX = this.playerX - fx * backDist;
-    const desiredZ = this.playerZ - fz * backDist;
+    let cameraDistance = backDist;
+    if (roaming) {
+      for (let d=.55; d<=backDist; d+=.32) {
+        const x=this.playerX-fx*d, z=this.playerZ-fz*d;
+        if (this.hitsBuilding(x,z,this.playerY+2)) { cameraDistance=Math.max(.35,d-.48); break; }
+      }
+    }
+    const desiredX = this.playerX - fx * cameraDistance;
+    const desiredZ = this.playerZ - fz * cameraDistance;
     const terrainAtCam = Math.max(0.5, this.region.getTerrainHeight(desiredX, desiredZ));
     const desiredY = Math.max(terrainAtCam + 1.4, this.playerY + height);
 
     const damp = 1 - Math.exp(-9.5 * dt);
-    this.camPos.lerp(_v1.set(desiredX, desiredY, desiredZ), damp);
+    this.camPos.lerp(_v1.set(desiredX, desiredY, desiredZ), cameraDistance < backDist ? 1 : damp);
     this.camLook.lerp(
       _v2.set(this.playerX + fx * 15, this.playerY + 1.55 + (roaming ? this.explorePitch * 5 : 0), this.playerZ + fz * 15),
       1 - Math.exp(-12 * dt),
@@ -1854,7 +1876,8 @@ export class LakelandEngine {
       exploreWalkPace: !this.exploreSprint,
       cleanExploreMode: !this.exploreLabels,
       insideShop: this.inShop,
-      canEnterShop: this.nearShopDoor(),
+      canEnterShop: Boolean(this.nearShopDoor()),
+      shopName: (this.inShop ? this.activeShop : this.nearShopDoor())?.name,
       nearLandmark: navigation.stops.find(stop => Math.hypot(stop.point[0] - this.playerX, stop.point[1] - this.playerZ) < 20)?.name,
       hearts: this.scoring.hearts,
       maxHearts: 3,
@@ -1912,6 +1935,8 @@ export class LakelandEngine {
 
   private onWindowBlur = () => {
     this.keysHeld.clear();
+    this.exploreInput.set(0,0);
+    this.exploreVelocity.set(0,0);
     this.virtualSteer = 0;
   };
 
@@ -1983,7 +2008,7 @@ export class LakelandEngine {
     this.waterMesh?.geometry.dispose();
     this.materials?.waterUniforms.shoreMap.value?.dispose();
     this.materials?.weatheredDeck.dispose();
-    this.shop?.dispose();
+    for (const shop of this.shops.values()) shop.dispose();
     this.textures?.dispose();
     this.sound.dispose();
     this.renderer?.dispose();

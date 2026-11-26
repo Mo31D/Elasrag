@@ -46,3 +46,9 @@ Next, use owner photographs to validate the Black Sheep frontage and interior, t
 V1 remains available at the existing public URL and is tagged `lakeland-rush-v1-stable`. V2 work is isolated on `lakeland-world-v2`. The first package normalises OSM geometry into British National Grid, introduces road tile seams and a geographic inspector, and records two pilot premises separately from the businesses. The existing playable Three.js world and arcade challenges provide a V2 test harness. A local virtual passport and fictional social interaction demo are available from My Holiday. No physical location, account, real social profile, checkout or financial reward is processed.
 
 Next acceptance work uses an independent road and footprint source, full player traversal, terrain and collision sampling tests, and founder-reviewed screenshots before new production art. See [master roadmap](MASTER_ROADMAP.md).
+
+### Doors and exploration controls
+
+V2 now projects mapped background footprints directly from its canonical package. Background architecture has footprint-conforming pitched roofs, recessed windows and inferred street-facing doors using shared batched materials. Individually reconstructed buildings retain their authored positions. The shop door geometry is authored for both pilot businesses, and fast travel arrives at the exterior thresholds. Black Sheep and Lakeside Picnic have separate enterable interiors, both provisional layouts. For the latter, café seating and the counter are illustrative pending owner references.
+
+Free Roam uses camera-relative WASD, or a two-axis joystick with independent drag-to-look on touch screens. Hold Shift to sprint, press E or use the contextual control at a shop, and use Space or Jump outdoors. Movement accelerates and settles smoothly. Axis-separated collision helps movement slide along walls and the exterior chase camera pulls in near buildings. Arcade controls remain separate.

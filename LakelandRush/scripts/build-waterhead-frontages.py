@@ -137,6 +137,9 @@ def picnic():
     for h in (2.74,3.35,4.40):
         f.block(center-.94,center+.94,h,h+.075,-.24,-.17,green)
     f.block(center-.97,center+.97,-.01,.11,-.82,0,stone)
+    f.block(center-.72,center+.72,.13,.51,-.022,.075,green)
+    f.block(center+.48,center+.53,.98,1.18,-.084,.075,brass)
+    f.block(center+.35,center+.59,1.025,1.065,-.09,.03,brass)
     # Hand-built gold plaque, with no borrowed logo or raster art.
     plaque = [(2.05+math.cos(i*math.tau/32)*.50,-.11,2.12+math.sin(i*math.tau/32)*.52)
               for i in range(32)]
@@ -199,6 +202,7 @@ def shore_shops():
 
 
 if __name__ == "__main__":
-    inn()
-    picnic()
-    shore_shops()
+    targets = sys.argv[sys.argv.index("--")+1:] if "--" in sys.argv else []
+    for name, build in (("inn",inn),("picnic",picnic),("shore-shops",shore_shops)):
+        if not targets or name in targets:
+            build()

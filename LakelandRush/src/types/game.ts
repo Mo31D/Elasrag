@@ -265,6 +265,7 @@ export interface HudSnapshot {
   cleanExploreMode?: boolean;
   insideShop?: boolean;
   canEnterShop?: boolean;
+  shopName?: string;
 }
 
 export interface RunResult {

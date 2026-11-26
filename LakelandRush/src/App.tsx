@@ -1,3 +1,4 @@
+import { doorstep, SHOPS } from './data/shopEntrances';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -223,8 +224,9 @@ export default function App() {
   const travelToStop = useCallback((stop: ExploreStop) => {
     const explorer = LAKELAND_ROUTES.find(route => route.mode === 'freeroam');
     if (!explorer) return;
-    const [x, z] = stop.spawn;
-    const [targetX, targetZ] = stop.heading ?? stop.point;
+    const shop = SHOPS.find(entry => entry.id === stop.id);
+    const [x, z] = shop ? doorstep(shop) : stop.spawn;
+    const [targetX, targetZ] = shop?.door ?? stop.heading ?? stop.point;
     const heading: [number, number] = Math.hypot(targetX - x, targetZ - z) < .1
       ? [x, z - 8] : [targetX, targetZ];
     mapResume.current = false;
@@ -325,7 +327,7 @@ export default function App() {
         data-testid="game-canvas-mount"
         className="fixed inset-0 h-full w-full touch-none"
         onPointerDown={event => {
-          if (gameState !== 'playing' || selectedRoute.mode !== 'freeroam') return;
+          if (gameState !== 'playing' || selectedRoute.mode !== 'freeroam' || lookPointer.current || event.button !== 0) return;
           event.currentTarget.setPointerCapture(event.pointerId);
           lookPointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
         }}
@@ -336,7 +338,7 @@ export default function App() {
           pointer.x = event.clientX;
           pointer.y = event.clientY;
         }}
-        onLostPointerCapture={() => { lookPointer.current = null; }}
+        onLostPointerCapture={event => { if (lookPointer.current?.id === event.pointerId) lookPointer.current = null; }}
       />
 
       {/* Initial Terrain Loading Curtain */}
@@ -392,7 +394,7 @@ export default function App() {
           onTouchJump={() => engineRef.current?.triggerTouchJump()}
           onTouchSlide={() => engineRef.current?.triggerTouchSlide()}
           onOpenMap={openTravelMap}
-          onTouchAdvance={value => engineRef.current?.setTouchAdvance(value)}
+          onExploreMove={(x, y) => engineRef.current?.setExploreMove(x, y)}
           onToggleExplorePace={() => engineRef.current?.toggleExplorePace()}
           onToggleExploreView={() => engineRef.current?.toggleExploreView()}
           onToggleExploreLabels={() => engineRef.current?.toggleExploreLabels()}

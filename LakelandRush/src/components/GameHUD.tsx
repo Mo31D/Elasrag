@@ -21,7 +21,7 @@ interface GameHUDProps {
   onTouchJump: () => void;
   onTouchSlide: () => void;
   onOpenMap: () => void;
-  onTouchAdvance: (value: number) => void;
+  onExploreMove: (x: number, forward: number) => void;
   onToggleExplorePace: () => void;
   onToggleExploreView: () => void;
   onToggleExploreLabels: () => void;
@@ -42,7 +42,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   onTouchJump,
   onTouchSlide,
   onOpenMap,
-  onTouchAdvance,
+  onExploreMove,
   onToggleExplorePace,
   onToggleExploreView,
   onToggleExploreLabels,
@@ -50,6 +50,19 @@ export const GameHUD: React.FC<GameHUDProps> = ({
 }) => {
   const minimapRef = useRef<HTMLCanvasElement | null>(null);
   const [isTouchViewport, setIsTouchViewport] = useState(false);
+  const explorePointer = useRef<number | null>(null);
+  const updateExploreStick = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (explorePointer.current !== event.pointerId) return;
+    const box = event.currentTarget.getBoundingClientRect();
+    const rawX = (event.clientX-box.left-box.width/2)/39;
+    const rawY = (event.clientY-box.top-box.height/2)/39;
+    const magnitude = Math.hypot(rawX,rawY);
+    const x = rawX/Math.max(1,magnitude), y = rawY/Math.max(1,magnitude);
+    const response = magnitude > .10 ? (Math.min(1,magnitude)-.10)/(.90*Math.min(1,magnitude)) : 0;
+    event.currentTarget.style.setProperty('--stick-x',`${x*39}px`);
+    event.currentTarget.style.setProperty('--stick-y',`${y*39}px`);
+    onExploreMove(x*response,-y*response);
+  };
   const joystickCenterRef = useRef<{ x: number; y: number } | null>(null);
   const [knobOffset, setKnobOffset] = useState(0);
 
@@ -309,7 +322,7 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           </button>
           <button type="button" onClick={onToggleExploreLabels} aria-pressed={!hud.cleanExploreMode}>Labels</button>
           {(hud.canEnterShop || hud.insideShop) && <button type="button" onClick={onShopDoor} className="bg-amber-500 text-slate-950">
-            {hud.insideShop ? 'Leave shop' : 'Enter Black Sheep Shop'}
+            {hud.insideShop ? 'Leave shop' : `Enter ${hud.shopName}`}
           </button>}
           {hud.insideShop && <span className="px-2 py-2">Approximate interior</span>}
           {!hud.insideShop && !hud.cleanExploreMode && hud.nearLandmark && <span className="px-2 py-2 text-amber-200">{hud.nearLandmark}</span>}
@@ -319,7 +332,26 @@ export const GameHUD: React.FC<GameHUDProps> = ({
       {/* Mobile / Touch Controls */}
       {isTouchViewport && (
         <div className="flex items-end justify-between gap-4 pb-2 pointer-events-auto">
-          {touchMode === 'joystick' ? (
+          {route.mode === 'freeroam' ? (
+            <div aria-label="Movement joystick" className="relative grid size-28 touch-none select-none place-items-center rounded-full border border-white/35 bg-slate-950/75"
+              onPointerDown={event => {
+                if (explorePointer.current !== null) return;
+                explorePointer.current = event.pointerId;
+                event.currentTarget.setPointerCapture(event.pointerId);
+                updateExploreStick(event);
+              }}
+              onPointerMove={updateExploreStick}
+              onLostPointerCapture={event => {
+                if (explorePointer.current !== event.pointerId) return;
+                explorePointer.current = null;
+                event.currentTarget.style.setProperty('--stick-x','0px');
+                event.currentTarget.style.setProperty('--stick-y','0px');
+                onExploreMove(0,0);
+              }}>
+              <span className="pointer-events-none size-12 rounded-full border border-white/40 bg-white/25"
+                style={{transform:'translate(var(--stick-x, 0px),var(--stick-y, 0px))'}} />
+            </div>
+          ) : touchMode === 'joystick' ? (
             <div
               className="relative w-28 h-28 rounded-full bg-slate-950/70 border-2 border-white/25 flex items-center justify-center touch-none"
               onTouchStart={(e) => {
@@ -381,17 +413,8 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           )}
 
           <div className="flex items-center gap-2.5">
-            {route.mode === 'freeroam' ? [-1, 1].map(direction => (
-              <button key={direction} type="button" aria-label={direction === 1 ? 'Walk forward' : 'Walk backward'}
-                className="h-14 touch-none rounded-2xl border border-white/20 bg-slate-950/90 px-4 font-bold text-white"
-                onPointerDown={event => {
-                  event.currentTarget.setPointerCapture(event.pointerId);
-                  onTouchAdvance(direction);
-                }}
-                onLostPointerCapture={() => onTouchAdvance(0)}>
-                {direction === 1 ? '↑' : '↓'}
-              </button>
-            )) : <>
+            {route.mode === 'freeroam' ? (!hud.insideShop && <button type="button" aria-label="Jump"
+              onClick={onTouchJump} className="h-14 rounded-2xl border border-white/20 bg-slate-950/85 px-5 font-bold text-white">Jump</button>) : <>
             <button
               type="button"
               aria-label="Slide"

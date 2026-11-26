@@ -32,6 +32,7 @@ def lancaster_house():
     mesh = Mesh()
     stone, slate, trim, glass, lettering = palette(mesh)
     ring = footprint("0_-3", 423598927)
+    metal = mesh.material("Dark brass door hardware", (.31,.24,.12), .42, .64)
     eave = 5.85
     for i, start in enumerate(ring):
         edge = Elevation(mesh, start, ring[(i + 1) % len(ring)], -1)
@@ -48,7 +49,11 @@ def lancaster_house():
         if i == 7:
             edge.block(.86, 7.26, 2.37, 2.96, -.18, .025, trim)
             edge.lettering("THE BLACK SHEEP SHOP", 4.06, 2.54, 5.88, .29, -.188, lettering)
-            edge.block(1, 7.1, -.07, .03, -.38, .10, stone)
+            edge.block(3.66,4.94,0,.46,-.025,.07,trim)
+            edge.block(4.62,4.675,.91,1.16,-.075,.055,metal)
+            edge.block(4.555,4.72,1.01,1.055,-.08,.012,metal)
+            edge.block(3.71,4.89,-.045,.024,-.53,.10,stone)
+            edge.block(1, 7.1, -.11, -.045, -.38, .10, stone)
         # A low hipped ring allows the surveyed outline to remain visible.
         a, b = ring[i], ring[(i + 1) % len(ring)]
         inset = lambda p: (p[0] * .74, p[1] * .84)
@@ -134,13 +139,10 @@ def market_cross():
     mesh.export("Ambleside Market Cross", REGION / "assets/market-cross.glb")
 
 
-bpy.ops.object.select_all(action="DESELECT")
-lancaster_house()
-bpy.ops.object.select_all(action="DESELECT")
-bridge_house()
-
-bpy.ops.object.select_all(action="DESELECT")
-market_cross()
-
-bpy.ops.object.select_all(action="DESELECT")
-filling_station()
+if __name__ == "__main__":
+    targets = sys.argv[sys.argv.index("--")+1:] if "--" in sys.argv else []
+    for name, build in (("black-sheep",lancaster_house),("bridge-house",bridge_house),
+                        ("market-cross",market_cross),("hills",filling_station)):
+        if not targets or name in targets:
+            bpy.ops.object.select_all(action="DESELECT")
+            build()

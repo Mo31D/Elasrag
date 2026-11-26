@@ -1,3 +1,4 @@
+import { backgroundArchitecture } from './architecture';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import type {
@@ -21,6 +22,7 @@ export interface WorldMaterials {
   hotelStone: THREE.MeshStandardMaterial;
   slateRoof: THREE.MeshStandardMaterial;
   windowGlow: THREE.MeshStandardMaterial;
+  facadeJoinery: THREE.MeshStandardMaterial;
   primaryRoad: THREE.MeshStandardMaterial;
   countryLane: THREE.MeshStandardMaterial;
   footpath: THREE.MeshStandardMaterial;
@@ -85,10 +87,11 @@ export function createWorldMaterials(
     ...(surfaces && { ...surfaces.roof, roughness: 0.93, metalness: 0 }),
   });
 
+  const facadeJoinery = new THREE.MeshStandardMaterial({color:0x535c53,roughness:.68});
   const windowGlow = new THREE.MeshStandardMaterial({
     color: 0x334155,
-    emissive: 0xf59e0b,
-    emissiveIntensity: 0.15,
+    emissive: 0x455260,
+    emissiveIntensity: 0.07,
     roughness: 0.18,
     metalness: 0.6,
   });
@@ -230,6 +233,7 @@ export function createWorldMaterials(
     hotelStone,
     slateRoof,
     windowGlow,
+    facadeJoinery,
     primaryRoad,
     countryLane,
     footpath,
@@ -550,13 +554,10 @@ function createOrientedBox(
  * Generates an extruded/pitched Lakeland building geometry from real OSM footprint points,
  * complete with pitched slate roof and chimney stack.
  */
-function buildLakelandBuildingGeometries(
+function buildingBounds(
   b: BuildingFeature,
   terrain: TerrainGridData | null,
 ): {
-  wallGeo: THREE.BufferGeometry;
-  roofGeo: THREE.BufferGeometry;
-  windowGeo: THREE.BufferGeometry;
   bounds: { minX: number; maxX: number; minZ: number; maxZ: number; topY: number };
 } | null {
   if (b.pts.length < 3) return null;
@@ -574,88 +575,13 @@ function buildLakelandBuildingGeometries(
     if (pz > maxZ) maxZ = pz;
   }
 
-  // Primary edge orientation from longest footprint edge
-  let bestLen = 0;
-  let yaw = 0;
-  for (let i = 0; i < b.pts.length; i++) {
-    const a = b.pts[i];
-    const next = b.pts[(i + 1) % b.pts.length];
-    const dx = next[0] - a[0];
-    const dz = next[1] - a[1];
-    const l = Math.hypot(dx, dz);
-    if (l > bestLen) {
-      bestLen = l;
-      yaw = Math.atan2(dx, dz);
-    }
-  }
-
-  // Build shape in local XZ for accurate real-world footprint extrusion
-  const shape = new THREE.Shape();
-  shape.moveTo(b.pts[0][0], -b.pts[0][1]);
-  for (let i = 1; i < b.pts.length; i++) {
-    shape.lineTo(b.pts[i][0], -b.pts[i][1]);
-  }
-  shape.closePath();
-
-  const foundationDepth = 2.2;
-  const wallH = Math.max(3.4, b.h - 1.6);
-  const wallGeo = new THREE.ExtrudeGeometry(shape, {
-    depth: wallH + foundationDepth,
-    bevelEnabled: false,
-  });
-  wallGeo.rotateX(-Math.PI / 2);
-  wallGeo.translate(b.cx, baseTerrainY - foundationDepth, b.cz);
-
-  // Pitched Slate Roof (4-sided hipped/pyramidal cap + chimney)
-  const spanX = Math.max(3.2, Math.min(28, maxX - minX));
-  const spanZ = Math.max(3.2, Math.min(28, maxZ - minZ));
-  const roofH = b.kind === 'historic' ? 3.2 : 1.95;
-
-  let roofPrism: THREE.BufferGeometry;
-  if (b.pts.length > 24) {
-    // Approximate the cap of complex footprints without overhanging adjacent streets.
-    roofPrism = new THREE.ExtrudeGeometry(shape, { depth: 0.2, bevelEnabled: false });
-    roofPrism.rotateX(-Math.PI / 2);
-    roofPrism.translate(b.cx, baseTerrainY + wallH, b.cz);
-  } else {
-    roofPrism = new THREE.ConeGeometry(Math.max(spanX, spanZ) * 0.68, roofH, 4);
-    roofPrism.rotateY(Math.PI / 4 + yaw);
-    roofPrism.scale(spanX / Math.max(spanX, spanZ), 1, spanZ / Math.max(spanX, spanZ));
-    roofPrism.translate(b.cx, baseTerrainY + wallH + roofH * 0.5 - 0.05, b.cz);
-  }
-
-  const chimney = new THREE.BoxGeometry(0.68, 1.35, 0.68);
-  chimney.translate(
-    b.cx + Math.cos(yaw) * (spanX * 0.22),
-    baseTerrainY + wallH + roofH * 0.65,
-    b.cz - Math.sin(yaw) * (spanX * 0.22),
-  );
-
-  // Subtle exterior window band on upper wall
-  const winBand = new THREE.BoxGeometry(spanX * 0.72, 0.75, spanZ * 0.72);
-  winBand.rotateY(yaw);
-  winBand.translate(b.cx, baseTerrainY + wallH * 0.62, b.cz);
-
-  const roofCap = roofPrism.index ? roofPrism.toNonIndexed() : roofPrism;
-  const chimneyFaces = chimney.toNonIndexed();
-  const roofMerged = mergeGeometries([roofCap, chimneyFaces], false)!;
-  if (roofCap !== roofPrism) roofCap.dispose();
-  chimneyFaces.dispose();
-  roofPrism.dispose();
-  chimney.dispose();
-
-  const toNonIdx = (g: THREE.BufferGeometry) => (g.index ? g.toNonIndexed() : g);
-
   return {
-    wallGeo: toNonIdx(wallGeo),
-    roofGeo: toNonIdx(roofMerged),
-    windowGeo: toNonIdx(winBand),
     bounds: {
       minX: b.cx + minX,
       maxX: b.cx + maxX,
       minZ: b.cz + minZ,
       maxZ: b.cz + maxZ,
-      topY: baseTerrainY + wallH,
+      topY: baseTerrainY + Math.max(3.4,b.h - 1.6),
     },
   };
 }
@@ -686,9 +612,10 @@ export function buildChunkGroup(
   const hotelWalls: THREE.BufferGeometry[] = [];
   const roofs: THREE.BufferGeometry[] = [];
   const windows: THREE.BufferGeometry[] = [];
+  const joinery: THREE.BufferGeometry[] = [];
 
   for (const b of chunk.buildings) {
-    const built = buildLakelandBuildingGeometries(b, terrain);
+    const built = buildingBounds(b, terrain);
     if (!built) continue;
     const asset = buildingAssets.get(b.id);
     if (asset) {
@@ -704,19 +631,18 @@ export function buildChunkGroup(
         }
       });
       group.add(model);
-      built.wallGeo.dispose();
-      built.roofGeo.dispose();
-      built.windowGeo.dispose();
-    } else if (b.kind === 'shop' || b.kind === 'hotel') {
-      hotelWalls.push(built.wallGeo);
-    } else if (b.zone === 'hawkshead' || b.zone === 'far_sawrey' || b.zone === 'near_sawrey') {
-      whiteWalls.push(built.wallGeo);
     } else {
-      stoneWalls.push(built.wallGeo);
-    }
-    if (!asset) {
-      roofs.push(built.roofGeo);
-      windows.push(built.windowGeo);
+      const facade = backgroundArchitecture(b,Math.max(.45,sampleTerrainHeight(terrain,b.cx,b.cz)),chunk.roads);
+      if (facade) {
+        const walls = b.kind==='shop'||b.kind==='hotel' ? hotelWalls
+          : ['hawkshead','far_sawrey','near_sawrey'].includes(b.zone ?? '') ? whiteWalls : stoneWalls;
+        walls.push(facade.masonry);
+        roofs.push(facade.tiles);
+        if (facade.glazing.attributes.position.count) windows.push(facade.glazing);
+        else facade.glazing.dispose();
+        if (facade.joinery.attributes.position.count) joinery.push(facade.joinery);
+        else facade.joinery.dispose();
+      }
     }
     if (b.id !== 658735202 || !asset) colliders.push({ ...built.bounds, isRoof: b.h < 9.5, outline: b.pts.map(([x, z]) => [x + b.cx, z + b.cz]) });
   }
@@ -758,6 +684,7 @@ export function buildChunkGroup(
   addBatch(hotelWalls, materials.hotelStone, true);
   addBatch(roofs, materials.slateRoof, true);
   addBatch(windows, materials.windowGlow, false);
+  addBatch(joinery, materials.facadeJoinery, false);
 
   // Roads & Footpaths
   const primaryGeos: THREE.BufferGeometry[] = [];
@@ -790,6 +717,11 @@ export function buildChunkGroup(
 
   addBatch(primaryGeos, materials.primaryRoad, false);
   addBatch(laneGeos, materials.countryLane, false);
+  if (chunk.key === '0_-3') {
+    // Representative pavement between the mapped Lancaster House facade and the road.
+    const frontage = [[68.60,-1393.80],[68.80,-1403.70],[71.10,-1403.65],[70.90,-1393.75]];
+    pathGeos.push(groundSurface(frontage,(x,z)=>Math.max(.45,sampleTerrainHeight(terrain,x,z)),.075));
+  }
   addBatch(pathGeos, materials.footpath, false);
   addBatch(railGeos, materials.railSteel, false);
 

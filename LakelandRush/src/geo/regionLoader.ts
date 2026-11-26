@@ -1,3 +1,4 @@
+import authoredBuildings from '../data/building-assets.json';
 import type {
   LakeData,
   RegionManifest,
@@ -20,6 +21,7 @@ export class RegionManager {
 
   private chunkCache = new Map<string, WorldChunkData>();
   private loadingChunks = new Map<string, Promise<WorldChunkData | null>>();
+  private footprintUpdates: Record<string, [number,number][]> = {};
   private roadTiles: Record<string, RoadFeature[]> = {};
   private roadReplacements = new Set<number>();
   private availableChunkSet = new Set<string>();
@@ -57,9 +59,10 @@ export class RegionManager {
     if (this.regionId === 'windermere') {
       const response = await fetch(`${import.meta.env.BASE_URL}world-core/road-tiles-v2.json`);
       if (!response.ok) throw new Error('V2 road tiles unavailable');
-      const adapter = await response.json() as { schemaVersion: number; replaces: number[]; tiles: Record<string, RoadFeature[]> };
+      const adapter = await response.json() as { schemaVersion: number; replaces: number[]; tiles: Record<string, RoadFeature[]>; footprints?: Record<string,[number,number][]> };
       if (adapter.schemaVersion !== 2) throw new Error('Unsupported V2 road tiles');
       this.roadTiles = adapter.tiles;
+      this.footprintUpdates = adapter.footprints ?? {};
       this.roadReplacements = new Set(adapter.replaces);
     }
   }
@@ -120,6 +123,11 @@ export class RegionManager {
         if (!res.ok) return null;
         const data = (await res.json()) as WorldChunkData;
         data.roads = [...data.roads.filter(road => !this.roadReplacements.has(road.id)), ...(this.roadTiles[key] ?? [])];
+        data.buildings = data.buildings.map(building => {
+          const footprint = this.footprintUpdates[building.id];
+          if (!footprint || footprint.length < 3 || authoredBuildings.some(entry => entry.buildingId === building.id)) return building;
+          return {...building, pts:footprint.map(([x,z])=>[x-building.cx,z-building.cz])};
+        });
         this.chunkCache.set(key, data);
         return data;
       } catch {
