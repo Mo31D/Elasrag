@@ -71,3 +71,61 @@ test('all five model capabilities match the public directory with finite hotspot
     }
   }
 });
+
+// Read the exported geometry, rather than repeating the generator's polygon logic.
+// glTF splits vertices at normal seams, so topology checks weld by exported position.
+function geometryAccessor(index) {
+  const accessor = gltf.accessors[index];
+  const view = gltf.bufferViews[accessor.bufferView];
+  const readers = { 5121: ['readUInt8', 1], 5123: ['readUInt16LE', 2], 5125: ['readUInt32LE', 4], 5126: ['readFloatLE', 4] };
+  const [read, size] = readers[accessor.componentType];
+  const width = { SCALAR: 1, VEC3: 3 }[accessor.type];
+  assert(width, 'Test reads supported exported accessor types');
+  const start = 20 + jsonLength + 8 + (view.byteOffset || 0) + (accessor.byteOffset || 0);
+  const stride = view.byteStride || width * size;
+  return Array.from({ length: accessor.count }, (_, row) => Array.from({ length: width }, (_, col) => bytes[read](start + row * stride + col * size)));
+}
+
+test('the M body and inset export closed geometry with outward-facing triangle winding', () => {
+  const mo = components.find(component => component.name === 'Mo_Core');
+  const targetNodes = mo.children.map(index => gltf.nodes[index]).filter(node => ['Mo_Core__Titanium', 'Mo_Core__Graphite'].includes(node.name));
+  assert.equal(targetNodes.length, 2, 'Both primary M surfaces are checked');
+  for (const node of targetNodes) {
+    const primitives = gltf.meshes[node.mesh].primitives;
+    for (const primitive of primitives) {
+      const positions = geometryAccessor(primitive.attributes.POSITION);
+      const indices = geometryAccessor(primitive.indices).flat();
+      const welded = new Map();
+      const vertexIds = positions.map(position => {
+        const key = position.map(value => Math.round(value * 1e6)).join(',');
+        if (!welded.has(key)) welded.set(key, welded.size);
+        return welded.get(key);
+      });
+      const edges = new Map();
+      let signedVolume = 0;
+      for (let index = 0; index < indices.length; index += 3) {
+        const ids = indices.slice(index, index + 3);
+        // Zero-area triangles created by bevel tips do not form geometric edges.
+        if (new Set(ids.map(id => vertexIds[id])).size < 3) continue;
+        const [a, b, c] = ids.map(id => positions[id]);
+        signedVolume += (a[0] * (b[1] * c[2] - b[2] * c[1]) + a[1] * (b[2] * c[0] - b[0] * c[2]) + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6;
+        for (let edge = 0; edge < 3; edge++) {
+          const from = vertexIds[ids[edge]];
+          const to = vertexIds[ids[(edge + 1) % 3]];
+          if (from === to) continue;
+          const key = [Math.min(from, to), Math.max(from, to)].join(':');
+          const counts = edges.get(key) || { incidence: 0, orientation: 0 };
+          counts.incidence++;
+          counts.orientation += from < to ? 1 : -1;
+          edges.set(key, counts);
+        }
+      }
+      assert(edges.size > 0);
+      for (const counts of edges.values()) {
+        assert.equal(counts.incidence, 2, `${node.name} has no open or nonmanifold edges`);
+        assert.equal(counts.orientation, 0, `${node.name} shares edges with consistent winding`);
+      }
+      assert(signedVolume > 0.01, `${node.name} encloses a positive volume with outward-facing surfaces`);
+    }
+  }
+});

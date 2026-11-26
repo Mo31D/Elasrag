@@ -1,9 +1,9 @@
-# Validation record — personal Mo revision, 25 November 2026
+# Validation record — personal Mo release review, 26 November 2026
 
 ## Verified against the current source
 
-- Four deterministic Node test files pass: 4 timeline tests, 3 preserved original-asset tests, 3 capability/content/gesture tests, and 3 personal-MO asset tests (**13 total**).
-- `npm --prefix creation-engine run test:dom`: **4 integration tests pass** using the actual homepage markup and renderer-independent discovery controller. These exercise all five hotspot selections, distinct content/actions, disclosure attributes, all four directory choices without WebGL, scroll requests, Escape/close, focus API calls and invalid IDs. LinkeDOM does not render layout; viewport, focus and scrolling APIs are stubbed. These are **DOM tests, not browser interaction tests**.
+- Four deterministic Node test files pass: 4 timeline tests, 3 preserved original-asset tests, 3 capability/content/gesture tests, and 4 personal-MO asset tests (**14 total**).
+- `npm --prefix creation-engine run test:dom`: **5 integration tests pass** using the actual homepage markup and renderer-independent discovery controller. These exercise all five hotspot selections, distinct content/actions, disclosure attributes, all four directory choices without WebGL, scroll requests, Escape/close, focus API calls invalid IDs, and secondary-touch isolation. LinkeDOM does not render layout; viewport, focus and scrolling APIs are stubbed. These are **DOM tests, not browser interaction tests**.
 - `node creation-engine/tools/check-source.mjs`: all 11 modules parse and 20 local source/homepage asset references resolve. Contact destinations are present.
 - `node creation-engine/tools/check-scope.mjs`: all 835 protected files from base `88277c7b170d41c164e7338659bf018d4653917a` remain byte-identical; the previous homepage backup is exact.
 - Blender headless generation/export and a 1200×1200 CPU poster render completed for the new MO sculpture. The upright poster was opened and visually inspected. It is an **offline render, not a webpage screenshot**.
@@ -43,6 +43,18 @@ Complete these checks before production merge:
 
 ## Payload
 
-The primary model has 46,232 triangles, 32 mesh primitives, five materials, seven mechanical roots and five capability IDs. Its GLB is approximately 1.18 MB; the initial WebP poster is approximately 92 KB. Both are smaller than the previous model/poster. There are no model textures, runtime CDN requests, external telemetry or paid runtime services.
+The primary model has 46,232 triangles, 32 mesh primitives, five materials, seven mechanical roots and five capability IDs. Its GLB is approximately 1.18 MB; the initial WebP poster is approximately 108 KB. Both are smaller than the previous model/poster. There are no model textures, runtime CDN requests, external telemetry or paid runtime services.
 
 Three.js r170 remains locally vendored. LinkeDOM is a pinned **development-only** dependency for reproducible DOM checks; it is never loaded by the homepage. Editable Blender/source files and the archived first engine are not requested during normal page loading.
+
+## Production preflight — 26 November 2026
+
+The user authorized review, concrete Blender improvements and publication to the existing website. The MO identity was retained. Blender corrections give the M consistently outward-facing closed surfaces and a true graphite inset with an even titanium border. The GLB remains 1,181,008 bytes; 32 meshes / 46,232 triangles / seven roots / five capabilities are preserved. Exported-geometry tests verify consistent shared-edge winding and positive enclosed volumes. The cleaner 128-sample fallback render was inspected.
+
+Gesture handling now tracks primary pointer ID and maximum travel: dragging out and back cannot accidentally select a part, and a second touch cannot rotate or release the primary gesture. All 14 deterministic tests and five DOM integration tests pass, along with syntax/reference/scope and whitespace checks.
+
+Repository Pages settings were verified through the live API: legacy branch publication from main at /, with CNAME www.elasrag.com. Before rollout the previous homepage was still built at 88277c7; /adam/, /wf/ and /LakelandRush/ returned200. The old homepage backup is exact. No deployment workflow, API or unrelated route is changed.
+
+A separate Cloudflare check, Workers Builds: wf-backend, failed on the development branch; it is not a homepage Pages build and its cause is unverified. WF files are unchanged. The mo.elasrag.com endpoint returned403 before this release, while the static /wf/ route returned200. Neither is being represented as a successful WF production check.
+
+The private browser preview remains signed out and the managed preview relay has no supported working port override. After available preflight checks, the authorized existing Pages release will be checked immediately through the public homepage. Any material homepage defect discovered there will be fixed or the prior homepage restored; actual public-browser results will be recorded separately below. No unperformed Safari/physical-device test is claimed.

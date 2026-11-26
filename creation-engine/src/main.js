@@ -165,16 +165,22 @@ async function init() {
       if (discovery.selected === 'design') { event.preventDefault(); goToStage(0); }
     }, options);
     canvas.addEventListener('pointerdown', event => {
-      if (event.isPrimary && event.button === 0) gestureStart = { x:event.clientX,y:event.clientY,time:performance.now() };
+      if (event.isPrimary && event.button === 0) gestureStart = { x:event.clientX,y:event.clientY,time:performance.now(),pointerId:event.pointerId,maxDistance:0 };
+    }, options);
+    canvas.addEventListener('pointermove', event => {
+      if (gestureStart?.pointerId === event.pointerId) gestureStart.maxDistance = Math.max(gestureStart.maxDistance,Math.hypot(event.clientX-gestureStart.x,event.clientY-gestureStart.y));
     }, options);
     canvas.addEventListener('pointerup', event => {
-      if (isSelectionGesture(gestureStart,{x:event.clientX,y:event.clientY,time:performance.now()}) && current.solid>.7) {
+      if (!gestureStart || gestureStart.pointerId !== event.pointerId) return;
+      if (event.isPrimary && isSelectionGesture(gestureStart,{x:event.clientX,y:event.clientY,time:performance.now(),pointerId:event.pointerId,maxDistance:gestureStart.maxDistance}) && current.solid>.7) {
         const id = scene.pick(event.clientX,event.clientY);
         if (id) discovery.select(id,canvas);
       }
       gestureStart = null;
     }, options);
-    canvas.addEventListener('pointercancel', () => { gestureStart=null; }, options);
+    window.addEventListener('pointerup', event => { if (gestureStart?.pointerId === event.pointerId) gestureStart=null; }, options);
+    canvas.addEventListener('pointercancel', event => { if (gestureStart?.pointerId === event.pointerId) gestureStart=null; }, options);
+    window.addEventListener('blur', () => { gestureStart=null; }, options);
     controls.addEventListener('click', event => {
       const button = event.target.closest('[data-action]');
       if (!button) return;

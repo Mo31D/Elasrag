@@ -10,7 +10,7 @@ blender -b --python creation-engine/tools/generate_mo_signature.py -- --render
 
 Requires Blender 4.3+, no downloads, add-ons, fonts, texture files, paid tools or services. Outputs `mo-signature.glb`, compressed editable `mo-signature.blend` and optional `mo-poster.png` to `creation-engine/assets`. `--output /absolute/directory` changes that directory. Omit `--render` to skip the offline CPU Cycles render. The delivered transparent WebP is a compact derivative of that render.
 
-The procedural Python source is the master. It contains the M polygon, support rail radii, copper segment, four node definitions and raised geometry glyphs. The previous Creation Engine asset and its source remain preserved independently.
+The procedural Python source is the master. The M outline is normalised to counter-clockwise winding before extrusion; its graphite face uses a constant 0.055-unit polygon inset, preserving a real titanium reveal at concave corners. It contains the M polygon, support rail radii, copper segment, four node definitions and raised geometry glyphs. The previous Creation Engine asset and its source remain preserved independently.
 
 ## Coordinate contract
 
@@ -57,5 +57,7 @@ Use broad neutral environment reflections for metallic readability. Keep copper 
 - Self-contained glTF 2.0 header/length, seven components, five capability mappings, five materials and triangle count checked.
 - Offline transparent poster rendered and visually reviewed.
 - Generator Python syntax checked.
+- Exported M body and graphite face checked for closed welded topology, consistent shared-edge winding and positive enclosed volumes (+1.056123 and +0.072605).
+- Poster regenerated at 128 CPU Cycles samples after the normal/inset correction.
 
 Runtime browser interaction tests belong to the homepage integration report.

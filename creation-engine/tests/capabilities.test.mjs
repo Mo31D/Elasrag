@@ -55,4 +55,7 @@ test('short mouse clicks and touch taps select; drags and long presses do not', 
   assert.equal(isSelectionGesture(start, { x: 145, y: 260, time: 1080 }), false, 'Fast rotation/scroll drag never becomes a click');
   assert.equal(isSelectionGesture(null, { x: 100, y: 200, time: 1030 }), false, 'A release without a matching start cannot select');
   assert.equal(isSelectionGesture(start, { x: 100, y: 200, time: 999 }), false, 'Invalid reverse timestamps cannot select');
+  assert.equal(isSelectionGesture({...start,pointerId:1}, {x:100,y:200,time:1100,pointerId:2}),false,'A secondary touch cannot finish the primary gesture');
+  assert.equal(isSelectionGesture({...start,pointerId:1}, {x:100,y:200,time:1100,pointerId:1,maxDistance:30}),false,'Dragging out and back must not select');
+  assert.equal(isSelectionGesture({...start,pointerId:1}, {x:102,y:201,time:1100,pointerId:1,maxDistance:3}),true,'The same primary pointer can perform a genuine tap');
 });

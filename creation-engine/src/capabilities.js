@@ -44,5 +44,5 @@ export function getCapability(id) {
 
 // Clicks and drags must remain separate, especially on touch screens.
 export function isSelectionGesture(start, end) {
-  return !!start && end.time >= start.time && end.time - start.time < 700 && Math.hypot(end.x - start.x, end.y - start.y) < 8;
+  return !!start && start.pointerId === end.pointerId && end.time >= start.time && end.time - start.time < 700 && Math.max(end.maxDistance || 0, Math.hypot(end.x - start.x, end.y - start.y)) < 8;
 }

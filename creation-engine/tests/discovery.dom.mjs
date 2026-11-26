@@ -5,6 +5,7 @@ import { parseHTML } from 'linkedom';
 
 const html = await readFile(new URL('../../index.html', import.meta.url), 'utf8');
 const { CAPABILITIES } = await import('../src/capabilities.js');
+const { createInteraction } = await import('../src/interaction.js');
 
 // LinkeDOM supplies the actual page DOM and event dispatch, not browser layout.
 // Only viewport/scroll/focus APIs are stubbed because they require a renderer.
@@ -125,4 +126,37 @@ test('invalid IDs are harmless; close(false) and unsubscribe preserve caller con
   assert.deepEqual(notifications, ['mo']);
   assert.equal(f.document.activeElement.id, 'capability-panel', 'close(false) does not move focus');
   controller.dispose();
+});
+
+test('a second touch cannot rotate or release the first pointer gesture', () => {
+  const f = fixture();
+  const previousWindow = globalThis.window;
+  globalThis.window = f.window;
+  const canvas = f.document.querySelector('#engine-canvas');
+  canvas.getBoundingClientRect = () => ({left:0,top:0,width:400,height:400});
+  canvas.setPointerCapture = () => {};
+  const interaction = createInteraction(canvas, () => {});
+  function pointer(target,type,id,primary,x=100,y=100) {
+    const event = new f.window.Event(type, {bubbles:true});
+    Object.assign(event,{pointerId:id,isPrimary:primary,button:0,pointerType:'touch',clientX:x,clientY:y});
+    target.dispatchEvent(event);
+  }
+  try {
+    pointer(canvas,'pointerdown',1,true);
+    assert.equal(interaction.state.dragging,true);
+    pointer(canvas,'pointermove',2,false,200,200);
+    assert.equal(interaction.state.x,0);
+    assert.equal(interaction.state.y,0);
+    pointer(f.window,'pointerup',2,false);
+    assert.equal(interaction.state.dragging,true);
+    pointer(canvas,'pointermove',1,true,130,110);
+    assert.ok(Math.abs(interaction.state.y-.21)<.0001);
+    pointer(f.window,'pointerup',1,true);
+    assert.equal(interaction.state.dragging,false);
+    pointer(canvas,'pointerdown',2,false);
+    assert.equal(interaction.state.dragging,false);
+  } finally {
+    interaction.dispose();
+    globalThis.window = previousWindow;
+  }
 });

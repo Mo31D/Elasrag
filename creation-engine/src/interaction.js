@@ -7,8 +7,8 @@ export function createInteraction(canvas, onChange) {
   let origin = null;
   const notify = () => { state.lastInput = performance.now(); onChange(); };
   canvas.addEventListener('pointerdown', e => {
-    if (e.button !== 0) return;
-    origin = { x: e.clientX, y: e.clientY, rotationX: state.x, rotationY: state.y, type: e.pointerType };
+    if (!e.isPrimary || e.button !== 0) return;
+    origin = { x: e.clientX, y: e.clientY, rotationX: state.x, rotationY: state.y, type: e.pointerType, pointerId:e.pointerId };
     state.dragging = true;
     if (e.pointerType !== 'touch') canvas.setPointerCapture(e.pointerId);
     notify();
@@ -16,6 +16,7 @@ export function createInteraction(canvas, onChange) {
   canvas.addEventListener('pointermove', e => {
     const bounds = canvas.getBoundingClientRect();
     if (origin) {
+      if (e.pointerId !== origin.pointerId) return;
       const dx = e.clientX - origin.x, dy = e.clientY - origin.y;
       // Let vertical touch gestures continue the page's native scroll.
       if (origin.type === 'touch' && Math.abs(dy) > Math.abs(dx) * 1.25) return;
@@ -28,7 +29,10 @@ export function createInteraction(canvas, onChange) {
       onChange();
     }
   }, options);
-  const end = () => { origin = null; state.dragging = false; };
+  const end = event => {
+    if (origin && event.pointerId !== undefined && event.pointerId !== origin.pointerId) return;
+    origin = null; state.dragging = false;
+  };
   window.addEventListener('pointerup', end, options);
   window.addEventListener('blur', end, options);
   canvas.addEventListener('pointercancel', end, options);

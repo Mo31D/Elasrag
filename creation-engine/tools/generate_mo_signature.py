@@ -64,7 +64,25 @@ def cyl(name,loc,radius,depth,mat,parent,vertices=24):
 def bar(name,a,b,width,depth,z,mat,parent,bevel=.012):
  dx=b[0]-a[0];dy=b[1]-a[1]
  return cube(name,((a[0]+b[0])/2,(a[1]+b[1])/2,z),(math.hypot(dx,dy),width,depth),mat,parent,bevel,math.atan2(dy,dx))
+def polygon_ccw(poly):
+ # Consistent outward winding matters to exported PBR normals, even for double-sided materials.
+ area=sum(poly[i][0]*poly[(i+1)%len(poly)][1]-poly[(i+1)%len(poly)][0]*poly[i][1] for i in range(len(poly)))
+ return list(poly) if area>0 else list(reversed(poly))
+def inset_polygon(poly,distance):
+ # Offset each edge toward the polygon interior, intersecting neighbouring offset lines.
+ # Unlike global scaling, this preserves a constant reveal around concave M cut-outs.
+ poly=polygon_ccw(poly);result=[]
+ for i,p in enumerate(poly):
+  prev=poly[i-1];nxt=poly[(i+1)%len(poly)]
+  e1=Vector((p[0]-prev[0],p[1]-prev[1])).normalized();e2=Vector((nxt[0]-p[0],nxt[1]-p[1])).normalized()
+  q1=Vector(p)+Vector((-e1.y,e1.x))*distance;q2=Vector(p)+Vector((-e2.y,e2.x))*distance
+  cross=e1.x*e2.y-e1.y*e2.x
+  if abs(cross)<1e-8:result.append(tuple(q1));continue
+  delta=q2-q1;t=(delta.x*e2.y-delta.y*e2.x)/cross
+  result.append(tuple(q1+e1*t))
+ return result
 def extrude(name,poly,z,depth,mat,parent,bevel=.025):
+ poly=polygon_ccw(poly)
  verts=[(x,y,z-depth/2) for x,y in poly]+[(x,y,z+depth/2) for x,y in poly];n=len(poly)
  faces=[tuple(range(n-1,-1,-1)),tuple(range(n,2*n))]+[(i,(i+1)%n,(i+1)%n+n,i+n) for i in range(n)]
  return mesh(name,verts,faces,mat,parent,bevel)
@@ -77,7 +95,7 @@ mo=component('Mo_Core',explode=(0,0,.5),role='core');mo['capability']='mo';mo['l
 outline=[(-1.16,-1.06),(-1.16,1.12),(-.77,1.12),(0,.15),(.77,1.12),(1.16,1.12),(1.16,-1.06),(.77,-1.06),(.77,.39),(.12,-.43),(-.12,-.43),(-.77,.39),(-.77,-1.06)]
 extrude('Continuous titanium M frame',outline,.04,.38,TI,mo,.035)
 # A recessed graphite face preserves the visible titanium bevel and adds depth.
-face=[(x*.957,y*.968) for x,y in outline]
+face=inset_polygon(outline,.055)
 extrude('Inset graphite M face',face,.239,.036,DARK,mo,.014)
 # The four construction members are traced with restrained, warm-white conductor strips.
 for a,b in [((-.969,-.75),(-.969,.84)),((-.83,.91),(0,-.17)),((0,-.17),(.83,.91)),((.969,.84),(.969,-.75))]:
@@ -170,7 +188,7 @@ light('Key softbox',(2,-1,7),1000,(.9,.95,1),5)
 light('Copper rim',(-4,1,3),1300,(1,.82,.62),4)
 light('Top reflection',(0,5,2),1200,(.8,.9,1),4)
 bpy.ops.object.camera_add(location=(3.4,1.5,12));cam=bpy.context.object;point_at(cam);forward=(-cam.location).normalized();right=forward.cross(Vector((0,1,0))).normalized();up=right.cross(forward);cam.rotation_euler=Matrix((right,up,-forward)).transposed().to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=5.5;bpy.context.scene.camera=cam
-scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=64;scene.cycles.use_denoising=False;scene.render.resolution_x=1200;scene.render.resolution_y=1200;scene.render.resolution_percentage=100;scene.render.film_transparent=True;scene.view_settings.view_transform='AgX';scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA';scene.render.filepath=os.path.join(out,'mo-poster.png')
+scene=bpy.context.scene;scene.render.engine='CYCLES';scene.cycles.samples=128;scene.cycles.use_denoising=False;scene.render.resolution_x=1200;scene.render.resolution_y=1200;scene.render.resolution_percentage=100;scene.render.film_transparent=True;scene.view_settings.view_transform='AgX';scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA';scene.render.filepath=os.path.join(out,'mo-poster.png')
 bpy.ops.wm.save_as_mainfile(filepath=os.path.join(out,'mo-signature.blend'),compress=True)
 if args.render:bpy.ops.render.render(write_still=True)
 print('MO_SIGNATURE_COMPLETE',os.path.join(out,'mo-signature.glb'))
