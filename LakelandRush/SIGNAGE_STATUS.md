@@ -22,3 +22,6 @@
 
 ## V4
 Explicit race exit to free exploration at current position; south approach spawn; graph connectivity test. Static cars inside mapped parking polygons with collision footprints. BP canopy text fascia based on confirmed business identity, not a survey. Initial retail reconciliation register; Greggs address confirmed but exact footprint remains unresolved. No road centerlines altered; actual traversal still needs device testing.
+
+## V5 — mobile playability
+96-second user recording showed the pre-V3 race-style HUD in exploration, horizontal/forward buttons, constant 19 km/h, barren facades, hard road transitions and empty map. V5 builds on current V4, not on the older captured build. Floating two-axis movement in the lower-left, separate drag camera, Walk/Run/Sprint, direct camera orbit alignment, collision substeps, single pause menu, local route minimap (only existing mapped approaches, not a complete regional street map), and visible V5 identifier. Faster pace values are gameplay tuning. Real-device tests, full road/terrain corrections, building details and asset replacement remain outstanding.

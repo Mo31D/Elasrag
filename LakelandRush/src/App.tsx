@@ -400,6 +400,8 @@ export default function App() {
             startRouteRun({...route,startName:hud.nearSettlement,waypoints:[[x,z],[x-Math.sin(h)*8,z-Math.cos(h)*8]]});
           }}
           onToggleExplorePace={() => engineRef.current?.toggleExplorePace()}
+          onSetExplorePace={pace=>engineRef.current?.setExplorePace(pace)}
+          onRecenterExploreCamera={()=>engineRef.current?.recenterExploreCamera()}
           onToggleExploreView={() => engineRef.current?.toggleExploreView()}
           onToggleExploreLabels={() => engineRef.current?.toggleExploreLabels()}
           onShopDoor={() => engineRef.current?.toggleShop()}
@@ -410,6 +412,11 @@ export default function App() {
       {gameState === 'paused' && !showSettingsModal && !showMapModal && (
         <PauseAndPhotoModal
           isPhotoMode={isPhotoMode}
+          exploring={selectedRoute.mode==='freeroam'}
+          labelsVisible={!hud.cleanExploreMode}
+          muted={settings.muted}
+          onToggleLabels={()=>engineRef.current?.toggleExploreLabels()}
+          onToggleMute={handleToggleMute}
           photoPreset={photoPreset}
           onTogglePhotoMode={(enabled) => {
             setIsPhotoMode(enabled);

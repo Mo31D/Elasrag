@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { cameraRelative, smoothAngle, slideMove } from '../game/exploreControls';
+import { cameraRelative, smoothAngle, slideMove, sweepMove, paceSpeed, type ExplorePace } from '../game/exploreControls';
 import { createBlackSheepInterior } from './shopInterior';
 import navigation from '../data/ambleside-navigation.json';
 import { createAtmosphere } from './atmosphere';
@@ -195,7 +195,7 @@ export class LakelandEngine {
   // Player Physics State
   private exploreYaw = 0;
   private explorePitch = 0;
-  private exploreSprint = false;
+  private explorePace: ExplorePace = 'run';
   private exploreFirst = false;
   private exploreLabels = true;
   private exploreSpeed = 0;
@@ -758,13 +758,20 @@ export class LakelandEngine {
   public rotateExploreView(dx: number, dy: number): void {
     if (this.activeRoute.mode !== 'freeroam' || this.gameState !== 'playing') return;
     const scale = .0038 * this.settings.sensitivity;
-    this.exploreYaw -= dx * scale;
+    this.exploreYaw = Math.atan2(Math.sin(this.exploreYaw-dx*scale),Math.cos(this.exploreYaw-dx*scale));
     this.explorePitch = THREE.MathUtils.clamp(this.explorePitch - dy * scale, -.88, .88);
   }
 
   public toggleExplorePace(): void {
-    this.exploreSprint = !this.exploreSprint;
-    this.pushHudSnapshot();
+    this.setExplorePace(this.explorePace==='walk'?'run':this.explorePace==='run'?'sprint':'walk');
+  }
+
+  public setExplorePace(pace:ExplorePace):void {
+    this.explorePace=pace;this.pushHudSnapshot();
+  }
+  public recenterExploreCamera():void {
+    if(this.inShop)return;
+    this.exploreYaw=this.playerHeading;this.explorePitch=0;
   }
 
   public toggleExploreView(): void {
@@ -1357,8 +1364,8 @@ export class LakelandEngine {
     const roaming = this.activeRoute.mode === 'freeroam';
     if (!roaming) this.scoring = tickScoring(this.scoring, dt, this.isGrinding);
     const throttle = roaming ? this.exploreThrottle() : 0;
-    const fast = this.exploreSprint || this.keysHeld.has('ShiftLeft') || this.keysHeld.has('ShiftRight');
-    let speed = roaming ? (fast ? 4.6 : 1.65) * Math.min(1,Math.hypot(steer,throttle)) : this.scoring.speedMps;
+    const maxExploreSpeed=paceSpeed(this.explorePace,this.keysHeld.has('ShiftLeft')||this.keysHeld.has('ShiftRight'));
+    let speed = roaming ? maxExploreSpeed * Math.min(1,Math.hypot(steer,throttle)) : this.scoring.speedMps;
     if(roaming)this.steerTilt=0;
 
     // Jump buffering & Coyote time
@@ -1413,7 +1420,7 @@ export class LakelandEngine {
     } else {
       // Full two-axis, camera-relative movement. Camera yaw stays independent of body yaw.
       const move=cameraRelative(steer,throttle,this.exploreYaw);
-      const maxSpeed=fast?4.6:1.65;
+      const maxSpeed=maxExploreSpeed;
       const oldX=this.playerX,oldZ=this.playerZ;
       const blocked=(x:number,z:number)=>{
         for(const chunk of this.loadedChunks.values())for(const c of chunk.colliders){
@@ -1422,7 +1429,7 @@ export class LakelandEngine {
         }
         return false;
       };
-      const next=slideMove(oldX,oldZ,move.x*maxSpeed*dt,move.z*maxSpeed*dt,blocked);
+      const next=sweepMove(oldX,oldZ,move.x*maxSpeed*dt,move.z*maxSpeed*dt,blocked);
       this.playerX=next.x;this.playerZ=next.z;
       const dx=next.x-oldX,dz=next.z-oldZ;
       speed=Math.hypot(dx,dz)/Math.max(dt,.001);
@@ -1737,10 +1744,12 @@ export class LakelandEngine {
     desiredY=Math.max(terrainAtCam+(roaming?.65:1.4),desiredY);
 
     const damp = 1 - Math.exp(-9.5 * dt);
-    this.camPos.lerp(_v1.set(desiredX, desiredY, desiredZ), damp);
+    // In exploration the orbit and movement use exactly the same yaw, without rotational lag.
+    if(roaming)this.camPos.set(desiredX,desiredY,desiredZ);
+    else this.camPos.lerp(_v1.set(desiredX, desiredY, desiredZ), damp);
     this.camLook.lerp(
       _v2.set(this.playerX + fx * (roaming ? 2.8 : 15), this.playerY + 1.6 + (roaming ? Math.tan(this.explorePitch)*2.8 : 0), this.playerZ + fz * (roaming ? 2.8 : 15)),
-      1 - Math.exp(-12 * dt),
+      roaming ? 1 : 1 - Math.exp(-12 * dt),
     );
 
     // Trauma shake
@@ -1852,7 +1861,8 @@ export class LakelandEngine {
       comboTimer: Math.max(0, Math.min(1, this.scoring.comboTimer / 4.2)),
       speedKmh: speedMpsToKmh(this.activeRoute.mode === 'freeroam' ? this.exploreSpeed : this.scoring.speedMps),
       cameraViewMode: this.exploreFirst || this.inShop ? 'first_person' : 'third_person',
-      exploreWalkPace: !this.exploreSprint,
+      exploreWalkPace: this.explorePace==='walk',
+      explorePace: this.explorePace,
       cleanExploreMode: !this.exploreLabels,
       insideShop: this.inShop,
       canEnterShop: this.nearShopDoor(),
@@ -1886,6 +1896,10 @@ export class LakelandEngine {
     this.sound.unlock();
 
     if (this.activeRoute.mode === 'freeroam') {
+      if(firstPress&&e.code==='Digit1')this.setExplorePace('walk');
+      if(firstPress&&e.code==='Digit2')this.setExplorePace('run');
+      if(firstPress&&e.code==='Digit3')this.setExplorePace('sprint');
+      if(firstPress&&e.code==='KeyC')this.recenterExploreCamera();
       if (firstPress && e.code === 'KeyE') this.toggleShop();
       if (firstPress && e.code === 'KeyV') this.toggleExploreView();
       if (firstPress && e.code === 'Space' && !this.inShop) this.jumpBufferTimer = .14;

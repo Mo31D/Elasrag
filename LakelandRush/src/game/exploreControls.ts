@@ -19,3 +19,17 @@ export function slideMove(x:number,z:number,dx:number,dz:number,blocked:(x:numbe
   const nx=blocked(x+dx,z)?x:x+dx;
   return {x:nx,z:blocked(nx,z+dz)?z:z+dz};
 }
+
+export type ExplorePace='walk'|'run'|'sprint';
+// Gameplay tuning, not a claim about real human speeds.
+export const EXPLORE_SPEED:Record<ExplorePace,number>={walk:2.1,run:5.8,sprint:9.5};
+export function paceSpeed(pace:ExplorePace,shift=false){return EXPLORE_SPEED[shift?'sprint':pace];}
+export function floatingInput(origin:{x:number;y:number},point:{x:number;y:number},radius:number){
+  return radialInput((point.x-origin.x)/Math.max(1,radius),(origin.y-point.y)/Math.max(1,radius));
+}
+// Substep at fast speed to prevent tunnelling through small collision features.
+export function sweepMove(x:number,z:number,dx:number,dz:number,blocked:(x:number,z:number)=>boolean){
+ const steps=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.16));
+ for(let i=0;i<steps;i++){const next=slideMove(x,z,dx/steps,dz/steps,blocked);x=next.x;z=next.z;}
+ return {x,z};
+}

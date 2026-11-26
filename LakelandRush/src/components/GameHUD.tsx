@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ExploreHUD } from './ExploreHUD';
+import type { ExplorePace } from '../game/exploreControls';
 import { Camera, Pause, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import type {
   HudSnapshot,
@@ -24,6 +25,8 @@ export interface GameHUDProps {
   onOpenMap: () => void;
   onTouchAdvance: (value: number) => void;
   onToggleExplorePace: () => void;
+  onSetExplorePace:(pace:ExplorePace)=>void;
+  onRecenterExploreCamera:()=>void;
   onToggleExploreView: () => void;
   onToggleExploreLabels: () => void;
   onShopDoor: () => void;

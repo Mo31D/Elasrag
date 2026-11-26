@@ -4,6 +4,11 @@ import type { PhotoPreset } from '../types/game';
 
 interface PauseAndPhotoModalProps {
   isPhotoMode: boolean;
+  exploring:boolean;
+  labelsVisible:boolean;
+  muted:boolean;
+  onToggleLabels:()=>void;
+  onToggleMute:()=>void;
   photoPreset: PhotoPreset;
   onTogglePhotoMode: (enabled: boolean) => void;
   onSelectPhotoPreset: (preset: PhotoPreset) => void;
@@ -16,6 +21,7 @@ interface PauseAndPhotoModalProps {
 
 export const PauseAndPhotoModal: React.FC<PauseAndPhotoModalProps> = ({
   isPhotoMode,
+  exploring,labelsVisible,muted,onToggleLabels,onToggleMute,
   photoPreset,
   onTogglePhotoMode,
   onSelectPhotoPreset,
@@ -105,10 +111,10 @@ export const PauseAndPhotoModal: React.FC<PauseAndPhotoModalProps> = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="pause-title"
-        className="w-full max-w-sm rounded-2xl bg-slate-950 border border-white/15 p-6 shadow-2xl"
+        className="w-full max-w-sm max-h-[90dvh] overflow-y-auto rounded-2xl bg-slate-950 border border-white/15 p-6 shadow-2xl"
       >
         <h2 id="pause-title" className="font-display text-2xl font-extrabold text-white">
-          Run Paused
+          {exploring?'Explore menu':'Run paused'}
         </h2>
         <p className="mt-1 text-sm text-slate-400">
           Catch your breath on the Lakeland fells or frame a photo.
@@ -121,7 +127,7 @@ export const PauseAndPhotoModal: React.FC<PauseAndPhotoModalProps> = ({
             className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-display font-bold text-base cursor-pointer"
           >
             <Play className="w-4 h-4 fill-current" />
-            <span>Resume Run</span>
+            <span>{exploring?'Resume exploring':'Resume run'}</span>
           </button>
 
           <button
@@ -139,9 +145,10 @@ export const PauseAndPhotoModal: React.FC<PauseAndPhotoModalProps> = ({
             className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-white/15 text-slate-100 font-medium text-sm cursor-pointer"
           >
             <RotateCcw className="w-4 h-4 text-teal-400" />
-            <span>Restart Route</span>
+            <span>{exploring?'Return to start':'Restart route'}</span>
           </button>
 
+          {exploring&&<div className="flex gap-2"><button type="button" className="flex-1 rounded-xl bg-slate-900 p-3 text-sm text-white" onClick={onToggleLabels}>Names: {labelsVisible?'On':'Off'}</button><button type="button" className="flex-1 rounded-xl bg-slate-900 p-3 text-sm text-white" onClick={onToggleMute}>Sound: {muted?'Off':'On'}</button></div>}
           <button
             type="button"
             onClick={onOpenSettings}

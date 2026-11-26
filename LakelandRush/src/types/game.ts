@@ -259,6 +259,7 @@ export interface HudSnapshot {
   isAirborne: boolean;
   cameraViewMode?: CameraViewMode;
   exploreWalkPace?: boolean;
+  explorePace?: 'walk'|'run'|'sprint';
   cleanExploreMode?: boolean;
   insideShop?: boolean;
   canEnterShop?: boolean;
