@@ -43,3 +43,18 @@ export function plantFamily(x:number,z:number,seed:number):PlantFamily{
  if(patch<.20&&seed>.62)return 'bracken';
  return seed>.72?'rough':'short';
 }
+
+/** Road safety uses the same rendered carriageway width as worldBuilder. */
+export function animalRoadExclusion(chunk:WorldChunkData,margin=.45,includePaths=false){
+ const segments=chunk.roads.filter(r=>r.kind!=='ferry'&&(includePaths||r.kind!=='footpath')).flatMap(r=>r.pts.slice(1).map((b,i)=>({a:r.pts[i],b,w:displayHalfWidth(r)+margin})));
+ const bins=new Map<string,typeof segments>();
+ for(const s of segments)for(let x=Math.floor((Math.min(s.a[0],s.b[0])-s.w)/16);x<=Math.floor((Math.max(s.a[0],s.b[0])+s.w)/16);x++)for(let z=Math.floor((Math.min(s.a[1],s.b[1])-s.w)/16);z<=Math.floor((Math.max(s.a[1],s.b[1])+s.w)/16);z++){const k=x+':'+z,list=bins.get(k)??[];list.push(s);bins.set(k,list);}
+ return (x:number,z:number)=>(bins.get(Math.floor(x/16)+':'+Math.floor(z/16))??[]).some(s=>segmentDistance(x,z,s.a,s.b)<=s.w);
+}
+/** Open ground eligible for procedural grass, excluding woods and non-pasture parks. */
+export function grazingExclusion(chunk:WorldChunkData,water:(x:number,z:number)=>boolean){
+ const grass=grassExclusion(chunk,water),road=animalRoadExclusion(chunk,2.5,true);
+ const excluded=[...chunk.woodlands,...(chunk.parks??[]).filter(p=>p.kind!=='meadow')].map(p=>p.pts.map(([x,z])=>[x+p.cx,z+p.cz] as Point));
+ const walls=chunk.walls.flatMap(w=>w.pts.slice(1).map((b,i)=>({a:w.pts[i],b})));
+ return (x:number,z:number)=>grass(x,z)||road(x,z)||excluded.some(r=>pointInRing(x,z,r))||walls.some(w=>segmentDistance(x,z,w.a,w.b)<.8);
+}
