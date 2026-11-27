@@ -30,3 +30,15 @@ test('V14 doubles original single jump height and doubles it again with second p
  const v=secondJumpVelocity(10,10+EXPLORE_JUMP_HEIGHT);near(10+EXPLORE_JUMP_HEIGHT+v*v/(2*EXPLORE_GRAVITY),10+2*EXPLORE_JUMP_HEIGHT);
 });
 test('flight holds altitude, climbs, descends and remains above surfaces',()=>{near(flightHeight(20,0,.5,10),20);near(flightHeight(20,1,.5,10),26);near(flightHeight(20,-1,.5,10),14);near(flightHeight(12,-1,1,10),11.25);near(flightHeight(190,1,1,10),190);});
+
+import {fixedStickHit} from './exploreControls';
+test('fixed joystick stays centred and rejects touches outside the visible disc',()=>{
+ const rect={left:22,top:480,width:110,height:110};
+ assert.deepEqual(fixedStickHit(rect,{x:77,y:535}),{x:77,y:535});
+ assert.deepEqual(fixedStickHit(rect,{x:100,y:530}),{x:77,y:535});
+ assert.equal(fixedStickHit(rect,{x:77,y:400}),null);
+ assert.equal(fixedStickHit(rect,{x:23,y:481}),null);
+ const origin=fixedStickHit(rect,{x:77,y:535})!;
+ assert.deepEqual(floatingInput(origin,{x:77,y:535},32),{x:0,y:0});
+ const v=floatingInput(origin,{x:110,y:535},32);near(v.x,1);near(v.y,0);
+});

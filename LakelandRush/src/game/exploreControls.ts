@@ -49,3 +49,9 @@ export function sweepMove(x:number,z:number,dx:number,dz:number,blocked:(x:numbe
 
 // Free flight holds altitude until the player explicitly climbs or descends.
 export function flightHeight(y:number,vertical:number,dt:number,floor:number){return Math.max(floor+1.25,Math.min(floor+180,y+Math.max(-1,Math.min(1,vertical))*12*dt));}
+
+// A movement touch must begin on the fixed joystick disc; camera owns the rest of the viewport.
+export function fixedStickHit(rect:{left:number;top:number;width:number;height:number},point:{x:number;y:number}){
+ const x=rect.left+rect.width/2,y=rect.top+rect.height/2;
+ return Math.hypot(point.x-x,point.y-y)<=Math.min(rect.width,rect.height)/2?{x,y}:null;
+}

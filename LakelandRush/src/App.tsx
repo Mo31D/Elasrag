@@ -315,6 +315,12 @@ export default function App() {
     showTutorialModal,
   ]);
 
+  useEffect(()=>{
+    const clearLook=()=>{const pointer=lookPointer.current;lookPointer.current=null;const mount=mountRef.current;if(pointer&&mount?.hasPointerCapture(pointer.id))mount.releasePointerCapture(pointer.id);};
+    if(gameState!=='playing'||showMapModal||showSettingsModal||showTutorialModal)clearLook();
+    window.addEventListener('blur',clearLook);document.addEventListener('visibilitychange',clearLook);
+    return()=>{window.removeEventListener('blur',clearLook);document.removeEventListener('visibilitychange',clearLook);};
+  },[gameState,showMapModal,showSettingsModal,showTutorialModal]);
   return (
     <div className="relative w-full h-full overflow-hidden bg-slate-950">
       {/* Isolated WebGL Viewport */}
@@ -323,13 +329,13 @@ export default function App() {
         data-testid="game-canvas-mount"
         className="fixed inset-0 h-full w-full touch-none"
         onPointerDown={event => {
-          if (gameState !== 'playing' || selectedRoute.mode !== 'freeroam' || lookPointer.current || (event.pointerType==='mouse'&&event.button!==0)) return;
+          if (gameState !== 'playing' || showMapModal || showSettingsModal || showTutorialModal || selectedRoute.mode !== 'freeroam' || lookPointer.current || (event.pointerType==='mouse'&&event.button!==0)) return;
           event.currentTarget.setPointerCapture(event.pointerId);
           lookPointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
         }}
         onPointerMove={event => {
           const pointer = lookPointer.current;
-          if (pointer?.id !== event.pointerId) return;
+          if (gameState !== 'playing' || showMapModal || showSettingsModal || showTutorialModal || pointer?.id !== event.pointerId) return;
           engineRef.current?.rotateExploreView(event.clientX - pointer.x, event.clientY - pointer.y);
           pointer.x = event.clientX;
           pointer.y = event.clientY;
