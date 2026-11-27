@@ -31,3 +31,21 @@ export function safeTrafficThrottle(requested:number,clearance:number,speed:numb
  if(clearance<=1.0)return 0;
  return requested*Math.max(0,Math.min(1,(clearance-1)/(Math.max(2,stopping))));
 }
+
+export const DOG_OWNER_SPEED_RATIO=.9;
+/** Move toward a fleeing dog without exceeding 90% of its actual ground speed. */
+export function dogOwnerStep(x:number,z:number,targetX:number,targetZ:number,dogSpeed:number,dt:number,clear:(x:number,z:number)=>boolean,stopDistance=.65){
+ const dx=targetX-x,dz=targetZ-z,distance=Math.hypot(dx,dz);
+ const budget=Math.min(Math.max(0,distance-stopDistance),Math.max(0,dogSpeed)*DOG_OWNER_SPEED_RATIO*Math.max(0,dt));
+ if(!Number.isFinite(budget)||budget<=1e-6)return {x,z,moved:0};
+ const angle=Math.atan2(dz,dx);
+ // Try forward first, then increasingly wide detours around nearby obstacles.
+ for(const offset of [0,Math.PI/6,-Math.PI/6,Math.PI/3,-Math.PI/3,Math.PI/2,-Math.PI/2]){
+  const vx=Math.cos(angle+offset)*budget,vz=Math.sin(angle+offset)*budget;
+  const steps=Math.max(1,Math.ceil(budget/.12));
+  let safe=true;
+  for(let i=1;i<=steps;i++)if(!clear(x+vx*i/steps,z+vz*i/steps)){safe=false;break;}
+  if(safe)return {x:x+vx,z:z+vz,moved:budget};
+ }
+ return {x,z,moved:0};
+}
