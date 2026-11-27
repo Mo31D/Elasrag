@@ -10,6 +10,8 @@ import { isPointInLake, pointInRing, sampleTerrainHeight } from '../geo/projecti
 import { buildWaterheadShoreDistance, WATERHEAD_WATER_BOUNDS } from './waterhead-water';
 import { buildWaterfrontDetails, groundSurface, WATERHEAD_SIDEWALKS } from './waterfront';
 import { buildSignage } from './signage';
+import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
+import { buildFacadeBatch } from './facades';
 import { buildSiteDetails } from './siteDetails';
 import amblesideSurfaces from '../data/ambleside-surfaces.json';
 import amblesideNavigation from '../data/ambleside-navigation.json';
@@ -664,6 +666,7 @@ export function buildChunkGroup(
   const hotelWalls: THREE.BufferGeometry[] = [];
   const roofs: THREE.BufferGeometry[] = [];
   const windows: THREE.BufferGeometry[] = [];
+  const facadePlans = new Map<number,FacadePlan>();
 
   for (const b of chunk.buildings) {
     const built = buildLakelandBuildingGeometries(b, terrain);
@@ -694,7 +697,10 @@ export function buildChunkGroup(
     }
     if (!asset) {
       roofs.push(built.roofGeo);
-      windows.push(built.windowGeo);
+      const ground=Math.max(.45,sampleTerrainHeight(terrain,b.cx,b.cz));
+      const plan=inFacadeArea(b)?planFacade(b,chunk.roads,ground,built.bounds.topY-ground,chunk.buildings):null;
+      if(plan){facadePlans.set(b.id,plan);built.windowGeo.dispose();}
+      else windows.push(built.windowGeo);
     }
     if (b.id !== 658735202 || !asset) colliders.push({ ...built.bounds, isRoof: b.h < 9.5, outline: b.pts.map(([x, z]) => [x + b.cx, z + b.cz]) });
   }
@@ -1007,7 +1013,9 @@ export function buildChunkGroup(
   const siteDetails=buildSiteDetails(chunk,terrain,lake);
   group.add(siteDetails.group);
   colliders.push(...siteDetails.colliders);
-  const signage = buildSignage(chunk, terrain, lake);
+  const facades=buildFacadeBatch(facadePlans.values());
+  group.add(facades.group);
+  const signage = buildSignage(chunk, terrain, lake, facadePlans);
   group.add(signage.group);
   return {
     key: chunk.key,
@@ -1021,6 +1029,7 @@ export function buildChunkGroup(
       disposables.forEach((g) => g.dispose());
       waterfront?.dispose();
       signage.dispose();
+      facades.dispose();
       siteDetails.dispose();
     },
   };

@@ -1,6 +1,7 @@
 import { useEffect,useMemo,useState } from 'react';
 import type { LakeData,RegionManifest,WorldChunkData } from '../types/game';
 import navigation from '../data/ambleside-navigation.json';
+import inventory from '../data/ambleside-business-inventory.json';
 import { TRANSIT } from '../data/transit';
 import { AREAS,areaChunkKeys,inside,indexPlaces,CATEGORY_NAMES,type PlaceCategory,type PlaceEntry } from '../geo/placeIdentity';
 import type { ExploreStop } from './AmblesideMap';
@@ -45,10 +46,18 @@ export function PlacesMap({manifest,lake,player,onTravel}:{manifest:RegionManife
       if(t.mode==='rail'&&entries.some(p=>p.category==='rail'&&Math.hypot(p.x-t.x,p.z-t.z)<100))continue;
       entries.push({id:'transit-'+t.id,name:t.name,category:t.mode,x:t.x,z:t.z,source:t.source});
     }
+    if(area.id==='ambleside')for(const record of inventory.records){
+      const p=record.position;
+      if(!p||!inside(area,p.x,p.z))continue;
+      const existing=entries.findIndex(e=>e.name.toLowerCase()===p.name.toLowerCase()&&Math.hypot(e.x-p.x,e.z-p.z)<45);
+      const previous=existing>=0?entries.splice(existing,1)[0]:undefined;
+      entries.push({id:record.id,name:record.name,category:record.mapCategory as PlaceCategory,x:p.x,z:p.z,source:p.source,travelId:previous?.travelId,buildingId:previous?.buildingId});
+    }
     return entries.sort((a,b)=>a.name.localeCompare(b.name));
   },[chunks,area]);
   const q=query.trim().toLowerCase();
   const visible=places.filter(p=>(category==='all'||category===p.category)&&(!q||p.name.toLowerCase().includes(q)));
+  const pending=area.id==='ambleside'?inventory.records.filter(r=>(!r.position||!inside(area,r.position.x,r.position.z))&&(category==='all'||category===r.mapCategory)&&(!q||[r.name,r.address,r.postcode].some(v=>v.toLowerCase().includes(q)))):[];
   const active:PlaceEntry|undefined=visible.find(p=>p.id===selected);
   const travel=active?.travelId?navigation.stops.find(s=>s.id===active.travelId):undefined;
   const roads=useMemo(()=>chunks.flatMap(c=>c.roads).filter(r=>['primary','secondary','lane','railway'].includes(r.kind)),[chunks]);
@@ -71,7 +80,8 @@ export function PlacesMap({manifest,lake,player,onTravel}:{manifest:RegionManife
       <div>
         <p className="mb-2 text-xs text-slate-300">{loaded?.key!==key?'Loading mapped streets…':visible.length+' mapped places'} · Gold: main roads · Dashed: railway {loaded?.key===key&&loaded.missing>0?' · Some map tiles unavailable':''}</p>
         {active&&<div className="mb-2 rounded-lg border border-white/20 bg-slate-800 p-3"><strong className="text-white">{active.name}</strong><p className="text-xs text-slate-300">{CATEGORY_NAMES[active.category]} · {active.source.startsWith('http')?'Published transport record':'Mapped identity; appearance not surveyed'}</p>{travel&&<button type="button" className="mt-2 rounded bg-amber-400 p-2 text-slate-950" onClick={()=>onTravel(travel)}>Go to {travel.name}</button>}</div>}
-        <div className="max-h-[38dvh] overflow-y-auto space-y-1">{visible.map(p=><button key={p.id} type="button" aria-pressed={active?.id===p.id} onClick={()=>setSelected(p.id)} className="flex w-full items-center gap-2 rounded border border-white/10 p-2 text-left text-sm text-slate-100 aria-pressed:border-amber-400"><span className="h-2 w-2 shrink-0 rounded-full" style={{background:palette[p.category]}}/>{p.name}<span className="ml-auto text-xs text-slate-400">{CATEGORY_NAMES[p.category]}</span></button>)}{!visible.length&&loaded?.key===key&&<p className="p-3 text-sm text-slate-300">No matching mapped places.</p>}</div>
+        {area.id==='ambleside'&&<p className="mb-2 text-xs text-slate-300">Business inventory: {inventory.counts.total} records · {inventory.counts.mapped} matched to existing geographic features · {inventory.counts.unlocated} awaiting location verification. Not a live trading register.</p>}
+        <div className="max-h-[38dvh] overflow-y-auto space-y-1">{visible.map(p=><button key={p.id} type="button" aria-pressed={active?.id===p.id} onClick={()=>setSelected(p.id)} className="flex w-full items-center gap-2 rounded border border-white/10 p-2 text-left text-sm text-slate-100 aria-pressed:border-amber-400"><span className="h-2 w-2 shrink-0 rounded-full" style={{background:palette[p.category]}}/>{p.name}<span className="ml-auto text-xs text-slate-400">{CATEGORY_NAMES[p.category]}</span></button>)}{!visible.length&&loaded?.key===key&&<p className="p-3 text-sm text-slate-300">No matching mapped places.</p>}{pending.length>0&&<div className="pt-3"><h3 className="mb-2 text-xs font-bold text-amber-300">Awaiting verified location ({pending.length})</h3>{pending.map(r=><div key={r.id} className="mb-1 rounded border border-white/10 p-2 text-sm text-slate-200"><div>{r.name}</div><div className="text-xs text-slate-400">{[r.address,r.postcode].filter(Boolean).join(', ')||'Address pending'} · Not placed on map</div></div>)}</div>}</div>
       </div>
     </div><p className="mt-2 text-xs text-slate-400">Map data © OpenStreetMap contributors. Existing geographic snapshot, not a live business or transport directory. No unsurveyed fast travel.</p>
   </div>;

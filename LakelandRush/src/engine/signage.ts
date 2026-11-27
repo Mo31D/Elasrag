@@ -3,11 +3,13 @@ import type { LakeData, TerrainGridData, WorldChunkData } from '../types/game';
 import { isPointInLake, sampleTerrainHeight } from '../geo/projection';
 import { planRoadSigns,frontageAnchor,approachAnchor } from '../geo/signagePlan';
 import { classifyBuilding } from '../geo/placeIdentity';
+import type { FacadePlan } from '../geo/facadePlan';
 import buildingAssets from '../data/building-assets.json';
 import { TRANSIT } from '../data/transit';
 import navigation from '../data/ambleside-navigation.json';
+import inventory from '../data/ambleside-business-inventory.json';
 
-export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,lake:LakeData|null) {
+export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,lake:LakeData|null, facadePlans:ReadonlyMap<number,FacadePlan>=new Map()) {
   const group=new THREE.Group();
   group.name='World signage and place identities';
   const geometries:THREE.BufferGeometry[]=[];
@@ -78,7 +80,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   }
   // Original text-only frontage plaques on approximate public/commercial building geometry.
   // Do not alter custom authored landmark models.
-  const frontageBuildings=chunk.buildings.filter(b=>['shop','food','hotel','fuel','supermarket','rail'].includes(classifyBuilding(b)||'')&&!assetIds.has(b.id)&&inChunk(b.cx,b.cz)).slice(0,70);
+  const frontageBuildings=chunk.buildings.filter(b=>!facadePlans.has(b.id)&&['shop','food','hotel','fuel','supermarket','rail'].includes(classifyBuilding(b)||'')&&!assetIds.has(b.id)&&inChunk(b.cx,b.cz)).slice(0,70);
   for(const b of frontageBuildings){
     const anchor=frontageAnchor(b,chunk.roads);
     if(!anchor||!b.name)continue;
@@ -88,6 +90,14 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
     const mesh=new THREE.Mesh(geom,mat);mesh.position.set(anchor.x,ground(b.cx,b.cz)+Math.min(2.55,Math.max(1.5,b.h-2.1)),anchor.z);
     mesh.rotation.y=anchor.yaw;mesh.name='frontage-'+b.id;mesh.visible=false;plaques.push(mesh);group.add(mesh);
   }
+  for(const [id,plan] of facadePlans){
+    const a=plan.sign;if(!a||a.width<.3||a.height<.15)continue;
+    const {texture}=artwork([a.name],'facade');
+    const geom=new THREE.PlaneGeometry(a.width,a.height);geometries.push(geom);
+    const mat=new THREE.MeshBasicMaterial({map:texture,toneMapped:false});materials.push(mat);
+    const mesh=new THREE.Mesh(geom,mat);mesh.position.set(a.x,a.y,a.z);mesh.rotation.y=a.yaw;
+    mesh.name='facade-sign-'+id;mesh.visible=false;plaques.push(mesh);group.add(mesh);
+  }
   function label(name:string,x:number,z:number,height:number) {
     const {texture,ratio}=artwork([name],'label');
     const mat=new THREE.SpriteMaterial({map:texture,depthTest:true,depthWrite:false,toneMapped:false});materials.push(mat);
@@ -96,8 +106,20 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
     labels.push(sprite);group.add(sprite);
   }
   const names=new Set<string>();
+  const mapped=inventory.records.filter(r=>r.position&&inChunk(r.position.x,r.position.z));
   for(const stop of navigation.stops)if(inChunk(...(stop.point as [number,number]))&&stop.kind!=='junction'){
-    const [x,z]=stop.point;label(stop.name,x,z,3.2);names.add(stop.name.toLowerCase());
+    const [x,z]=stop.point;
+    const business=mapped.find(r=>r.position?.name===stop.name&&Math.hypot(r.position.x-x,r.position.z-z)<1);
+    const name=business?.name??stop.name;
+    label(name,x,z,3.2);names.add(name.toLowerCase());names.add(stop.name.toLowerCase());
+  }
+  // Imported identities use existing map feature coordinates only, never street-centroid guesses.
+  for(const r of mapped){
+    const p=r.position;
+    if(!p||names.has(r.name.toLowerCase())||isPointInLake(lake,p.x,p.z))continue;
+    const b=chunk.buildings.find(b=>b.name===p.name&&Math.hypot(b.cx-p.x,b.cz-p.z)<45);
+    label(r.name,p.x,p.z,b?Math.max(3.5,b.h+.5):3.2);
+    names.add(r.name.toLowerCase());names.add(p.name.toLowerCase());
   }
   for(const b of chunk.buildings) {
     if(!b.name||names.has(b.name.toLowerCase())||!inChunk(b.cx,b.cz))continue;
