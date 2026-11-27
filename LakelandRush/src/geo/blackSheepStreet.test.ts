@@ -16,3 +16,16 @@ test('kerbs, road lines and pavement coordinates stay finite and road paint rema
  for(const p of [...lakeRoadKerbs(),...lakeRoadPavements(),...lakeRoadLineSegments()])assert.ok(p.length>=3&&p.every(v=>v.every(Number.isFinite)));
  for(const p of lakeRoadLineSegments())for(const [x,z] of p)assert.ok(Math.abs(x-lakeRoadCentre(z))<LAKE_ROAD_HALF_WIDTH);
 });
+
+import {usesReferenceStreetBuilding,referenceStreetBuilding,facadeWindowFits,BLACK_SHEEP_EAVES_HEIGHT} from './blackSheepStreet';
+test('legacy Black Sheep asset is excluded and both upper storeys have masonry support',()=>{
+ const mapped=chunk.buildings.find(b=>b.id===BLACK_SHEEP_BUILDING)!;
+ const model=referenceStreetBuilding(mapped);
+ assert.ok(usesReferenceStreetBuilding(mapped.id));
+ assert.equal(model.h-1.6,BLACK_SHEEP_EAVES_HEIGHT);
+ assert.equal(model.levels,3);
+ assert.deepEqual(model.pts,mapped.pts);
+ assert.equal(facadeWindowFits(8.2,.17,6.72,1.52),true);
+ assert.equal(facadeWindowFits(4.8,.17,6.72,1.52),false);
+ assert.equal(usesReferenceStreetBuilding(123),false);
+});
