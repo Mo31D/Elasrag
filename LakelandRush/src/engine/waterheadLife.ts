@@ -1,4 +1,4 @@
-import {fleeDirection,type Threat} from '../game/crowdMotion';
+import {fleeDirection,rememberedAlarm,type Threat} from '../game/crowdMotion';
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {cruisePose,CRUISE_SPEED,CRUISE_LENGTH,cruiseHullWet,shorePoint} from '../game/waterheadLife';
@@ -51,21 +51,21 @@ function makeCruiser(){
  const wg=new THREE.BufferGeometry();wg.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));wg.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));wakeMat.vertexColors=true;
  const wake=new THREE.Mesh(wg,wakeMat);return {root,wake,wakeMat};
 }
-type Bird={kind:'mallard'|'swan';root:THREE.Group;body:THREE.Group;neck:THREE.Group;feet:THREE.Group[];wings:THREE.Group[];flightWings:THREE.Group[];x:number;z:number;homeX:number;homeZ:number;angle:number;phase:number;swimming:boolean;scale:number;speed:number};
+type Bird={kind:'mallard'|'swan';root:THREE.Group;body:THREE.Group;neck:THREE.Group;feet:THREE.Group[];wings:THREE.Group[];flightWings:THREE.Group[];x:number;z:number;homeX:number;homeZ:number;angle:number;phase:number;swimming:boolean;scale:number;speed:number;alarm:number;alarmYaw:number};
 function birdModel(swan:boolean,variant:number){
  const root=new THREE.Group(),body=new THREE.Group(),neck=new THREE.Group();root.add(body);body.add(neck);
- const plumage=material(swan?0xf3f1e8:variant%2?0x82705c:0x70777c),wingMat=material(swan?0xe0e2dc:0x635846),headMat=material(swan?0xf4f1e8:variant%2?0x8c7456:0x246252),beak=material(swan?0xe9932a:0xc3a33b),dark=material(0x25252a),feetMat=material(swan?0x363433:0xb36a32);
+ const plumage=material(swan?0xf3f1e8:variant%2?0x82705c:0x9a9c98),wingMat=material(swan?0xe0e2dc:0x635846),headMat=material(swan?0xf4f1e8:variant%2?0x8c7456:0x246252),beak=material(swan?0xe9932a:0xc3a33b),dark=material(0x25252a),feetMat=material(swan?0x363433:0xb36a32);
  function oval(g:THREE.Group,m:THREE.Material,x:number,y:number,z:number,a:number,b:number,c:number){const o=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),m);o.scale.set(a,b,c);o.position.set(x,y,z);g.add(o);return o;}
- oval(body,plumage,0,.22,.05,.29,.24,.56);const tail=oval(body,plumage,0,.26,.47,.18,.12,.23);tail.rotation.x=-.38;
- const wings:THREE.Group[]=[];for(const side of [-1,1]){const w=new THREE.Group();w.position.set(side*.16,.25,.02);body.add(w);const m=oval(w,wingMat,side*.055,0,.07,.17,.13,.40);m.rotation.y=side*.16;wings.push(w);}
+ oval(body,plumage,0,.22,.05,.29,.24,.56);const chest=material(swan?0xf6f4eb:variant%2?0x957e62:0x593c35),featherEdge=material(swan?0xf0eee5:0x796c5d),speculum=material(0x324e93,.42);oval(body,chest,0,.23,-.30,.245,.218,.28);const tail=oval(body,plumage,0,.26,.47,.18,.12,.23);tail.rotation.x=-.38;
+ const wings:THREE.Group[]=[];for(const side of [-1,1]){const w=new THREE.Group();w.position.set(side*.16,.25,.02);body.add(w);const m=oval(w,wingMat,side*.055,0,.07,.17,.13,.40);m.rotation.y=side*.16;for(let k=0;k<5;k++){const feather=oval(w,featherEdge,side*(.09+k*.012),.035,.11+k*.048,.092,.055,.16);feather.rotation.y=side*.17;}if(!swan){oval(w,featherEdge,side*.16,.015,.15,.045,.048,.13);oval(w,speculum,side*.17,.02,.15,.039,.039,.097);}wings.push(w);}
  const flightWings:THREE.Group[]=[];for(const side of [-1,1]){const w=new THREE.Group();w.position.set(side*.17,.26,0);body.add(w);const span=swan?1.05:.72;oval(w,plumage,side*span*.39,0,.02,span*.42,.055,.25);for(let k=0;k<7;k++){const feather=oval(w,wingMat,side*span*(.35+k*.09),0,.10+k*.026,span*.19,.023,.13+k*.013);feather.rotation.y=-side*(.22+k*.045);}w.visible=false;flightWings.push(w);}
  const neckHeight=swan?.77:.23;neck.position.set(0,.29,-.30);
  const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,0),new THREE.Vector3(0,neckHeight*.28,-.15),new THREE.Vector3(0,neckHeight*.72,-.13),new THREE.Vector3(0,neckHeight,-.06)]);
  neck.add(new THREE.Mesh(new THREE.TubeGeometry(curve,12,swan?.075:.085,8,false),headMat));
- oval(neck,headMat,0,neckHeight,-.12,.11,.105,.15);oval(neck,beak,0,neckHeight-.03,-.26,.064,.046,.12);
+ oval(neck,headMat,0,neckHeight,-.12,.11,.105,.15);oval(neck,beak,0,neckHeight-.03,-.26,.064,.046,.12);oval(neck,dark,0,neckHeight-.058,-.27,.061,.006,.094);for(const side of [-1,1])oval(neck,dark,side*.026,neckHeight+.003,-.254,.009,.005,.012);if(!swan&&variant%2===0)oval(neck,material(0xe8e5d9),0,neckHeight*.36,-.12,.088,.028,.088);
  if(swan)oval(neck,dark,0,neckHeight-.005,-.215,.085,.055,.04);
- for(const side of [-1,1])oval(neck,dark,side*.09,neckHeight+.025,-.16,.018,.018,.018);
- const feet:THREE.Group[]=[];for(const side of [-1,1]){const f=new THREE.Group();f.position.set(side*.12,.11,.04);body.add(f);oval(f,feetMat,0,-.11,0,.035,.13,.035);oval(f,feetMat,0,-.22,-.05,.083,.025,.12);feet.push(f);}
+ for(const side of [-1,1]){oval(neck,dark,side*.09,neckHeight+.025,-.16,.018,.018,.018);oval(neck,material(0xece5d9),side*.102,neckHeight+.030,-.167,.006,.006,.005);}
+ const feet:THREE.Group[]=[];for(const side of [-1,1]){const f=new THREE.Group();f.position.set(side*.12,.11,.04);body.add(f);oval(f,feetMat,0,-.11,0,.035,.13,.035);oval(f,feetMat,0,-.22,-.05,.083,.025,.12);for(let toe=-1;toe<=1;toe++){const t=oval(f,feetMat,toe*.043,-.223,-.145,.031,.017,.065);t.rotation.y=toe*.22;}feet.push(f);}
  return {root,body,neck,feet,wings,flightWings};
 }
 export class WaterheadLife{
@@ -80,7 +80,7 @@ export class WaterheadLife{
    for(let j=0;j<16;j++){const a=px+(j%2?1:-1)*Math.floor(j/2)*.55;if(swimming?clearWater(a,pz):clearLand(a,pz)){px=a;found=true;break;}}
    if(!found)continue;
    const m=birdModel(swan,i),scale=swan?.92: .53+(i%3)*.04;m.root.scale.setScalar(scale);scene.add(m.root);
-   this.birds.push({...m,kind:swan?'swan':'mallard',x:px,z:pz,homeX:px,homeZ:pz,angle:i*2.399,phase:i*.83,swimming,scale,speed:swimming?.42:.28});
+   this.birds.push({...m,kind:swan?'swan':'mallard',x:px,z:pz,homeX:px,homeZ:pz,angle:i*2.399,phase:i*.83,swimming,scale,speed:swimming?.42:.28,alarm:0,alarmYaw:i*2.399});
   }
   this.update(0,0,-280);
  }
@@ -96,12 +96,12 @@ export class WaterheadLife{
   this.rippleClock+=dt;const emit=this.rippleClock>.48;if(emit)this.rippleClock=0;
   for(let i=0;i<this.birds.length;i++){
    const b=this.birds[i];if(b.root.userData.animalControlled)continue;const near=Math.hypot(playerX-b.x,playerZ-b.z)<170;b.root.visible=near;if(!near)continue;
-   const alarm=fleeDirection(b.x,b.z,threats),d=Math.hypot(b.x-b.homeX,b.z-b.homeZ),target=alarm?alarm.yaw:d>7?Math.atan2(b.x-b.homeX,b.z-b.homeZ):b.angle+Math.sin(this.t*.28+b.phase)*dt*.38;
+   const observed=fleeDirection(b.x,b.z,threats);b.alarm=rememberedAlarm(b.alarm,observed?.alarm??0,dt);if(observed)b.alarmYaw=observed.yaw;const alarm=b.alarm>.08?{yaw:b.alarmYaw,alarm:b.alarm}:null;const d=Math.hypot(b.x-b.homeX,b.z-b.homeZ);const neighbours=this.birds.filter(o=>o!==b&&o.swimming===b.swimming&&Math.hypot(o.x-b.x,o.z-b.z)<1.1&&!o.root.userData.animalControlled);const separation=fleeDirection(b.x,b.z,neighbours.map(o=>({x:o.x,z:o.z,radius:1.1})));const target=alarm?alarm.yaw:separation?separation.yaw:d>7?Math.atan2(b.x-b.homeX,b.z-b.homeZ):b.angle+Math.sin(this.t*.28+b.phase)*dt*.38;
    let diff=Math.atan2(Math.sin(target-b.angle),Math.cos(target-b.angle));b.angle+=THREE.MathUtils.clamp(diff,-(alarm?4.2:1.4)*dt,(alarm?4.2:1.4)*dt);
-   const moving=!!alarm||Math.sin(this.t*.62+b.phase)>-.45,step=moving?(alarm?b.speed+alarm.alarm*1.9:b.speed)*dt:0,x=b.x-Math.sin(b.angle)*step,z=b.z-Math.cos(b.angle)*step;
+   const resting=!alarm&&!separation&&Math.sin(this.t*.19+b.phase)<-.55,feeding=!alarm&&!separation&&!resting&&Math.sin(this.t*.41+b.phase)<-.45;const moving=!!alarm||!!separation||(!resting&&!feeding&&Math.sin(this.t*.62+b.phase)>-.45),step=moving?(alarm?b.speed+alarm.alarm*1.9:b.speed)*dt:0,x=b.x-Math.sin(b.angle)*step,z=b.z-Math.cos(b.angle)*step;
    if((b.swimming?this.clearWater(x,z):this.clearLand(x,z))){b.x=x;b.z=z;}else if(!b.swimming&&alarm&&this.clearWater(x,z)){b.swimming=true;b.x=x;b.z=z;b.homeX=x;b.homeZ=z;}else b.angle+=dt*2.8;
    b.root.position.set(b.x,b.swimming?-.10*b.scale+Math.sin(this.t*2+b.phase)*.015:Math.max(.45,this.ground(b.x,b.z)),b.z);b.root.rotation.y=b.angle;
-   b.body.rotation.z=Math.sin(this.t*2+b.phase)*(b.swimming?.035:.055);b.neck.rotation.x=Math.sin(this.t*1.1+b.phase)*.09+(moving?0:Math.max(0,Math.sin(this.t*.8+b.phase))*.34);
+   b.body.rotation.z=Math.sin(this.t*2+b.phase)*(b.swimming?.035:.055);b.neck.rotation.x=feeding?-.8+Math.sin(this.t*3+b.phase)*.13:resting?.30:Math.sin(this.t*1.1+b.phase)*.09;b.body.rotation.x=feeding&&b.swimming?.16:0;
    for(let j=0;j<2;j++){b.feet[j].visible=!b.swimming;b.feet[j].rotation.x=moving?Math.sin(this.t*8+b.phase+j*Math.PI)*.55:0;b.wings[j].rotation.z=Math.sin(this.t*(alarm?9:1.5)+b.phase)*(alarm?.20:.035);}
    if(emit&&moving&&b.swimming&&i%3===Math.floor(this.t)%3)this.ripple(b.x,b.z,b.scale*.55);
   }

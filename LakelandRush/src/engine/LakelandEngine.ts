@@ -469,7 +469,7 @@ export class LakelandEngine {
       this.rowBoats=createRowBoats(this.scene,(x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z));
       this.pedestrians=new PedestrianWorld(this.scene,(x,z)=>this.walkSurface(x,z),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.25)));
       this.busService=new LakesiderService(this.scene,(x,z)=>this.walkSurface(x,z),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.12))&&!this.pedestrians?.near(x,z,.85)&&
-        (!!this.busService?.mode||this.flying||Math.abs(this.playerY-this.walkSurface(x,z))>2||Math.hypot(x-this.playerX,z-this.playerZ)>1.0),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.4))&&!this.pedestrians?.near(x,z,.65));
+        (!!this.busService?.mode||this.flying||Math.abs(this.playerY-this.walkSurface(x,z))>2||Math.hypot(x-this.playerX,z-this.playerZ)>1.0),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.4))&&!this.pedestrians?.near(x,z,.65),()=>[...(this.pedestrians?.vulnerablePositions()??[]),...(!this.busService?.mode&&!this.flying&&this.playerY<this.walkSurface(this.playerX,this.playerZ)+2?[{x:this.playerX,z:this.playerZ}]:[])]);
       this.waterheadLife=new WaterheadLife(this.scene,(x,z)=>this.region.isInWater(x,z),
         (x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z),
         (x,z)=>!this.region.isInWater(x,z)&&unobstructed(x,z),
@@ -1451,7 +1451,7 @@ export class LakelandEngine {
     for(const a of this.animalSheep){if(a.root.userData.animalControlled)continue;a.root.visible=this.activeRoute.mode==='freeroam'&&Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)<150;if(a.root.visible){const {x,z}=a.root.position;if(Number.isFinite(this.solidTop(x,z,.65))||this.region.isInWater(x,z)){a.root.visible=false;continue;}a.root.position.y=Math.max(.45,this.walkSurface(x,z));a.pose(this.elapsedTime,0,false,false,true);}}
     if(this.activeRoute.mode==='freeroam'){
       if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
-      this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0));
+      this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0),this.busService?.forecasts()??[]);
     }else{this.busService?.hide();this.pedestrians?.hide();}
     this.waterheadLife?.update(dt,this.playerX,this.playerZ,[...(this.pedestrians?.threats()??[]),...(!this.animal&&!this.flying&&!this.occupiedBoat&&!this.busService?.mode&&this.playerY<4?[{x:this.playerX,z:this.playerZ,radius:4.5}]:[])]);
     if(this.animal){this.runner.root.visible=false;this.animal.actor.root.visible=true;}

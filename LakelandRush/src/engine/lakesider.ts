@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
-import {busRoute,busPose,stepBus,busFits,type BusState} from '../game/busMotion';
+import {busRoute,busPose,stepBus,busFits,BUS_HALF_LENGTH,BUS_HALF_WIDTH,type BusState} from '../game/busMotion';
+import {hullClearance,safeTrafficThrottle,type VehicleForecast} from '../game/crowdMotion';
 import navigation from '../data/ambleside-navigation.json';
 import realm from '../data/waterhead-public-realm.json';
 type P={x:number;z:number};
@@ -46,7 +47,7 @@ type Bus={model:ReturnType<typeof makeBus>;route:ReturnType<typeof busRoute>;sta
 export class LakesiderService{
  private buses:Bus[]=[];private active:Bus|null=null;mode:'passenger'|'driver'|null=null;
  private formerDriver:THREE.Group|null=null;
- constructor(private scene:THREE.Scene,private ground:(x:number,z:number)=>number,private clear:Clear,private exitClear:Clear){
+ constructor(private scene:THREE.Scene,private ground:(x:number,z:number)=>number,private clear:Clear,private exitClear:Clear,private vulnerable:()=>P[]=()=>[]){
   for(const [id,start,stops] of [['west',54,[54,124,265]],['east',30,[30,330,1090]]] as const){
    const data=navigation.approaches.find(a=>a.id===id)!;const route=busRoute(data.points);const model=makeBus();const state:BusState={distance:start,lane:1.85,speed:0,dir:1};
    scene.add(model.root);this.buses.push({model,route,state,stops:[...stops],wait:8,lastStop:start});this.place(this.buses[this.buses.length-1],0);
@@ -70,14 +71,26 @@ export class LakesiderService{
  get seat(){const b=this.active;if(!b)return null;b.model.root.updateMatrixWorld(true);const p=b.model.root.localToWorld(this.mode==='driver'?new THREE.Vector3(.65,.64,-4):new THREE.Vector3(.65,2.99,-.65));return {x:p.x,y:p.y,z:p.z,yaw:b.model.root.rotation.y};}
  get canDrive(){return this.mode==='passenger'&&Math.abs(this.speed)<.5;}
  blocks(x:number,z:number,y:number){return this.buses.some(b=>{const p=b.model.root.position;if(!b.model.root.visible||y>p.y+4.3)return false;const a=b.model.root.rotation.y,dx=x-p.x,dz=z-p.z;return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<1.58&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<5.45;});}
+ private forecast(b:Bus,seconds=3):VehicleForecast[]{
+  const state=b.state,velocity=state.speed;const out:VehicleForecast[]=[];
+  for(let t=0;t<=seconds+.001;t+=.5){if(t>0&&Math.abs(velocity)<.15)break;
+   const distance=Math.max(7,Math.min(b.route.totalLength-7,state.distance+velocity*state.dir*t));
+   const p=busPose(b.route,{...state,distance});out.push({...p,halfWidth:BUS_HALF_WIDTH,halfLength:BUS_HALF_LENGTH,eta:t});}
+  return out;
+ }
+ forecasts(){return this.buses.filter(b=>b.model.root.visible).flatMap(b=>this.forecast(b));}
  update(dt:number,x:number,z:number,throttle=0,steer=0,boost=false){
   for(const b of this.buses){const p=b.model.root.position,near=Math.hypot(x-p.x,z-p.z)<230,active=b===this.active;b.model.root.visible=near||active;if(!near&&!active)continue;
    const clear=(px:number,pz:number)=>this.clear(px,pz)&&!this.buses.some(o=>o!==b&&Math.hypot(o.model.root.position.x-px,o.model.root.position.z-pz)<4);
-   if(active&&this.mode==='driver'){b.state=stepBus(b.route,b.state,throttle,steer,dt,clear,boost);}
+   const people=this.vulnerable();const dir=active&&this.mode==='driver'&&throttle<0?-1:1;const velocity=Math.max(2,Math.abs(b.state.speed));let clearance=Infinity;
+   // Probe ahead along the route, including the complete bus hull, before advancing.
+   for(let d=0;d<=Math.min(30,velocity*.65+velocity*velocity/6.4+6);d+=.5){const pose=busPose(b.route,{...b.state,distance:Math.max(7,Math.min(b.route.totalLength-7,b.state.distance+d*b.state.dir*dir))});const hull={...pose,halfWidth:BUS_HALF_WIDTH,halfLength:BUS_HALF_LENGTH,eta:0};if(people.some(q=>hullClearance(q.x,q.z,hull)<.55)){clearance=d;break;}}
+   const safeClear=(px:number,pz:number)=>clear(px,pz)&&!people.some(q=>Math.hypot(q.x-px,q.z-pz)<.85);
+   if(active&&this.mode==='driver'){b.state=stepBus(b.route,b.state,safeTrafficThrottle(throttle,clearance,b.state.speed),steer,dt,safeClear,boost);}
    else{const stop=b.stops.find(d=>Math.abs(d-b.state.distance)<3&&d!==b.lastStop);if(stop!==undefined){b.wait=6;b.lastStop=stop;}
     if(b.wait>0){b.wait-=dt;b.state.speed=0;}
     else if((b.state.dir===1&&b.state.distance>=b.route.totalLength-7.01)||(b.state.dir===-1&&b.state.distance<=7.01)){const reverse={...b.state,dir:(-b.state.dir) as 1|-1,speed:0};if(busFits(busPose(b.route,reverse),clear))b.state=reverse;b.wait=3;}
-    else b.state=stepBus(b.route,b.state,.60,0,dt,clear);
+    else b.state=stepBus(b.route,b.state,safeTrafficThrottle(.60,clearance,b.state.speed),0,dt,safeClear);
    }
    this.place(b,dt);
   }

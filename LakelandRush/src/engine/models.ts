@@ -427,32 +427,15 @@ export function createLakeSteamerModel(): THREE.Group {
  * Cumbria Herdwick Sheep (5-part composite)
  */
 export function createHerdwickSheepModel(): THREE.Group {
-  const g = new THREE.Group();
-  const woolMat = new THREE.MeshStandardMaterial({ color: 0xd6d3d1, roughness: 0.92 });
-  const faceMat = new THREE.MeshStandardMaterial({ color: 0x292524, roughness: 0.75 });
-
-  const body = new THREE.Mesh(new THREE.SphereGeometry(0.45, 10, 8), woolMat);
-  body.scale.set(0.85, 0.85, 1.25);
-  body.position.y = 0.62;
-  body.castShadow = true;
-  g.add(body);
-
-  const head = new THREE.Mesh(new THREE.SphereGeometry(0.21, 8, 8), faceMat);
-  head.position.set(0, 0.76, -0.52);
-  g.add(head);
-
-  const legGeo = new THREE.CylinderGeometry(0.05, 0.04, 0.45, 6);
-  for (const [lx, lz] of [
-    [-0.2, -0.28],
-    [0.2, -0.28],
-    [-0.2, 0.28],
-    [0.2, 0.28],
-  ]) {
-    const leg = new THREE.Mesh(legGeo, faceMat);
-    leg.position.set(lx, 0.22, lz);
-    g.add(leg);
-  }
-  return g;
+ const g=new THREE.Group(),wool=new THREE.MeshStandardMaterial({color:0xaaa59f,roughness:1}),light=new THREE.MeshStandardMaterial({color:0xd6d1c5,roughness:1}),face=new THREE.MeshStandardMaterial({color:0xd9d4cc,roughness:.88}),hoof=new THREE.MeshStandardMaterial({color:0x393735,roughness:.8}),eye=new THREE.MeshStandardMaterial({color:0x30251b});
+ function oval(parent:THREE.Group,mat:THREE.Material,x:number,y:number,z:number,a:number,b:number,c:number){const mesh=new THREE.Mesh(new THREE.SphereGeometry(1,12,9),mat);mesh.scale.set(a,b,c);mesh.position.set(x,y,z);parent.add(mesh);mesh.castShadow=true;return mesh;}
+ const body=new THREE.Group();g.add(body);oval(body,wool,0,.64,.02,.35,.37,.57);
+ for(let i=0;i<32;i++){const t=i*2.399963,a=-.83+1.66*(i+.5)/32,r=Math.sqrt(1-a*a);oval(body,i%4===0?light:wool,.32*r*Math.sin(t),.64+.32*r*Math.cos(t),a*.52,.11,.105,.13);}
+ oval(body,light,0,.63,.58,.10,.16,.13);
+ const head=new THREE.Group();head.position.set(0,.76,-.52);g.add(head);oval(head,face,0,0,0,.15,.205,.19);oval(head,face,0,-.095,-.133,.115,.105,.15);oval(head,hoof,0,-.09,-.259,.078,.038,.037);
+ for(const side of [-1,1]){const ear=oval(head,face,side*.17,.08,-.018,.14,.047,.068);ear.rotation.z=side*.25;oval(head,hoof,side*.22,.079,-.03,.062,.028,.045);oval(head,eye,side*.124,.034,-.112,.024,.017,.021);oval(head,hoof,side*.03,-.133,-.24,.017,.007,.018);}
+ for(const [x,z] of [[-.2,-.28],[.2,-.28],[-.2,.28],[.2,.28]]){const leg=new THREE.Group();leg.position.set(x,.22,z);g.add(leg);oval(leg,face,0,.035,0,.052,.21,.06);oval(leg,hoof,0,-.18,-.012,.057,.045,.075);}
+ return g;
 }
 
 /**
