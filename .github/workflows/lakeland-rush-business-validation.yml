@@ -1,0 +1,28 @@
+name: Validate Ambleside business integration
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'LakelandRush/**'
+      - '.github/workflows/lakeland-rush-business-validation.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.5
+      - name: Typecheck, test and build
+        working-directory: LakelandRush
+        run: |
+          bun install --frozen-lockfile
+          npm run lint
+          node --import tsx --test src/{geo,game}/*.test.ts
+          npm run build -- --base=/LakelandRush/
