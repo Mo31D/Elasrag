@@ -1,6 +1,6 @@
 import * as THREE from 'three';
-import {ANIMALS,flightEnergy,feedAllowed,turnTowards,flightDemand,type Species} from '../game/animalMotion';
-import {cameraRelative,sweepMove} from '../game/exploreControls';
+import {ANIMALS,flightEnergy,feedAllowed,animalSteering,flightDemand,type Species} from '../game/animalMotion';
+import {sweepMove} from '../game/exploreControls';
 import {createHerdwickSheepModel} from './models';
 export type BirdFlightPose='takeoff'|'powered'|'glide'|'landing';
 export type BirdAttitude={bank:number;pitch:number;dt:number};
@@ -36,9 +36,9 @@ export class AnimalPlayer{
  }
  toggleFeed(){if(feedAllowed(this.actor.kind,this.wet,this.air,this.speed)){this.feeding=!this.feeding;this.launch=false;this.runway=0;}}
  update(dt:number,steer:number,throttle:number,cameraYaw:number,fast:boolean,vertical:number){
-  this.t+=dt;const p=this.p,w=this.world;const input=cameraRelative(steer,throttle,cameraYaw),strength=Math.min(1,Math.hypot(input.x,input.z));
-  const oldYaw=this.yaw;
-  if(strength>.08){this.feeding=false;this.yaw=turnTowards(this.yaw,Math.atan2(-input.x,-input.z),p.turn,dt);}
+  this.t+=dt;const p=this.p,w=this.world;
+  const motion=animalSteering(this.actor.kind,this.yaw,steer,throttle,cameraYaw,this.air,this.wet,dt),strength=motion.strength;
+  const oldYaw=this.yaw;this.yaw=motion.yaw;if(strength>.08)this.feeding=false;
   const turnRate=dt>0?(this.yaw-oldYaw)/dt:0;
   this.bank+=(THREE.MathUtils.clamp(turnRate*.32,-.48,.48)-this.bank)*(1-Math.exp(-dt*5));
   const floor=(x:number,z:number)=>w.wet(x,z)?-.08:w.floor(x,z);
@@ -57,8 +57,8 @@ export class AnimalPlayer{
   const floorHere=floor(this.x,this.z);
   if(gliding&&this.y<=floorHere+.65)this.landing=true;
   const clearance=Math.max(0,this.y-floorHere);
-  const target=this.air?(this.landing?p.fly*THREE.MathUtils.lerp(.13,.37,Math.min(1,clearance/2.2)):this.launch?p.fly*.64:gliding?p.fly*.42:p.fly*Math.max(.42,demand)):strength*(this.wet?p.swim:fast?p.run:p.walk);
-  this.speed+=(target-this.speed)*(1-Math.exp(-dt*(this.air?1.8:4.5)));
+  const target=this.air?(this.landing?p.fly*THREE.MathUtils.lerp(.13,.37,Math.min(1,clearance/2.2)):this.launch?p.fly*.64:gliding?p.fly*.42:p.fly*Math.max(.42, motion.drive,Math.abs(vertical)*.55)):motion.drive*(this.wet?p.swim:fast?p.run:p.walk);
+  this.speed+=(target-this.speed)*(1-Math.exp(-dt*(this.air?1.8:motion.drive<.1?12:5.5)));
   const ox=this.x,oz=this.z;
   const canMove=(x:number,z:number,y:number)=>!w.blocked(x,z,y,p.radius);
   if(this.air){
