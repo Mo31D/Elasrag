@@ -129,7 +129,7 @@ export function planFacade(b:BuildingFeature,roads:readonly RoadFeature[],ground
    }
    if(e!==front&&wallH>=2.6)for(let k=0;k<n;k++)frame(e,(k-(n-1)/2)*spacing,1.5,Math.min(cfg.window,spacing*.65),1.15);
  }
- const name=record?.name??(b.name&&classifyBuilding(b)&&!records.some(r=>names(r.name)===names(b.name!)&&r.status!=='mapped-snapshot-match')?b.name:undefined);
+ const name=record?.name??(b.name&&classifyBuilding(b)&&!records.some(r=>names(r.name)===names(b.name!))?b.name:undefined);
  const sign=name&&cfg.fascia>0?{name,x:front.x+front.nx*.185,y:ground+fasciaY,z:front.z+front.nz*.185,yaw:front.yaw,width:Math.min(6,fasciaWidth-.12),height:cfg.fascia-.055}:undefined;
  return {family,front,pieces,sign};
 }

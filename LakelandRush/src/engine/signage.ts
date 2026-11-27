@@ -91,7 +91,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
     mesh.rotation.y=anchor.yaw;mesh.name='frontage-'+b.id;mesh.visible=false;plaques.push(mesh);group.add(mesh);
   }
   for(const [id,plan] of facadePlans){
-    const a=plan.sign;if(!a||a.width<.3||a.height<.15||!inChunk(a.x,a.z))continue;
+    const a=plan.sign;if(!a||a.width<.3||a.height<.15)continue;
     const {texture}=artwork([a.name],'facade');
     const geom=new THREE.PlaneGeometry(a.width,a.height);geometries.push(geom);
     const mat=new THREE.MeshBasicMaterial({map:texture,toneMapped:false});materials.push(mat);

@@ -31,6 +31,7 @@ test('business identity requires mapped ID and location; unresolved cannot becom
  const unresolved={name:'Example',status:'unlocated',mapCategory:'shop',position:null};
  assert.equal(planFacade({...b,name:'Example'},roads,0,6,[],[unresolved])?.sign,undefined);
  assert.equal(planFacade(b,roads,0,6,[],[resolved])?.sign?.name,'Example');
+ assert.equal(planFacade({...b,id:43,name:'Example'},roads,0,6,[],[resolved])?.sign,undefined);
 });
 test('actual inventory never assigns unlocated records by proximity',()=>{
  for(const r of inventory.records.filter(r=>!r.position))assert.equal(mappedIdentity({...b,name:r.name},[r]),undefined);
