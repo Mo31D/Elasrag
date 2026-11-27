@@ -13,7 +13,8 @@
       "address": "Church Street",
       "postcode": "LA22 9DL",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0002",
@@ -24,7 +25,8 @@
       "address": "Church Street",
       "postcode": "LA22 9DL",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0003",
@@ -35,7 +37,8 @@
       "address": "Ambleside",
       "postcode": "",
       "sourceUrls": "https://www.amblesidehotels.net/en/all-hotels/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0004",
@@ -46,7 +49,18 @@
       "address": "Rothay Road",
       "postcode": "LA22 0EJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Ambleside Manor",
+          "x": -216.3,
+          "z": -1243.2,
+          "buildingId": 423653153,
+          "height": 10.5,
+          "source": "OSM way 423653153",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0005",
@@ -57,7 +71,8 @@
       "address": "Borrans Road",
       "postcode": "LA22 0EW",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0006",
@@ -68,7 +83,8 @@
       "address": "Rothay Road",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0007",
@@ -79,7 +95,8 @@
       "address": "",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0008",
@@ -90,7 +107,18 @@
       "address": "",
       "postcode": "LA22 9AG",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Brantholme Guest House",
+          "x": -155.9,
+          "z": -1711.7,
+          "buildingId": 461749342,
+          "height": 10.5,
+          "source": "OSM way 461749342",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0009",
@@ -101,7 +129,8 @@
       "address": "Rothay Road",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0010",
@@ -112,7 +141,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0DN",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0011",
@@ -123,7 +153,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0012",
@@ -134,7 +165,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0013",
@@ -145,7 +177,8 @@
       "address": "",
       "postcode": "LA22 0DH",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0014",
@@ -156,7 +189,8 @@
       "address": "",
       "postcode": "LA22 0DB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0015",
@@ -167,7 +201,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0DB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0016",
@@ -178,7 +213,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0DB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0017",
@@ -189,7 +225,8 @@
       "address": "",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0018",
@@ -200,7 +237,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9AY",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0019",
@@ -211,7 +249,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0020",
@@ -222,7 +261,8 @@
       "address": "",
       "postcode": "LA22 0BT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0021",
@@ -233,7 +273,18 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Holker House",
+          "x": -75.8,
+          "z": -1504.8,
+          "buildingId": 964907061,
+          "height": 7.7,
+          "source": "OSM way 964907061",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0022",
@@ -244,7 +295,8 @@
       "address": "Compston Street",
       "postcode": "",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0023",
@@ -255,7 +307,8 @@
       "address": "",
       "postcode": "LA22 0BZ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0024",
@@ -266,7 +319,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0HD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0025",
@@ -277,7 +331,18 @@
       "address": "",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Lattendales",
+          "x": -78.4,
+          "z": -1499.6,
+          "buildingId": 964907059,
+          "height": 7.7,
+          "source": "OSM way 964907059",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0026",
@@ -288,7 +353,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0027",
@@ -299,7 +365,8 @@
       "address": "",
       "postcode": "LA22 0DN",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0028",
@@ -310,7 +377,18 @@
       "address": "Rydal Road",
       "postcode": "LA22 9BA",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Meadowbank",
+          "x": -339.5,
+          "z": -1991.6,
+          "buildingId": 423083694,
+          "height": 7.7,
+          "source": "OSM way 423083694",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0029",
@@ -321,7 +399,8 @@
       "address": "",
       "postcode": "LA22 0BT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0030",
@@ -332,7 +411,8 @@
       "address": "Church Street",
       "postcode": "LA22 0BT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0031",
@@ -343,7 +423,8 @@
       "address": "Borrans Road",
       "postcode": "LA22 0HJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0032",
@@ -354,7 +435,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9AN",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0033",
@@ -365,7 +447,8 @@
       "address": "",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0034",
@@ -376,7 +459,18 @@
       "address": "Rothay Road",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Rothay House",
+          "x": -134.9,
+          "z": -1259.3,
+          "buildingId": 423650917,
+          "height": 10.5,
+          "source": "OSM way 423650917",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0035",
@@ -387,7 +481,18 @@
       "address": "",
       "postcode": "LA22 0EH",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Rothay Manor Hotel",
+          "x": -323.9,
+          "z": -1008.2,
+          "buildingId": 423653161,
+          "height": 10.5,
+          "source": "OSM way 423653161",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0036",
@@ -398,7 +503,8 @@
       "address": "Rothay Road",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0037",
@@ -409,7 +515,8 @@
       "address": "",
       "postcode": "LA22 9BX",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0038",
@@ -420,7 +527,8 @@
       "address": "Market Place",
       "postcode": "",
       "sourceUrls": "https://www.amblesidehotels.net/en/all-hotels/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0039",
@@ -431,7 +539,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9AY",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0040",
@@ -442,7 +551,8 @@
       "address": "12 Church Street",
       "postcode": "LA22 0BT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0041",
@@ -453,7 +563,8 @@
       "address": "Lake Road",
       "postcode": "",
       "sourceUrls": "https://www.amblesidehotels.net/en/all-hotels/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0042",
@@ -464,7 +575,8 @@
       "address": "33 Lake Road",
       "postcode": "LA22 0BH",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0043",
@@ -475,7 +587,8 @@
       "address": "Borrans Road",
       "postcode": "LA22 0EP",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0044",
@@ -486,7 +599,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0ER",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0045",
@@ -497,7 +611,18 @@
       "address": "Wansfell Road",
       "postcode": "",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Tweenways Self Catering",
+          "x": 10.3,
+          "z": -1218.7,
+          "buildingId": 423805092,
+          "height": 10.5,
+          "source": "OSM way 423805092",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0046",
@@ -508,7 +633,8 @@
       "address": "",
       "postcode": "LA22 0DN",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0047",
@@ -519,7 +645,8 @@
       "address": "3 Bridge Street",
       "postcode": "LA22 9DU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0048",
@@ -530,7 +657,8 @@
       "address": "Borrans Road",
       "postcode": "LA22 0ES",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0049",
@@ -541,7 +669,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0DB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0050",
@@ -552,7 +681,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0EU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0051",
@@ -563,7 +693,8 @@
       "address": "Church Street",
       "postcode": "LA22 0BT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0052",
@@ -574,7 +705,8 @@
       "address": "1 Church Street",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0053",
@@ -585,7 +717,8 @@
       "address": "Rydal Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0054",
@@ -596,7 +729,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0055",
@@ -607,7 +741,8 @@
       "address": "Rydal Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0056",
@@ -618,7 +753,8 @@
       "address": "9 Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0057",
@@ -629,7 +765,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0058",
@@ -640,7 +777,8 @@
       "address": "100 Kelsick Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0059",
@@ -651,7 +789,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9AN",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0060",
@@ -662,7 +801,8 @@
       "address": "Unit 2 Shoecraft House",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0061",
@@ -673,7 +813,8 @@
       "address": "2 Bridge Street",
       "postcode": "LA22 9DU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0062",
@@ -684,7 +825,8 @@
       "address": "101 Lake Road",
       "postcode": "LA22 0DB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0063",
@@ -695,7 +837,8 @@
       "address": "Ambleside House, Church Street",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0064",
@@ -706,7 +849,8 @@
       "address": "Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0065",
@@ -717,7 +861,8 @@
       "address": "Central Buildings",
       "postcode": "LA22 9BS",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0066",
@@ -728,7 +873,8 @@
       "address": "14 Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0067",
@@ -739,7 +885,8 @@
       "address": "Kelsick Grammar",
       "postcode": "LA22 0QY",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0068",
@@ -750,7 +897,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0DW",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0069",
@@ -761,7 +909,18 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Grain",
+          "x": 125.4,
+          "z": -1600.7,
+          "buildingId": 423171417,
+          "height": 8.2,
+          "source": "OSM way 423171417",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0070",
@@ -772,7 +931,8 @@
       "address": "Rothay Road",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0071",
@@ -783,7 +943,8 @@
       "address": "Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0072",
@@ -794,7 +955,8 @@
       "address": "The Slack",
       "postcode": "LA22 9DQ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0073",
@@ -805,7 +967,8 @@
       "address": "Old Bank House",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0074",
@@ -816,7 +979,8 @@
       "address": "The Esplanade",
       "postcode": "LA22 0EU",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0075",
@@ -827,7 +991,8 @@
       "address": "The Slack",
       "postcode": "LA22 9DQ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0076",
@@ -838,7 +1003,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0077",
@@ -849,7 +1015,8 @@
       "address": "University of Cumbria",
       "postcode": "LA22 9BB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0078",
@@ -860,7 +1027,8 @@
       "address": "Kent House",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0079",
@@ -871,7 +1039,8 @@
       "address": "4 Central Buildings",
       "postcode": "LA22 9BS",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0080",
@@ -882,7 +1051,8 @@
       "address": "Borrans Road",
       "postcode": "LA22 0EY",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0081",
@@ -893,7 +1063,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DR",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0082",
@@ -904,7 +1075,8 @@
       "address": "6a Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0083",
@@ -915,7 +1087,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9AN",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0084",
@@ -926,7 +1099,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0DW",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0085",
@@ -937,7 +1111,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0086",
@@ -948,7 +1123,8 @@
       "address": "Market Place",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0087",
@@ -959,7 +1135,8 @@
       "address": "Lake Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0088",
@@ -970,7 +1147,8 @@
       "address": "Lake Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0089",
@@ -981,7 +1159,8 @@
       "address": "Compston Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0090",
@@ -992,7 +1171,8 @@
       "address": "8 Kelsick Road",
       "postcode": "LA22 0BZ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0091",
@@ -1003,7 +1183,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DR",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0092",
@@ -1014,7 +1195,8 @@
       "address": "North Road",
       "postcode": "LA22 9DT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0093",
@@ -1025,7 +1207,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0094",
@@ -1036,7 +1219,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0095",
@@ -1047,7 +1231,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0096",
@@ -1058,7 +1243,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DR",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0097",
@@ -1069,7 +1255,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9BS",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0098",
@@ -1080,7 +1267,8 @@
       "address": "7 Lake Road",
       "postcode": "LA22 0DF",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0099",
@@ -1091,7 +1279,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0100",
@@ -1102,7 +1291,8 @@
       "address": "Central Buildings",
       "postcode": "LA22 9BS",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0101",
@@ -1113,7 +1303,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0102",
@@ -1124,7 +1315,8 @@
       "address": "22 Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0103",
@@ -1135,7 +1327,8 @@
       "address": "4 Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0104",
@@ -1146,7 +1339,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0EY",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria; https://www.onelakedistrict.co.uk/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0105",
@@ -1157,7 +1351,8 @@
       "address": "Central Buildings",
       "postcode": "LA22 9BS",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0106",
@@ -1168,7 +1363,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0107",
@@ -1179,7 +1375,8 @@
       "address": "3 Rydal Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0108",
@@ -1190,7 +1387,8 @@
       "address": "33 Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0109",
@@ -1201,7 +1399,8 @@
       "address": "Lake Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.visitlakedistrict.com/things-to-do/herdy-ambleside-p2628261",
-      "verification": "Official website/listing found — hours not verified"
+      "verification": "Official website/listing found — hours not verified",
+      "candidates": []
     },
     {
       "id": "AMB-0110",
@@ -1212,7 +1411,8 @@
       "address": "The Slack",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0111",
@@ -1223,7 +1423,8 @@
       "address": "2 Market Cross",
       "postcode": "LA22 9BS",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0112",
@@ -1234,7 +1435,8 @@
       "address": "Market Cross",
       "postcode": "LA22 9BS",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0113",
@@ -1245,7 +1447,8 @@
       "address": "Borrans Road",
       "postcode": "LA22 0ER",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria; https://www.lakesidepicnic.co.uk/about.html",
-      "verification": "Official website/listing found — hours not verified"
+      "verification": "Official website/listing found — hours not verified",
+      "candidates": []
     },
     {
       "id": "AMB-0114",
@@ -1256,7 +1459,18 @@
       "address": "Bridge Street",
       "postcode": "LA22 9DT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Rock Shop",
+          "x": 96,
+          "z": -1675.1,
+          "buildingId": 527316353,
+          "height": 8.2,
+          "source": "OSM way 527316353",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0115",
@@ -1267,7 +1481,8 @@
       "address": "Lake Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0116",
@@ -1278,7 +1493,8 @@
       "address": "North Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0117",
@@ -1289,7 +1505,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0118",
@@ -1300,7 +1517,8 @@
       "address": "Lake Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/; https://www.theblacksheepshop.co.uk/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0119",
@@ -1311,7 +1529,8 @@
       "address": "Central Buildings, Market Cross",
       "postcode": "LA22 9BS",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0120",
@@ -1322,7 +1541,8 @@
       "address": "The Slack",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0121",
@@ -1333,7 +1553,8 @@
       "address": "Church Street",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0122",
@@ -1344,7 +1565,8 @@
       "address": "The Esplanade",
       "postcode": "LA22 0EY",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria; https://www.onelakedistrict.co.uk/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0123",
@@ -1355,7 +1577,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DR",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0124",
@@ -1366,7 +1589,8 @@
       "address": "Church Street",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0125",
@@ -1377,7 +1601,8 @@
       "address": "2-3 Church Street",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0126",
@@ -1388,7 +1613,8 @@
       "address": "St Mary's Lane",
       "postcode": "LA22 9DG",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0127",
@@ -1399,7 +1625,8 @@
       "address": "North Road",
       "postcode": "LA22 9DT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0128",
@@ -1410,7 +1637,18 @@
       "address": "Rydal Road",
       "postcode": "LA22 9BP",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.streetlist.co.uk/la/la22",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Ambleside Health Centre",
+          "x": -184.7,
+          "z": -1955.8,
+          "buildingId": 423107745,
+          "height": 6.4,
+          "source": "OSM way 423107745",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0129",
@@ -1421,7 +1659,8 @@
       "address": "North Road",
       "postcode": "LA22 9DT",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.streetlist.co.uk/la/la22",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0130",
@@ -1432,7 +1671,8 @@
       "address": "",
       "postcode": "",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.streetlist.co.uk/la/la22",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0131",
@@ -1443,7 +1683,8 @@
       "address": "8-9 Market Cross",
       "postcode": "LA22 9DR",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.streetlist.co.uk/la/la22",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0132",
@@ -1454,7 +1695,8 @@
       "address": "Old Quaker Meeting House, Rydal Road",
       "postcode": "LA22 9AN",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.streetlist.co.uk/la/la22",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0133",
@@ -1465,7 +1707,8 @@
       "address": "Church Street",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.streetlist.co.uk/la/la22",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0134",
@@ -1476,7 +1719,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.streetlist.co.uk/la/la22",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0135",
@@ -1487,7 +1731,8 @@
       "address": "Rothay area",
       "postcode": "LA22 0HQ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0136",
@@ -1498,7 +1743,8 @@
       "address": "Knott Street",
       "postcode": "LA22 0EA",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0137",
@@ -1509,7 +1755,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0138",
@@ -1520,7 +1767,8 @@
       "address": "Kelsick Road",
       "postcode": "LA22 0BZ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0139",
@@ -1531,7 +1779,8 @@
       "address": "Rothay area",
       "postcode": "LA22 0HQ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0140",
@@ -1542,7 +1791,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0DW",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0141",
@@ -1553,7 +1803,8 @@
       "address": "Rothay Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0142",
@@ -1564,7 +1815,8 @@
       "address": "Lake Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0143",
@@ -1575,7 +1827,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DR",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0144",
@@ -1586,7 +1839,8 @@
       "address": "The Slack",
       "postcode": "LA22 9DQ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0145",
@@ -1597,7 +1851,8 @@
       "address": "2-3 Church Street",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0146",
@@ -1608,7 +1863,8 @@
       "address": "Rothay Road",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0147",
@@ -1619,7 +1875,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0DW",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0148",
@@ -1630,7 +1887,8 @@
       "address": "Lake Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0149",
@@ -1641,7 +1899,18 @@
       "address": "Rydal Road",
       "postcode": "",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Lakeland Ice Cream Shop",
+          "x": 2.2,
+          "z": -1720,
+          "buildingId": 423129267,
+          "height": 6.4,
+          "source": "OSM way 423129267",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0150",
@@ -1652,7 +1921,8 @@
       "address": "6a Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0151",
@@ -1663,7 +1933,8 @@
       "address": "101 Lake Road",
       "postcode": "LA22 0DB",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0152",
@@ -1674,7 +1945,8 @@
       "address": "3 Rydal Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0153",
@@ -1685,7 +1957,8 @@
       "address": "100 Lake Road",
       "postcode": "LA22 0DB",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0154",
@@ -1696,7 +1969,8 @@
       "address": "42 Compston Road",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0155",
@@ -1707,7 +1981,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0156",
@@ -1718,7 +1993,8 @@
       "address": "3 Rydal Road",
       "postcode": "LA22 9AN",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0157",
@@ -1729,7 +2005,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9BS",
       "sourceUrls": "https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0158",
@@ -1740,7 +2017,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0159",
@@ -1751,7 +2029,8 @@
       "address": "Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0160",
@@ -1762,7 +2041,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0161",
@@ -1773,7 +2053,8 @@
       "address": "Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0162",
@@ -1784,7 +2065,8 @@
       "address": "The Slack",
       "postcode": "LA22 9DQ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0163",
@@ -1795,7 +2077,8 @@
       "address": "48 Compston Road",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0164",
@@ -1806,7 +2089,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9AN",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0165",
@@ -1817,7 +2101,8 @@
       "address": "Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0166",
@@ -1828,7 +2113,8 @@
       "address": "2 Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0167",
@@ -1839,7 +2125,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DS",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0168",
@@ -1850,7 +2137,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DR",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0169",
@@ -1861,7 +2149,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://streets.openalfa.co.uk/ambleside-and-grasmere-ward/shopping; https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0170",
@@ -1872,7 +2161,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DR",
       "sourceUrls": "https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0171",
@@ -1883,7 +2173,8 @@
       "address": "Market Cross",
       "postcode": "LA22 9BT",
       "sourceUrls": "https://www.amblesideonline.co.uk/shopping-in-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0172",
@@ -1894,7 +2185,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0EZ",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0173",
@@ -1905,7 +2197,8 @@
       "address": "",
       "postcode": "",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0174",
@@ -1916,7 +2209,8 @@
       "address": "Millans Park",
       "postcode": "LA22 9AG",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0175",
@@ -1927,7 +2221,8 @@
       "address": "Church Street",
       "postcode": "LA22 0BT",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0176",
@@ -1938,7 +2233,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9AW",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0177",
@@ -1949,7 +2245,8 @@
       "address": "The Palindrome Building, Old Lake Road",
       "postcode": "LA22 0DH",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0178",
@@ -1960,7 +2257,8 @@
       "address": "Loughrigg Villa, Kelsick Road",
       "postcode": "LA22 0BY",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0179",
@@ -1971,7 +2269,8 @@
       "address": "Kelsick Road",
       "postcode": "LA22 0BP",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0180",
@@ -1982,7 +2281,8 @@
       "address": "Ambleside",
       "postcode": "LA22 9DH",
       "sourceUrls": "https://kendalnews.co.uk/local-businesses-in-ambleside/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.ambleside-directory.co.uk/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0181",
@@ -1993,7 +2293,18 @@
       "address": "Kelsick Road",
       "postcode": "LA22 9DS",
       "sourceUrls": "https://kendalnews.co.uk/local-businesses-in-ambleside/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.ambleside-directory.co.uk/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Ambleside Library",
+          "x": 15.1,
+          "z": -1368.2,
+          "buildingId": 239881389,
+          "height": 6.4,
+          "source": "OSM way 239881389",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0182",
@@ -2004,7 +2315,18 @@
       "address": "Vicarage Road",
       "postcode": "LA22 9DH",
       "sourceUrls": "https://kendalnews.co.uk/local-businesses-in-ambleside/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.ambleside-directory.co.uk/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Ambleside Parish Centre",
+          "x": -221.1,
+          "z": -1503.6,
+          "buildingId": 337179895,
+          "height": 6.4,
+          "source": "OSM way 337179895",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0183",
@@ -2015,7 +2337,8 @@
       "address": "Borrans Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria; https://lakedistrict.gov.uk/explore/places-to-go/explore-windermere-and-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0184",
@@ -2026,7 +2349,8 @@
       "address": "Ambleside",
       "postcode": "",
       "sourceUrls": "https://kendalnews.co.uk/local-businesses-in-ambleside/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.ambleside-directory.co.uk/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0185",
@@ -2037,7 +2361,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9BB",
       "sourceUrls": "https://kendalnews.co.uk/local-businesses-in-ambleside/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.ambleside-directory.co.uk/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0186",
@@ -2048,7 +2373,8 @@
       "address": "Waterhead",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria; https://lakedistrict.gov.uk/explore/places-to-go/explore-windermere-and-ambleside/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0187",
@@ -2059,7 +2385,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://kendalnews.co.uk/local-businesses-in-ambleside/; https://www.amblesideonline.co.uk/useful-information/public-services/; https://www.ambleside-directory.co.uk/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0188",
@@ -2070,7 +2397,8 @@
       "address": "Smithy Brow",
       "postcode": "LA22 9AS",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0189",
@@ -2081,7 +2409,8 @@
       "address": "The Old Mill",
       "postcode": "LA22 9DT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0190",
@@ -2092,7 +2421,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0191",
@@ -2103,7 +2433,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DR",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0192",
@@ -2114,7 +2445,8 @@
       "address": "Borrans Road",
       "postcode": "",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0193",
@@ -2125,7 +2457,8 @@
       "address": "Mill Yard",
       "postcode": "LA22 9AN",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0194",
@@ -2136,7 +2469,8 @@
       "address": "12-14 Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0195",
@@ -2147,7 +2481,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9AN",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0196",
@@ -2158,7 +2493,8 @@
       "address": "",
       "postcode": "LA22 9DT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0197",
@@ -2169,7 +2505,8 @@
       "address": "",
       "postcode": "LA22 9DB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0198",
@@ -2180,7 +2517,8 @@
       "address": "2 St Mary's Lane",
       "postcode": "LA22 9DG",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0199",
@@ -2191,7 +2529,8 @@
       "address": "7 Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0200",
@@ -2202,7 +2541,8 @@
       "address": "Rydal Road",
       "postcode": "LA22 9AN",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0201",
@@ -2213,7 +2553,8 @@
       "address": "Market Place",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0202",
@@ -2224,7 +2565,8 @@
       "address": "Church Street",
       "postcode": "LA22 0BT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0203",
@@ -2235,7 +2577,8 @@
       "address": "",
       "postcode": "LA22 0BZ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0204",
@@ -2246,7 +2589,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0205",
@@ -2257,7 +2601,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0206",
@@ -2268,7 +2613,8 @@
       "address": "2-3 Millans Park",
       "postcode": "LA22 9AF",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0207",
@@ -2279,7 +2625,8 @@
       "address": "",
       "postcode": "LA22 0BZ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0208",
@@ -2290,7 +2637,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0209",
@@ -2301,7 +2649,8 @@
       "address": "9 Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0210",
@@ -2312,7 +2661,8 @@
       "address": "Old Stamp House",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0211",
@@ -2323,7 +2673,8 @@
       "address": "3-4 Cheapside",
       "postcode": "LA22 0AB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0212",
@@ -2334,7 +2685,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0213",
@@ -2345,7 +2697,8 @@
       "address": "Radio House",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0214",
@@ -2356,7 +2709,8 @@
       "address": "Lake Road",
       "postcode": "",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0215",
@@ -2367,7 +2721,8 @@
       "address": "Kelsick Old Hall",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0216",
@@ -2378,7 +2733,8 @@
       "address": "3 The Old Stamp House",
       "postcode": "LA22 0BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0217",
@@ -2389,7 +2745,8 @@
       "address": "Cheapside",
       "postcode": "LA22 0AB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0218",
@@ -2400,7 +2757,8 @@
       "address": "North Road",
       "postcode": "LA22 9DT",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0219",
@@ -2411,7 +2769,18 @@
       "address": "",
       "postcode": "LA22 9AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": [
+        {
+          "name": "Zeffirellis",
+          "x": -38.4,
+          "z": -1602.3,
+          "buildingId": 846685465,
+          "height": 6.4,
+          "source": "OSM way 846685465",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0220",
@@ -2422,7 +2791,8 @@
       "address": "Lake Road",
       "postcode": "LA22 0EY",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0221",
@@ -2433,7 +2803,8 @@
       "address": "Unit 5 Rothay Holme",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0222",
@@ -2444,7 +2815,8 @@
       "address": "Compston Road",
       "postcode": "LA22 9DJ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0223",
@@ -2455,7 +2827,8 @@
       "address": "Unit 1 Shoecraft House",
       "postcode": "LA22 9BU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0224",
@@ -2466,7 +2839,8 @@
       "address": "2a Cheapside",
       "postcode": "LA22 0AB",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0225",
@@ -2477,7 +2851,8 @@
       "address": "10 Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0226",
@@ -2488,7 +2863,8 @@
       "address": "4 The Slack",
       "postcode": "LA22 9DQ",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0227",
@@ -2499,7 +2875,8 @@
       "address": "1 Lake Road",
       "postcode": "LA22 0AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0228",
@@ -2510,7 +2887,8 @@
       "address": "The Palindrome Building",
       "postcode": "LA22 0DH",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0229",
@@ -2521,7 +2899,8 @@
       "address": "",
       "postcode": "LA22 9AD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0230",
@@ -2532,7 +2911,8 @@
       "address": "Rothay Holme Industrial Estate, Rothay Road",
       "postcode": "",
       "sourceUrls": "https://www.amblesideonline.co.uk/local-information/local-businesses/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0231",
@@ -2543,7 +2923,8 @@
       "address": "Ambleside",
       "postcode": "",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0232",
@@ -2554,7 +2935,8 @@
       "address": "Kelsick Road",
       "postcode": "LA22 0BZ",
       "sourceUrls": "https://www.amblesideonline.co.uk/local-information/local-businesses/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0233",
@@ -2565,7 +2947,8 @@
       "address": "Ambleside",
       "postcode": "",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0234",
@@ -2576,7 +2959,8 @@
       "address": "Ambleside",
       "postcode": "",
       "sourceUrls": "https://www.amblesideonline.co.uk/useful-information/ambleside-professional-services/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0235",
@@ -2587,7 +2971,8 @@
       "address": "Unit 2/3 Rothay Holme Industrial Estate",
       "postcode": "LA22 0HQ",
       "sourceUrls": "https://www.amblesideonline.co.uk/local-information/local-businesses/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0236",
@@ -2598,7 +2983,8 @@
       "address": "The Green",
       "postcode": "",
       "sourceUrls": "https://www.amblesideonline.co.uk/local-information/local-businesses/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0237",
@@ -2609,7 +2995,8 @@
       "address": "Kelsick Road",
       "postcode": "LA22 0EE",
       "sourceUrls": "https://www.amblesideonline.co.uk/local-information/local-businesses/",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0238",
@@ -2620,7 +3007,8 @@
       "address": "Waterhead",
       "postcode": "",
       "sourceUrls": "https://www.windermere-lakecruises.co.uk/find-us; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0239",
@@ -2631,7 +3019,8 @@
       "address": "Borrans Road",
       "postcode": "",
       "sourceUrls": "https://www.windermere-lakecruises.co.uk/find-us; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Listed — current trading status unverified"
+      "verification": "Listed — current trading status unverified",
+      "candidates": []
     },
     {
       "id": "AMB-0240",
@@ -2642,7 +3031,8 @@
       "address": "Borrans Road",
       "postcode": "LA22 0EY",
       "sourceUrls": "https://www.windermere-lakecruises.co.uk/find-us; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Official website/listing found — hours not verified"
+      "verification": "Official website/listing found — hours not verified",
+      "candidates": []
     },
     {
       "id": "AMB-0241",
@@ -2653,7 +3043,17 @@
       "address": "Waterhead Pier, The Esplanade",
       "postcode": "LA22 0EY",
       "sourceUrls": "https://www.windermere-lakecruises.co.uk/find-us; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
-      "verification": "Official website/listing found — hours not verified"
+      "verification": "Official website/listing found — hours not verified",
+      "candidates": []
     }
-  ]
+  ],
+  "checkedChunks": [
+    "0_-4",
+    "-1_-4",
+    "0_-3",
+    "-1_-3",
+    "0_-5",
+    "-1_-5"
+  ],
+  "missingChunks": []
 }
