@@ -269,6 +269,7 @@ export interface HudSnapshot {
   canBoardBoat?:boolean;
   canTalkAttendant?:boolean;
   characterSwitch?:{x:number;y:number;target:string};
+  animal?:{kind:string;label:string;energy:number;canFly:boolean;launch:boolean;landing:boolean;feeding:boolean;wet:boolean};
   fastSwim?:boolean;
   accelerating?:boolean;
   busMode?:'passenger'|'driver';

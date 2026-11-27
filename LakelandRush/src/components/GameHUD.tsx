@@ -28,6 +28,9 @@ export interface GameHUDProps {
   onWaterInteract:()=>void;
   onTalkAttendant:()=>void;
   onSwitchCharacter:()=>void;
+  onSelectAnimal:(x:number,y:number)=>void;
+  onExitAnimal:()=>void;
+  onFeedAnimal:()=>void;
   onBusInteract:()=>void;
   onBusDrive:()=>void;
   onAccelerator:(pressed:boolean)=>void;

@@ -81,7 +81,7 @@ export default function App() {
   const [waypoint,setWaypoint]=useState<MapTarget|null>(null);
   const [travelBusy,setTravelBusy]=useState(false);
   const [travelError,setTravelError]=useState('');
-  const lookPointer = useRef<{ id: number; x: number; y: number } | null>(null);
+  const lookPointer = useRef<{ id: number; x: number; y: number; startX:number;startY:number;moved:boolean } | null>(null);
   const mountRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<LakelandEngine | null>(null);
 
@@ -347,16 +347,17 @@ export default function App() {
         onPointerDown={event => {
           if (gameState !== 'playing' || showMapModal || showSettingsModal || showTutorialModal || selectedRoute.mode !== 'freeroam' || lookPointer.current || (event.pointerType==='mouse'&&event.button!==0)) return;
           event.currentTarget.setPointerCapture(event.pointerId);
-          lookPointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY };
+          lookPointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY,startX:event.clientX,startY:event.clientY,moved:false };
         }}
         onPointerMove={event => {
           const pointer = lookPointer.current;
           if (gameState !== 'playing' || showMapModal || showSettingsModal || showTutorialModal || pointer?.id !== event.pointerId) return;
+          if(Math.hypot(event.clientX-pointer.startX,event.clientY-pointer.startY)>9)pointer.moved=true;
           engineRef.current?.rotateExploreView(event.clientX - pointer.x, event.clientY - pointer.y);
           pointer.x = event.clientX;
           pointer.y = event.clientY;
         }}
-        onPointerUp={event=>{if(lookPointer.current?.id===event.pointerId)lookPointer.current=null;}}
+        onPointerUp={event=>{const p=lookPointer.current;if(p?.id===event.pointerId){lookPointer.current=null;if(!p.moved&&Math.hypot(event.clientX-p.startX,event.clientY-p.startY)<=9)engineRef.current?.selectAnimalAt(event.clientX,event.clientY);}}}
         onPointerCancel={event=>{if(lookPointer.current?.id===event.pointerId)lookPointer.current=null;}}
         onLostPointerCapture={event=>{if(lookPointer.current?.id===event.pointerId)lookPointer.current=null;}}
       />
@@ -417,6 +418,9 @@ export default function App() {
           onWaterInteract={()=>engineRef.current?.interactWater()}
           onTalkAttendant={()=>engineRef.current?.talkAttendant()}
           onSwitchCharacter={()=>engineRef.current?.switchCharacter()}
+          onSelectAnimal={(x,y)=>engineRef.current?.selectAnimalAt(x,y)}
+          onExitAnimal={()=>engineRef.current?.exitAnimal()}
+          onFeedAnimal={()=>engineRef.current?.feedAnimal()}
           onBusInteract={()=>engineRef.current?.interactBus()}
           onBusDrive={()=>engineRef.current?.takeBusWheel()}
           onAccelerator={pressed=>engineRef.current?.setAccelerator(pressed)}

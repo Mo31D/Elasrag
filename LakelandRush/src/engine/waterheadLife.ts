@@ -51,7 +51,7 @@ function makeCruiser(){
  const wg=new THREE.BufferGeometry();wg.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));wg.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));wakeMat.vertexColors=true;
  const wake=new THREE.Mesh(wg,wakeMat);return {root,wake,wakeMat};
 }
-type Bird={root:THREE.Group;body:THREE.Group;neck:THREE.Group;feet:THREE.Group[];wings:THREE.Group[];x:number;z:number;homeX:number;homeZ:number;angle:number;phase:number;swimming:boolean;scale:number;speed:number};
+type Bird={kind:'mallard'|'swan';root:THREE.Group;body:THREE.Group;neck:THREE.Group;feet:THREE.Group[];wings:THREE.Group[];x:number;z:number;homeX:number;homeZ:number;angle:number;phase:number;swimming:boolean;scale:number;speed:number};
 function birdModel(swan:boolean,variant:number){
  const root=new THREE.Group(),body=new THREE.Group(),neck=new THREE.Group();root.add(body);body.add(neck);
  const plumage=material(swan?0xf3f1e8:variant%2?0x82705c:0x70777c),wingMat=material(swan?0xe0e2dc:0x635846),headMat=material(swan?0xf4f1e8:variant%2?0x8c7456:0x246252),beak=material(swan?0xe9932a:0xc3a33b),dark=material(0x25252a),feetMat=material(swan?0x363433:0xb36a32);
@@ -79,7 +79,7 @@ export class WaterheadLife{
    for(let j=0;j<16;j++){const a=px+(j%2?1:-1)*Math.floor(j/2)*.55;if(swimming?clearWater(a,pz):clearLand(a,pz)){px=a;found=true;break;}}
    if(!found)continue;
    const m=birdModel(swan,i),scale=swan?.92: .53+(i%3)*.04;m.root.scale.setScalar(scale);scene.add(m.root);
-   this.birds.push({...m,x:px,z:pz,homeX:px,homeZ:pz,angle:i*2.399,phase:i*.83,swimming,scale,speed:swimming?.42:.28});
+   this.birds.push({...m,kind:swan?'swan':'mallard',x:px,z:pz,homeX:px,homeZ:pz,angle:i*2.399,phase:i*.83,swimming,scale,speed:swimming?.42:.28});
   }
   this.update(0,0,-280);
  }
@@ -94,7 +94,7 @@ export class WaterheadLife{
    const near=Math.hypot(playerX-p.x,playerZ-p.z)<750;g.visible=this.cruiser.wake.visible=near;}
   this.rippleClock+=dt;const emit=this.rippleClock>.48;if(emit)this.rippleClock=0;
   for(let i=0;i<this.birds.length;i++){
-   const b=this.birds[i],near=Math.hypot(playerX-b.x,playerZ-b.z)<170;b.root.visible=near;if(!near)continue;
+   const b=this.birds[i];if(b.root.userData.animalControlled)continue;const near=Math.hypot(playerX-b.x,playerZ-b.z)<170;b.root.visible=near;if(!near)continue;
    const alarm=fleeDirection(b.x,b.z,threats),d=Math.hypot(b.x-b.homeX,b.z-b.homeZ),target=alarm?alarm.yaw:d>7?Math.atan2(b.x-b.homeX,b.z-b.homeZ):b.angle+Math.sin(this.t*.28+b.phase)*dt*.38;
    let diff=Math.atan2(Math.sin(target-b.angle),Math.cos(target-b.angle));b.angle+=THREE.MathUtils.clamp(diff,-(alarm?4.2:1.4)*dt,(alarm?4.2:1.4)*dt);
    const moving=!!alarm||Math.sin(this.t*.62+b.phase)>-.45,step=moving?(alarm?b.speed+alarm.alarm*1.9:b.speed)*dt:0,x=b.x-Math.sin(b.angle)*step,z=b.z-Math.cos(b.angle)*step;
@@ -105,6 +105,7 @@ export class WaterheadLife{
    if(emit&&moving&&b.swimming&&i%3===Math.floor(this.t)%3)this.ripple(b.x,b.z,b.scale*.55);
   }
  }
+ selectableAnimals(){return this.birds.map(b=>({root:b.root,kind:b.kind,pose:(t:number,s:number,wet:boolean,air:boolean,feed:boolean)=>{b.body.rotation.z=air?Math.sin(t*5)*.035:Math.sin(t*2)*.025;b.body.rotation.x=feed&&wet?.24:0;b.neck.rotation.x=feed?-.85:air?-1.05:0;for(let j=0;j<2;j++){b.feet[j].visible=!wet&&!air;b.feet[j].rotation.x=s>.05?Math.sin(t*9+j*Math.PI)*.55:0;b.wings[j].scale.x=air?3.4:1;b.wings[j].rotation.z=air?(j===0?-1:1)*(Math.sin(t*(b.kind==='swan'?10:16))*.9):0;}}}));}
  dispose(){
   const mats=new Set<THREE.Material>(),geos=new Set<THREE.BufferGeometry>();
   for(const root of [this.cruiser.root,this.cruiser.wake,...this.birds.map(b=>b.root)]){root.removeFromParent();root.traverse(o=>{if(o instanceof THREE.Mesh){geos.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])mats.add(m);}});}

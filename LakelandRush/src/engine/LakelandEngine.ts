@@ -5,6 +5,8 @@ import {driveThrottle,swimSpeed} from '../game/propulsion';
 import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from './rowBoats';
 import {WaterRipples} from './waterRipples';
 import {WaterheadLife} from './waterheadLife';
+import {AnimalPlayer,sheepActor,type AnimalActor} from './animalPlayer';
+import {ANIMALS} from '../game/animalMotion';
 import {LakesiderService,makeBus} from './lakesider';
 import {raceWidth,raceTrafficPose} from '../game/raceGeometry';
 import {PedestrianWorld} from './pedestrians';
@@ -171,6 +173,7 @@ export class LakelandEngine {
   private runner!: RunnerRig;
   private originalRunner!:RunnerRig;
   private attendantSelected=false;
+  private animal:AnimalPlayer|null=null;private animalTarget:AnimalActor|null=null;private animalSheep:AnimalActor[]=[];private humanReturn:{x:number;y:number;z:number;yaw:number}|null=null;
 
   private terrainMesh: THREE.Group | null = null;
   private terrainSurface:(x:number,z:number)=>number=(x,z)=>this.region.getTerrainHeight(x,z);
@@ -472,6 +475,7 @@ export class LakelandEngine {
         (x,z)=>!this.region.isInWater(x,z)&&unobstructed(x,z),
         (x,z)=>this.walkSurface(x,z),(x,z,r)=>this.waterRipples?.emit(x,z,r));
 
+      this.createExploreSheep();
       if (!this.isSoftwareGl) {
         this.renderer.compile(this.scene, this.camera);
       }
@@ -784,13 +788,15 @@ export class LakelandEngine {
   }
 
   public toggleFreeFlight():void {
+    if(this.animal){this.animal.toggleFlight();this.pushHudSnapshot();return;}
     if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.occupiedBoat||this.busService?.mode)return;
     this.waterMode='land';this.touchAccelerator=false;this.flying=!this.flying;this.flightVertical=0;this.playerVy=0;this.exploreJumpPresses=0;this.exploreJumpCount=0;this.coyoteTimer=0;this.isGrounded=false;
     if(this.flying){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.playerHeading;this.playerY=Math.max(this.playerY+2,this.walkSurface(this.playerX,this.playerZ)+3,this.solidTop(this.playerX,this.playerZ,FLIGHT_RADIUS)+1.25);}
     this.setCallout(this.flying?'Free flight':'Landing');this.pushHudSnapshot();
   }
-  public setFlightVertical(value:number):void {this.flightVertical=this.flying?THREE.MathUtils.clamp(value,-1,1):0;}
+  public setFlightVertical(value:number):void {this.flightVertical=(this.flying||this.animal?.air)?THREE.MathUtils.clamp(value,-1,1):0;}
   public triggerTouchJump(): void {
+    if(this.animal)return;
     if(this.gameState!=='playing'||this.inShop||this.flying||this.waterMode!=='land'||this.busService?.mode)return;
     this.sound.unlock();
     if(this.activeRoute.mode==='freeroam'){
@@ -895,8 +901,42 @@ export class LakelandEngine {
     this.waterEffectTimer-=dt;if(Math.abs(b.speed)>.15&&this.waterEffectTimer<=0){this.waterEffectTimer=.18;const motor=b.kind==='motorboat',stern=motor?2.8:1.7;const wx=b.x+Math.sin(b.yaw)*stern,wz=b.z+Math.cos(b.yaw)*stern;this.waterRipples?.emit(wx,wz,motor?2.0:1.35,.48,b.yaw);if(motor&&this.region.isInWater(wx,wz))this.emitParticles(wx,.05,wz,2,0xe1edf0,.55);for(const oar of b.oars){const tip=oar.localToWorld(new THREE.Vector3(Math.sign(oar.position.x)*1.5,0,0));if(tip.y<.25&&this.region.isInWater(tip.x,tip.z))this.waterRipples?.emit(tip.x,tip.z,.48);}}
     this.sound.setShoreFactor(1);this.sound.setGameplayState(true,0,false);this.updateChaseCamera(dt,this.exploreSpeed);void this.updateChunkStreaming(b.x,b.z,false);this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
   }
-  private canSwitchCharacter(){return this.gameState==='playing'&&this.activeRoute.mode==='freeroam'&&!this.flying&&!this.inShop&&!this.occupiedBoat&&!this.busService?.mode&&this.waterMode==='land'&&this.isGrounded&&!!this.pedestrians?.attendant.canSwitch(this.playerX,this.playerZ,this.playerY);}
+  // Live animal actors are selected by a deliberate tap, never by proximity alone.
+  private allAnimals():AnimalActor[]{return [...(this.waterheadLife?.selectableAnimals()??[]),...(this.pedestrians?.selectableAnimals()??[]),...this.animalSheep];}
+  private projectAnimalMarker(pos:THREE.Vector3,target:string){this.camera.updateMatrixWorld(true);if(pos.clone().applyMatrix4(this.camera.matrixWorldInverse).z>=0)return undefined;pos.project(this.camera);if(pos.z<-1||pos.z>1||Math.abs(pos.x)>.94||Math.abs(pos.y)>.92)return undefined;return {x:(pos.x+1)*50,y:(1-pos.y)*50,target};}
+  public selectAnimalAt(clientX:number,clientY:number){
+   if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.animal||this.inShop||this.flying||this.occupiedBoat||this.busService?.mode)return;
+   const rect=this.renderer.domElement.getBoundingClientRect(),ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2((clientX-rect.left)/rect.width*2-1,1-(clientY-rect.top)/rect.height*2),this.camera);
+   const candidates=this.allAnimals().filter(a=>a.root.visible&&Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)<=14);
+   let best:AnimalActor|null=null,dist=Infinity;for(const a of candidates){a.root.updateMatrixWorld(true);const hit=ray.intersectObject(a.root,true)[0];if(hit&&hit.distance<dist){dist=hit.distance;best=a;}}
+   this.animalTarget=best;this.pushHudSnapshot();
+  }
+  private createExploreSheep(){
+   // Gameplay flock placements beside existing local mapped approaches; not real livestock locations.
+   const path=compileRoutePolyline(navigation.approaches.find(a=>a.id==='west')!.points);
+   for(let i=0;i<12;i++){const s=sampleCompiledRoute(path,Math.min(path.totalLength-10,90+i*39));for(const side of [1,-1]){const x=s.x+s.rx*side*(18+i%3*4),z=s.z+s.rz*side*(18+i%3*4);if(this.region.isInWater(x,z)||Number.isFinite(this.solidTop(x,z,.7)))continue;const a=sheepActor();a.root.position.set(x,Math.max(.45,this.walkSurface(x,z)),z);a.root.rotation.y=i*2.4;a.root.visible=false;this.scene.add(a.root);this.animalSheep.push(a);break;}}
+  }
+  private enterAnimal(){
+   const a=this.animalTarget;if(!a||this.animal||!a.root.visible||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.flying||this.occupiedBoat||this.busService?.mode||Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)>14){this.animalTarget=null;return false;}
+   this.humanReturn={x:this.playerX,y:this.playerY,z:this.playerZ,yaw:this.playerHeading};
+   this.animal=new AnimalPlayer(a,{wet:(x,z)=>this.region.isInWater(x,z)&&this.deckHeightAt(x,z)===-Infinity,floor:(x,z)=>Math.max(.45,this.walkSurface(x,z),this.deckHeightAt(x,z)),solid:(x,z,r)=>this.solidTop(x,z,r),blocked:(x,z,y,r)=>Number.isFinite(this.solidTop(x,z,r))&&this.solidTop(x,z,r)>y+.05||!!this.busService?.blocks(x,z,y)||!!this.waterheadLife?.contains(x,z)&&y<11,ripple:(x,z,r)=>this.waterRipples?.emit(x,z,r)});
+   this.animalTarget=null;this.runner.root.visible=false;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.flightVertical=0;this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.animal.yaw;this.updateAnimal(0);this.setCallout('Playing as '+this.animal.p.label);this.pushHudSnapshot();return true;
+  }
+  public exitAnimal(notify=true){if(!this.animal)return;this.animal.release();this.animal=null;this.animalTarget=null;const p=this.humanReturn;this.humanReturn=null;if(p){this.playerX=p.x;this.playerY=p.y;this.playerZ=p.z;this.playerHeading=this.exploreYaw=p.yaw;this.runner.root.position.set(p.x,p.y,p.z);this.runner.root.rotation.y=p.yaw;}
+   this.runner.root.visible=true;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.flightVertical=0;this.exploreSpeed=0;this.playerVy=0;this.flying=false;this.waterMode='land';this.isGrounded=true;this.exploreFirst=false;
+   if(notify){this.setCallout('Returned to your character');this.updateChaseCamera(.04,0);this.pushHudSnapshot();}}
+  public feedAnimal(){this.animal?.toggleFeed();this.pushHudSnapshot();}
+  private updateAnimal(dt:number){
+   const a=this.animal!;let steer=this.virtualSteer;if(this.keysHeld.has('KeyA')||this.keysHeld.has('ArrowLeft'))steer--;if(this.keysHeld.has('KeyD')||this.keysHeld.has('ArrowRight'))steer++;
+   a.update(dt,THREE.MathUtils.clamp(steer,-1,1),this.exploreThrottle(),this.exploreYaw,this.explorePace!=='walk'||this.shiftHeld(),THREE.MathUtils.clamp(this.flightVertical+(this.keysHeld.has('Space')?1:0)-(this.keysHeld.has('KeyQ')?1:0),-1,1));
+   this.playerX=a.x;this.playerY=a.y;this.playerZ=a.z;this.playerHeading=a.yaw;this.exploreSpeed=a.speed;this.waterMode=a.wet?'swimming':'land';this.isGrounded=!a.air;this.runner.root.visible=false;
+   const back=a.air?5.5:3.2,eye=a.p.eye,fx=-Math.sin(this.exploreYaw),fz=-Math.cos(this.exploreYaw);const origin={x:a.x,y:a.y+eye,z:a.z},target={x:a.x-fx*back,y:a.y+eye+1.2-back*Math.sin(this.explorePitch),z:a.z-fz*back};const safe=cameraFraction(origin,target,(x,z)=>this.solidTop(x,z,CAMERA_RADIUS));
+   this.camera.position.set(origin.x+(target.x-origin.x)*safe,Math.max(.7,origin.y+(target.y-origin.y)*safe),origin.z+(target.z-origin.z)*safe);this.camera.lookAt(a.x+fx*1.4,a.y+eye*.65+Math.tan(this.explorePitch),a.z+fz*1.4);
+   void this.updateChunkStreaming(a.x,a.z,false);this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
+  }
+  private canSwitchCharacter(){return !this.animal&&this.gameState==='playing'&&this.activeRoute.mode==='freeroam'&&!this.flying&&!this.inShop&&!this.occupiedBoat&&!this.busService?.mode&&this.waterMode==='land'&&this.isGrounded&&!!this.pedestrians?.attendant.canSwitch(this.playerX,this.playerZ,this.playerY);}
   private characterSwitchMarker(){
+   if(this.animalTarget&&!this.animal){const a=this.animalTarget;if(!a.root.visible||Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)>14){this.animalTarget=null;return undefined;}const pos=a.root.position.clone();pos.y+=ANIMALS[a.kind].eye+.35;return this.projectAnimalMarker(pos,ANIMALS[a.kind].label);}
    if(!this.canSwitchCharacter()||!this.pedestrians)return undefined;
    const npc=this.pedestrians.attendant;
    const pos=npc.root.position.clone();pos.y=Math.max(.45,this.walkSurface(pos.x,pos.z))+2.12;
@@ -905,6 +945,7 @@ export class LakelandEngine {
    return {x:(pos.x+1)*50,y:(1-pos.y)*50,target:this.attendantSelected?'Rowan':'Boat attendant'};
   }
   public switchCharacter():boolean{
+   if(this.animalTarget)return this.enterAnimal();
    if(!this.canSwitchCharacter()||!this.pedestrians)return false;
    const npc=this.pedestrians.attendant,old=this.runner;
    const next=this.attendantSelected?this.originalRunner:npc.makePlayable(this.textures.contactShadowMap);
@@ -919,9 +960,9 @@ export class LakelandEngine {
    this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.touchAccelerator=false;this.playerVy=0;this.exploreSpeed=0;
    this.exploreFirst=false;this.setCallout(this.attendantSelected?'Playing as the boat attendant':'Playing as Rowan');this.pushHudSnapshot();return true;
   }
-  private canTalkAttendant(){return this.gameState==='playing'&&this.activeRoute.mode==='freeroam'&&!this.flying&&!this.inShop&&!this.occupiedBoat&&!this.busService?.mode&&this.waterMode==='land'&&!!this.pedestrians?.attendant.canTalk(this.playerX,this.playerZ,this.playerY);}
+  private canTalkAttendant(){return !this.animal&&this.gameState==='playing'&&this.activeRoute.mode==='freeroam'&&!this.flying&&!this.inShop&&!this.occupiedBoat&&!this.busService?.mode&&this.waterMode==='land'&&!!this.pedestrians?.attendant.canTalk(this.playerX,this.playerZ,this.playerY);}
   public talkAttendant(){if(!this.canTalkAttendant()||!this.pedestrians)return false;this.setCallout(this.pedestrians.attendant.talk());this.calloutTimer=6;this.pushHudSnapshot();return true;}
-  private canBoardBus(){return !this.busService?.mode&&!this.flying&&!this.inShop&&!this.occupiedBoat&&this.waterMode==='land'&&this.activeRoute.mode==='freeroam'&&!!this.busService?.nearby(this.playerX,this.playerZ,this.playerY);}
+  private canBoardBus(){return !this.animal&&!this.busService?.mode&&!this.flying&&!this.inShop&&!this.occupiedBoat&&this.waterMode==='land'&&this.activeRoute.mode==='freeroam'&&!!this.busService?.nearby(this.playerX,this.playerZ,this.playerY);}
   public interactBus():boolean{
     const bus=this.busService;if(!bus||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam')return false;
     if(bus.mode){const q=bus.leave();if(!q){this.setCallout('Stop the bus before leaving');return true;}this.playerX=q.x;this.playerZ=q.z;this.playerY=Math.max(.45,this.walkSurface(q.x,q.z))+.04;this.setCallout('Left bus');}
@@ -987,6 +1028,7 @@ export class LakelandEngine {
   }
 
   private prepareRoute(route: RouteDefinition, prevRecord?: RouteRecord): void {
+    this.exitAnimal(false);this.animalTarget=null;
     this.prevRecord = prevRecord;
     this.releaseBoat();this.busService?.reset();this.inShop = false;
     this.exploreYaw = 0;
@@ -1403,11 +1445,13 @@ export class LakelandEngine {
 
     for(const b of this.rowBoats)if(b!==this.occupiedBoat)animateBoat(b,this.elapsedTime,dt,false);
     this.updateAmbientActors(dt);
+    for(const a of this.animalSheep){if(a.root.userData.animalControlled)continue;a.root.visible=this.activeRoute.mode==='freeroam'&&Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)<150;if(a.root.visible)a.pose(this.elapsedTime,0,false,false,true);}
     if(this.activeRoute.mode==='freeroam'){
       if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
       this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0));
     }else{this.busService?.hide();this.pedestrians?.hide();}
-    this.waterheadLife?.update(dt,this.playerX,this.playerZ,[...(this.pedestrians?.threats()??[]),...(!this.flying&&!this.occupiedBoat&&!this.busService?.mode&&this.playerY<4?[{x:this.playerX,z:this.playerZ,radius:4.5}]:[])]);
+    this.waterheadLife?.update(dt,this.playerX,this.playerZ,[...(this.pedestrians?.threats()??[]),...(!this.animal&&!this.flying&&!this.occupiedBoat&&!this.busService?.mode&&this.playerY<4?[{x:this.playerX,z:this.playerZ,radius:4.5}]:[])]);
+    if(this.animal){this.runner.root.visible=false;this.animal.actor.root.visible=true;}
     this.waterRipples?.update(dt);
     this.updateParticles(dt);
     this.updateRain(dt);
@@ -1459,6 +1503,7 @@ export class LakelandEngine {
   }
 
   private updatePlaying(dt: number): void {
+    if(this.animal){this.updateAnimal(dt);return;}
     this.runner.root.visible = true;
     this.runElapsedSec += dt;
 
@@ -2027,7 +2072,8 @@ export class LakelandEngine {
       cameraViewMode: this.exploreFirst || this.inShop ? 'first_person' : 'third_person',
       exploreWalkPace: this.explorePace==='walk',
       explorePace: this.explorePace,
-      flying:this.flying,
+      flying:this.animal?this.animal.air:this.flying,
+      animal:this.animal?{kind:this.animal.actor.kind,label:this.animal.p.label,energy:this.animal.p.energy?this.animal.energy/this.animal.p.energy:0,canFly:!!this.animal.p.fly,launch:this.animal.launch,landing:this.animal.landing,feeding:this.animal.feeding,wet:this.animal.wet}:undefined,
       waterMode:this.waterMode,fastSwim:this.fastSwim,accelerating:!!(this.occupiedBoat||this.busService?.mode==='driver')&&this.accelerating(),canBoardBoat:!!this.nearbyBoat(),boatKind:(this.occupiedBoat??this.nearbyBoat())?.kind,busMode:this.busService?.mode??undefined,canBoardBus:this.canBoardBus(),canDriveBus:this.busService?.canDrive,
       cleanExploreMode: !this.exploreLabels,
       insideShop: this.inShop,
@@ -2069,7 +2115,8 @@ export class LakelandEngine {
       if(firstPress&&e.code==='Digit3')this.setExplorePace('sprint');
       if(firstPress&&e.code==='KeyC')this.recenterExploreCamera();
       if(firstPress&&e.code==='KeyF')this.toggleFreeFlight();
-      if(firstPress && e.code==='KeyC')this.switchCharacter();
+      if(firstPress && e.code==='KeyC'){if(this.animal)this.exitAnimal();else this.switchCharacter();}
+      if(this.animal){if(firstPress&&e.code==='KeyE')this.feedAnimal();return;}
       if (firstPress && e.code === 'KeyE' && !this.interactBus() && !this.interactWater() && !this.talkAttendant()) this.toggleShop();
       if(firstPress&&e.code==='KeyG')this.takeBusWheel();
       if (firstPress && e.code === 'KeyV') this.toggleExploreView();
@@ -2172,6 +2219,7 @@ export class LakelandEngine {
     this.waterMesh?.geometry.dispose();
     this.materials?.waterUniforms.shoreMap.value?.dispose();
     this.materials?.weatheredDeck.dispose();
+    this.exitAnimal(false);for(const a of this.animalSheep){a.root.removeFromParent();const gs=new Set<THREE.BufferGeometry>(),ms=new Set<THREE.Material>();a.root.traverse(o=>{if(o instanceof THREE.Mesh){gs.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])ms.add(m);}});gs.forEach(g=>g.dispose());ms.forEach(m=>m.dispose());}
     this.pedestrians?.dispose();this.busService?.dispose();this.waterheadLife?.dispose();this.waterRipples?.dispose();disposeBoats(this.rowBoats);this.shop?.dispose();
     this.textures?.dispose();
     this.sound.dispose();
