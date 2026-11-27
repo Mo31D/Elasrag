@@ -6,6 +6,7 @@ import { classifyBuilding } from '../geo/placeIdentity';
 import buildingAssets from '../data/building-assets.json';
 import { TRANSIT } from '../data/transit';
 import navigation from '../data/ambleside-navigation.json';
+import inventory from '../data/ambleside-business-inventory.json';
 
 export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,lake:LakeData|null) {
   const group=new THREE.Group();
@@ -96,8 +97,20 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
     labels.push(sprite);group.add(sprite);
   }
   const names=new Set<string>();
+  const mapped=inventory.records.filter(r=>r.position&&inChunk(r.position.x,r.position.z));
   for(const stop of navigation.stops)if(inChunk(...(stop.point as [number,number]))&&stop.kind!=='junction'){
-    const [x,z]=stop.point;label(stop.name,x,z,3.2);names.add(stop.name.toLowerCase());
+    const [x,z]=stop.point;
+    const business=mapped.find(r=>r.position?.name===stop.name&&Math.hypot(r.position.x-x,r.position.z-z)<1);
+    const name=business?.name??stop.name;
+    label(name,x,z,3.2);names.add(name.toLowerCase());names.add(stop.name.toLowerCase());
+  }
+  // Imported identities use existing map feature coordinates only, never street-centroid guesses.
+  for(const r of mapped){
+    const p=r.position;
+    if(!p||names.has(r.name.toLowerCase())||isPointInLake(lake,p.x,p.z))continue;
+    const b=chunk.buildings.find(b=>b.name===p.name&&Math.hypot(b.cx-p.x,b.cz-p.z)<45);
+    label(r.name,p.x,p.z,b?Math.max(3.5,b.h+.5):3.2);
+    names.add(r.name.toLowerCase());names.add(p.name.toLowerCase());
   }
   for(const b of chunk.buildings) {
     if(!b.name||names.has(b.name.toLowerCase())||!inChunk(b.cx,b.cz))continue;
