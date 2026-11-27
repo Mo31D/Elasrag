@@ -63,11 +63,11 @@ export function ExploreHUD(p:GameHUDProps){
   {hud.characterSwitch&&<button type="button" data-testid="character-switch" title={'Play as '+hud.characterSwitch.target} aria-label={'Play as '+hud.characterSwitch.target} className="pointer-events-auto absolute z-20 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-teal-200 bg-slate-950/85 text-teal-100 shadow-lg active:bg-teal-500" style={{left:hud.characterSwitch.x+'%',top:hud.characterSwitch.y+'%'}} onClick={()=>{clear();p.onSwitchCharacter()}}><UserRoundCog size={22}/></button>}
   {hud.animal&&<div className="absolute top-[116px] left-3 rounded-xl bg-slate-950/80 px-3 py-2 text-xs text-white"><strong>{hud.animal.label}</strong><div>{hud.animal.launch?'Taking off':hud.animal.landing?'Landing':hud.flying?'Flying':hud.animal.feeding?'Feeding':hud.animal.wet?'Swimming':'On land'}</div>{hud.animal.canFly&&<div className="mt-1 h-1 w-24 rounded bg-white/20"><div className="h-full rounded bg-teal-300" style={{width:(100*hud.animal.energy)+'%'}}/></div>}</div>}
   {hud.actionCallout&&<div className="absolute left-1/2 top-28 max-w-[70%] -translate-x-1/2 rounded-lg bg-slate-950/75 px-3 py-2 text-xs text-white">{hud.actionCallout}</div>}
-  {touch&&<div ref={zoneRef} role="group" aria-label="Floating movement joystick" data-testid="floating-joystick-zone" className="pointer-events-auto absolute touch-none overflow-hidden" style={{left:0,bottom:0,width:'50%',height:'50%',maxWidth:'50vw',maxHeight:'50dvh'}}
+  {touch&&<div ref={zoneRef} role="group" aria-label="Floating movement joystick" data-testid="floating-joystick-zone" className="pointer-events-auto absolute touch-none overflow-hidden" style={{left:0,bottom:0,width:'50%',height:'25%',maxWidth:'50vw',maxHeight:'25dvh'}}
    onPointerDown={e=>{if(active.current||e.button!==0)return;const rect=e.currentTarget.getBoundingClientRect();const hit=floatingStickOrigin(rect,{x:e.clientX,y:e.clientY},Math.min(55,rect.width/2,rect.height/2));if(!hit)return;e.preventDefault();e.stopPropagation();active.current={id:e.pointerId,...hit.input,tapX:e.clientX,tapY:e.clientY,moved:false};setOrigin(hit.visual);setStick({dx:0,dy:0});e.currentTarget.setPointerCapture(e.pointerId);}}
    onPointerMove={move} onPointerUp={e=>{if(active.current?.id===e.pointerId){const tap=!active.current.moved&&Math.hypot(e.clientX-active.current.tapX,e.clientY-active.current.tapY)<=9;clearMove();if(tap)p.onSelectAnimal(e.clientX,e.clientY);}}} onPointerCancel={e=>{if(active.current?.id===e.pointerId)clearMove()}} onLostPointerCapture={e=>{if(active.current?.id===e.pointerId)clearMove()}}>
     <div data-testid="floating-joystick" className="pointer-events-none absolute flex items-center justify-center rounded-full border-2 border-white/30 bg-slate-950/25"
-      style={{width:'min(110px, 100%, 50dvh)',aspectRatio:'1 / 1',...(origin?{left:origin.x,top:origin.y,transform:'translate(-50%, -50%)'}:{left:'min(max(22px, env(safe-area-inset-left)), max(0px, calc(100% - 110px)))',bottom:'min(calc(clamp(48px, 10dvh, 100px) + env(safe-area-inset-bottom, 0px)), max(0px, calc(100% - 110px)))'})}}>
+      style={{width:'min(110px, 100%, 25dvh)',aspectRatio:'1 / 1',...(origin?{left:origin.x,top:origin.y,transform:'translate(-50%, -50%)'}:{left:'min(max(22px, env(safe-area-inset-left)), max(0px, calc(100% - 110px)))',bottom:'min(calc(clamp(48px, 10dvh, 100px) + env(safe-area-inset-bottom, 0px)), max(0px, calc(100% - 110px)))'})}}>
       <div className="pointer-events-none h-12 w-12 rounded-full border border-white/70 bg-white/40 shadow-md" style={{transform:'translate('+(stick?.dx??0)+'px,'+(stick?.dy??0)+'px)'}}/>
     </div>
   </div>}
@@ -95,6 +95,6 @@ export function ExploreHUD(p:GameHUDProps){
     {!hud.animal&&touch&&!hud.busMode&&!hud.insideShop&&!hud.flying&&hud.waterMode!=='swimming'&&hud.waterMode!=='rowing'&&<button type="button" aria-label="Jump (tap twice for double jump)" className={control+' h-16 w-16'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
    </div>
   </div>
-  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V37</div>
+  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V38</div>
  </div>;
 }
