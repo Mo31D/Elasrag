@@ -1,4 +1,5 @@
 import type {WorldChunkData} from '../types/game';
+import {BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements} from './blackSheepStreet';
 import {pointInRing} from './projection';
 import {displayHalfWidth} from './roadPresentation';
 import {segmentDistance,type Point} from './parking';
@@ -8,6 +9,7 @@ export const GRASS_RADIUS=16,GRASS_SPACING=1.05,GRASS_MAX=600;
 export function grassHash(x:number,z:number,salt=0){let n=Math.imul(x,374761393)^Math.imul(z,668265263)^Math.imul(salt+1,1274126177);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296;}
 export function grassExclusion(chunk:WorldChunkData,water:(x:number,z:number)=>boolean){
  const polygons:Point[][]=[...chunk.buildings.map(b=>b.pts.map(([x,z])=>[x+b.cx,z+b.cz] as Point)),...(surfaces[chunk.key as keyof typeof surfaces]??[]).map(s=>s.points as Point[])];
+ if(chunk.key===BLACK_SHEEP_STREET_CHUNK)polygons.push(...lakeRoadPavements());
  if(chunk.key==='0_-1')polygons.push(...realm.parking.map(s=>s.points as Point[]),...realm.shore.map(s=>s.points as Point[]),[[66.1,-373.2],[75.6,-367.7],[79.8,-371.1],[68.3,-377.8]],[[85.3,-361],[91.1,-364.0],[101,-342.6],[97.0,-338.9]]);
  const poly=polygons.map(r=>({r,minX:Math.min(...r.map(p=>p[0]))-.35,maxX:Math.max(...r.map(p=>p[0]))+.35,minZ:Math.min(...r.map(p=>p[1]))-.35,maxZ:Math.max(...r.map(p=>p[1]))+.35}));
  const paths=chunk.roads.filter(r=>r.kind!=='ferry').map(r=>({pts:r.pts,width:displayHalfWidth(r)+.55}));
