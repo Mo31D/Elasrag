@@ -72,7 +72,17 @@
       "postcode": "LA22 0EW",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "Ambleside Park Hotel",
+          "x": -64.5,
+          "z": -524.1,
+          "buildingId": 423879625,
+          "height": 10.5,
+          "source": "OSM way 423879625",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0006",
@@ -320,7 +330,17 @@
       "postcode": "LA22 0HD",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "Lake House",
+          "x": 186.3,
+          "z": -353.4,
+          "buildingId": 423874291,
+          "height": 10.5,
+          "source": "OSM way 423874291",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0025",
@@ -588,7 +608,17 @@
       "postcode": "LA22 0EP",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "Wateredge Inn",
+          "x": -4.5,
+          "z": -439.5,
+          "buildingId": 423876624,
+          "height": 10.5,
+          "source": "OSM way 423876624",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0044",
@@ -600,7 +630,17 @@
       "postcode": "LA22 0ER",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "Waterhead Hotel",
+          "x": 117.8,
+          "z": -359.1,
+          "buildingId": 423874287,
+          "height": 10.5,
+          "source": "OSM way 423874287",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0045",
@@ -658,7 +698,17 @@
       "postcode": "LA22 0ES",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "Windermere Rooms",
+          "x": 38.8,
+          "z": -459.2,
+          "buildingId": 423876627,
+          "height": 10.5,
+          "source": "OSM way 423876627",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0049",
@@ -682,7 +732,17 @@
       "postcode": "LA22 0EU",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "YHA Ambleside",
+          "x": 120.6,
+          "z": -174.1,
+          "buildingId": 161487060,
+          "height": 10.8,
+          "source": "OSM way 161487060",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0051",
@@ -1052,7 +1112,17 @@
       "postcode": "LA22 0EY",
       "sourceUrls": "https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "Waterhead Coffee Shop",
+          "x": 91.8,
+          "z": -306.1,
+          "buildingId": 423874283,
+          "height": 8.2,
+          "source": "OSM way 423874283",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0081",
@@ -3028,7 +3098,17 @@
       "postcode": "",
       "sourceUrls": "https://www.windermere-lakecruises.co.uk/find-us; https://streets.openalfa.co.uk/streets/the-esplanade-la22-lakes-cp-ambleside-and-grasmere-ward-south-lakeland-district-cumbria",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "Total Adventure Kayak Hire",
+          "x": 116,
+          "z": -123,
+          "buildingId": 605827556,
+          "height": 6.4,
+          "source": "OSM way 605827556",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0239",
@@ -3079,7 +3159,13 @@
     "1_-5",
     "-2_-3",
     "-2_-4",
-    "0_-2"
+    "0_-2",
+    "-1_-2",
+    "-2_-2",
+    "1_-2",
+    "0_-1",
+    "-1_-1",
+    "1_-1"
   ],
   "missingChunks": []
 }
