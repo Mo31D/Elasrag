@@ -35,6 +35,7 @@ import {
 import { RegionManager } from '../geo/regionLoader';
 import { SoundEngine } from '../audio/soundEngine';
 import buildingAssets from '../data/building-assets.json';
+import {usesReferenceStreetBuilding} from '../geo/blackSheepStreet';
 import type {
   GameSettings,
   GameState,
@@ -431,7 +432,7 @@ export class LakelandEngine {
         texture.needsUpdate = true;
         this.roofDetailMaps.add(texture);
       }
-      const assetResults = await Promise.allSettled(buildingAssets.map(async asset => {
+      const assetResults = await Promise.allSettled(buildingAssets.filter(asset=>!usesReferenceStreetBuilding(asset.buildingId)).map(async asset => {
         const { scene } = await assetLoader.loadAsync(`${import.meta.env.BASE_URL}${asset.assetUrl}`);
         scene.traverse(object => {
           if (!(object instanceof THREE.Mesh) || !(object.material instanceof THREE.MeshStandardMaterial)) return;
