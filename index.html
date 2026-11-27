@@ -224,29 +224,49 @@ function screen(g,x,y,z,title,bg="#203c50"){const body=add(g,box(1.68,1.08,.10,g
 
 for(const p of ui.projects){const o=setup(p),g=o.group,a=o.accent;
 if(p.id==="hub"){
- // Mo v3: photo-projected facial texture on a sculpted, fully 3D head.
- // The user-supplied portrait is UV-warped; no full-image plane or external dependency.
- const coat=mat(0x222733,.04,.83),lapel=mat(0x2b303b,.04,.83),shirtMat=mat(0xb2c9e7,0,.89),denim=mat(0x262b36,0,.88),skin=mat(0xb07455,0,.78),shoe=mat(0x242627,.04,.76),hair=mat(0x211e1d,0,.83),hairLight=mat(0x35312e,0,.87);
+ // Mo v4: cohesive tailored silhouette, continuous fabric surfaces and reference-textured head.
+ const coat=mat(0x232936,0,.94),lapel=mat(0x2a303c,0,.91),shirtMat=mat(0x8faed0,0,.91),denim=mat(0x252a35,0,.95),skin=mat(0xb07455,0,.82),shoe=mat(0x202329,.03,.72),hair=mat(0x24201f,0,.86),hairLight=mat(0x34302e,0,.88);
  const body=g(0,.38,0,0,0,0);
- oval(body,0,1.67,0,.40,.55,.235,coat,32);
- oval(body,0,1.22,0,.295,.22,.20,denim);
- oval(body,0,1.79,.173,.19,.31,.075,shirtMat);
- for(const side of [-1,1]){
-  const front=shapeMesh([[side*.055,1.34],[side*.29,1.31],[side*.37,1.92],[side*.19,2.03],[side*.06,1.78]],.045,coat);front.position.z=.179;body.add(front);
-  const l=shapeMesh([[side*.18,2.04],[side*.29,1.88],[side*.12,1.72],[side*.065,1.85]],.025,lapel);l.position.z=.244;body.add(l);
-  tapered(body,[side*.16,1.14,0],[side*.17,.62,.02],.155,.132,denim);tapered(body,[side*.17,.65,.02],[side*.19,.14,.025],.132,.105,denim);
-  oval(body,side*.19,.10,.092,.115,.085,.235,shoe);
-  oval(body,side*.385,1.93,0,.15,.16,.155,coat);
-  tapered(body,[side*.40,1.92,0],[side*.49,1.50,.018],.135,.108,coat);
-  tapered(body,[side*.49,1.50,.018],[side*.46,1.11,.09],.109,.086,coat);
-  tapered(body,[side*.46,1.15,.08],[side*.46,1.09,.09],.09,.085,lapel);
-  oval(body,side*.46,1.015,.09,.085,.145,.073,skin);
-  if(side===-1){const pocket=add(body,box(.135,.015,.018,lapel),side*.225,1.78,.245);pocket.rotation.z=-.1;}
-  const collar=shapeMesh([[side*.035,1.91],[side*.106,2.055],[side*.17,2.005],[side*.09,1.865]],.012,shirtMat);collar.position.z=.258;body.add(collar);
-  for(let i=0;i<2;i++)add(body,sphere(.012,shoe,10),side*.48,1.19+i*.046,.158);
+ // Closed smooth ring surfaces, not stacked primitives or ball-and-socket limbs.
+ function tailoredSurface(target,profile,material,segments=48){
+  const v=[],ind=[];
+  for(let k=0;k<profile.length-1;k++){
+   const p=profile[k],q=profile[k+1],prev=profile[Math.max(0,k-1)],next=profile[Math.min(profile.length-1,k+2)];
+   for(let sub=0;sub<5;sub++){
+    const t=sub/5,t2=t*t,t3=t2*t;
+    const values=p.map((val,j)=>{const m0=(q[j]-prev[j])/(k===0?1:2),m1=(next[j]-p[j])/(k===profile.length-2?1:2);return (2*t3-3*t2+1)*val+(t3-2*t2+t)*m0+(-2*t3+3*t2)*q[j]+(t3-t2)*m1});
+    append(values);
+   }
+  }
+  append(profile[profile.length-1]);
+  function append([y,x,z,w,depth]){for(let i=0;i<=segments;i++){const theta=i/segments*Math.PI*2;v.push(x+Math.sin(theta)*Math.max(.001,w),y,z+Math.cos(theta)*Math.max(.001,depth));}}
+  const rows=v.length/3/(segments+1);
+  for(let k=0;k<rows-1;k++)for(let j=0;j<segments;j++){const n=k*(segments+1)+j;ind.push(n,n+1,n+segments+1,n+1,n+segments+2,n+segments+1)}
+  const geo=new T.BufferGeometry();geo.setAttribute("position",new T.Float32BufferAttribute(v,3));geo.setIndex(ind);geo.computeVertexNormals();return add(target,new T.Mesh(geo,material));
  }
- for(let i=0;i<3;i++)add(body,sphere(.014,shoe,12),.031,1.39+i*.16,.254);
- tapered(body,[0,2.02,0],[0,2.24,0],.119,.108,skin);
+ const jacketProfile=[[1.18,0,0,.01,.01],[1.20,0,0,.295,.16],[1.29,0,0,.314,.195],[1.43,0,0,.305,.199],[1.60,0,0,.313,.208],[1.78,0,-.005,.352,.207],[1.91,0,-.018,.391,.19],[1.99,0,-.026,.354,.167],[2.05,0,-.025,.245,.133],[2.10,0,-.01,.118,.107],[2.11,0,0,.005,.005]];
+ tailoredSurface(body,jacketProfile,coat);
+ function torsoFront(x,y){let i=0;while(i<jacketProfile.length-2&&y>jacketProfile[i+1][0])i++;const p=jacketProfile[i],q=jacketProfile[i+1],t=T.MathUtils.clamp((y-p[0])/(q[0]-p[0]),0,1),w=T.MathUtils.lerp(p[3],q[3],t),dep=T.MathUtils.lerp(p[4],q[4],t),z=T.MathUtils.lerp(p[2],q[2],t);return z+dep*Math.sqrt(Math.max(.01,1-(x/w)**2))}
+ function fabricPanel(rows,material,offset=.009){const v=[],idx=[],cols=12;for(const [y,left,right] of rows)for(let j=0;j<=cols;j++){const x=T.MathUtils.lerp(left,right,j/cols);v.push(x,y,torsoFront(x,y)+offset)}for(let i=0;i<rows.length-1;i++)for(let j=0;j<cols;j++){const n=i*(cols+1)+j;idx.push(n,n+1,n+cols+1,n+1,n+cols+2,n+cols+1)}const geo=new T.BufferGeometry();geo.setAttribute("position",new T.Float32BufferAttribute(v,3));geo.setIndex(idx);geo.computeVertexNormals();const m=material.clone();m.side=T.DoubleSide;return add(body,new T.Mesh(geo,m))}
+ fabricPanel([[1.43,-.012,.012],[1.53,-.031,.031],[1.64,-.054,.054],[1.75,-.077,.077],[1.86,-.098,.098],[1.97,-.118,.118],[2.04,-.105,.105],[2.085,-.084,.084]],shirtMat,.018);
+ // Open collar, narrower notch lapels and subtle stitching conform to the jacket.
+ for(const side of [-1,1]){
+  const rows=[[1.43,.008,.013],[1.55,.025,.066],[1.70,.048,.13],[1.83,.075,.21],[1.90,.102,.197],[1.94,.09,.155],[1.99,.11,.195],[2.045,.09,.145]];
+  fabricPanel(rows.map(([y,l,h])=>[y,Math.min(side*l,side*h),Math.max(side*l,side*h)]),lapel,.019);
+  const collarRows=[[1.93,.026,.075],[1.985,.028,.105],[2.055,.059,.122],[2.083,.069,.105]];
+  fabricPanel(collarRows.map(([y,l,h])=>[y,Math.min(side*l,side*h),Math.max(side*l,side*h)]),shirtMat,.026);
+  tailoredSurface(body,[[.12,side*.153,.016,.083,.082],[.18,side*.15,.01,.087,.093],[.40,side*.15,0,.092,.10],[.60,side*.143,0,.096,.105],[.80,side*.135,0,.110,.118],[1.01,side*.128,0,.135,.134],[1.22,side*.12,0,.145,.145]],denim,36);
+  oval(body,side*.153,.093,.079,.091,.071,.169,shoe,24);
+  // Sleeve follows shoulder, elbow and wrist without detached joints.
+  tailoredSurface(body,[[1.075,side*.426,.024,.067,.074],[1.14,side*.432,.018,.075,.083],[1.29,side*.443,.005,.083,.092],[1.48,side*.443,-.008,.091,.10],[1.66,side*.431,-.019,.108,.111],[1.82,side*.401,-.023,.125,.125],[1.92,side*.365,-.024,.127,.124],[1.975,side*.321,-.023,.085,.089],[1.99,side*.29,-.023,.005,.005]],coat,40);
+  tailoredSurface(body,[[.96,side*.424,.034,.012,.02],[.99,side*.427,.032,.046,.033],[1.045,side*.429,.027,.059,.045],[1.10,side*.426,.023,.056,.045],[1.13,side*.425,.021,.049,.043]],skin,28);
+  oval(body,side*.376,1.049,.061,.021,.045,.025,skin,18);
+  for(let j=0;j<3;j++)oval(body,side*.48,1.14+j*.034,.068,.008,.008,.004,shoe,12);
+ }
+ for(const y of [1.50,1.36])oval(body,.022,y,torsoFront(.022,y)+.023,.013,.013,.005,shoe,16);
+ for(const y of [1.67,1.80,1.92])oval(body,0,y,torsoFront(0,y)+.025,.007,.007,.003,mat(0xc0c9ce,0,.85),12);
+ const breast=add(body,box(.11,.012,.008,lapel),-.235,1.79,torsoFront(-.235,1.79)+.016);breast.rotation.z=-.06;breast.rotation.y=-.35;
+ tapered(body,[0,2.045,0],[0,2.25,0],.105,.104,skin,36);
  const head=new T.Group();body.add(head);
  // Cross-sections capture the broader forehead, cheekbones, defined jaw and rounded chin.
  const profile=[[2.155,.018,.079,.025],[2.175,.078,.062,.080],[2.215,.134,.044,.130],[2.275,.177,.021,.174],[2.345,.196,.009,.190],[2.415,.217,.002,.195],[2.480,.210,-.005,.187],[2.550,.207,-.008,.186],[2.625,.188,-.012,.172],[2.695,.132,-.012,.123],[2.735,.004,-.012,.004]];
@@ -278,23 +298,29 @@ if(p.id==="hub"){
  const earInner=mat(0x965c48,0,.86);
  function curveTube(g,points,r,m){const curve=new T.CatmullRomCurve3(points.map(v=>new T.Vector3(...v)));return add(g,new T.Mesh(new T.TubeGeometry(curve,16,r,6,false),m))}
  for(const s of [-1,1]){
-  const ear=oval(head,s*.211,2.415,.007,.040,.068,.032,skin);ear.rotation.z=-s*.13;
-  oval(head,s*.222,2.418,.035,.019,.039,.010,earInner);
+  const ear=oval(head,s*.208,2.415,.007,.032,.061,.028,skin);ear.rotation.z=-s*.13;
+  oval(head,s*.219,2.418,.030,.013,.032,.008,earInner);
  }
- // Short tapered sides and a dense, swept wavy top with sculpted individual curl clumps.
- const cap=add(head,new T.Mesh(new T.SphereGeometry(1,48,28,0,Math.PI*2,0,Math.PI*.36),hair),0,2.50,-.023);cap.scale.set(.215,.235,.196);
- for(const s of [-1,1]){const sideHair=oval(head,s*.192,2.525,-.060,.032,.104,.106,hair,24);sideHair.rotation.z=s*.10;oval(head,s*.204,2.448,-.005,.017,.044,.039,hair,20)}
- oval(head,0,2.486,-.108,.180,.145,.087,hair,28);
- // Deterministic, lightweight instanced curl geometry.
- const curlGeometry=new T.SphereGeometry(1,14,10);const curls=new T.InstancedMesh(curlGeometry,hair,48),dummy=new T.Object3D();let curlIndex=0;
- for(let row=0;row<6;row++)for(let col=0;col<8;col++){
-  const x=(col-3.5)*.048+(row%2?.009:-.009),z=.152-row*.059,edge=Math.sqrt(Math.max(.04,1-(x/.23)**2-((z+.015)/.27)**2));
-  const y=2.608+.111*edge+.010*Math.sin(row*2.3+col*1.71);
-  dummy.position.set(x,y,z);dummy.rotation.set(.25+row*.11,.5+col*.22,-.35+.35*Math.sin(col+row));dummy.scale.set(.043+.009*Math.sin(col*2+row),.032+.006*Math.cos(col+row),.052);dummy.updateMatrix();curls.setMatrixAt(curlIndex,dummy.matrix);curls.setColorAt(curlIndex,new T.Color(curlIndex%7===0?0xb4a99c:0xe0d8d0));curlIndex++;
+ // Continuous cropped hairstyle: a single curved scalp shell with fine irregular wave relief.
+ const hv=[],hc=[],hi=[],hr=48,hs=112;
+ const darkHair=new T.Color(0x241f1e),fadeHair=new T.Color(0x51423a);
+ for(let i=0;i<=hr;i++){const f=i/hr;
+  for(let j=0;j<=hs;j++){const theta=j/hs*Math.PI*2,frontness=Math.max(0,Math.cos(theta)),backness=Math.max(0,-Math.cos(theta));
+   const boundary=1.55-.37*Math.pow(frontness,2)+.43*Math.pow(backness,1.5);
+   const polar=.001+f*(boundary+.022*Math.sin(theta*7)*frontness);
+   const wave=(.0022*Math.sin(theta*28+polar*19)+.0017*Math.sin(theta*45-polar*14))*Math.sin(polar)*Math.pow(1-f,.35);
+   const x=(.224+wave)*Math.sin(polar)*Math.sin(theta),y=2.495+(.270+wave)*Math.cos(polar),z=-.013+(.214+wave)*Math.sin(polar)*Math.cos(theta);
+   hv.push(x,y,z);
+   const fade=T.MathUtils.smoothstep(f,.78,1)*(1-.88*frontness),tone=darkHair.clone().lerp(fadeHair,fade*.60).multiplyScalar(.92+.11*Math.sin(theta*31+polar*16)**2);hc.push(tone.r,tone.g,tone.b);
+   if(i<hr&&j<hs){const n=i*(hs+1)+j;hi.push(n,n+hs+1,n+1,n+1,n+hs+1,n+hs+2)}
+  }
  }
- curls.instanceMatrix.needsUpdate=true;if(curls.instanceColor)curls.instanceColor.needsUpdate=true;curls.computeBoundingBox();curls.computeBoundingSphere();head.add(curls);
- for(let i=0;i<7;i++){const x=-.16+i*.052;curveTube(head,[[x-.020,2.642,.148],[x+.008,2.680,.134],[x+.029,2.708,.095],[x+.013,2.724,.061]],.008,i%3===0?hairLight:hair)}
- head.rotation.x=-.12;head.position.set(0,2.43*(1-Math.cos(.12)),2.43*Math.sin(.12));
+ const hairGeo=new T.BufferGeometry();hairGeo.setAttribute("position",new T.Float32BufferAttribute(hv,3));hairGeo.setAttribute("color",new T.Float32BufferAttribute(hc,3));hairGeo.setIndex(hi);hairGeo.computeVertexNormals();
+ add(head,new T.Mesh(hairGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:.83,metalness:0,side:T.DoubleSide})));
+ // Scale the oversized head down toward adult proportions, then keep the chin seated above the collar.
+ head.scale.setScalar(.89);head.rotation.x=-.065;
+ const neckAnchor=new T.Vector3(0,2.17,0),rotatedAnchor=neckAnchor.clone().multiplyScalar(.89).applyEuler(head.rotation);
+ head.position.copy(neckAnchor).sub(rotatedAnchor);
  body.scale.setScalar(1.14);
  moAvatarJob={group:body,url:"/creation-engine/assets/mo-avatar.glb",height:2.76};
  const ring=g(0,.42,0,0,0,0);for(const [radius,width,material] of [[1.43,.022,mat(0xc5a77e,.72,.4)],[1.57,.009,a]]){const r=add(ring,torus(radius,width,material));r.rotation.x=Math.PI/2}
