@@ -887,6 +887,21 @@ export function buildChunkGroup(
       for(let i=0;i<7;i++){const q=z-.20+i*.065;drainSlots.push(groundSurface([[x-.125,q],[x+.125,q],[x+.125,q+.028],[x-.125,q+.028]],surfaceGround,.155,false));}
     }
     addBatch(drainFrames,drain,false);addBatch(drainSlots,grate,false);
+    // Green Lakeland fingerpost on the corner pavement. Board text is an
+    // approximate local orientation aid; the photo lettering is illegible.
+    const signX=67.6,signZ=-1390.9,signY=Math.max(.45,surfaceGround(signX,signZ))+.205;
+    const signRoot=new THREE.Group();signRoot.name='Lake Road corner fingerpost';signRoot.position.set(signX,signY,signZ);group.add(signRoot);
+    const green=new THREE.MeshStandardMaterial({color:0x355c49,roughness:.77,metalness:.18});streetMaterials.push(green);
+    const addSign=(geo:THREE.BufferGeometry,mat:THREE.Material,x:number,y:number,z:number,yaw=0)=>{disposables.push(geo);const mesh=new THREE.Mesh(geo,mat);mesh.position.set(x,y,z);mesh.rotation.y=yaw;mesh.castShadow=true;signRoot.add(mesh);return mesh;};
+    addSign(new THREE.CylinderGeometry(.055,.075,2.85,10),green,0,1.425,0);
+    addSign(new THREE.CylinderGeometry(.11,.14,.23,10),green,0,.115,0);
+    addSign(new THREE.SphereGeometry(.082,10,7),green,0,2.91,0);
+    for(const [i,yaw] of [0,Math.PI/2,Math.PI,-Math.PI/2].entries()){
+      const arm=new THREE.Group();arm.position.y=2.15+i*.18;arm.rotation.y=yaw;signRoot.add(arm);
+      const board=new THREE.Shape();board.moveTo(.05,-.075);board.lineTo(.65,-.075);board.lineTo(.80,0);board.lineTo(.65,.075);board.lineTo(.05,.075);board.closePath();
+      const geo=new THREE.ExtrudeGeometry(board,{depth:.035,bevelEnabled:false});disposables.push(geo);arm.add(new THREE.Mesh(geo,green));
+      const line=new THREE.BoxGeometry(.55,.009,.008);disposables.push(line);const trim=new THREE.Mesh(line,kerb);trim.position.set(.36,.045,.039);arm.add(trim);
+    }
   }
   addBatch(gravelGeos,materials.gravelPath,false,true);
   addBatch(railGeos, materials.railSteel, false);
