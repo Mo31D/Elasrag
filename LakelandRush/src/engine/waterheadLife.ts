@@ -1,6 +1,7 @@
 import {fleeDirection,rememberedAlarm,type Threat} from '../game/crowdMotion';
 import * as THREE from 'three';
 import {batchAnimalDetail} from './animalDetail';
+import type {BirdFlightPose,BirdAttitude} from './animalPlayer';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {cruisePose,CRUISE_SPEED,CRUISE_LENGTH,cruiseHullWet,shorePoint} from '../game/waterheadLife';
 type Wet=(x:number,z:number)=>boolean;
@@ -52,14 +53,28 @@ function makeCruiser(){
  const wg=new THREE.BufferGeometry();wg.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));wg.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));wakeMat.vertexColors=true;
  const wake=new THREE.Mesh(wg,wakeMat);return {root,wake,wakeMat};
 }
-type Bird={kind:'mallard'|'swan';root:THREE.Group;body:THREE.Group;neck:THREE.Group;feet:THREE.Group[];wings:THREE.Group[];flightWings:THREE.Group[];x:number;z:number;homeX:number;homeZ:number;angle:number;phase:number;swimming:boolean;scale:number;speed:number;alarm:number;alarmYaw:number};
+type Bird={kind:'mallard'|'swan';root:THREE.Group;body:THREE.Group;neck:THREE.Group;feet:THREE.Group[];wings:THREE.Group[];flightWings:THREE.Group[];wingTips:THREE.Group[];x:number;z:number;homeX:number;homeZ:number;angle:number;phase:number;swimming:boolean;scale:number;speed:number;alarm:number;alarmYaw:number};
 function birdModel(swan:boolean,variant:number){
  const root=new THREE.Group(),body=new THREE.Group(),neck=new THREE.Group();root.add(body);body.add(neck);
  const plumage=material(swan?0xf3f1e8:variant%2?0x82705c:0x9a9c98),wingMat=material(swan?0xe0e2dc:0x635846),headMat=material(swan?0xf4f1e8:variant%2?0x8c7456:0x246252),beak=material(swan?0xe9932a:0xc3a33b),dark=material(0x25252a),feetMat=material(swan?0x363433:0xb36a32);
  function oval(g:THREE.Group,m:THREE.Material,x:number,y:number,z:number,a:number,b:number,c:number){const o=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),m);o.scale.set(a,b,c);o.position.set(x,y,z);g.add(o);return o;}
  oval(body,plumage,0,.22,.05,.29,.24,.56);const chest=material(swan?0xf6f4eb:variant%2?0x957e62:0x593c35),featherEdge=material(swan?0xf0eee5:0x796c5d),speculum=material(0x324e93,.42);oval(body,chest,0,.23,-.30,.245,.218,.28);const tail=oval(body,plumage,0,.26,.47,.18,.12,.23);tail.rotation.x=-.38;
  const wings:THREE.Group[]=[];for(const side of [-1,1]){const w=new THREE.Group();w.position.set(side*.16,.25,.02);body.add(w);const m=oval(w,wingMat,side*.055,0,.07,.17,.13,.40);m.rotation.y=side*.16;for(let k=0;k<5;k++){const feather=oval(w,featherEdge,side*(.09+k*.012),.035,.11+k*.048,.092,.055,.16);feather.rotation.y=side*.17;}if(!swan){oval(w,featherEdge,side*.16,.015,.15,.045,.048,.13);oval(w,speculum,side*.17,.02,.15,.039,.039,.097);}wings.push(w);}
- const flightWings:THREE.Group[]=[];for(const side of [-1,1]){const w=new THREE.Group();w.position.set(side*.17,.26,0);body.add(w);const span=swan?1.05:.72;oval(w,plumage,side*span*.39,0,.02,span*.42,.055,.25);for(let k=0;k<7;k++){const feather=oval(w,wingMat,side*span*(.35+k*.09),0,.10+k*.026,span*.19,.023,.13+k*.013);feather.rotation.y=-side*(.22+k*.045);}w.visible=false;flightWings.push(w);}
+ const flightWings:THREE.Group[]=[],wingTips:THREE.Group[]=[];
+ for(const side of [-1,1]){
+  const w=new THREE.Group();w.position.set(side*.17,.26,0);body.add(w);
+  const span=swan?1.05:.72;
+  oval(w,plumage,side*span*.29,0,.018,span*.33,.064,.245);
+  for(let k=0;k<5;k++){const f=oval(w,wingMat,side*span*(.10+k*.095),-.008,.12+k*.018,span*.12,.029,.16);f.rotation.y=-side*.24;}
+  // Wrist joint bends the outer primaries during the recovery stroke.
+  const tip=new THREE.Group();tip.position.set(side*span*.52,0,.035);w.add(tip);
+  oval(tip,plumage,side*span*.17,0,0,span*.24,.042,.16);
+  for(let k=0;k<8;k++){
+   const f=oval(tip,wingMat,side*span*(.075+k*.044),-.009,.09+k*.018,span*(.14+k*.008),.022,.105+k*.007);
+   f.rotation.y=-side*(.25+k*.055);
+  }
+  w.visible=false;flightWings.push(w);wingTips.push(tip);
+ }
  const neckHeight=swan?.77:.23;neck.position.set(0,.29,-.30);
  const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,0),new THREE.Vector3(0,neckHeight*.28,-.15),new THREE.Vector3(0,neckHeight*.72,-.13),new THREE.Vector3(0,neckHeight,-.06)]);
  neck.add(new THREE.Mesh(new THREE.TubeGeometry(curve,12,swan?.075:.085,8,false),headMat));
@@ -67,7 +82,7 @@ function birdModel(swan:boolean,variant:number){
  if(swan)oval(neck,dark,0,neckHeight-.005,-.215,.085,.055,.04);
  for(const side of [-1,1]){oval(neck,dark,side*.09,neckHeight+.025,-.16,.018,.018,.018);oval(neck,material(0xece5d9),side*.102,neckHeight+.030,-.167,.006,.006,.005);}
  const feet:THREE.Group[]=[];for(const side of [-1,1]){const f=new THREE.Group();f.position.set(side*.12,.11,.04);body.add(f);oval(f,feetMat,0,-.11,0,.035,.13,.035);oval(f,feetMat,0,-.22,-.05,.083,.025,.12);for(let toe=-1;toe<=1;toe++){const t=oval(f,feetMat,toe*.043,-.223,-.145,.031,.017,.065);t.rotation.y=toe*.22;}feet.push(f);}
- batchAnimalDetail(root);return {root,body,neck,feet,wings,flightWings};
+ batchAnimalDetail(root);return {root,body,neck,feet,wings,flightWings,wingTips};
 }
 export class WaterheadLife{
  private cruiser=makeCruiser();private birds:Bird[]=[];private travelled=0;private t=0;private rippleClock=0;private routeValid=false;
@@ -103,26 +118,31 @@ export class WaterheadLife{
    if((b.swimming?this.clearWater(x,z):this.clearLand(x,z))){b.x=x;b.z=z;}else if(!b.swimming&&alarm&&this.clearWater(x,z)){b.swimming=true;b.x=x;b.z=z;b.homeX=x;b.homeZ=z;}else b.angle+=dt*2.8;
    b.root.position.set(b.x,b.swimming?-.10*b.scale+Math.sin(this.t*2+b.phase)*.015:Math.max(.45,this.ground(b.x,b.z)),b.z);b.root.rotation.y=b.angle;
    b.body.rotation.z=Math.sin(this.t*2+b.phase)*(b.swimming?.035:.055);b.neck.rotation.x=feeding?-.8+Math.sin(this.t*3+b.phase)*.13:resting?.30:Math.sin(this.t*1.1+b.phase)*.09;b.body.rotation.x=feeding&&b.swimming?.16:0;
-   for(let j=0;j<2;j++){b.feet[j].visible=!b.swimming;b.feet[j].rotation.x=moving?Math.sin(this.t*8+b.phase+j*Math.PI)*.55:0;b.wings[j].rotation.z=Math.sin(this.t*(alarm?9:1.5)+b.phase)*(alarm?.20:.035);}
+   for(let j=0;j<2;j++){b.wings[j].visible=true;b.flightWings[j].visible=false;b.feet[j].visible=!b.swimming;b.feet[j].rotation.x=moving?Math.sin(this.t*8+b.phase+j*Math.PI)*.55:0;b.wings[j].rotation.z=Math.sin(this.t*(alarm?9:1.5)+b.phase)*(alarm?.20:.035);}
    if(emit&&moving&&b.swimming&&i%3===Math.floor(this.t)%3)this.ripple(b.x,b.z,b.scale*.55);
   }
  }
- selectableAnimals(){return this.birds.map(b=>({root:b.root,kind:b.kind,pose:(t:number,s:number,wet:boolean,air:boolean,feed:boolean,flight?:'takeoff'|'powered'|'glide'|'landing')=>{
+ selectableAnimals(){return this.birds.map(b=>({root:b.root,kind:b.kind,pose:(t:number,s:number,wet:boolean,air:boolean,feed:boolean,flight?:BirdFlightPose,attitude?:BirdAttitude)=>{
   const swan=b.kind==='swan',launch=flight==='takeoff',glide=flight==='glide',landing=flight==='landing';
   const hz=swan?3.2:5.4,cycle=t*Math.PI*2*hz;
   const beat=Math.cos(cycle),stroke=beat>=0?beat:beat*.68;
-  const lift=launch?1.08:landing?.55:.77;
-  const wingAngle=glide?.14:lift*stroke+.13;
-  b.body.rotation.z=air?(glide?Math.sin(t*1.8)*.025:Math.sin(cycle)*.035):Math.sin(t*2)*.025;
-  b.body.rotation.x=feed&&wet?.24:air?(launch?-.22-Math.sin(cycle)*.055:landing?-.17:glide?.025:Math.sin(cycle)*.035):0;
-  b.neck.rotation.x=feed?-.85:air?(launch?-.65:landing?-.42:-1.05):0;
+  const amplitude=launch?1.08:landing?.55:.77;
+  const wingAngle=glide?.14:amplitude*stroke+.13;
+  const dt=attitude?.dt??0,blend=dt>0?1-Math.exp(-dt*18):1;
+  const smooth=(current:number,target:number)=>THREE.MathUtils.lerp(current,target,blend);
+  const bank=attitude?.bank??0,pitch=attitude?.pitch??0;
+  b.body.rotation.z=smooth(b.body.rotation.z,air?bank+(glide?Math.sin(t*1.8)*.025:Math.sin(cycle)*.035):Math.sin(t*2)*.025);
+  // Local forward is -Z; positive X rotation raises the chest/beak.
+  b.body.rotation.x=smooth(b.body.rotation.x,feed&&wet?.24:air?pitch+(launch?Math.sin(cycle)*.035:0):0);
+  b.neck.rotation.x=smooth(b.neck.rotation.x,feed?-.85:air?(swan?-1.15:-.70)+(landing?.25:0)-pitch*.35:0);
   for(let j=0;j<2;j++){
-   const side=j===0?-1:1;
-   // Visible leg push on the first wingbeat; feet trail briefly at landing.
-   b.feet[j].visible=(!wet&&!air)||(launch&&t<.26)||landing;
-   b.feet[j].rotation.x=air?(launch?-.65*Math.min(1,t/.26):.5):s>.05?Math.sin(t*9+j*Math.PI)*.55:0;
-   b.wings[j].visible=!air;b.flightWings[j].visible=air;
-   b.flightWings[j].rotation.set(air?(glide?.05:Math.sin(cycle-.65)*.20):0,air?side*(glide?.10:.08+Math.sin(cycle-.45)*.14):0,air?side*wingAngle:0);
+   const side=j===0?-1:1,w=b.flightWings[j],tip=b.wingTips[j];
+   b.feet[j].visible=(!wet&&!air)||(launch&&t<.30)||landing;
+   b.feet[j].rotation.x=smooth(b.feet[j].rotation.x,air?(launch?-.65*Math.min(1,t/.26):landing?.35:-.9):s>.05?Math.sin(t*9+j*Math.PI)*.55:0);
+   b.wings[j].visible=!air;w.visible=air;
+   w.rotation.set(smooth(w.rotation.x,air?(glide?.04:Math.sin(cycle-.65)*.18):0),smooth(w.rotation.y,air?side*(glide?.10:.08+Math.sin(cycle-.45)*.14):0),smooth(w.rotation.z,air?side*wingAngle:0));
+   tip.rotation.z=smooth(tip.rotation.z,air?side*(glide?-.04:Math.sin(cycle-.9)*.31):0);
+   tip.rotation.y=smooth(tip.rotation.y,air?side*(glide?.04:Math.max(0,-beat)*.24):0);
    b.wings[j].rotation.z=0;
   }
  }}));}
