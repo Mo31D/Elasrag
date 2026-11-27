@@ -4,9 +4,10 @@ import {ATTENDANT_STATION} from '../game/boatAttendant';
 import {compileRoutePolyline,sampleCompiledRoute,type CompiledRoute} from '../geo/projection';
 import realm from '../data/waterhead-public-realm.json';
 import town from '../data/town-walks.json';
-import {nextWalkDistance,chooseRefuge,forecastRisk,type VehicleForecast,type Threat} from '../game/crowdMotion';
+import {nextWalkDistance,chooseRefuge,forecastRisk,dogOwnerStep,type VehicleForecast,type Threat} from '../game/crowdMotion';
 type Clear=(x:number,z:number)=>boolean;
-type Person={root:THREE.Group;head:THREE.Group;arms:THREE.Group[];legs:THREE.Group[];route:CompiledRoute;distance:number;dir:1|-1;speed:number;phase:number;pause:number;kind:number;dog?:Dog;x:number;z:number;yaw:number;offset:number;yieldTime:number};
+type Person={root:THREE.Group;head:THREE.Group;arms:THREE.Group[];legs:THREE.Group[];route:CompiledRoute;distance:number;dir:1|-1;speed:number;phase:number;pause:number;kind:number;dog?:Dog;x:number;z:number;yaw:number;offset:number;yieldTime:number;chaseTrail?:{x:number;z:number}[]};
+type ControlledDog={root:THREE.Group;speed:number};
 type Dog={root:THREE.Group;legs:THREE.Group[];tail:THREE.Group;lead:THREE.Line<THREE.BufferGeometry,THREE.LineBasicMaterial>;x:number;z:number;yaw:number;phase:number};
 const colours=[0x31455d,0xb55945,0x62765b,0xd2ae73,0x795b88,0x397d87,0x5f6061,0xb9b5a7];
 const skin=[0xd2a07b,0x9b674c,0xe1b695,0x744a35,0xbc8862];
@@ -51,10 +52,55 @@ export class PedestrianWorld{
   const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute([0,0,0,0,0,0,0,0,0],3));const mat=new THREE.LineBasicMaterial({color:0x55483b});const lead=new THREE.Line(geometry,mat);lead.frustumCulled=false;this.geos.add(geometry);this.mats.add(mat);this.scene.add(lead);root.visible=lead.visible=false;
   return {root,legs,tail,lead,x,z,yaw:0,phase:i};
  }
- update(dt:number,playerX:number,playerZ:number,playerY:number,busBlocked:(x:number,z:number)=>boolean,forecast:readonly VehicleForecast[]=[]){
+ private chasePose(p:Person,dt:number,nx:number,nz:number,moved:number,targetX:number,targetZ:number){
+  const speed=dt>0?moved/dt:0,run=Math.min(1,speed/3.2),moving=speed>.02;
+  const dx=moving?nx-p.x:targetX-p.x,dz=moving?nz-p.z:targetZ-p.z;
+  if(Math.hypot(dx,dz)>.03){const yaw=Math.atan2(-dx,-dz);p.yaw+=Math.atan2(Math.sin(yaw-p.yaw),Math.cos(yaw-p.yaw))*Math.min(1,dt*12);}
+  p.x=nx;p.z=nz;
+  if(moving)p.phase+=moved*(5.8-2.3*run);
+  p.root.position.set(nx,Math.max(.45,this.ground(nx,nz))+(moving?Math.abs(Math.sin(p.phase))*(.025+.065*run):0),nz);
+  p.root.rotation.set(moving?.10*run:0,p.yaw,0);
+  const blend=Math.min(1,dt*14),reach=!moving&&Math.hypot(targetX-nx,targetZ-nz)<.9;
+  for(let j=0;j<2;j++){
+   const swing=moving?Math.sin(p.phase+j*Math.PI)*(.48+.65*run):0;
+   p.legs[j].rotation.x=THREE.MathUtils.lerp(p.legs[j].rotation.x,swing,blend);
+   p.arms[j].rotation.x=THREE.MathUtils.lerp(p.arms[j].rotation.x,reach?-.9:-swing*.75,blend);
+  }
+  p.head.rotation.y=THREE.MathUtils.lerp(p.head.rotation.y,0,blend);
+ }
+ update(dt:number,playerX:number,playerZ:number,playerY:number,busBlocked:(x:number,z:number)=>boolean,forecast:readonly VehicleForecast[]=[],controlledDog?:ControlledDog){
   this.time+=dt;this.attendant.update(dt,playerX,playerZ,playerY);
   for(const p of this.people){
-   const near=Math.hypot(p.x-playerX,p.z-playerZ)<120;p.root.visible=near;if(p.dog&&!p.dog.root.userData.animalControlled)p.dog.root.visible=p.dog.lead.visible=near&&this.dogClear(p.dog.x,p.dog.z);else if(p.dog)p.dog.lead.visible=false;if(!near)continue;
+   const near=Math.hypot(p.x-playerX,p.z-playerZ)<120;p.root.visible=near;
+   const d=p.dog,controlled=!!d&&d.root.userData.animalControlled;
+   if(d&&controlled){
+    d.lead.visible=false;
+    if(controlledDog?.root===d.root){
+     const trail=p.chaseTrail??=[{x:p.x,z:p.z}];
+     const target=d.root.position;
+     const safe=(x:number,z:number)=>this.clear(x,z)&&!busBlocked(x,z)&&forecastRisk(x,z,forecast)<.25&&Math.abs(this.ground(x,z)-this.ground(p.x,p.z))<.65;
+     const step=dogOwnerStep(p.x,p.z,target.x,target.z,controlledDog.speed,dt,safe);
+     this.chasePose(p,dt,step.x,step.z,step.moved,target.x,target.z);
+     const last=trail[trail.length-1];
+     if(Math.hypot(p.x-last.x,p.z-last.z)>.55)trail.push({x:p.x,z:p.z});
+    }
+    continue;
+   }
+   if(d&&p.chaseTrail){
+    // The dog is restored by AnimalPlayer.release; the owner walks back along
+    // the actual pursuit path before rejoining their original mapped route.
+    d.lead.visible=false;d.root.visible=Math.hypot(d.x-playerX,d.z-playerZ)<120&&this.dogClear(d.x,d.z);
+    const trail=p.chaseTrail;
+    while(trail.length>1&&Math.hypot(p.x-trail[trail.length-1].x,p.z-trail[trail.length-1].z)<.12)trail.pop();
+    const target=trail[trail.length-1];
+    const safe=(x:number,z:number)=>this.clear(x,z)&&!busBlocked(x,z)&&forecastRisk(x,z,forecast)<.25;
+    const step=dogOwnerStep(p.x,p.z,target.x,target.z,1.8,dt,safe,0);
+    this.chasePose(p,dt,step.x,step.z,step.moved,target.x,target.z);
+    if(trail.length===1&&Math.hypot(p.x-target.x,p.z-target.z)<.015){p.chaseTrail=undefined;p.root.rotation.x=0;}
+    continue;
+   }
+   if(d)d.root.visible=d.lead.visible=near&&this.dogClear(d.x,d.z);
+   if(!near)continue;
    const playerDist=Math.hypot(p.x-playerX,p.z-playerZ),close=playerDist<1.65&&Math.abs(playerY-p.root.position.y)<2;
    p.pause=Math.max(0,p.pause-dt);
    const n=nextWalkDistance(p.distance,p.dir,p.speed,dt,p.route.totalLength),q=sampleCompiledRoute(p.route,n.distance),base=sampleCompiledRoute(p.route,p.distance);
@@ -70,7 +116,7 @@ export class PedestrianWorld{
    else if(!p.yieldTime&&!close&&!crowded&&p.pause===0){p.dir=p.dir===1?-1:1;p.pause=.8;}
    const desired=escaping?escapeYaw:p.yieldTime>0?p.yaw:close?Math.atan2(p.x-playerX,p.z-playerZ):Math.atan2(-q.tx*p.dir,-q.tz*p.dir);
    p.yaw+=Math.atan2(Math.sin(desired-p.yaw),Math.cos(desired-p.yaw))*Math.min(1,dt*6);
-   p.root.position.set(p.x,Math.max(.45,this.ground(p.x,p.z))+(moving||escaping?Math.abs(Math.sin(p.phase))*(escaping?.045:.022):0),p.z);p.root.rotation.y=p.yaw;
+   p.root.position.set(p.x,Math.max(.45,this.ground(p.x,p.z))+(moving||escaping?Math.abs(Math.sin(p.phase))*(escaping?.045:.022):0),p.z);p.root.rotation.set(0,p.yaw,0);
    const wave=!p.yieldTime&&close&&p.kind===1?Math.sin(this.time*5)*.18-.95:0;
    for(let j=0;j<2;j++){const swing=moving||escaping?Math.sin(p.phase+j*Math.PI)*(escaping?.83:.47):0;p.legs[j].rotation.x=THREE.MathUtils.lerp(p.legs[j].rotation.x,swing,dt*10);p.arms[j].rotation.x=THREE.MathUtils.lerp(p.arms[j].rotation.x,j===1&&wave!==0?wave:-swing*.62,dt*10);}
    p.head.rotation.y=p.yieldTime>0?Math.sin(this.time*2)*.35:p.kind===2&&!moving?Math.sin(this.time*.5+p.phase)*.55:0;
