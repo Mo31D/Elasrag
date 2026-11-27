@@ -1466,7 +1466,7 @@ export class LakelandEngine {
     }
     if(this.activeRoute.mode==='freeroam'){
       if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
-      this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0),this.busService?.forecasts()??[]);
+      this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0),this.busService?.forecasts()??[],this.animal?.actor.kind==='dog'?{root:this.animal.actor.root,speed:this.gameState==='playing'?this.animal.actualSpeed:0}:undefined);
     }else{this.busService?.hide();this.pedestrians?.hide();}
     this.waterheadLife?.update(dt,this.playerX,this.playerZ,[...(this.pedestrians?.threats()??[]),...(!this.animal&&!this.flying&&!this.occupiedBoat&&!this.busService?.mode&&this.playerY<4?[{x:this.playerX,z:this.playerZ,radius:4.5}]:[])]);
     if(this.animal){this.runner.root.visible=false;this.animal.actor.root.visible=true;}
