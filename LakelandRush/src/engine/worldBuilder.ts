@@ -20,7 +20,7 @@ import { buildCoffeeShop } from './coffeeShop';
 import {buildBlackSheepStreetFacade} from './blackSheepStreet';
 import {buildLibraryFacade,buildLibraryBusShelters} from './libraryBusStop';
 import {LIBRARY_ID,LIBRARY_NEIGHBOURS,KELSICK_CHUNK,busStopPavements,busStopBay,SHELTERS,kelsickZ} from '../geo/libraryBusStop';
-import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow,lakeRoadKerbs,lakeRoadPavingJoints,lakeRoadDrainCentres} from '../geo/blackSheepStreet';
+import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow,lakeRoadKerbs,lakeRoadPavingJoints,lakeRoadDrainCentres,usesReferenceStreetBuilding,referenceStreetBuilding} from '../geo/blackSheepStreet';
 import {buildPetShop} from './petShop';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
@@ -704,11 +704,11 @@ export function buildChunkGroup(
   const surfaceSamplers:Array<(x:number,z:number)=>number|undefined>=[];
 
   for (const b of chunk.buildings) {
-    const street=chunk.key===BLACK_SHEEP_STREET_CHUNK&&(b.id===BLACK_SHEEP_BUILDING||b.id===LAKE_ROAD_CORNER_BUILDING);
+    const street=chunk.key===BLACK_SHEEP_STREET_CHUNK&&usesReferenceStreetBuilding(b.id);
     // Reference-authored streets replace legacy GLB assets instead of layering over them.
     const library=chunk.key===KELSICK_CHUNK&&(b.id===LIBRARY_ID||LIBRARY_NEIGHBOURS.some(id=>id===b.id));
     const asset = street||library?undefined:buildingAssets.get(b.id);
-    const visualBuilding=street&&b.id===BLACK_SHEEP_BUILDING?{...b,h:Math.max(b.h,9.8),levels:3}:b;
+    const visualBuilding=street?referenceStreetBuilding(b):b;
     const built = buildLakelandBuildingGeometries(visualBuilding, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
     if (!built) continue;
     const coffee=chunk.key==='0_-1'?(b.id===WATERHEAD_COFFEE_ID?buildCoffeeShop(b,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):b.id===PET_SHOP_ID?buildPetShop(b,chunk,surfaceGround,materials.stoneWall,materials.slateRoof):null):null;
