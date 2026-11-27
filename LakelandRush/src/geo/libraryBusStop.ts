@@ -1,4 +1,6 @@
-import type {BuildingFeature} from '../types/game';
+import type {BuildingFeature,WorldChunkData} from '../types/game';
+import {pointInRing} from './projection';
+import {segmentDistance} from './parking';
 import {streetEdge} from './blackSheepStreet';
 export const LIBRARY_ID=239881389;
 export const LIBRARY_NEIGHBOURS=[423644522,423644523] as const;
@@ -19,7 +21,7 @@ export function busStopPavements(key=KELSICK_CHUNK):P[][]{
  // Continuous forecourt, clipped at tile ownership; the car park lies behind.
  const start=key==='-1_-3'?-11.2:0,end=key==='-1_-3'?0:12.2;
  const front:P[]=[],back:P[]=[];
- for(let i=0;i<=Math.ceil(end-start);i++){const x=start+(end-start)*i/Math.ceil(end-start);front.push([x,kelsickZ(x)-4.35]);back.push([x,kelsickZ(x)-7.5]);}
+ for(let i=0;i<=Math.ceil(end-start);i++){const x=start+(end-start)*i/Math.ceil(end-start);front.push([x,kelsickZ(x)-4.35]);back.push([x,kelsickZ(x)-8.05]);}
  out.push([...front,...back.reverse()]);
  if(key===KELSICK_CHUNK)for(const [a,b,az,bz] of [[3.6,11.75,-1377,-1379.13],[11.75,20.6,-1379.13,-1381.4]]){
  const za=kelsickZ(a)+4.4,zb=kelsickZ(b)+4.4;
@@ -33,3 +35,24 @@ export function busStopBay(key=KELSICK_CHUNK):P[][]{
  return out;
 }
 export function shelterClearance(x:number,z:number){return SHELTERS.some(s=>Math.abs(x-s.x)<s.length/2+1.6&&Math.abs(z-s.z)<3.1);}
+
+export function interchangeParking(ring:P[],chunk:WorldChunkData){
+ const out:{x:number;z:number;yaw:number}[]=[];
+ // Parallel rows behind the shelters, inside the existing King Street car park.
+ for(const z of [-1398.6,-1409.2,-1419.8])for(let x=-9;x<=17;x+=2.65){
+  const corners:P[]=[[x-1.18,z-2.35],[x+1.18,z-2.35],[x+1.18,z+2.35],[x-1.18,z+2.35]];
+  if(!corners.every(p=>pointInRing(...p,ring)&&!shelterClearance(...p)&&p[1]<kelsickZ(p[0])-8.6))continue;
+  // Include the adjoining tile's western access lane, which crosses the site.
+  const access:P[]=[[.576,-1383.98],[-3.297,-1406.032]];
+  if(corners.some(p=>segmentDistance(...p,access[0],access[1])<2.8))continue;
+  if(chunk.roads.some(r=>r.pts.slice(1).some((b,i)=>corners.some(p=>segmentDistance(...p,r.pts[i],b)<(r.kind==='primary'?4.4:2.6)+.3))))continue;
+  if(chunk.buildings.some(b=>!isShelterFootprint(b.id)&&corners.some(p=>pointInRing(...p,b.pts.map(([u,v])=>[u+b.cx,v+b.cz] as P)))))continue;
+  out.push({x,z,yaw:0});
+ }
+ return out;
+}
+export function busStopKerbs(key:string):P[][]{
+ const a=key==='-1_-3'?-11.2:0,b=key==='-1_-3'?0:12.2,out:P[][]=[];
+ for(let x=a;x<b;x+=.75){const q=Math.min(x+.75,b);out.push([[x,kelsickZ(x)-4.38],[q,kelsickZ(q)-4.38],[q,kelsickZ(q)-4.54],[x,kelsickZ(x)-4.54]]);}
+ return out;
+}
