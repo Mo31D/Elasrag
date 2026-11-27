@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {createRunnerModel,animateRunnerRig,type RunnerRig} from './models';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {ATTENDANT_STATION,ATTENDANT_LINES,attendantInRange} from '../game/boatAttendant';
 
@@ -6,6 +7,7 @@ import {ATTENDANT_STATION,ATTENDANT_LINES,attendantInRange} from '../game/boatAt
 export class BoatAttendant{
  readonly root=new THREE.Group();
  private upper=new THREE.Group();private head=new THREE.Group();private right=new THREE.Group();private left=new THREE.Group();private elbow=new THREE.Group();
+ private legs:THREE.Group[]=[];private replacement:RunnerRig|null=null;private playable:RunnerRig|null=null;
  private materials=new Set<THREE.Material>();private geometries=new Set<THREE.BufferGeometry>();private time=0;private greeting=0;private line=0;
  constructor(scene:THREE.Scene,private ground:(x:number,z:number)=>number,private clear:(x:number,z:number)=>boolean){
   this.root.name='Waterhead self-drive boat hire attendant';this.root.position.set(ATTENDANT_STATION.x,0,ATTENDANT_STATION.z);this.root.rotation.y=ATTENDANT_STATION.yaw;
@@ -19,13 +21,14 @@ export class BoatAttendant{
   const v=(x:number,y:number,z:number)=>new THREE.Vector3(x,y,z);
   // Stocky silhouette, broad chest, rounded abdomen, short-sleeved shirt and cargo shorts.
   for(const s of [-1,1]){
-   oval(this.root,navy,s*.125,.64,0,.137,.23,.145);box(this.root,navyLight,s*.245,.66,.01,.072,.18,.15);
-   box(this.root,navy,s*.254,.735,.01,.08,.035,.16);
-   oval(this.root,skin,s*.123,.365,.006,.091,.20,.092);
-   oval(this.root,navy,s*.123,.17,.005,.092,.10,.092);
-   oval(this.root,boot,s*.123,.085,.065,.107,.09,.17);
-   box(this.root,sole,s*.123,.025,.064,.217,.05,.305);
-   for(let k=0;k<3;k++)box(this.root,grey,s*.123,.126-k*.008,.095+k*.021,.085,.008,.012);
+   const leg=new THREE.Group();leg.position.set(s*.125,.80,0);this.root.add(leg);this.legs.push(leg);
+   oval(leg,navy,0,-.16,0,.137,.23,.145);box(leg,navyLight,s*.12,-.14,.01,.072,.18,.15);
+   box(leg,navy,s*.129,-.065,.01,.08,.035,.16);
+   oval(leg,skin,-s*.002,-.435,.006,.091,.20,.092);
+   oval(leg,navy,-s*.002,-.63,.005,.092,.10,.092);
+   oval(leg,boot,-s*.002,-.715,.065,.107,.09,.17);
+   box(leg,sole,-s*.002,-.775,.064,.217,.05,.305);
+   for(let k=0;k<3;k++)box(leg,grey,-s*.002,-.674-k*.008,.095+k*.021,.085,.008,.012);
   }
   oval(this.root,navy,0,.81,0,.252,.185,.19);
   this.upper.position.y=1.0;this.root.add(this.upper);
@@ -95,7 +98,42 @@ export class BoatAttendant{
   };batch(this.root);
   this.root.traverse(o=>{if(o instanceof THREE.Mesh){o.castShadow=true;o.receiveShadow=true;}});this.root.visible=false;scene.add(this.root);
  }
- update(dt:number,x:number,z:number,y:number){const s=ATTENDANT_STATION;this.root.visible=Math.hypot(x-s.x,z-s.z)<90&&this.clear(s.x,s.z);if(!this.root.visible)return;
+ // The same sculpted mesh is reused on the existing player rig. Mesh resources
+ // are shared; only articulated transforms are independent. Player forward is -Z.
+ makePlayable(shadow:THREE.Texture):RunnerRig{
+  if(this.playable)return this.playable;
+  const rig=createRunnerModel(shadow);
+  const copy=(source:THREE.Group,dest:THREE.Group,y:number,scaleY=1,meshesOnly=false)=>{
+   const skin=new THREE.Group();skin.position.y=y;skin.rotation.y=Math.PI;skin.scale.y=scaleY;
+   for(const child of source.children)if(!meshesOnly||child instanceof THREE.Mesh)skin.add(child.clone(true));
+   dest.add(skin);
+  };
+  for(const part of [rig.bodyPivot,rig.headGroup,rig.leftArm,rig.rightArm,rig.leftLeg,rig.rightLeg])
+   for(const child of part.children)if(child instanceof THREE.Mesh&&child!==rig.flightSuit)child.visible=false;
+  copy(this.root,rig.bodyPivot,-.84,1,true);copy(this.upper,rig.bodyPivot,.16,1,true);
+  copy(this.head,rig.headGroup,.17);
+  copy(this.left,rig.leftArm,.03,.77);copy(this.right,rig.rightArm,.03,.77);
+  copy(this.legs[1],rig.leftLeg,.04);copy(this.legs[0],rig.rightLeg,.04);
+  // Keep a hidden original shoe as the existing terrain-contact sample.
+  const colors=rig.flightSuit.geometry.getAttribute('color');for(let i=0;i<colors.count;i++){const col=new THREE.Color(i%3===0?0xcf2f24:0x17263f);colors.setXYZ(i,col.r,col.g,col.b);}colors.needsUpdate=true;
+  rig.root.name='Playable Waterhead boat attendant';rig.root.visible=false;this.playable=rig;return rig;
+ }
+ setReplacement(rig:RunnerRig|null){
+  if(this.replacement&&this.replacement!==rig)this.replacement.root.visible=false;
+  this.replacement=rig;this.root.visible=false;
+ }
+ get stationVisible(){return this.replacement?this.replacement.root.visible:this.root.visible;}
+ canSwitch(x:number,z:number,y:number){return this.stationVisible&&attendantInRange(x,z,y,Math.max(.45,this.ground(ATTENDANT_STATION.x,ATTENDANT_STATION.z)));}
+ update(dt:number,x:number,z:number,y:number){const s=ATTENDANT_STATION;const visible=Math.hypot(x-s.x,z-s.z)<90&&this.clear(s.x,s.z);
+  this.root.visible=visible&&!this.replacement;
+  if(this.replacement){const rig=this.replacement;rig.root.visible=visible;if(visible){
+    rig.root.position.set(s.x,Math.max(.45,this.ground(s.x,s.z)),s.z);
+    const yaw=this.canSwitch(x,z,y)?Math.atan2(s.x-x,s.z-z):s.yaw+Math.PI;
+    rig.root.rotation.y+=Math.atan2(Math.sin(yaw-rig.root.rotation.y),Math.cos(yaw-rig.root.rotation.y))*Math.min(1,dt*5);
+    animateRunnerRig(rig,{stridePhase:0,speedMps:0,isAirborne:false,isSliding:false,isGrinding:false,steerTilt:0,squashY:1,time:this.time,dt,waterMode:'land'});
+    rig.contactShadow.position.y=.02;
+   }return;}
+  if(!this.root.visible)return;
   this.time+=dt;this.greeting=Math.max(0,this.greeting-dt);this.root.position.y=Math.max(.45,this.ground(s.x,s.z));
   const near=this.canTalk(x,z,y),yaw=near?Math.atan2(x-s.x,z-s.z):s.yaw;
   this.root.rotation.y+=Math.atan2(Math.sin(yaw-this.root.rotation.y),Math.cos(yaw-this.root.rotation.y))*Math.min(1,dt*4);
@@ -108,7 +146,7 @@ export class BoatAttendant{
  }
  canTalk(x:number,z:number,y:number){return this.root.visible&&attendantInRange(x,z,y,this.root.position.y);}
  talk(){this.greeting=6;return ATTENDANT_LINES[this.line++%ATTENDANT_LINES.length];}
- distance(x:number,z:number){return this.root.visible?Math.hypot(x-ATTENDANT_STATION.x,z-ATTENDANT_STATION.z):Infinity;}
- hide(){this.root.visible=false;}
- dispose(){this.root.removeFromParent();this.geometries.forEach(g=>g.dispose());this.materials.forEach(m=>m.dispose());}
+ distance(x:number,z:number){return this.stationVisible?Math.hypot(x-ATTENDANT_STATION.x,z-ATTENDANT_STATION.z):Infinity;}
+ hide(){this.root.visible=false;if(this.replacement)this.replacement.root.visible=false;}
+ dispose(){this.root.removeFromParent();if(this.playable){this.playable.root.removeFromParent();this.playable.root.traverse(o=>{if(o instanceof THREE.Mesh){if(!this.geometries.has(o.geometry))o.geometry.dispose();const m=o.material as THREE.Material;if(!this.materials.has(m))m.dispose();}});}this.geometries.forEach(g=>g.dispose());this.materials.forEach(m=>m.dispose());}
 }

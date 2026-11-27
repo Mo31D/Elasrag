@@ -27,6 +27,7 @@ export interface GameHUDProps {
   onToggleFlight:()=>void;
   onWaterInteract:()=>void;
   onTalkAttendant:()=>void;
+  onSwitchCharacter:()=>void;
   onBusInteract:()=>void;
   onBusDrive:()=>void;
   onAccelerator:(pressed:boolean)=>void;

@@ -80,6 +80,6 @@ export class PedestrianWorld{
  distanceToNearest(x:number,z:number){let d=this.attendant.distance(x,z);for(const p of this.people){if(!p.root.visible)continue;d=Math.min(d,Math.hypot(x-p.x,z-p.z));if(p.dog)d=Math.min(d,Math.hypot(x-p.dog.x,z-p.dog.z));}return d;}
  near(x:number,z:number,r=.65){return this.distanceToNearest(x,z)<r;}
  hide(){this.attendant.hide();for(const p of this.people){p.root.visible=false;if(p.dog)p.dog.root.visible=p.dog.lead.visible=false;}}
- threats():Threat[]{const out:Threat[]=[];if(this.attendant.root.visible)out.push({x:ATTENDANT_STATION.x,z:ATTENDANT_STATION.z,radius:3.4});for(const p of this.people){if(!p.root.visible)continue;out.push({x:p.x,z:p.z,radius:3.4});if(p.dog)out.push({x:p.dog.x,z:p.dog.z,radius:6});}return out;}
+ threats():Threat[]{const out:Threat[]=[];if(this.attendant.stationVisible)out.push({x:ATTENDANT_STATION.x,z:ATTENDANT_STATION.z,radius:3.4});for(const p of this.people){if(!p.root.visible)continue;out.push({x:p.x,z:p.z,radius:3.4});if(p.dog)out.push({x:p.dog.x,z:p.dog.z,radius:6});}return out;}
  dispose(){this.attendant.dispose();for(const p of this.people){p.root.removeFromParent();p.dog?.root.removeFromParent();p.dog?.lead.removeFromParent();}this.geos.forEach(g=>g.dispose());this.mats.forEach(m=>m.dispose());}
 }

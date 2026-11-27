@@ -169,6 +169,8 @@ export class LakelandEngine {
   private textures!: ProceduralTextureSet;
   private materials!: WorldMaterials;
   private runner!: RunnerRig;
+  private originalRunner!:RunnerRig;
+  private attendantSelected=false;
 
   private terrainMesh: THREE.Group | null = null;
   private terrainSurface:(x:number,z:number)=>number=(x,z)=>this.region.getTerrainHeight(x,z);
@@ -397,7 +399,7 @@ export class LakelandEngine {
       this.scene.add(this.ambientActorsGroup);
 
       // Runner Actor
-      this.runner = createRunnerModel(this.textures.contactShadowMap);
+      this.runner = createRunnerModel(this.textures.contactShadowMap);this.originalRunner=this.runner;
       this.scene.add(this.runner.root);
 
       // Pooled Particle System (140 instances, zero GC)
@@ -892,6 +894,30 @@ export class LakelandEngine {
     animateRunnerRig(this.runner,{stridePhase:b.kind==='motorboat'?0:b.phase,speedMps:this.exploreSpeed,isAirborne:false,isSliding:false,isGrinding:false,steerTilt:steer,squashY:1,time:this.elapsedTime,dt,waterMode:'rowing'});seatAvatar(this.runner,b);this.playerY=this.runner.root.position.y;
     this.waterEffectTimer-=dt;if(Math.abs(b.speed)>.15&&this.waterEffectTimer<=0){this.waterEffectTimer=.18;const motor=b.kind==='motorboat',stern=motor?2.8:1.7;const wx=b.x+Math.sin(b.yaw)*stern,wz=b.z+Math.cos(b.yaw)*stern;this.waterRipples?.emit(wx,wz,motor?2.0:1.35,.48,b.yaw);if(motor&&this.region.isInWater(wx,wz))this.emitParticles(wx,.05,wz,2,0xe1edf0,.55);for(const oar of b.oars){const tip=oar.localToWorld(new THREE.Vector3(Math.sign(oar.position.x)*1.5,0,0));if(tip.y<.25&&this.region.isInWater(tip.x,tip.z))this.waterRipples?.emit(tip.x,tip.z,.48);}}
     this.sound.setShoreFactor(1);this.sound.setGameplayState(true,0,false);this.updateChaseCamera(dt,this.exploreSpeed);void this.updateChunkStreaming(b.x,b.z,false);this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
+  }
+  private canSwitchCharacter(){return this.gameState==='playing'&&this.activeRoute.mode==='freeroam'&&!this.flying&&!this.inShop&&!this.occupiedBoat&&!this.busService?.mode&&this.waterMode==='land'&&this.isGrounded&&!!this.pedestrians?.attendant.canSwitch(this.playerX,this.playerZ,this.playerY);}
+  private characterSwitchMarker(){
+   if(!this.canSwitchCharacter()||!this.pedestrians)return undefined;
+   const npc=this.pedestrians.attendant;
+   const pos=npc.root.position.clone();pos.y=Math.max(.45,this.walkSurface(pos.x,pos.z))+2.12;
+   this.camera.updateMatrixWorld(true);const view=pos.clone().applyMatrix4(this.camera.matrixWorldInverse);if(view.z>=0)return undefined;
+   pos.project(this.camera);if(pos.z<-1||pos.z>1||Math.abs(pos.x)>.91||Math.abs(pos.y)>.88)return undefined;
+   return {x:(pos.x+1)*50,y:(1-pos.y)*50,target:this.attendantSelected?'Rowan':'Boat attendant'};
+  }
+  public switchCharacter():boolean{
+   if(!this.canSwitchCharacter()||!this.pedestrians)return false;
+   const npc=this.pedestrians.attendant,old=this.runner;
+   const next=this.attendantSelected?this.originalRunner:npc.makePlayable(this.textures.contactShadowMap);
+   if(!next.root.parent)this.scene.add(next.root);
+   this.attendantSelected=!this.attendantSelected;
+   npc.setReplacement(this.attendantSelected?this.originalRunner:null);
+   old.root.visible=false;this.runner=next;
+   next.root.position.set(this.playerX,this.playerY,this.playerZ);next.root.rotation.set(0,this.playerHeading,0);next.root.visible=true;
+   next.bodyPivot.position.y=.84;next.bodyPivot.rotation.set(0,0,0);next.bodyPivot.scale.setScalar(1);
+   for(const part of [next.headGroup,next.leftArm,next.rightArm,next.leftLeg,next.rightLeg])part.rotation.set(0,0,0);
+   next.flightSuit.visible=false;next.contactShadow.visible=true;next.contactShadow.position.y=.02;
+   this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.touchAccelerator=false;this.playerVy=0;this.exploreSpeed=0;
+   this.exploreFirst=false;this.setCallout(this.attendantSelected?'Playing as the boat attendant':'Playing as Rowan');this.pushHudSnapshot();return true;
   }
   private canTalkAttendant(){return this.gameState==='playing'&&this.activeRoute.mode==='freeroam'&&!this.flying&&!this.inShop&&!this.occupiedBoat&&!this.busService?.mode&&this.waterMode==='land'&&!!this.pedestrians?.attendant.canTalk(this.playerX,this.playerZ,this.playerY);}
   public talkAttendant(){if(!this.canTalkAttendant()||!this.pedestrians)return false;this.setCallout(this.pedestrians.attendant.talk());this.calloutTimer=6;this.pushHudSnapshot();return true;}
@@ -2007,6 +2033,7 @@ export class LakelandEngine {
       insideShop: this.inShop,
       canEnterShop: this.nearShopDoor(),
       canTalkAttendant:this.canTalkAttendant(),
+      characterSwitch:this.characterSwitchMarker(),
       nearLandmark: navigation.stops.find(stop => Math.hypot(stop.point[0] - this.playerX, stop.point[1] - this.playerZ) < 20)?.name,
       hearts: this.scoring.hearts,
       maxHearts: 3,
@@ -2042,6 +2069,7 @@ export class LakelandEngine {
       if(firstPress&&e.code==='Digit3')this.setExplorePace('sprint');
       if(firstPress&&e.code==='KeyC')this.recenterExploreCamera();
       if(firstPress&&e.code==='KeyF')this.toggleFreeFlight();
+      if(firstPress && e.code==='KeyC')this.switchCharacter();
       if (firstPress && e.code === 'KeyE' && !this.interactBus() && !this.interactWater() && !this.talkAttendant()) this.toggleShop();
       if(firstPress&&e.code==='KeyG')this.takeBusWheel();
       if (firstPress && e.code === 'KeyV') this.toggleExploreView();

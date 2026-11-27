@@ -1,5 +1,5 @@
 import {useEffect,useRef,useState,type PointerEvent} from 'react';
-import {Map,Menu,ArrowUp,ArrowDown,RotateCcw,Compass,Bird,ChevronsUp} from 'lucide-react';
+import {Map,Menu,ArrowUp,ArrowDown,RotateCcw,Compass,Bird,ChevronsUp,UserRoundCog} from 'lucide-react';
 import type {GameHUDProps} from './GameHUD';
 import {floatingInput,floatingStickOrigin,EXPLORE_PACE_LABEL,type ExplorePace} from '../game/exploreControls';
 import navigation from '../data/ambleside-navigation.json';
@@ -59,6 +59,7 @@ export function ExploreHUD(p:GameHUDProps){
    <button type="button" aria-label="Pause and settings menu" onClick={p.onPause} className={control+' h-12 w-12 rounded-xl'}><Menu size={23}/></button></div>
   </div>
   {p.waypoint&&!hud.insideShop&&<button type="button" aria-label="Clear waypoint" onClick={p.onClearWaypoint} className="absolute top-[112px] left-3 pointer-events-auto max-w-[65vw] rounded-lg bg-slate-950/75 px-2.5 py-1.5 text-left text-xs text-cyan-200"><span className="block truncate">◆ {p.waypoint.name} · {mapDistance({x:hud.playerX,z:hud.playerZ},p.waypoint)}</span><span className="text-[9px] opacity-70">Direct distance · tap to clear</span></button>}
+  {hud.characterSwitch&&<button type="button" data-testid="character-switch" title={'Play as '+hud.characterSwitch.target} aria-label={'Play as '+hud.characterSwitch.target} className="pointer-events-auto absolute z-20 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-teal-200 bg-slate-950/85 text-teal-100 shadow-lg active:bg-teal-500" style={{left:hud.characterSwitch.x+'%',top:hud.characterSwitch.y+'%'}} onClick={()=>{clear();p.onSwitchCharacter()}}><UserRoundCog size={22}/></button>}
   {hud.actionCallout&&<div className="absolute left-1/2 top-28 max-w-[70%] -translate-x-1/2 rounded-lg bg-slate-950/75 px-3 py-2 text-xs text-white">{hud.actionCallout}</div>}
   {touch&&<div ref={zoneRef} role="group" aria-label="Floating movement joystick" data-testid="floating-joystick-zone" className="pointer-events-auto absolute left-0 top-1/2 bottom-0 w-1/2 touch-none"
    onPointerDown={e=>{if(active.current||e.button!==0)return;const rect=e.currentTarget.getBoundingClientRect();const hit=floatingStickOrigin(rect,{x:e.clientX,y:e.clientY},55);if(!hit)return;e.preventDefault();e.stopPropagation();active.current={id:e.pointerId,...hit.input};setOrigin(hit.visual);setStick({dx:0,dy:0});e.currentTarget.setPointerCapture(e.pointerId);}}
@@ -68,7 +69,7 @@ export function ExploreHUD(p:GameHUDProps){
       <div className="pointer-events-none h-12 w-12 rounded-full border border-white/70 bg-white/40 shadow-md" style={{transform:'translate('+(stick?.dx??0)+'px,'+(stick?.dy??0)+'px)'}}/>
     </div>
   </div>}
-  {!touch&&<div className="absolute bottom-4 left-4 rounded-lg bg-slate-950/60 p-2 text-xs text-white">WASD · drag to look · Shift boost · 1 / 2 / 3 pace · Space jump/up · Q down · F fly · E interact</div>}
+  {!touch&&<div className="absolute bottom-4 left-4 rounded-lg bg-slate-950/60 p-2 text-xs text-white">WASD · drag to look · Shift boost · 1 / 2 / 3 pace · Space jump/up · Q down · F fly · E interact · C switch character</div>}
   <div className="absolute flex flex-col items-end gap-2" style={{right:'max(14px, env(safe-area-inset-right))',bottom:'calc(max(16px, env(safe-area-inset-bottom)) + 4px)'}}>
    {hud.canTalkAttendant&&<button type="button" data-testid="talk-boat-attendant" className="pointer-events-auto rounded-xl bg-teal-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={()=>{clear();p.onTalkAttendant()}}>Talk to boat attendant</button>}
    {(hud.canEnterShop||hud.insideShop)&&<button type="button" className="pointer-events-auto rounded-xl bg-teal-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={p.onShopDoor}>{hud.insideShop?'Leave shop':'Enter shop'}</button>}
@@ -88,6 +89,6 @@ export function ExploreHUD(p:GameHUDProps){
     {touch&&!hud.busMode&&!hud.insideShop&&!hud.flying&&hud.waterMode!=='swimming'&&hud.waterMode!=='rowing'&&<button type="button" aria-label="Jump (tap twice for double jump)" className={control+' h-16 w-16'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
    </div>
   </div>
-  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V29</div>
+  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V30</div>
  </div>;
 }
