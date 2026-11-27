@@ -26,6 +26,8 @@ export interface GameHUDProps {
   onTouchJump: () => void;
   onToggleFlight:()=>void;
   onWaterInteract:()=>void;
+  onBusInteract:()=>void;
+  onBusDrive:()=>void;
   onFlightVertical:(value:number)=>void;
   onTouchSlide: () => void;
   onOpenMap: () => void;

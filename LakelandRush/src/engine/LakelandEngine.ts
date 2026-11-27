@@ -4,6 +4,7 @@ import {SWIM_SPEED,surfaceMode,stepBoat,boatExit,boatContains,type WaterMode} fr
 import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from './rowBoats';
 import {WaterRipples} from './waterRipples';
 import {WaterheadLife} from './waterheadLife';
+import {LakesiderService} from './lakesider';
 import {highestSolid,blocksMove,cameraFraction,WALK_RADIUS,FLIGHT_RADIUS,CAMERA_RADIUS,ROOF_SKIN} from '../game/buildingCollision';
 import { createBlackSheepInterior } from './shopInterior';
 import navigation from '../data/ambleside-navigation.json';
@@ -239,6 +240,7 @@ export class LakelandEngine {
   private waterMode:WaterMode='land';
   private rowBoats:RowBoat[]=[];
   private occupiedBoat:RowBoat|null=null;
+  private busService:LakesiderService|null=null;
   private waterEffectTimer=0;
   private waterRipples:WaterRipples|null=null;
   private waterheadLife:WaterheadLife|null=null;
@@ -454,6 +456,7 @@ export class LakelandEngine {
         return true;
       };
       this.rowBoats=createRowBoats(this.scene,(x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z));
+      this.busService=new LakesiderService(this.scene,(x,z)=>this.walkSurface(x,z),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.12)),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.4)));
       this.waterheadLife=new WaterheadLife(this.scene,(x,z)=>this.region.isInWater(x,z),
         (x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z),
         (x,z)=>!this.region.isInWater(x,z)&&unobstructed(x,z),
@@ -735,7 +738,7 @@ export class LakelandEngine {
 
   public setGameState(next: GameState): void {
     this.gameState = next;
-    if (next === 'title') {this.inShop = false;this.releaseBoat();}
+    if (next === 'title') {this.inShop = false;this.releaseBoat();this.busService?.reset();}
     if (next !== 'playing') {
       this.keysHeld.clear();
       this.virtualSteer = 0;
@@ -771,14 +774,14 @@ export class LakelandEngine {
   }
 
   public toggleFreeFlight():void {
-    if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.occupiedBoat)return;
+    if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.occupiedBoat||this.busService?.mode)return;
     this.waterMode='land';this.flying=!this.flying;this.flightVertical=0;this.playerVy=0;this.exploreJumpPresses=0;this.exploreJumpCount=0;this.coyoteTimer=0;this.isGrounded=false;
     if(this.flying){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.playerHeading;this.playerY=Math.max(this.playerY+2,this.walkSurface(this.playerX,this.playerZ)+3,this.solidTop(this.playerX,this.playerZ,FLIGHT_RADIUS)+1.25);}
     this.setCallout(this.flying?'Free flight':'Landing');this.pushHudSnapshot();
   }
   public setFlightVertical(value:number):void {this.flightVertical=this.flying?THREE.MathUtils.clamp(value,-1,1):0;}
   public triggerTouchJump(): void {
-    if(this.gameState!=='playing'||this.inShop||this.flying||this.waterMode!=='land')return;
+    if(this.gameState!=='playing'||this.inShop||this.flying||this.waterMode!=='land'||this.busService?.mode)return;
     this.sound.unlock();
     if(this.activeRoute.mode==='freeroam'){
       // Preserve two distinct taps even when both arrive between animation frames.
@@ -852,7 +855,7 @@ export class LakelandEngine {
     return !this.rowBoats.some(b=>b!==this.occupiedBoat&&boatContains(b,b.kind,x,z));
   }
   private nearbyBoat():RowBoat|null{
-    if(this.flying||this.inShop||this.occupiedBoat||this.activeRoute.mode!=='freeroam'||this.playerY>1.8)return null;
+    if(this.flying||this.inShop||this.occupiedBoat||this.busService?.mode||this.activeRoute.mode!=='freeroam'||this.playerY>1.8)return null;
     return this.rowBoats.filter(b=>Math.hypot(b.x-this.playerX,b.z-this.playerZ)<3.4).sort((a,b)=>Math.hypot(a.x-this.playerX,a.z-this.playerZ)-Math.hypot(b.x-this.playerX,b.z-this.playerZ))[0]??null;
   }
   private releaseBoat():void{if(this.occupiedBoat)this.occupiedBoat.speed=0;this.occupiedBoat=null;this.waterMode='land';this.waterEffectTimer=0;}
@@ -877,9 +880,25 @@ export class LakelandEngine {
     this.waterEffectTimer-=dt;if(Math.abs(b.speed)>.15&&this.waterEffectTimer<=0){this.waterEffectTimer=.18;const motor=b.kind==='motorboat',stern=motor?2.8:1.7;const wx=b.x+Math.sin(b.yaw)*stern,wz=b.z+Math.cos(b.yaw)*stern;this.waterRipples?.emit(wx,wz,motor?2.0:1.35,.48,b.yaw);if(motor&&this.region.isInWater(wx,wz))this.emitParticles(wx,.05,wz,2,0xe1edf0,.55);for(const oar of b.oars){const tip=oar.localToWorld(new THREE.Vector3(Math.sign(oar.position.x)*1.5,0,0));if(tip.y<.25&&this.region.isInWater(tip.x,tip.z))this.waterRipples?.emit(tip.x,tip.z,.48);}}
     this.sound.setShoreFactor(1);this.sound.setGameplayState(true,0,false);this.updateChaseCamera(dt,this.exploreSpeed);void this.updateChunkStreaming(b.x,b.z,false);this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
   }
+  private canBoardBus(){return !this.flying&&!this.inShop&&!this.occupiedBoat&&this.waterMode==='land'&&this.activeRoute.mode==='freeroam'&&!!this.busService?.nearby(this.playerX,this.playerZ,this.playerY);}
+  public interactBus():boolean{
+    const bus=this.busService;if(!bus||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam')return false;
+    if(bus.mode){const q=bus.leave();if(!q){this.setCallout('Stop the bus before leaving');return true;}this.playerX=q.x;this.playerZ=q.z;this.playerY=Math.max(.45,this.walkSurface(q.x,q.z))+.04;this.setCallout('Left bus');}
+    else{if(!this.canBoardBus()||!bus.board(this.playerX,this.playerZ,this.playerY))return false;this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=bus.seat!.yaw;this.setCallout('599 · Upper deck passenger');}
+    this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.playerVy=0;this.exploreSpeed=0;this.pushHudSnapshot();return true;
+  }
+  public takeBusWheel(){if(this.busService?.takeWheel()){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.busService.seat!.yaw;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.setCallout('Driver · throttle and steer');this.pushHudSnapshot();}else this.setCallout('Take the wheel when stopped');}
+  private updateBus(dt:number,steer:number){
+    const bus=this.busService!;const old=bus.seat!;bus.update(dt,this.playerX,this.playerZ,this.exploreThrottle(),steer);const p=bus.seat!;
+    this.exploreYaw+=Math.atan2(Math.sin(p.yaw-old.yaw),Math.cos(p.yaw-old.yaw));
+    this.playerX=p.x;this.playerY=p.y;this.playerZ=p.z;this.playerHeading=p.yaw;this.exploreSpeed=Math.abs(bus.speed);this.totalDistanceM+=Math.hypot(p.x-old.x,p.z-old.z);
+    this.runner.root.position.set(p.x,p.y,p.z);this.runner.root.rotation.y=p.yaw;animateRunnerRig(this.runner,{stridePhase:0,speedMps:0,isAirborne:false,isSliding:false,isGrinding:false,steerTilt:0,squashY:1,time:this.elapsedTime,dt,waterMode:'rowing'});
+    this.runner.root.visible=bus.mode==='passenger';this.sound.setGameplayState(true,0,false);this.updateChaseCamera(dt,this.exploreSpeed);void this.updateChunkStreaming(p.x,p.z,false);
+    this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
+  }
   private nearShopDoor(): boolean {
     const stop = navigation.stops.find(place => place.id === 'black-sheep')!;
-    return this.activeRoute.mode === 'freeroam' && !this.flying && this.waterMode==='land'
+    return this.activeRoute.mode === 'freeroam' && !this.flying && !this.busService?.mode && this.waterMode==='land'
       && Math.hypot(this.playerX - stop.spawn[0], this.playerZ - stop.spawn[1]) < 6;
   }
 
@@ -928,7 +947,7 @@ export class LakelandEngine {
 
   private prepareRoute(route: RouteDefinition, prevRecord?: RouteRecord): void {
     this.prevRecord = prevRecord;
-    this.releaseBoat();this.inShop = false;
+    this.releaseBoat();this.busService?.reset();this.inShop = false;
     this.exploreYaw = 0;
     this.explorePitch = 0;
     this.exploreSpeed = 0;
@@ -1353,6 +1372,7 @@ export class LakelandEngine {
 
     for(const b of this.rowBoats)if(b!==this.occupiedBoat)animateBoat(b,this.elapsedTime,dt,false);
     this.updateAmbientActors(dt);
+    if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
     this.waterheadLife?.update(dt,this.playerX,this.playerZ);
     this.waterRipples?.update(dt);
     this.updateParticles(dt);
@@ -1435,6 +1455,7 @@ export class LakelandEngine {
     }
 
     if(this.occupiedBoat){this.updateRowing(dt,steer);return;}
+    if(this.busService?.mode){this.updateBus(dt,steer);return;}
 
     // Optional Auto-Pilot assist
     if (this.settings.autoPilot && this.activeRoute.mode === 'sprint') {
@@ -1550,7 +1571,7 @@ export class LakelandEngine {
       const oldX=this.playerX,oldZ=this.playerZ;
       const blocked=(x:number,z:number)=>{
         if(this.waterMode==='swimming'&&this.region.isInWater(x,z)&&this.deckHeightAt(x,z)>-Infinity)return true;
-        return blockedBuilding(x,z);
+        return blockedBuilding(x,z)||!!this.busService?.blocks(x,z,this.playerY);
       };
       const next=sweepMove(oldX,oldZ,move.x*maxSpeed*dt,move.z*maxSpeed*dt,blocked);
       this.playerX=next.x;this.playerZ=next.z;
@@ -1831,7 +1852,7 @@ export class LakelandEngine {
         this.playerZ - Math.cos(lookHeading));
       return;
     }
-    const backDist = roaming ? (this.occupiedBoat?6.8:this.flying?7.2:5.4) : 5.2 + (speedMps / 32) * 1.4;
+    const backDist = roaming ? (this.busService?.mode?10:this.occupiedBoat?6.8:this.flying?7.2:5.4) : 5.2 + (speedMps / 32) * 1.4;
     const dropFactor = this.skyDropTimer > 0 ? this.skyDropTimer / 0.85 : 0;
     const height = 2.45 + dropFactor * dropFactor * 14.0;
 
@@ -1845,7 +1866,7 @@ export class LakelandEngine {
       const pitch=THREE.MathUtils.clamp(this.explorePitch,-.65,.65);
       desiredX=this.playerX-fx*backDist*Math.cos(pitch);
       desiredZ=this.playerZ-fz*backDist*Math.cos(pitch);
-      desiredY=this.playerY+(this.occupiedBoat?2.8:this.flying?3.1:2.0)-backDist*Math.sin(pitch);
+      desiredY=this.playerY+(this.busService?.mode?5.0:this.occupiedBoat?2.8:this.flying?3.1:2.0)-backDist*Math.sin(pitch);
       // Use the same real roof envelope for camera clearance. The sweep samples
       // every 12cm instead of skipping large portions of the camera boom.
       const origin={x:this.playerX,y:this.playerY+1.5,z:this.playerZ};
@@ -1978,7 +1999,7 @@ export class LakelandEngine {
       exploreWalkPace: this.explorePace==='walk',
       explorePace: this.explorePace,
       flying:this.flying,
-      waterMode:this.waterMode,canBoardBoat:!!this.nearbyBoat(),boatKind:(this.occupiedBoat??this.nearbyBoat())?.kind,
+      waterMode:this.waterMode,canBoardBoat:!!this.nearbyBoat(),boatKind:(this.occupiedBoat??this.nearbyBoat())?.kind,busMode:this.busService?.mode??undefined,canBoardBus:this.canBoardBus(),canDriveBus:this.busService?.canDrive,
       cleanExploreMode: !this.exploreLabels,
       insideShop: this.inShop,
       canEnterShop: this.nearShopDoor(),
@@ -2017,7 +2038,8 @@ export class LakelandEngine {
       if(firstPress&&e.code==='Digit3')this.setExplorePace('sprint');
       if(firstPress&&e.code==='KeyC')this.recenterExploreCamera();
       if(firstPress&&e.code==='KeyF')this.toggleFreeFlight();
-      if (firstPress && e.code === 'KeyE' && !this.interactWater()) this.toggleShop();
+      if (firstPress && e.code === 'KeyE' && !this.interactBus() && !this.interactWater()) this.toggleShop();
+      if(firstPress&&e.code==='KeyG')this.takeBusWheel();
       if (firstPress && e.code === 'KeyV') this.toggleExploreView();
       if (firstPress && e.code === 'Space' && !this.inShop && !this.flying) this.triggerTouchJump();
       return;
@@ -2118,7 +2140,7 @@ export class LakelandEngine {
     this.waterMesh?.geometry.dispose();
     this.materials?.waterUniforms.shoreMap.value?.dispose();
     this.materials?.weatheredDeck.dispose();
-    this.waterheadLife?.dispose();this.waterRipples?.dispose();disposeBoats(this.rowBoats);this.shop?.dispose();
+    this.busService?.dispose();this.waterheadLife?.dispose();this.waterRipples?.dispose();disposeBoats(this.rowBoats);this.shop?.dispose();
     this.textures?.dispose();
     this.sound.dispose();
     this.renderer?.dispose();

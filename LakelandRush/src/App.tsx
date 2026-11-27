@@ -415,6 +415,8 @@ export default function App() {
           onTouchJump={() => engineRef.current?.triggerTouchJump()}
           onToggleFlight={()=>engineRef.current?.toggleFreeFlight()}
           onWaterInteract={()=>engineRef.current?.interactWater()}
+          onBusInteract={()=>engineRef.current?.interactBus()}
+          onBusDrive={()=>engineRef.current?.takeBusWheel()}
           onFlightVertical={value=>engineRef.current?.setFlightVertical(value)}
           onTouchSlide={() => engineRef.current?.triggerTouchSlide()}
           onOpenMap={openTravelMap}
