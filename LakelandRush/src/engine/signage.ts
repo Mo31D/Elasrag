@@ -3,12 +3,13 @@ import type { LakeData, TerrainGridData, WorldChunkData } from '../types/game';
 import { isPointInLake, sampleTerrainHeight } from '../geo/projection';
 import { planRoadSigns,frontageAnchor,approachAnchor } from '../geo/signagePlan';
 import { classifyBuilding } from '../geo/placeIdentity';
+import type { FacadePlan } from '../geo/facadePlan';
 import buildingAssets from '../data/building-assets.json';
 import { TRANSIT } from '../data/transit';
 import navigation from '../data/ambleside-navigation.json';
 import inventory from '../data/ambleside-business-inventory.json';
 
-export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,lake:LakeData|null) {
+export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,lake:LakeData|null, facadePlans:ReadonlyMap<number,FacadePlan>=new Map()) {
   const group=new THREE.Group();
   group.name='World signage and place identities';
   const geometries:THREE.BufferGeometry[]=[];
@@ -79,7 +80,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   }
   // Original text-only frontage plaques on approximate public/commercial building geometry.
   // Do not alter custom authored landmark models.
-  const frontageBuildings=chunk.buildings.filter(b=>['shop','food','hotel','fuel','supermarket','rail'].includes(classifyBuilding(b)||'')&&!assetIds.has(b.id)&&inChunk(b.cx,b.cz)).slice(0,70);
+  const frontageBuildings=chunk.buildings.filter(b=>!facadePlans.has(b.id)&&['shop','food','hotel','fuel','supermarket','rail'].includes(classifyBuilding(b)||'')&&!assetIds.has(b.id)&&inChunk(b.cx,b.cz)).slice(0,70);
   for(const b of frontageBuildings){
     const anchor=frontageAnchor(b,chunk.roads);
     if(!anchor||!b.name)continue;
@@ -88,6 +89,14 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
     const mat=new THREE.MeshBasicMaterial({map:texture,toneMapped:false});materials.push(mat);
     const mesh=new THREE.Mesh(geom,mat);mesh.position.set(anchor.x,ground(b.cx,b.cz)+Math.min(2.55,Math.max(1.5,b.h-2.1)),anchor.z);
     mesh.rotation.y=anchor.yaw;mesh.name='frontage-'+b.id;mesh.visible=false;plaques.push(mesh);group.add(mesh);
+  }
+  for(const [id,plan] of facadePlans){
+    const a=plan.sign;if(!a||a.width<.3||a.height<.15||!inChunk(a.x,a.z))continue;
+    const {texture}=artwork([a.name],'facade');
+    const geom=new THREE.PlaneGeometry(a.width,a.height);geometries.push(geom);
+    const mat=new THREE.MeshBasicMaterial({map:texture,toneMapped:false});materials.push(mat);
+    const mesh=new THREE.Mesh(geom,mat);mesh.position.set(a.x,a.y,a.z);mesh.rotation.y=a.yaw;
+    mesh.name='facade-sign-'+id;mesh.visible=false;plaques.push(mesh);group.add(mesh);
   }
   function label(name:string,x:number,z:number,height:number) {
     const {texture,ratio}=artwork([name],'label');
