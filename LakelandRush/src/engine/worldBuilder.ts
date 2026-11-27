@@ -19,7 +19,7 @@ import { buildFacadeBatch } from './facades';
 import { buildCoffeeShop } from './coffeeShop';
 import {buildBlackSheepStreetFacade} from './blackSheepStreet';
 import {buildLibraryFacade,buildLibraryBusShelters} from './libraryBusStop';
-import {LIBRARY_ID,LIBRARY_NEIGHBOURS,KELSICK_CHUNK,busStopPavements,busStopBay,SHELTERS,kelsickZ} from '../geo/libraryBusStop';
+import {LIBRARY_ID,LIBRARY_NEIGHBOURS,KELSICK_CHUNK,KELSICK_CHUNKS,isShelterFootprint,busStopPavements,busStopBay,sheltersForChunk,kelsickZ} from '../geo/libraryBusStop';
 import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow,lakeRoadKerbs,lakeRoadPavingJoints,lakeRoadDrainCentres,usesReferenceStreetBuilding,referenceStreetBuilding} from '../geo/blackSheepStreet';
 import {buildPetShop} from './petShop';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
@@ -704,6 +704,7 @@ export function buildChunkGroup(
   const surfaceSamplers:Array<(x:number,z:number)=>number|undefined>=[];
 
   for (const b of chunk.buildings) {
+    if(isShelterFootprint(b.id))continue; // replaced by open glazed shelters, not solid cottages
     const street=chunk.key===BLACK_SHEEP_STREET_CHUNK&&usesReferenceStreetBuilding(b.id);
     // Reference-authored streets replace legacy GLB assets instead of layering over them.
     const library=chunk.key===KELSICK_CHUNK&&(b.id===LIBRARY_ID||LIBRARY_NEIGHBOURS.some(id=>id===b.id));
@@ -1132,17 +1133,17 @@ export function buildChunkGroup(
     group.add(trunks, crowns);
   }
 
-  if(chunk.key===KELSICK_CHUNK){
-    const shelters=buildLibraryBusShelters(surfaceGround);group.add(shelters.group);customBuildings.push(shelters);
+  if(KELSICK_CHUNKS.includes(chunk.key)){
+    const shelters=buildLibraryBusShelters(surfaceGround,chunk.key);group.add(shelters.group);customBuildings.push(shelters);
     const paving=materials.footpath.clone();paving.color.set(0xa9a59b);streetMaterials.push(paving);
     const paint=new THREE.MeshStandardMaterial({color:0xc7ab58,roughness:.96,side:THREE.DoubleSide});streetMaterials.push(paint);
-    addBatch(busStopPavements().map(p=>groundSurface(p,surfaceGround,.205,true)),paving,false,true);
-    addBatch(busStopBay().map(p=>groundSurface(p,surfaceGround,.145,true)),paint,false);
+    addBatch(busStopPavements(chunk.key).map(p=>groundSurface(p,surfaceGround,.205,true)),paving,false,true);
+    addBatch(busStopBay(chunk.key).map(p=>groundSurface(p,surfaceGround,.145,true)),paint,false);
     const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=256;
     const ctx=canvas.getContext('2d')!;ctx.clearRect(0,0,1024,256);ctx.fillStyle='#cbb36a';ctx.font='bold 178px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('BUS STOP',512,128,980);
     const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;
     const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1});streetMaterials.push(mat);
-    for(const s of SHELTERS){
+    for(const s of sheltersForChunk(chunk.key)){
       const x=s.x,z=kelsickZ(x)-3.12,y=Math.max(.42,surfaceGround(x,z))+.157;
       const geo=new THREE.PlaneGeometry(4.6,1.12);geo.rotateX(-Math.PI/2);disposables.push(geo);
       const marking=new THREE.Mesh(geo,mat);marking.position.set(x,y,z);marking.rotation.y=Math.atan2(kelsickZ(x-1)-kelsickZ(x+1),2);group.add(marking);
