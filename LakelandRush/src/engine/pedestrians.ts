@@ -14,7 +14,7 @@ export class PedestrianWorld{
  readonly attendant:BoatAttendant;
  private people:Person[]=[];private geos=new Set<THREE.BufferGeometry>();private mats=new Set<THREE.Material>();private materialCache=new Map<number,THREE.MeshStandardMaterial>();private time=0;
  private boxGeo=new THREE.BoxGeometry(1,1,1);private sphereGeo=new THREE.SphereGeometry(1,10,7);
- constructor(private scene:THREE.Scene,private ground:(x:number,z:number)=>number,private clear:Clear){
+ constructor(private scene:THREE.Scene,private ground:(x:number,z:number)=>number,private clear:Clear,private dogClear:Clear=clear){
   this.attendant=new BoatAttendant(scene,ground,clear);
   this.geos.add(this.boxGeo);this.geos.add(this.sphereGeo);
   const shore=realm.sidewalk.filter(p=>p.id===121559793||p.id===339185882||p.id===1567958533||p.id===1567958538);
@@ -35,7 +35,7 @@ export class PedestrianWorld{
     if(i%6===2)this.mesh(root,false,0x967252,.34,.68,.01,.23,.29,.19);
     this.scene.add(root);root.position.set(s.x,Math.max(.45,this.ground(s.x,s.z)),s.z);root.visible=false;
     const person:Person={root,head,arms,legs,route,distance,dir:i%2?1:-1,speed:.78+(i%5)*.12,phase:i*.91,pause:i%4===0?3:0,kind:i%4,x:s.x,z:s.z,yaw:Math.atan2(-s.tx,-s.tz),offset:0,yieldTime:0};
-    if(i%5===1||i===6)person.dog=this.makeDog(i,s.x,s.z);
+    if((i%5===1||i===6)&&this.dogClear(s.x,s.z))person.dog=this.makeDog(i,s.x,s.z);
     this.people.push(person);
    }
   }
@@ -54,7 +54,7 @@ export class PedestrianWorld{
  update(dt:number,playerX:number,playerZ:number,playerY:number,busBlocked:(x:number,z:number)=>boolean,forecast:readonly VehicleForecast[]=[]){
   this.time+=dt;this.attendant.update(dt,playerX,playerZ,playerY);
   for(const p of this.people){
-   const near=Math.hypot(p.x-playerX,p.z-playerZ)<120;p.root.visible=near;if(p.dog&&!p.dog.root.userData.animalControlled)p.dog.root.visible=p.dog.lead.visible=near;else if(p.dog)p.dog.lead.visible=false;if(!near)continue;
+   const near=Math.hypot(p.x-playerX,p.z-playerZ)<120;p.root.visible=near;if(p.dog&&!p.dog.root.userData.animalControlled)p.dog.root.visible=p.dog.lead.visible=near&&this.dogClear(p.dog.x,p.dog.z);else if(p.dog)p.dog.lead.visible=false;if(!near)continue;
    const playerDist=Math.hypot(p.x-playerX,p.z-playerZ),close=playerDist<1.65&&Math.abs(playerY-p.root.position.y)<2;
    p.pause=Math.max(0,p.pause-dt);
    const n=nextWalkDistance(p.distance,p.dir,p.speed,dt,p.route.totalLength),q=sampleCompiledRoute(p.route,n.distance),base=sampleCompiledRoute(p.route,p.distance);
@@ -65,7 +65,7 @@ export class PedestrianWorld{
    if(!p.yieldTime){p.offset*=Math.exp(-dt*2);}
    q.x+=q.rx*p.offset;q.z+=q.rz*p.offset;
    const crowded=this.people.some(a=>a!==p&&a.root.visible&&Math.hypot(q.x-a.x,q.z-a.z)<.62&&Math.hypot(q.x-a.x,q.z-a.z)<Math.hypot(p.x-a.x,p.z-a.z));
-   let moving=!p.yieldTime&&!close&&!crowded&&this.attendant.distance(q.x,q.z)>.65&&(!p.dog||p.dog.root.userData.animalControlled||Math.hypot(p.x-p.dog.x,p.z-p.dog.z)<2.2)&&p.pause===0&&this.clear(q.x,q.z)&&!busBlocked(q.x,q.z)&&forecastRisk(q.x,q.z,forecast)<.25;
+   let moving=!p.yieldTime&&!close&&!crowded&&this.attendant.distance(q.x,q.z)>.65&&(!p.dog||p.dog.root.userData.animalControlled||!p.dog.root.visible||Math.hypot(p.x-p.dog.x,p.z-p.dog.z)<2.2)&&p.pause===0&&this.clear(q.x,q.z)&&!busBlocked(q.x,q.z)&&forecastRisk(q.x,q.z,forecast)<.25;
    if(moving){p.distance=n.distance;p.dir=n.dir;p.x=q.x;p.z=q.z;p.phase+=dt*p.speed*7;if(n.distance===0||n.distance===p.route.totalLength)p.pause=1.2+p.kind*.5;}
    else if(!p.yieldTime&&!close&&!crowded&&p.pause===0){p.dir=p.dir===1?-1:1;p.pause=.8;}
    const desired=escaping?escapeYaw:p.yieldTime>0?p.yaw:close?Math.atan2(p.x-playerX,p.z-playerZ):Math.atan2(-q.tx*p.dir,-q.tz*p.dir);
@@ -75,19 +75,19 @@ export class PedestrianWorld{
    for(let j=0;j<2;j++){const swing=moving||escaping?Math.sin(p.phase+j*Math.PI)*(escaping?.83:.47):0;p.legs[j].rotation.x=THREE.MathUtils.lerp(p.legs[j].rotation.x,swing,dt*10);p.arms[j].rotation.x=THREE.MathUtils.lerp(p.arms[j].rotation.x,j===1&&wave!==0?wave:-swing*.62,dt*10);}
    p.head.rotation.y=p.yieldTime>0?Math.sin(this.time*2)*.35:p.kind===2&&!moving?Math.sin(this.time*.5+p.phase)*.55:0;
    if(p.dog&&!p.dog.root.userData.animalControlled){const d=p.dog,tx=p.x+Math.cos(p.yaw)*1.0+Math.sin(p.yaw)*.30,tz=p.z-Math.sin(p.yaw)*1.0+Math.cos(p.yaw)*.30,dx=tx-d.x,dz=tz-d.z,l=Math.hypot(dx,dz);
-    if(l>.12){const step=Math.min(l,dt*(p.yieldTime>0?3.5:1.55)),x=d.x+dx/l*step,z=d.z+dz/l*step;if(this.clear(x,z)&&(!busBlocked(x,z)||forecastRisk(x,z,forecast)<forecastRisk(d.x,d.z,forecast))){d.x=x;d.z=z;d.yaw=Math.atan2(-dx,-dz);d.phase+=dt*10;}}
-    d.root.position.set(d.x,Math.max(.45,this.ground(d.x,d.z)),d.z);d.root.rotation.y=d.yaw;
+    if(l>.12){const step=Math.min(l,dt*(p.yieldTime>0?3.5:1.55)),x=d.x+dx/l*step,z=d.z+dz/l*step;if(this.clear(x,z)&&this.dogClear(x,z)&&(!busBlocked(x,z)||forecastRisk(x,z,forecast)<forecastRisk(d.x,d.z,forecast))){d.x=x;d.z=z;d.yaw=Math.atan2(-dx,-dz);d.phase+=dt*10;}}
+    d.root.position.set(d.x,Math.max(.45,this.ground(d.x,d.z)),d.z);d.root.rotation.y=d.yaw;d.root.visible=d.lead.visible=this.dogClear(d.x,d.z)&&Math.hypot(p.x-d.x,p.z-d.z)<3.5;
     for(let j=0;j<4;j++)d.legs[j].rotation.x=l>.15?Math.sin(d.phase+(j%2)*Math.PI+(j>1?Math.PI:0))*(p.yieldTime>0?.72:.45):0;d.tail.rotation.y=Math.sin(this.time*7+d.phase)*.42;
     const pos=d.lead.geometry.getAttribute('position'),hx=p.x+Math.cos(p.yaw)*.32,hz=p.z-Math.sin(p.yaw)*.32,hy=p.root.position.y+.86,dy=d.root.position.y+.50*d.root.scale.y;
     pos.setXYZ(0,hx,hy,hz);pos.setXYZ(1,(hx+d.x)/2,(hy+dy)/2-.17,(hz+d.z)/2);pos.setXYZ(2,d.x,dy,d.z);pos.needsUpdate=true;
    }
   }
  }
- vulnerablePositions(){const out:{x:number;z:number}[]=[];if(this.attendant.stationVisible)out.push({x:ATTENDANT_STATION.x,z:ATTENDANT_STATION.z});for(const p of this.people){if(!p.root.visible)continue;out.push({x:p.x,z:p.z});if(p.dog&&!p.dog.root.userData.animalControlled)out.push({x:p.dog.x,z:p.dog.z});}return out;}
- distanceToNearest(x:number,z:number){let d=this.attendant.distance(x,z);for(const p of this.people){if(!p.root.visible)continue;d=Math.min(d,Math.hypot(x-p.x,z-p.z));if(p.dog&&!p.dog.root.userData.animalControlled)d=Math.min(d,Math.hypot(x-p.dog.x,z-p.dog.z));}return d;}
+ vulnerablePositions(){const out:{x:number;z:number}[]=[];if(this.attendant.stationVisible)out.push({x:ATTENDANT_STATION.x,z:ATTENDANT_STATION.z});for(const p of this.people){if(!p.root.visible)continue;out.push({x:p.x,z:p.z});if(p.dog&&p.dog.root.visible&&!p.dog.root.userData.animalControlled)out.push({x:p.dog.x,z:p.dog.z});}return out;}
+ distanceToNearest(x:number,z:number){let d=this.attendant.distance(x,z);for(const p of this.people){if(!p.root.visible)continue;d=Math.min(d,Math.hypot(x-p.x,z-p.z));if(p.dog&&p.dog.root.visible&&!p.dog.root.userData.animalControlled)d=Math.min(d,Math.hypot(x-p.dog.x,z-p.dog.z));}return d;}
  near(x:number,z:number,r=.65){return this.distanceToNearest(x,z)<r;}
  hide(){this.attendant.hide();for(const p of this.people){p.root.visible=false;if(p.dog)p.dog.root.visible=p.dog.lead.visible=false;}}
- threats():Threat[]{const out:Threat[]=[];if(this.attendant.stationVisible)out.push({x:ATTENDANT_STATION.x,z:ATTENDANT_STATION.z,radius:3.4});for(const p of this.people){if(!p.root.visible)continue;out.push({x:p.x,z:p.z,radius:3.4});if(p.dog&&!p.dog.root.userData.animalControlled)out.push({x:p.dog.x,z:p.dog.z,radius:6});}return out;}
+ threats():Threat[]{const out:Threat[]=[];if(this.attendant.stationVisible)out.push({x:ATTENDANT_STATION.x,z:ATTENDANT_STATION.z,radius:3.4});for(const p of this.people){if(!p.root.visible)continue;out.push({x:p.x,z:p.z,radius:3.4});if(p.dog&&p.dog.root.visible&&!p.dog.root.userData.animalControlled)out.push({x:p.dog.x,z:p.dog.z,radius:6});}return out;}
  selectableAnimals(){return this.people.flatMap(p=>p.dog?[{root:p.dog.root,kind:'dog' as const,pose:(t:number,s:number,wet:boolean,air:boolean,feed:boolean)=>{const d=p.dog!;for(let j=0;j<4;j++)d.legs[j].rotation.x=s>.05?Math.sin(t*(wet?10:8)+(j%2)*Math.PI+(j>1?Math.PI:0))*.6:0;d.tail.rotation.y=Math.sin(t*7)*.4;d.root.rotation.x=feed?-.13:0;}}]:[]);}
  dispose(){this.attendant.dispose();for(const p of this.people){p.root.removeFromParent();p.dog?.root.removeFromParent();p.dog?.lead.removeFromParent();}this.geos.forEach(g=>g.dispose());this.mats.forEach(m=>m.dispose());}
 }
