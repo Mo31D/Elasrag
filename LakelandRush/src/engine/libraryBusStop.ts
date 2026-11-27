@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import type {BuildingFeature} from '../types/game';
 import type {Ground} from '../geo/surfaceGround';
-import {LIBRARY_ID,libraryEdge,SHELTERS,kelsickZ} from '../geo/libraryBusStop';
+import {LIBRARY_ID,libraryEdge,sheltersForChunk,kelsickZ} from '../geo/libraryBusStop';
 type P=[number,number];
 function kit(group:THREE.Group){
  const materials:THREE.Material[]=[],geos:THREE.BufferGeometry[]=[],textures:THREE.Texture[]=[];
@@ -52,10 +52,10 @@ export function buildLibraryFacade(b:BuildingFeature,ground:Ground,wallTop:numbe
  }
  k.flush();return {group,dispose:()=>k.dispose()};
 }
-export function buildLibraryBusShelters(ground:Ground){
+export function buildLibraryBusShelters(ground:Ground,key:string){
  const group=new THREE.Group();group.name='Ambleside bus interchange — two green glazed shelters';
  const disposers:(()=>void)[]=[];
- for(const [i,s] of SHELTERS.entries()){
+ for(const s of sheltersForChunk(key)){
   const root=new THREE.Group();root.position.set(s.x,Math.max(.45,ground(s.x,s.z))+.21,s.z);root.rotation.y=Math.atan2(kelsickZ(s.x+1)-kelsickZ(s.x-1),-2)+Math.PI;group.add(root);
   const k=kit(root),{m,box,rod,label}=k;
   const green=m(0x315b49,.62,.25),dark=m(0x2b3532),seat=m(0x56645b),metal=m(0x9a9f96,.65,.3),cream=m(0xe3e2d6),yellow=m(0xd0af35);
@@ -75,9 +75,9 @@ export function buildLibraryBusShelters(ground:Ground){
   box(L*.69,.085,.37,0,.49,-.44,seat);for(const x of [-L*.27,L*.27])box(.075,.47,.29,x,.25,-.44,dark);
   box(.40,.75,.06,L/2-.24,1.48,-.63,cream);label(.35,.66,L/2-.24,1.48,-.59,(ctx,W,H)=>{ctx.fillStyle='#efeee4';ctx.fillRect(0,0,W,H);ctx.fillStyle='#315b49';ctx.fillRect(0,0,W,H*.17);ctx.font='bold '+Math.round(H*.09)+'px Arial';ctx.fillStyle='#fff';ctx.textAlign='center';ctx.fillText('BUS TIMES',W/2,H*.12);ctx.fillStyle='#72796e';for(let j=0;j<13;j++)ctx.fillRect(W*.10,H*(.23+j*.052),W*.80,H*.012);});
   box(.06,2.75,.06,L/2+.36,1.375,.54,metal);box(.32,.43,.075,L/2+.36,2.46,.54,cream);
-  label(.30,.38,L/2+.36,2.46,.59,(ctx,W,H)=>{ctx.fillStyle='#e9ebe1';ctx.fillRect(0,0,W,H);ctx.fillStyle='#38634b';ctx.fillRect(0,0,W,H*.22);ctx.fillStyle='#263a33';ctx.textAlign='center';ctx.font='bold '+Math.round(H*.16)+'px Arial';ctx.fillText('BUS STOP',W/2,H*.43,W*.92);ctx.fillText('Stand '+(i+1),W/2,H*.72);});
+  label(.30,.38,L/2+.36,2.46,.59,(ctx,W,H)=>{ctx.fillStyle='#e9ebe1';ctx.fillRect(0,0,W,H);ctx.fillStyle='#38634b';ctx.fillRect(0,0,W,H*.22);ctx.fillStyle='#263a33';ctx.textAlign='center';ctx.font='bold '+Math.round(H*.16)+'px Arial';ctx.fillText('BUS STOP',W/2,H*.43,W*.92);ctx.fillText('Stand '+s.stand,W/2,H*.72);});
   // Parking information board beside shelter, no fabricated current tariffs.
-  if(i===0){for(const x of [L/2+.7,L/2+1.15])box(.055,1.78,.055,x,.89,-.42,dark);box(.57,.84,.08,L/2+.925,1.34,-.42,yellow);label(.51,.76,L/2+.925,1.34,-.37,(ctx,W,H)=>{ctx.fillStyle='#d6b647';ctx.fillRect(0,0,W,H);ctx.fillStyle='#292a24';ctx.textAlign='center';ctx.font='bold '+Math.round(H*.17)+'px Arial';ctx.fillText('PAY',W/2,H*.30);ctx.fillText('HERE',W/2,H*.52);ctx.fillText('↓',W/2,H*.82);});}
+  if(s.stand===1){for(const x of [L/2+.7,L/2+1.15])box(.055,1.78,.055,x,.89,-.42,dark);box(.57,.84,.08,L/2+.925,1.34,-.42,yellow);label(.51,.76,L/2+.925,1.34,-.37,(ctx,W,H)=>{ctx.fillStyle='#d6b647';ctx.fillRect(0,0,W,H);ctx.fillStyle='#292a24';ctx.textAlign='center';ctx.font='bold '+Math.round(H*.17)+'px Arial';ctx.fillText('PAY',W/2,H*.30);ctx.fillText('HERE',W/2,H*.52);ctx.fillText('↓',W/2,H*.82);});}
   k.flush();disposers.push(()=>k.dispose());
  }
  return {group,dispose(){disposers.forEach(f=>f());}};
