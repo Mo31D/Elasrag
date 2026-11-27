@@ -16,7 +16,7 @@ export function findArrival(target:MapTarget,chunks:WorldChunkData[],lake:LakeDa
  const walls=chunks.flatMap(c=>c.walls).flatMap(w=>w.pts.slice(1).map((p,i)=>[w.pts[i],p] as [Point,Point]));
  const clear=(x:number,z:number)=>![[0,0],[.8,0],[-.8,0],[0,.8],[0,-.8]].some(([dx,dz])=>isPointInLake(lake,x+dx,z+dz))&&!buildings.some(p=>pointInRing(x,z,p)||p.some((b,i)=>segmentDistance(x,z,b,p[(i+1)%p.length])<.9))&&!walls.some(([a,b])=>segmentDistance(x,z,a,b)<.9);
  const curated=navigation.stops.find(s=>s.id===target.curatedId);
- if(curated&&clear(curated.spawn[0],curated.spawn[1])){
+ if(curated&&chunks.some(c=>c.cx===Math.floor(curated.spawn[0]/500)&&c.cz===Math.floor(curated.spawn[1]/500))&&clear(curated.spawn[0],curated.spawn[1])){
   const [x,z]=curated.spawn,heading=curated.heading??curated.point;
   return {point:[x,z],heading:Math.hypot(heading[0]-x,heading[1]-z)<.1?[x,z-8]:[heading[0],heading[1]],offset:Math.hypot(x-target.x,z-target.z),method:'curated'};
  }

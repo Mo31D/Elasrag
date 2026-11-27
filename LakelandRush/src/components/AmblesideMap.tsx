@@ -34,14 +34,11 @@ export function AmblesideMap({ lake,onStartShopRoute,...actions }: MapActionsPro
               strokeWidth="9" points={route.points.map(point => point.join(',')).join(' ')} />
           ))}
           {navigation.stops.map(stop => <g key={stop.id}>
-            <circle cx={stop.point[0]} cy={stop.point[1]} r={selected.id === stop.id ? 18 : 12}
-              fill={selected.id === stop.id ? '#fbbf24' : '#f8fafc'} stroke="#0f172a" strokeWidth="4" />
+            <MapMarker x={stop.point[0]} y={stop.point[1]} name={stop.name} r={selected.id===stop.id?18:12} selected={selected.id===stop.id} onSelect={()=>select(fromStop(stop))}/>
             {showLabels && ['bridge-house', 'black-sheep', 'borrans', 'waterhead', 'rothay-park'].includes(stop.id) && (
-              <text x={stop.point[0] + 20} y={stop.point[1] + 8} fill="#e2e8f0" fontSize="25">{stop.name}</text>
+              <text pointerEvents="none" x={stop.point[0] + 20} y={stop.point[1] + 8} fill="#e2e8f0" fontSize="25">{stop.name}</text>
             )}
-            <circle aria-label={stop.name} tabIndex={0} role="button" className="cursor-pointer" fill="transparent"
-              r="27" cx={stop.point[0]} cy={stop.point[1]} onClick={() => select(fromStop(stop))}
-              onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') select(fromStop(stop)); }} />
+
           </g>)}
           {TRANSIT.filter(t => t.mode === 'bus' && t.x>=-510 && t.x<=400 && t.z>=-1880 && t.z<=-140).map(t => <g key={t.id}>
             <MapMarker x={t.x} y={t.z} name={t.name} color="#60a5fa" r={9} selected={selected.id===t.id} onSelect={()=>select({id:t.id,name:t.name,x:t.x,z:t.z,kind:t.mode})}/>
@@ -57,10 +54,10 @@ export function AmblesideMap({ lake,onStartShopRoute,...actions }: MapActionsPro
             onClick={onStartShopRoute}>Start Lakeside Picnic to Black Sheep Shop</button>
         )}
         <DestinationActions {...actions} target={selected}/>
-        <details className="mb-2 rounded-lg border border-blue-400/30 p-2 text-xs text-slate-200"><summary className="cursor-pointer">Bus stops (blue squares)</summary><ul className="mt-2 space-y-1">{TRANSIT.filter(t=>t.mode==='bus'&&t.x>=-510&&t.x<=400&&t.z>=-1880&&t.z<=-140).map(t=><li key={t.id}><button type="button" onClick={()=>select({id:t.id,name:t.name,x:t.x,z:t.z,kind:t.mode})}>{t.name}</button></li>)}</ul></details>
+        <details className="mb-2 rounded-lg border border-blue-400/30 p-2 text-xs text-slate-200"><summary className="cursor-pointer">Bus stops (blue markers)</summary><ul className="mt-2 space-y-1">{TRANSIT.filter(t=>t.mode==='bus'&&t.x>=-510&&t.x<=400&&t.z>=-1880&&t.z<=-140).map(t=><li key={t.id}><button type="button" onClick={()=>select({id:t.id,name:t.name,x:t.x,z:t.z,kind:t.mode})}>{t.name}</button></li>)}</ul></details>
         <div className="grid grid-cols-2 gap-1.5">
           {navigation.stops.map(stop => <button key={stop.id} type="button" aria-pressed={selected.id === stop.id}
-            onClick={() => select(stop)} className="rounded-lg border border-white/15 bg-slate-900 p-2 text-left text-sm text-slate-100 aria-pressed:border-amber-400">
+            onClick={() => select(fromStop(stop))} className="rounded-lg border border-white/15 bg-slate-900 p-2 text-left text-sm text-slate-100 aria-pressed:border-amber-400">
             {stop.name}
           </button>)}
         </div>

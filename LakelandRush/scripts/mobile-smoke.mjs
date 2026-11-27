@@ -34,5 +34,26 @@ try{
  assert.equal(await bird.getAttribute('aria-pressed'),'false');
  assert.equal(await canvas.evaluate(e=>getComputedStyle(e).touchAction),'none');
  await page.screenshot({path:dir+'/ground.png'});
+ await page.getByRole('button',{name:'Open world map'}).click();
+ const local=page.getByLabel('Ambleside and Waterhead approaches');
+ await local.waitFor();
+ const original=await local.getAttribute('viewBox');
+ await page.getByRole('button',{name:'Zoom map in'}).click();
+ assert.notEqual(await local.getAttribute('viewBox'),original);
+ await page.getByRole('button',{name:'Reset map view'}).click();
+ assert.equal(await local.getAttribute('viewBox'),original);
+ await local.getByRole('button',{name:'Bridge House',exact:true}).click();
+ await page.getByRole('button',{name:'Set waypoint',exact:true}).click();
+ await page.getByRole('button',{name:'Clear waypoint',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Windermere basin',exact:true}).click();
+ await page.getByLabel('Windermere basin destinations').getByRole('button',{name:'Windermere',exact:true}).click();
+ await page.getByRole('button',{name:'Set waypoint',exact:true}).click();
+ await page.screenshot({path:dir+'/regional-map.png'});
+ await page.getByRole('button',{name:'Ambleside & Waterhead',exact:true}).click();
+ await page.getByRole('button',{name:'Bridge House',exact:true}).last().click();
+ await page.getByRole('button',{name:'Fast travel',exact:true}).click();
+ await page.getByTestId('fixed-joystick').waitFor({timeout:60000});
+ await page.getByRole('button',{name:'Clear waypoint',exact:true}).waitFor();
+ await page.screenshot({path:dir+'/arrival.png'});
  assert.deepEqual(errors,[],'uncaught browser errors');console.log('PASS: title scroll, fixed joystick, pace labels, camera gesture, flight toggle, altitude buttons, landing control, gameplay gesture CSS');
 }finally{await browser.close();}

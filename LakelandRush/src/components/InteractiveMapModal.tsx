@@ -148,7 +148,7 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
 
               {TRANSIT.filter(t=>t.mode==='rail').map(t=>{
                 const [x,y]=toSvg(t.x,t.z);
-                return <g key={t.id}><title>{t.name}</title><MapMarker x={x} y={y} r={4} color="#60a5fa" name={t.name} selected={regionTarget?.id===t.id} onSelect={()=>setRegionTarget({id:t.id,name:t.name,x:t.x,z:t.z,kind:t.mode,regional:true})}/><text x={x-6} y={y+13} textAnchor="end" fontSize="9" fill="#93c5fd">Windermere Railway Station</text></g>;
+                return <g key={t.id}><title>{t.name}</title><MapMarker x={x} y={y} r={4} color="#60a5fa" name={t.name} selected={regionTarget?.id===t.id} onSelect={()=>setRegionTarget({id:t.id,name:t.name,x:t.x,z:t.z,kind:t.mode,regional:true})}/><text pointerEvents="none" x={x-6} y={y+13} textAnchor="end" fontSize="9" fill="#93c5fd">Windermere Railway Station</text></g>;
               })}
               {/* Real Settlements */}
               {manifest?.settlements.map((s) => {
@@ -165,7 +165,7 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
                 return (
                   <g key={s.id}>
                     <MapMarker x={sx} y={sy} r={s.kind==='town'?4:3} name={s.name} selected={regionTarget?.id===s.id} onSelect={()=>setRegionTarget({id:s.id,name:s.name,x:s.x,z:s.z,kind:s.kind,regional:true,curatedId:s.id==='waterhead'?'waterhead':undefined})}/>
-                    <text
+                    <text pointerEvents="none"
                       x={sx + (placeLeft ? -6 : 6)}
                       y={sy + dy}
                       textAnchor={placeLeft ? 'end' : 'start'}
