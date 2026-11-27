@@ -130,6 +130,8 @@ export class WaterheadLife{
   const wingAngle=glide?.14:amplitude*stroke+.13;
   const dt=attitude?.dt??0,blend=dt>0?1-Math.exp(-dt*18):1;
   const smooth=(current:number,target:number)=>THREE.MathUtils.lerp(current,target,blend);
+  const wingBlend=dt>0?1-Math.exp(-dt*55):1;
+  const wingSmooth=(current:number,target:number)=>THREE.MathUtils.lerp(current,target,wingBlend);
   const bank=attitude?.bank??0,pitch=attitude?.pitch??0;
   b.body.rotation.z=smooth(b.body.rotation.z,air?bank+(glide?Math.sin(t*1.8)*.025:Math.sin(cycle)*.035):Math.sin(t*2)*.025);
   // Local forward is -Z; positive X rotation raises the chest/beak.
@@ -140,9 +142,9 @@ export class WaterheadLife{
    b.feet[j].visible=(!wet&&!air)||(launch&&t<.30)||landing;
    b.feet[j].rotation.x=smooth(b.feet[j].rotation.x,air?(launch?-.65*Math.min(1,t/.26):landing?.35:-.9):s>.05?Math.sin(t*9+j*Math.PI)*.55:0);
    b.wings[j].visible=!air;w.visible=air;
-   w.rotation.set(smooth(w.rotation.x,air?(glide?.04:Math.sin(cycle-.65)*.18):0),smooth(w.rotation.y,air?side*(glide?.10:.08+Math.sin(cycle-.45)*.14):0),smooth(w.rotation.z,air?side*wingAngle:0));
-   tip.rotation.z=smooth(tip.rotation.z,air?side*(glide?-.04:Math.sin(cycle-.9)*.31):0);
-   tip.rotation.y=smooth(tip.rotation.y,air?side*(glide?.04:Math.max(0,-beat)*.24):0);
+   w.rotation.set(wingSmooth(w.rotation.x,air?(glide?.04:Math.sin(cycle-.65)*.18):0),wingSmooth(w.rotation.y,air?side*(glide?.10:.08+Math.sin(cycle-.45)*.14):0),wingSmooth(w.rotation.z,air?side*wingAngle:0));
+   tip.rotation.z=wingSmooth(tip.rotation.z,air?side*(glide?-.04:Math.sin(cycle-.9)*.31):0);
+   tip.rotation.y=wingSmooth(tip.rotation.y,air?side*(glide?.04:Math.max(0,-beat)*.24):0);
    b.wings[j].rotation.z=0;
   }
  }}));}
