@@ -224,9 +224,9 @@ function screen(g,x,y,z,title,bg="#203c50"){const body=add(g,box(1.68,1.08,.10,g
 
 for(const p of ui.projects){const o=setup(p),g=o.group,a=o.accent;
 if(p.id==="hub"){
- // Mo: reference-inspired, fully three-dimensional stylised likeness.
- // All geometry is local to the central exhibit; no photograph billboard or external dependency.
- const coat=mat(0x30342f,.04,.83),lapel=mat(0x42463e,.04,.83),shirtMat=mat(0xddd8cc,0,.89),denim=mat(0x283747,0,.88),skin=mat(0xb77e5b,0,.78),shoe=mat(0x242627,.04,.76),hair=mat(0x211e1d,0,.83),hairLight=mat(0x35312e,0,.87);
+ // Mo v3: photo-projected facial texture on a sculpted, fully 3D head.
+ // The user-supplied portrait is UV-warped; no full-image plane or external dependency.
+ const coat=mat(0x222733,.04,.83),lapel=mat(0x2b303b,.04,.83),shirtMat=mat(0xb2c9e7,0,.89),denim=mat(0x262b36,0,.88),skin=mat(0xb07455,0,.78),shoe=mat(0x242627,.04,.76),hair=mat(0x211e1d,0,.83),hairLight=mat(0x35312e,0,.87);
  const body=g(0,.38,0,0,0,0);
  oval(body,0,1.67,0,.40,.55,.235,coat,32);
  oval(body,0,1.22,0,.295,.22,.20,denim);
@@ -241,7 +241,8 @@ if(p.id==="hub"){
   tapered(body,[side*.49,1.50,.018],[side*.46,1.11,.09],.109,.086,coat);
   tapered(body,[side*.46,1.15,.08],[side*.46,1.09,.09],.09,.085,lapel);
   oval(body,side*.46,1.015,.09,.085,.145,.073,skin);
-  const pocket=add(body,box(.115,.105,.019,lapel),side*.225,1.72,.236);pocket.rotation.z=side*.04;
+  if(side===-1){const pocket=add(body,box(.135,.015,.018,lapel),side*.225,1.78,.245);pocket.rotation.z=-.1;}
+  const collar=shapeMesh([[side*.035,1.91],[side*.106,2.055],[side*.17,2.005],[side*.09,1.865]],.012,shirtMat);collar.position.z=.258;body.add(collar);
   for(let i=0;i<2;i++)add(body,sphere(.012,shoe,10),side*.48,1.19+i*.046,.158);
  }
  for(let i=0;i<3;i++)add(body,sphere(.014,shoe,12),.031,1.39+i*.16,.254);
@@ -249,17 +250,19 @@ if(p.id==="hub"){
  const head=new T.Group();body.add(head);
  // Cross-sections capture the broader forehead, cheekbones, defined jaw and rounded chin.
  const profile=[[2.155,.018,.079,.025],[2.175,.078,.062,.080],[2.215,.134,.044,.130],[2.275,.177,.021,.174],[2.345,.196,.009,.190],[2.415,.217,.002,.195],[2.480,.210,-.005,.187],[2.550,.207,-.008,.186],[2.625,.188,-.012,.172],[2.695,.132,-.012,.123],[2.735,.004,-.012,.004]];
- const rings=58,steps=72,verts=[],colors=[],indices=[];
+ const rings=72,steps=96,verts=[],colors=[],uvs=[],indices=[];
  const baseColor=new T.Color(0xbb825e),beardColor=new T.Color(0x77655b),cheekColor=new T.Color(0xc98b6b);
  function gauss(v,c,w){return Math.exp(-Math.pow((v-c)/w,2))}
  function smoothProfile(y){let k=0;while(k<profile.length-2&&y>profile[k+1][0])k++;const p=profile[k],q=profile[k+1],a=profile[Math.max(0,k-1)],b=profile[Math.min(profile.length-1,k+2)],t=(y-p[0])/(q[0]-p[0]),t2=t*t,t3=t2*t;return [1,2,3].map(j=>{const m0=(q[j]-a[j])/(q[0]-a[0])*(q[0]-p[0]),m1=(b[j]-p[j])/(b[0]-p[0])*(q[0]-p[0]);return (2*t3-3*t2+1)*p[j]+(t3-2*t2+t)*m0+(-2*t3+3*t2)*q[j]+(t3-t2)*m1})}
  for(let i=0;i<=rings;i++){const y=2.155+.58*i/rings,[w,c,d]=smoothProfile(y);
-  for(let j=0;j<=steps;j++){const t=j/steps*Math.PI*2,x=Math.sin(t)*w,front=Math.max(0,Math.cos(t)),ax=Math.abs(x);
+  for(let j=0;j<=steps;j++){const t=j/steps*Math.PI*2-Math.PI,x=Math.sin(t)*w,front=Math.max(0,Math.cos(t)),ax=Math.abs(x);
    const socket=-.021*gauss(ax,.084,.061)*gauss(y,2.457,.027)*front;
    const cheeks=.015*gauss(ax,.128,.065)*gauss(y,2.399,.049)*front;
    const brow=.009*gauss(ax,.087,.068)*gauss(y,2.492,.023)*front;
-   const z=c+Math.cos(t)*d+socket+cheeks+brow;
-   verts.push(x,y,z);
+   const nose=(.026*gauss(x,0,.031)*gauss(y,2.416,.071)+.052*gauss(x,0,.038)*gauss(y,2.368,.030)+.015*gauss(ax,.031,.022)*gauss(y,2.356,.023))*front;
+   const lips=.014*gauss(x,0,.058)*gauss(y,2.315,.024)*front;
+   const z=c+Math.cos(t)*d+socket+cheeks+brow+nose+lips;
+   verts.push(x,y,z);uvs.push(j/steps,i/rings);
    const stubble=front*(.40*gauss(y,2.255,.072)+.23*gauss(y,2.327,.055)*gauss(ax,.155,.062)+.22*gauss(y,2.331,.025)*gauss(ax,.045,.045));
    const grain=.5+.5*Math.sin(i*31.27+j*17.83)*Math.sin(j*7.91-i*4.37);
    const color=baseColor.clone().lerp(cheekColor,.22*gauss(y,2.40,.055)*gauss(ax,.13,.06)*front).lerp(beardColor,Math.min(.56,stubble*(.65+.55*grain)));
@@ -267,42 +270,31 @@ if(p.id==="hub"){
    if(i<rings&&j<steps){const n=i*(steps+1)+j;indices.push(n,n+1,n+steps+1,n+1,n+steps+2,n+steps+1)}
   }
  }
- const faceGeo=new T.BufferGeometry();faceGeo.setAttribute("position",new T.Float32BufferAttribute(verts,3));faceGeo.setAttribute("color",new T.Float32BufferAttribute(colors,3));faceGeo.setIndex(indices);faceGeo.computeVertexNormals();
- add(head,new T.Mesh(faceGeo,new T.MeshStandardMaterial({vertexColors:true,color:0xffffff,roughness:.82,metalness:0})));
- const earInner=mat(0x965c48,0,.86),eyeWhite=mat(0xd0c4b5,0,.57),iris=mat(0x503226,0,.45),pupil=mat(0x17120f,0,.43),lid=mat(0xa16a50,0,.84),lip=mat(0xa96959,0,.83),mouth=mat(0x64423a,0,.85);
+ const faceGeo=new T.BufferGeometry();faceGeo.setAttribute("position",new T.Float32BufferAttribute(verts,3));faceGeo.setAttribute("color",new T.Float32BufferAttribute(colors,3));faceGeo.setAttribute("uv",new T.Float32BufferAttribute(uvs,2));faceGeo.setIndex(indices);faceGeo.computeVertexNormals();
+ const photoTexture=new T.TextureLoader().load("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAsICAoIBwsKCQoNDAsNERwSEQ8PESIZGhQcKSQrKigkJyctMkA3LTA9MCcnOEw5PUNFSElIKzZPVU5GVEBHSEX/2wBDAQwNDREPESESEiFFLicuRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUX/wAARCADwAYADASIAAhEBAxEB/8QAGgABAAMBAQEAAAAAAAAAAAAAAAEDBAIFBv/EAC8QAAICAQMCBQQCAgMBAQAAAAABAhEDBCExEkEFEyJRYTJxgZEGFKGxFUJSgsH/xAAZAQEBAQEBAQAAAAAAAAAAAAAAAgEDBAX/xAAfEQEBAAICAwEBAQAAAAAAAAAAAQIREjEDIUETYVH/2gAMAwEAAhEDEQA/AJAB859YAAAAAAAAAAAAAAAADBEuAK55ekolqmu5VqMvSzC87baW5cxc7k9L+5vyT/b+TyJ5HVo5jqep0+TeLOT2f7dPk7WptcniSzu6ZfhytocWzJ6qz33O/NPNU2i+OS1ROlStTzUFltNmKeSkrO4SflDRtr8wnzDNCTlJv22Dlcq9hprUp2cyzJOkUZcvlw+WYsup6dr37iRlunpeer5LIzs8jFnvd8GzBl6/sLiyZbbkCI7oklYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAET+kkif0sDy9SrbMKwvzU4/k26mXqZxp31TW1nWdON91VkxU189yt6dOf+T0p46tNXHsUuNZUluhtvFjlgum+xqw4aRfPB6NuTrFB9SRNyXMXCx79NcF8cNJe5ase6LFHki1cxYc+K1sdQVw6a3NThdiGNR/JvI4q44+iD9znHD1M0zjsQoUjNt0w6jlyfbg8xpzn92etqI7fizK8FR254OmNc8oytW1FcG3Ty3SXCM849KfuW6faSRtc529aH0ok5h9KOjk7AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARP6WSRP6WB4+r2lZzoU3mRbqodUqLtDp2pLY6W+nOTdb3BPG01yZ3iSadcG9QqO5EoK90qOe3XTJHHZKxtTs09KQ6b3RNq5Fdb2dKOxYodTVHXl0qJ2rSiMdtzpQ3suUOxKgNmlXTbOZJ1suDQ4pHD2u0bKWMGaFyXsVKDcjfKCk79it4krZcqLHnZMNyexXBVnSPReK38GfJj6cqZ0cbGuH0o6OYfSjo5rAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAiXBJEuAM3k9WTiz0dPiSikkZ8Ubkejhg00b2T0hY224/BEoJxVrg0zi8T6q3fJRKa7GX0ue2eUfYmMNt+SxLf4OuneyK6RzGDTu6Oujh2WRS5bO2k1sNDN00zrp7lnTa2FVyZpqpo4cdy9xVlcvjkChw9jmfFF9VyVyW+xUTVUYlOfHav5NcVsyrIrTO3x572rh9JJEdkSc1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGABZgW/wAnpYXS5PPw8mtOo7MojvLJylv+jNKRYu9lcosmukFLY6U6XCKZKVkq9tiFL1NtnXU+LM6cieuV7mtXOQUr5K1O+zF12Yaue3crciU1Xcrk1WyYYly7HFo5dshWbGV1dL7lb4OnujhnT445duASQQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASQSBdhqzS6SpFGFF6Xsa2OeSOS1Y7XBxkcYbt0jNN256W+B0tLgjHqcEnSyR/ZanFuupMzjVTKIUNrJUU9ielo66XyNKlc+WT5dFkVaOvLM01ncSuUfc0zjRw4pcIDNKDXCOGnZqaVbnDh3oqJqmiuRfJFM+S641WQSQQ0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACVyQSuQNON0uC/Gm2qRTjVxruacuSOlxp1u1+ipGb0q1+sjosDfL4PldV4jLPNrqfR3VGnWT/ALmV1KWz4Gm8OVN5E39zrNRxu8unj5PEo4H6JS+3Ah/Ickdm3fZs9uXgWmyvqnFWVZP47o6uUEpfDornin88/jNpf5LlgvVcq9+KPZ0f8jw6l9MouNL9niZPAMEX1QnOL+HsNPoVjyQT3Sf2sy3Cqn6Yvs8OeOaHVB7FuPKpPZHlaRy6Ki6XB6WGKikn+zhdberC3Xt1Oa8zpvsU5dXgxxblOKr5M2tn0Sk+qrR8zq8Wo1NqF9Le7borHGXtGednT6B+NaRyaTuu5XPxnB/1kmvvwfI5tBr5enHjVL2fJXDw7xGOzwzv4dnaY4vNl5M/8fXLxjFN7ppdn2LoZY5o9UXaPmMOn1WnXTlxt3v9j2NHKUUk7V9mTnJOlYZW9t5ABwdwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJXJBK5A2YHT6n2MWszSyT36tvk1Y23GuCjJCSvubvRrbA3hxLqk23/5R5Wq8V8Q1E5YtDp+iEdnOj3lhjJ+pbiOkhH6XX2KmU+puF+Pks3/ACWTK+rPqnGqTT6f8Jm3w3TaXHPPLxFamdxSgup25d3s9v2fRPTvpfqT+6M+TTSm/l+xf6fxF8P9eBB5oZX5fnPHeylLc9LDO5Rhu75NS8KV3J7+xs0mghFp1wRllt1xwsX6OLSSqj0Ha5ZGOEYJUjt8ts5O8keL41OePAskYt090lufLZNdqnHK4OcZpemPTyz7nXYFqNNKB8/Pw1uXyjvjZO3m8mNt9PndNrvE4Tj1aiUN/V5kUkv2fQaLV+IT0+TUZJ6WeOH09T6HP7F0dFS6ZRUjt+H4pO3p439iueP2Oc8ec6rLp/5HpdXl8rNjliyJ1vuvwz0XFSSlF2iifh+HIl1YYxrilwX4sflRUVwiMtfFzf12uAAc1gAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAASuSCVyBfDaNnT9aUSI74zqC23RrYLFFLchwr6VsaFFUOmkZXSMjg97FSSu1GJqcYxi5M87LLJqM0YQdRboSKq1QjKS6ZNmvHgce/JENKoVXCNMVdcWGaIrpfuS4N78Hcenqa2bXsTKrEjaoyRf4Mk4pSqkzdluWPZGNwlBXJbe50rjO0RjEmUYpEqASvYixcZpRbZw40bJY00Z8irYJyiogkgxIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAErkglcgXrbGWQakVcxSLFdbGkXRe9nSd7lPCV8nLm+OxLrPTvNNT9MfyZsicOmWPldvcl5IwvdX/sqlke1Lddi5E5ZxVk8ZyY5OCwv/6Nug8QhqOH6lyr4MM8UsvVa57leLQvFlWRWmlyiuM05zyXb6SM4XaZzm1OOEabd/B4scmeV+ppL2OfLlJycpN//omCr5f8ej/yKc+lY5V90d5MynGkt37nm6eOOE3SV+5sjJON7C4kzlW43fJE04tUVtpO0d9dpX+7OfTp6o5ekzTL5brYonyajJWQSQYkAAAAAAAAAAAAAAAAAAAEAMSCABIIAEggASCABIIAEggASFyQEBfHcsTaKIy35LFPhmqi111eyKMkm8jS3osUrS/0U5odKbXLE7Mr6RGcFPpbTLE8Ka6pq/Y+az6bW5c7yYc0kov6O0ken4dk06yYv7mHJJ165Xav7HXTlL/HovNhd+oKSk/TOO3aRdg1nhEFljkhKPq2vG3t8Ui3Q4/CM2ljLNOEJ27jKfS1v9zNVfLH7GZQceZwS+52oxltFp12TLlpPCpSm3rIKF0msyOM2DwzBkjFeIQSku+SLN1WcsOlaxKO6TvucKL7Mqy+TCU3i10fSrVq7PFX8jzRyOH9PNPfZ0qY1U3j8e6pNTSb42O1Psv2eLg8VyZctZMDx32kesm3G135vYmxuOVWKTs4k7Ou5XIjS7duWCAYxIIAEggASCABIIAEggASCABIIAAEA0SCABIIAEggASCABIIAEggASLIDAKVM7WRNvczylucqbXbd+5Wk8tNMMjjJ7/tneTJ5m0jLKTi7v9CLk+d/g3iy5fG2OGLfpVM6enxPdwt+65KoZJJU1SRdHKrVk+4uWKnpYX9X4krOP6+N7NxXwbHljVtWVSUJcxts2VfKxQtPCnTj9x/TUnzF/c0QjFcxTotWSN70hyOVZv6MP+zj+EHo8MVajb/9M0vJHiJRky/g3dqLVEtJBPdbk430bSWxMsijzx9zmqprv2RunK5e1spRS4OG9tirzGnXsXYsfXFzfC/yZYqZK3sBL6iCFJBADUggASCABIIAEggASCABIIAEAAMAAAAAAAAAAAAAAAAA+AQ+AM+WVFcZ3Lf8E53TKcb9abOkjllfbZ03z25LYrt7e5TB2nf+i+PCl/gpkXveKXdckJPjt7kKXpb5LN2lJd9iVx1GO9duSxRt1ewglKLOuzvYl02NLqrsV5Ftzwd9/g5ltx2ELWZW5PfYTW27dFtLl9iJrb8FxyrNL6dufgRbd0k/zTO1FpboP6bZSKqkup78noqPRpIKq2MElaNC1EvJUZepLuZTHaiX1EBu3YOLuAAAAAAAAAAAAAAAAAACAQDWJBAAkEACQQAJBAAkEACQQAJIfAD4Ax6hlEXTsu1HDMibs6YuWT08Eny0X9XTHfkxYZurLI5vVvvQpGyEqV+2xZjkm6t17GaGS3+OAs3S6S4MW3RnT90izrW/O3uYYZ11bsS1Hf3M03bY5p9ytycpUnwZnkTl7/k787o47gtXynGMalV/KOMklW97FD1EVFrYqnm4d7GyJti/qj5b377ERkuhttmX+xfZv4Oo9eR/+V7FaRtZ5rfpTt/6O+x1GChDZHEmTlXTGaQCE7BCkggASCABIIAEggASCABIIAEggAAAAAAAAAAAAAAAAAAAAIlwSGBjzRbMri09lbPTcE+xy8S9i5lpFx2xRU63O4qnbtvsavKI8r4N5M4qFOV7DrfVdcF/lfA8kzbdVn82bu0QpybSo0+T8BYhyZxZ/MyJ0kFPLKvVSRp8v4CxUzeRxrLWSUrZbjwK/U27L+j4JUaHI4kMUYMuSSiqK0yVJoy5Kk0tf08lOTg66iHuTtTmPBIBgAAAAAAAAAAAAAAAAAAD/9k=",()=>{renderer.shadowMap.needsUpdate=true;});
+ photoTexture.colorSpace=T.SRGBColorSpace;photoTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+ const faceMaterial=new T.MeshStandardMaterial({map:photoTexture,color:0xbfbfbf,roughness:.86,metalness:0});
+ add(head,new T.Mesh(faceGeo,faceMaterial));
+ const earInner=mat(0x965c48,0,.86);
  function curveTube(g,points,r,m){const curve=new T.CatmullRomCurve3(points.map(v=>new T.Vector3(...v)));return add(g,new T.Mesh(new T.TubeGeometry(curve,16,r,6,false),m))}
  for(const s of [-1,1]){
-  const ear=oval(head,s*.211,2.415,.007,.043,.072,.032,skin);ear.rotation.z=-s*.13;
-  oval(head,s*.222,2.418,.035,.021,.044,.010,earInner);
-  oval(head,s*.085,2.453,.181,.045,.018,.014,eyeWhite,24);
-  oval(head,s*.084,2.453,.194,.017,.016,.006,iris,20);
-  oval(head,s*.084,2.453,.200,.008,.010,.003,pupil,16);
-  curveTube(head,[[s*.039,2.453,.185],[s*.065,2.468,.195],[s*.095,2.470,.192],[s*.129,2.454,.170]],.006,lid);
-  curveTube(head,[[s*.039,2.451,.184],[s*.072,2.438,.195],[s*.102,2.441,.187],[s*.129,2.454,.170]],.0045,skin);
-  // Full dark brows with an angled arch, tapering towards the temples.
-  curveTube(head,[[s*.034,2.492,.187],[s*.066,2.505,.190],[s*.098,2.505,.180],[s*.137,2.490,.155]],.011,hair);
-  oval(head,s*.025,2.366,.216,.018,.008,.013,earInner,16);
+  const ear=oval(head,s*.211,2.415,.007,.040,.068,.032,skin);ear.rotation.z=-s*.13;
+  oval(head,s*.222,2.418,.035,.019,.039,.010,earInner);
  }
- const bridge=oval(head,0,2.411,.190,.030,.070,.039,skin,32);bridge.rotation.x=-.14;
- oval(head,0,2.375,.218,.035,.027,.038,skin,28);
- for(const s of [-1,1])oval(head,s*.029,2.373,.205,.019,.019,.026,skin,20);
- // Closed relaxed mouth, soft lower lip and subtle asymmetry.
- oval(head,0,2.319,.185,.057,.012,.014,lip,24);
- oval(head,0,2.310,.184,.047,.010,.013,lip,24);
- curveTube(head,[[-.056,2.324,.176],[-.029,2.320,.194],[0,2.318,.198],[.031,2.321,.193],[.056,2.327,.176]],.0035,mouth);
  // Short tapered sides and a dense, swept wavy top with sculpted individual curl clumps.
- const cap=add(head,new T.Mesh(new T.SphereGeometry(1,48,28,0,Math.PI*2,0,Math.PI*.49),hair),0,2.50,-.023);cap.scale.set(.215,.253,.196);
- for(const s of [-1,1]){const sideHair=oval(head,s*.190,2.498,-.033,.035,.105,.121,hair,24);sideHair.rotation.z=s*.10;oval(head,s*.204,2.448,-.005,.017,.044,.039,hair,20)}
+ const cap=add(head,new T.Mesh(new T.SphereGeometry(1,48,28,0,Math.PI*2,0,Math.PI*.36),hair),0,2.50,-.023);cap.scale.set(.215,.235,.196);
+ for(const s of [-1,1]){const sideHair=oval(head,s*.192,2.525,-.060,.032,.104,.106,hair,24);sideHair.rotation.z=s*.10;oval(head,s*.204,2.448,-.005,.017,.044,.039,hair,20)}
  oval(head,0,2.486,-.108,.180,.145,.087,hair,28);
  // Deterministic, lightweight instanced curl geometry.
  const curlGeometry=new T.SphereGeometry(1,14,10);const curls=new T.InstancedMesh(curlGeometry,hair,48),dummy=new T.Object3D();let curlIndex=0;
  for(let row=0;row<6;row++)for(let col=0;col<8;col++){
   const x=(col-3.5)*.048+(row%2?.009:-.009),z=.152-row*.059,edge=Math.sqrt(Math.max(.04,1-(x/.23)**2-((z+.015)/.27)**2));
-  const y=2.585+.168*edge+.018*Math.sin(row*2.3+col*1.71);
-  dummy.position.set(x,y,z);dummy.rotation.set(.25+row*.11,.5+col*.22,-.35+.35*Math.sin(col+row));dummy.scale.set(.043+.009*Math.sin(col*2+row),.047+.009*Math.cos(col+row),.065);dummy.updateMatrix();curls.setMatrixAt(curlIndex,dummy.matrix);curls.setColorAt(curlIndex,new T.Color(curlIndex%7===0?0xb4a99c:0xe0d8d0));curlIndex++;
+  const y=2.608+.111*edge+.010*Math.sin(row*2.3+col*1.71);
+  dummy.position.set(x,y,z);dummy.rotation.set(.25+row*.11,.5+col*.22,-.35+.35*Math.sin(col+row));dummy.scale.set(.043+.009*Math.sin(col*2+row),.032+.006*Math.cos(col+row),.052);dummy.updateMatrix();curls.setMatrixAt(curlIndex,dummy.matrix);curls.setColorAt(curlIndex,new T.Color(curlIndex%7===0?0xb4a99c:0xe0d8d0));curlIndex++;
  }
  curls.instanceMatrix.needsUpdate=true;if(curls.instanceColor)curls.instanceColor.needsUpdate=true;curls.computeBoundingBox();curls.computeBoundingSphere();head.add(curls);
- for(let i=0;i<7;i++){const x=-.16+i*.052;curveTube(head,[[x-.020,2.66,.160],[x+.008,2.705,.148],[x+.029,2.724,.105],[x+.013,2.738,.071]],.012,i%3===0?hairLight:hair)}
+ for(let i=0;i<7;i++){const x=-.16+i*.052;curveTube(head,[[x-.020,2.642,.148],[x+.008,2.680,.134],[x+.029,2.708,.095],[x+.013,2.724,.061]],.008,i%3===0?hairLight:hair)}
+ head.rotation.x=-.12;head.position.set(0,2.43*(1-Math.cos(.12)),2.43*Math.sin(.12));
  body.scale.setScalar(1.14);
  const ring=g(0,.42,0,0,0,0);for(const [radius,width,material] of [[1.43,.022,mat(0xc5a77e,.72,.4)],[1.57,.009,a]]){const r=add(ring,torus(radius,width,material));r.rotation.x=Math.PI/2}
  const plate=g(0,.44,0,0,0,0);add(plate,box(1.40,.075,.27,graphite),0,0,1.32);const plaque=add(plate,sign("ELASRAG","#222d35","#e7d3ad",1.28,.20),0,.048,1.32);plaque.rotation.x=-Math.PI/2;
