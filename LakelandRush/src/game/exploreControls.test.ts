@@ -55,3 +55,16 @@ test('lower-left floating zone accepts arbitrary touches on tablet and phone, st
   assert.equal(floatingStickOrigin(rect,{x:w/2+1,y:h*.75}),null);assert.equal(floatingStickOrigin(rect,{x:w/4,y:h/2-1}),null);
  }
 });
+
+test('floating joystick activation is limited to 25 percent of screen in either orientation',()=>{
+ for(const [w,h] of [[390,844],[844,390],[1024,768],[768,1024],[320,180]]){
+  const rect={left:0,top:h/2,width:w/2,height:h/2};
+  const disc=Math.min(55,rect.width/2,rect.height/2);
+  near(rect.width*rect.height/(w*h),.25);
+  assert.equal(floatingStickOrigin(rect,{x:w/2,y:h*.75},disc),null);
+  assert.equal(floatingStickOrigin(rect,{x:w*.25,y:h/2-1},disc),null);
+  assert.equal(floatingStickOrigin(rect,{x:w*.25,y:h},disc),null);
+  const hit=floatingStickOrigin(rect,{x:1,y:h-1},disc)!;
+  assert.ok(hit);assert.ok(hit.visual.x>=disc&&hit.visual.y<=rect.height-disc);
+ }
+});
