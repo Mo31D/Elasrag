@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import type { WorldChunkData,TerrainGridData,LakeData } from '../types/game';
 import { sampleTerrainHeight,isPointInLake } from '../geo/projection';
 import { parkingSlots,type Point } from '../geo/parking';
-import {KELSICK_CHUNKS,shelterClearance} from '../geo/libraryBusStop';
+import {KELSICK_CHUNKS,shelterClearance,interchangeParking} from '../geo/libraryBusStop';
 import type {Ground} from '../geo/surfaceGround';
 import {groundSurface} from './waterfront';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
@@ -19,7 +19,7 @@ export function buildSiteDetails(chunk:WorldChunkData,terrain:TerrainGridData|nu
  const paint=[mat(0x465765,.35),mat(0xe7e9e5,.35),mat(0x9b2930,.35),mat(0x243d5d,.35),mat(0x686e72,.35)];
  const lines:THREE.BufferGeometry[]=[];
  const carColliders:{minX:number;maxX:number;minZ:number;maxZ:number;topY:number;isRoof:boolean;outline:Point[]}[]=[];
- for(const site of sites)for(const [i,p] of parkingSlots(site.points as Point[],chunk,(x,z)=>isPointInLake(lake,x,z)).entries()){
+ for(const site of sites)for(const [i,p] of (site.id===121481163?interchangeParking(site.points as Point[],chunk):parkingSlots(site.points as Point[],chunk,(x,z)=>isPointInLake(lake,x,z))).entries()){
    if(KELSICK_CHUNKS.includes(chunk.key)&&shelterClearance(p.x,p.z))continue;
    const transform=(x:number,z:number):Point=>[p.x+x*Math.cos(p.yaw)+z*Math.sin(p.yaw),p.z-x*Math.sin(p.yaw)+z*Math.cos(p.yaw)];
    // Estimated bay markings follow the same validated parking slots as vehicles.
