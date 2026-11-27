@@ -19,19 +19,19 @@ export class AnimalPlayer{
   if(strength>.08){this.feeding=false;this.yaw=turnTowards(this.yaw,Math.atan2(-input.x,-input.z),p.turn,dt);}
   const floor=(x:number,z:number)=>w.wet(x,z)?-.08:w.floor(x,z);
   this.wet=!this.air&&w.wet(this.x,this.z);
-  const target=this.air?p.fly*(this.landing?.72:1):this.launch?(this.wet?p.swim:p.run)*Math.max(.8,strength):strength*(this.wet?p.swim:fast?p.run:p.walk);
+  const target=this.air?p.fly*(this.landing?.72:1):this.launch?p.takeoff:strength*(this.wet?p.swim:fast?p.run:p.walk);
   this.speed+=(target-this.speed)*(1-Math.exp(-dt*(this.air?1.3:4)));
   const ox=this.x,oz=this.z,delta=this.speed*dt;
   const next=sweepMove(ox,oz,-Math.sin(this.yaw)*delta,-Math.cos(this.yaw)*delta,(x,z)=>w.blocked(x,z,this.y,p.radius)|| (this.air&&Math.max(floor(x,z),w.solid(x,z,p.radius))>this.y-.12));
   this.x=next.x;this.z=next.z;const moved=Math.hypot(this.x-ox,this.z-oz);
-  if(this.launch&&!this.air){this.runway=moved<.001?0:this.runway+moved;if(canTakeOff(this.actor.kind,this.runway,this.energy)){this.air=true;this.launch=false;this.runway=0;this.y=Math.max(this.y,floor(this.x,this.z))+.28;}}
+  if(this.launch&&!this.air){this.runway=moved<.001?0:this.runway+moved;if(this.speed>=p.takeoff*.65&&canTakeOff(this.actor.kind,this.runway,this.energy)){this.air=true;this.launch=false;this.runway=0;this.y=Math.max(this.y,floor(this.x,this.z))+.28;}}
   this.energy=flightEnergy(this.energy,dt,this.air,p.energy);
   if(this.air){
    if(this.energy<=0)this.landing=true;
    const base=Math.max(floor(this.x,this.z),w.solid(this.x,this.z,p.radius));
    const clear=Number.isFinite(w.solid(this.x,this.z,p.radius))?.5:.16;
    this.y=Math.min(floor(this.x,this.z)+p.height,Math.max(base+clear,this.y+(this.landing?-p.climb*.85:vertical*p.climb+(this.y<base+.9?.8:0))*dt));
-   if(this.landing&&this.y<=base+clear+.05&&!Number.isFinite(w.solid(this.x,this.z,p.radius))){this.air=false;this.landing=false;this.speed=p.swim;this.y=floor(this.x,this.z);}
+   if(this.landing&&this.y<=base+clear+.05&&!Number.isFinite(w.solid(this.x,this.z,p.radius))){this.air=false;this.landing=false;this.speed=w.wet(this.x,this.z)?p.swim:p.walk;this.y=floor(this.x,this.z);}
   }else this.y=floor(this.x,this.z);
   this.wet=!this.air&&w.wet(this.x,this.z);
   this.actor.root.visible=true;this.actor.root.position.set(this.x,this.y,this.z);this.actor.root.rotation.set(0,this.yaw,0);

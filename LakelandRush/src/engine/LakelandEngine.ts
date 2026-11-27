@@ -173,7 +173,7 @@ export class LakelandEngine {
   private runner!: RunnerRig;
   private originalRunner!:RunnerRig;
   private attendantSelected=false;
-  private animal:AnimalPlayer|null=null;private animalTarget:AnimalActor|null=null;private animalSheep:AnimalActor[]=[];private humanReturn:{x:number;y:number;z:number;yaw:number}|null=null;
+  private animal:AnimalPlayer|null=null;private animalTarget:AnimalActor|null=null;private animalSheep:AnimalActor[]=[];private humanReturn:{x:number;y:number;z:number;yaw:number;water:'land'|'swimming'|'rowing'}|null=null;
 
   private terrainMesh: THREE.Group | null = null;
   private terrainSurface:(x:number,z:number)=>number=(x,z)=>this.region.getTerrainHeight(x,z);
@@ -752,7 +752,7 @@ export class LakelandEngine {
 
   public setGameState(next: GameState): void {
     this.gameState = next;
-    if (next === 'title') {this.inShop = false;this.releaseBoat();this.busService?.reset();}
+    if (next === 'title') {this.exitAnimal(false);this.animalTarget=null;this.inShop = false;this.releaseBoat();this.busService?.reset();}
     if (next !== 'playing') {
       this.keysHeld.clear();
       this.virtualSteer = 0;
@@ -851,6 +851,7 @@ export class LakelandEngine {
   }
 
   public toggleExploreView(): void {
+    if(this.animal)return;
     this.exploreFirst = !this.exploreFirst;
     // Preserve the direction of view when changing camera modes.
     this.pushHudSnapshot();
@@ -880,7 +881,7 @@ export class LakelandEngine {
     return this.rowBoats.filter(b=>Math.hypot(b.x-this.playerX,b.z-this.playerZ)<3.4).sort((a,b)=>Math.hypot(a.x-this.playerX,a.z-this.playerZ)-Math.hypot(b.x-this.playerX,b.z-this.playerZ))[0]??null;
   }
   private releaseBoat():void{this.touchAccelerator=false;if(this.occupiedBoat)this.occupiedBoat.speed=0;this.occupiedBoat=null;this.waterMode='land';this.waterEffectTimer=0;}
-  public interactWater():boolean{
+  public interactWater():boolean{if(this.animal)return false;
     if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.flying)return false;
     if(this.occupiedBoat){
       const exit=boatExit(this.occupiedBoat,(x,z)=>this.boatWaterAt(x,z),this.occupiedBoat.kind);if(!exit){this.setCallout('Move away from the pier to leave the boat');return true;}
@@ -908,25 +909,26 @@ export class LakelandEngine {
    if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.animal||this.inShop||this.flying||this.occupiedBoat||this.busService?.mode)return;
    const rect=this.renderer.domElement.getBoundingClientRect(),ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2((clientX-rect.left)/rect.width*2-1,1-(clientY-rect.top)/rect.height*2),this.camera);
    const candidates=this.allAnimals().filter(a=>a.root.visible&&Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)<=14);
-   let best:AnimalActor|null=null,dist=Infinity;for(const a of candidates){a.root.updateMatrixWorld(true);const hit=ray.intersectObject(a.root,true)[0];if(hit&&hit.distance<dist){dist=hit.distance;best=a;}}
+   let best:AnimalActor|null=null,dist=Infinity;for(const a of candidates){a.root.updateMatrixWorld(true);const hit=ray.intersectObject(a.root,true)[0];if(hit&&hit.distance<dist){let blocked=false;for(let t=.4;t<hit.distance-.25;t+=.4){const q=ray.ray.at(t,new THREE.Vector3());if(this.solidTop(q.x,q.z,.08)>q.y){blocked=true;break;}}if(!blocked){dist=hit.distance;best=a;}}}
    this.animalTarget=best;this.pushHudSnapshot();
   }
   private createExploreSheep(){
    // Gameplay flock placements beside existing local mapped approaches; not real livestock locations.
-   const path=compileRoutePolyline(navigation.approaches.find(a=>a.id==='west')!.points);
+   const path=compileRoutePolyline(navigation.approaches.find(a=>a.id==='west')!.points.map(q=>[q[0],q[1]]));
    for(let i=0;i<12;i++){const s=sampleCompiledRoute(path,Math.min(path.totalLength-10,90+i*39));for(const side of [1,-1]){const x=s.x+s.rx*side*(18+i%3*4),z=s.z+s.rz*side*(18+i%3*4);if(this.region.isInWater(x,z)||Number.isFinite(this.solidTop(x,z,.7)))continue;const a=sheepActor();a.root.position.set(x,Math.max(.45,this.walkSurface(x,z)),z);a.root.rotation.y=i*2.4;a.root.visible=false;this.scene.add(a.root);this.animalSheep.push(a);break;}}
   }
   private enterAnimal(){
    const a=this.animalTarget;if(!a||this.animal||!a.root.visible||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.flying||this.occupiedBoat||this.busService?.mode||Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)>14){this.animalTarget=null;return false;}
-   this.humanReturn={x:this.playerX,y:this.playerY,z:this.playerZ,yaw:this.playerHeading};
+   this.humanReturn={x:this.playerX,y:this.playerY,z:this.playerZ,yaw:this.playerHeading,water:this.waterMode};
    this.animal=new AnimalPlayer(a,{wet:(x,z)=>this.region.isInWater(x,z)&&this.deckHeightAt(x,z)===-Infinity,floor:(x,z)=>Math.max(.45,this.walkSurface(x,z),this.deckHeightAt(x,z)),solid:(x,z,r)=>this.solidTop(x,z,r),blocked:(x,z,y,r)=>Number.isFinite(this.solidTop(x,z,r))&&this.solidTop(x,z,r)>y+.05||!!this.busService?.blocks(x,z,y)||!!this.waterheadLife?.contains(x,z)&&y<11,ripple:(x,z,r)=>this.waterRipples?.emit(x,z,r)});
    this.animalTarget=null;this.runner.root.visible=false;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.flightVertical=0;this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.animal.yaw;this.updateAnimal(0);this.setCallout('Playing as '+this.animal.p.label);this.pushHudSnapshot();return true;
   }
   public exitAnimal(notify=true){if(!this.animal)return;this.animal.release();this.animal=null;this.animalTarget=null;const p=this.humanReturn;this.humanReturn=null;if(p){this.playerX=p.x;this.playerY=p.y;this.playerZ=p.z;this.playerHeading=this.exploreYaw=p.yaw;this.runner.root.position.set(p.x,p.y,p.z);this.runner.root.rotation.y=p.yaw;}
-   this.runner.root.visible=true;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.flightVertical=0;this.exploreSpeed=0;this.playerVy=0;this.flying=false;this.waterMode='land';this.isGrounded=true;this.exploreFirst=false;
+   this.runner.root.visible=true;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.flightVertical=0;this.exploreSpeed=0;this.playerVy=0;this.flying=false;this.waterMode=p?.water??'land';this.isGrounded=this.waterMode==='land';this.exploreFirst=false;
    if(notify){this.setCallout('Returned to your character');this.updateChaseCamera(.04,0);this.pushHudSnapshot();}}
   public feedAnimal(){this.animal?.toggleFeed();this.pushHudSnapshot();}
   private updateAnimal(dt:number){
+   if(this.calloutTimer>0){this.calloutTimer-=dt;if(this.calloutTimer<=0)this.actionCallout='';}
    const a=this.animal!;let steer=this.virtualSteer;if(this.keysHeld.has('KeyA')||this.keysHeld.has('ArrowLeft'))steer--;if(this.keysHeld.has('KeyD')||this.keysHeld.has('ArrowRight'))steer++;
    a.update(dt,THREE.MathUtils.clamp(steer,-1,1),this.exploreThrottle(),this.exploreYaw,this.explorePace!=='walk'||this.shiftHeld(),THREE.MathUtils.clamp(this.flightVertical+(this.keysHeld.has('Space')?1:0)-(this.keysHeld.has('KeyQ')?1:0),-1,1));
    this.playerX=a.x;this.playerY=a.y;this.playerZ=a.z;this.playerHeading=a.yaw;this.exploreSpeed=a.speed;this.waterMode=a.wet?'swimming':'land';this.isGrounded=!a.air;this.runner.root.visible=false;
@@ -963,7 +965,7 @@ export class LakelandEngine {
   private canTalkAttendant(){return !this.animal&&this.gameState==='playing'&&this.activeRoute.mode==='freeroam'&&!this.flying&&!this.inShop&&!this.occupiedBoat&&!this.busService?.mode&&this.waterMode==='land'&&!!this.pedestrians?.attendant.canTalk(this.playerX,this.playerZ,this.playerY);}
   public talkAttendant(){if(!this.canTalkAttendant()||!this.pedestrians)return false;this.setCallout(this.pedestrians.attendant.talk());this.calloutTimer=6;this.pushHudSnapshot();return true;}
   private canBoardBus(){return !this.animal&&!this.busService?.mode&&!this.flying&&!this.inShop&&!this.occupiedBoat&&this.waterMode==='land'&&this.activeRoute.mode==='freeroam'&&!!this.busService?.nearby(this.playerX,this.playerZ,this.playerY);}
-  public interactBus():boolean{
+  public interactBus():boolean{if(this.animal)return false;
     const bus=this.busService;if(!bus||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam')return false;
     if(bus.mode){const q=bus.leave();if(!q){this.setCallout('Stop the bus before leaving');return true;}this.playerX=q.x;this.playerZ=q.z;this.playerY=Math.max(.45,this.walkSurface(q.x,q.z))+.04;this.setCallout('Left bus');}
     else{if(!this.canBoardBus()||!bus.board(this.playerX,this.playerZ,this.playerY))return false;this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=bus.seat!.yaw;this.setCallout('599 · Upper deck passenger');}
@@ -985,6 +987,7 @@ export class LakelandEngine {
   }
 
   public toggleShop(): void {
+    if(this.animal)return;
     if (this.gameState !== 'playing' || (!this.inShop && !this.nearShopDoor())) return;
     if (this.inShop) {
       this.inShop = false;
@@ -1445,7 +1448,7 @@ export class LakelandEngine {
 
     for(const b of this.rowBoats)if(b!==this.occupiedBoat)animateBoat(b,this.elapsedTime,dt,false);
     this.updateAmbientActors(dt);
-    for(const a of this.animalSheep){if(a.root.userData.animalControlled)continue;a.root.visible=this.activeRoute.mode==='freeroam'&&Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)<150;if(a.root.visible)a.pose(this.elapsedTime,0,false,false,true);}
+    for(const a of this.animalSheep){if(a.root.userData.animalControlled)continue;a.root.visible=this.activeRoute.mode==='freeroam'&&Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)<150;if(a.root.visible){const {x,z}=a.root.position;if(Number.isFinite(this.solidTop(x,z,.65))||this.region.isInWater(x,z)){a.root.visible=false;continue;}a.root.position.y=Math.max(.45,this.walkSurface(x,z));a.pose(this.elapsedTime,0,false,false,true);}}
     if(this.activeRoute.mode==='freeroam'){
       if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
       this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0));

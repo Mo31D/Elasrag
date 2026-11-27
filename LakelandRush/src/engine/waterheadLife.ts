@@ -51,13 +51,14 @@ function makeCruiser(){
  const wg=new THREE.BufferGeometry();wg.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));wg.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));wakeMat.vertexColors=true;
  const wake=new THREE.Mesh(wg,wakeMat);return {root,wake,wakeMat};
 }
-type Bird={kind:'mallard'|'swan';root:THREE.Group;body:THREE.Group;neck:THREE.Group;feet:THREE.Group[];wings:THREE.Group[];x:number;z:number;homeX:number;homeZ:number;angle:number;phase:number;swimming:boolean;scale:number;speed:number};
+type Bird={kind:'mallard'|'swan';root:THREE.Group;body:THREE.Group;neck:THREE.Group;feet:THREE.Group[];wings:THREE.Group[];flightWings:THREE.Group[];x:number;z:number;homeX:number;homeZ:number;angle:number;phase:number;swimming:boolean;scale:number;speed:number};
 function birdModel(swan:boolean,variant:number){
  const root=new THREE.Group(),body=new THREE.Group(),neck=new THREE.Group();root.add(body);body.add(neck);
  const plumage=material(swan?0xf3f1e8:variant%2?0x82705c:0x70777c),wingMat=material(swan?0xe0e2dc:0x635846),headMat=material(swan?0xf4f1e8:variant%2?0x8c7456:0x246252),beak=material(swan?0xe9932a:0xc3a33b),dark=material(0x25252a),feetMat=material(swan?0x363433:0xb36a32);
  function oval(g:THREE.Group,m:THREE.Material,x:number,y:number,z:number,a:number,b:number,c:number){const o=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),m);o.scale.set(a,b,c);o.position.set(x,y,z);g.add(o);return o;}
  oval(body,plumage,0,.22,.05,.29,.24,.56);const tail=oval(body,plumage,0,.26,.47,.18,.12,.23);tail.rotation.x=-.38;
  const wings:THREE.Group[]=[];for(const side of [-1,1]){const w=new THREE.Group();w.position.set(side*.16,.25,.02);body.add(w);const m=oval(w,wingMat,side*.055,0,.07,.17,.13,.40);m.rotation.y=side*.16;wings.push(w);}
+ const flightWings:THREE.Group[]=[];for(const side of [-1,1]){const w=new THREE.Group();w.position.set(side*.17,.26,0);body.add(w);const span=swan?1.05:.72;oval(w,plumage,side*span*.39,0,.02,span*.42,.055,.25);for(let k=0;k<7;k++){const feather=oval(w,wingMat,side*span*(.35+k*.09),0,.10+k*.026,span*.19,.023,.13+k*.013);feather.rotation.y=-side*(.22+k*.045);}w.visible=false;flightWings.push(w);}
  const neckHeight=swan?.77:.23;neck.position.set(0,.29,-.30);
  const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,0),new THREE.Vector3(0,neckHeight*.28,-.15),new THREE.Vector3(0,neckHeight*.72,-.13),new THREE.Vector3(0,neckHeight,-.06)]);
  neck.add(new THREE.Mesh(new THREE.TubeGeometry(curve,12,swan?.075:.085,8,false),headMat));
@@ -65,7 +66,7 @@ function birdModel(swan:boolean,variant:number){
  if(swan)oval(neck,dark,0,neckHeight-.005,-.215,.085,.055,.04);
  for(const side of [-1,1])oval(neck,dark,side*.09,neckHeight+.025,-.16,.018,.018,.018);
  const feet:THREE.Group[]=[];for(const side of [-1,1]){const f=new THREE.Group();f.position.set(side*.12,.11,.04);body.add(f);oval(f,feetMat,0,-.11,0,.035,.13,.035);oval(f,feetMat,0,-.22,-.05,.083,.025,.12);feet.push(f);}
- return {root,body,neck,feet,wings};
+ return {root,body,neck,feet,wings,flightWings};
 }
 export class WaterheadLife{
  private cruiser=makeCruiser();private birds:Bird[]=[];private travelled=0;private t=0;private rippleClock=0;private routeValid=false;
@@ -105,7 +106,7 @@ export class WaterheadLife{
    if(emit&&moving&&b.swimming&&i%3===Math.floor(this.t)%3)this.ripple(b.x,b.z,b.scale*.55);
   }
  }
- selectableAnimals(){return this.birds.map(b=>({root:b.root,kind:b.kind,pose:(t:number,s:number,wet:boolean,air:boolean,feed:boolean)=>{b.body.rotation.z=air?Math.sin(t*5)*.035:Math.sin(t*2)*.025;b.body.rotation.x=feed&&wet?.24:0;b.neck.rotation.x=feed?-.85:air?-1.05:0;for(let j=0;j<2;j++){b.feet[j].visible=!wet&&!air;b.feet[j].rotation.x=s>.05?Math.sin(t*9+j*Math.PI)*.55:0;b.wings[j].scale.x=air?3.4:1;b.wings[j].rotation.z=air?(j===0?-1:1)*(Math.sin(t*(b.kind==='swan'?10:16))*.9):0;}}}));}
+ selectableAnimals(){return this.birds.map(b=>({root:b.root,kind:b.kind,pose:(t:number,s:number,wet:boolean,air:boolean,feed:boolean)=>{b.body.rotation.z=air?Math.sin(t*5)*.035:Math.sin(t*2)*.025;b.body.rotation.x=feed&&wet?.24:0;b.neck.rotation.x=feed?-.85:air?-1.05:0;for(let j=0;j<2;j++){b.feet[j].visible=!wet&&!air;b.feet[j].rotation.x=s>.05?Math.sin(t*9+j*Math.PI)*.55:0;b.wings[j].visible=!air;b.flightWings[j].visible=air;b.flightWings[j].rotation.z=air?(j===0?-1:1)*(Math.sin(t*(b.kind==='swan'?10:16))*.9):0;b.wings[j].rotation.z=0;}}}));}
  dispose(){
   const mats=new Set<THREE.Material>(),geos=new Set<THREE.BufferGeometry>();
   for(const root of [this.cruiser.root,this.cruiser.wake,...this.birds.map(b=>b.root)]){root.removeFromParent();root.traverse(o=>{if(o instanceof THREE.Mesh){geos.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])mats.add(m);}});}
