@@ -31,7 +31,7 @@ export function lakeRoadPavements():StreetPoint[][]{
  // The opposite side is narrow; limit it to the real building footprint.
  const outer=sections.map(z=>[Math.min(79.1+(78.1-79.1)*(z+1432.4)/46.6,lakeRoadCentre(z)+LAKE_ROAD_HALF_WIDTH+1.25),z] as StreetPoint);
  const out=[...east.map((p,i)=>({p,q:outer[i]})).slice(1).flatMap((v,i)=>{const a=east[i],b=outer[i];return b[0]>a[0]+.18&&v.q[0]>v.p[0]+.18?[[a,v.p,v.q,b]]:[];})];
- return [[...west,...kerb.reverse()],...out];
+ return [[...west,...kerb.reverse()],...out,[[67.5,-1392.1],[64.7,-1392.25],[64.7,-1390.3],[70.1,-1390.1],[71.9,-1392.2]]];
 }
 export function lakeRoadLineSegments():StreetPoint[][]{
  const out:StreetPoint[][]=[];
@@ -50,7 +50,7 @@ export function lakeRoadArrow():StreetPoint[]{
 }
 
 export const BLACK_SHEEP_FRONT_EDGE=7;
-export const BLACK_SHEEP_DOOR={x:68.73,z:-1400.45};
+export const BLACK_SHEEP_DOOR={x:68.74,z:-1400.72};
 export function lakeRoadKerbs():StreetPoint[][]{
  const out:StreetPoint[][]=[];
  for(let i=1;i<sections.length;i++){
