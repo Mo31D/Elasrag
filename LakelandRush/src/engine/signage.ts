@@ -132,7 +132,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   }
   return {group, update(x:number,z:number,showLabels:boolean) {
     for(const b of boards)b.visible=Math.hypot(b.position.x-x,b.position.z-z)<110;
-    for(const plaque of plaques)plaque.visible=Math.hypot(plaque.position.x-x,plaque.position.z-z)<55;
+    for(const plaque of plaques)plaque.visible=Math.hypot(plaque.position.x-x,plaque.position.z-z)<95;
     const nearby=labels.map(l=>({l,d:Math.hypot(l.position.x-x,l.position.z-z)})).filter(v=>v.d<45).sort((a,b)=>a.d-b.d).slice(0,3);
     const visible=new Set(nearby.map(v=>v.l));
     for(const l of labels)l.visible=showLabels&&visible.has(l);

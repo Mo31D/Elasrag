@@ -15,6 +15,11 @@ export class SoundEngine {
 
   private windSource: AudioBufferSourceNode | null = null;
   private windFilter: BiquadFilterNode | null = null;
+  private windGain: GainNode | null = null;
+  private lakeGain: GainNode | null = null;
+  private lakeSource: AudioBufferSourceNode | null = null;
+  private shoreFactor=0;
+  private lastAmbienceUpdate=-1;
   private grindGain: GainNode | null = null;
   private grindOsc: OscillatorNode | null = null;
 
@@ -99,11 +104,7 @@ export class SoundEngine {
       }
     }
 
-    if (this.windFilter && this.ctx) {
-      const base = this.currentWeather === 'rain' ? 1300 : 600;
-      const rush = active ? Math.min(1800, speedMps * 42) : 0;
-      this.windFilter.frequency.setTargetAtTime(base + rush, this.ctx.currentTime, 0.15);
-    }
+    this.updateAmbience(active,speedMps);
 
     if (active && this.unlocked && this.musicTimer === null) {
       this.startMusicLoop();
@@ -121,7 +122,7 @@ export class SoundEngine {
     this.masterGain.gain.setTargetAtTime(m, now, 0.03);
     this.musicGain.gain.setTargetAtTime(this.settings.musicVolume * 0.45, now, 0.03);
     this.sfxGain.gain.setTargetAtTime(this.settings.sfxVolume * 0.7, now, 0.03);
-    this.ambienceGain.gain.setTargetAtTime(this.settings.ambienceVolume * 0.25, now, 0.03);
+    this.ambienceGain.gain.setTargetAtTime(this.settings.ambienceVolume * 0.09, now, 0.03);
   }
 
   private createNoiseBuffer(durationSec: number): AudioBuffer | null {
@@ -138,21 +139,34 @@ export class SoundEngine {
     return buf;
   }
 
+  public setShoreFactor(value:number):void {this.shoreFactor=Math.max(0,Math.min(1,value));}
+  private updateAmbience(active:boolean,speed:number):void{
+    if(!this.ctx||!this.windGain||!this.lakeGain)return;
+    const now=this.ctx.currentTime;
+    if(!active){this.windGain.gain.setTargetAtTime(0,now,.15);this.lakeGain.gain.setTargetAtTime(0,now,.15);return;}
+    if(now-this.lastAmbienceUpdate<.2)return;
+    this.lastAmbienceUpdate=now;
+    const gust=Math.pow(Math.max(0,Math.sin(now*.61)+.22*Math.sin(now*1.31)),2),rain=this.currentWeather==='rain';
+    this.windGain.gain.setTargetAtTime((rain?.16:.055)+gust*(rain?.12:.065)+Math.min(.055,speed*.004),now,.3);
+    this.lakeGain.gain.setTargetAtTime(this.shoreFactor*(.035+.13*Math.pow(.5+.5*Math.sin(now*1.35),3)),now,.22);
+    this.windFilter?.frequency.setTargetAtTime(rain?490:250+gust*85,now,.4);
+  }
   private initAmbience(): void {
     if (!this.ctx || !this.ambienceGain) return;
-    const buf = this.createNoiseBuffer(3.0);
+    const buf = this.createNoiseBuffer(12.0);
     if (!buf) return;
     const src = this.ctx.createBufferSource();
     src.buffer = buf;
     src.loop = true;
 
     const filter = this.ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 680;
-    filter.Q.value = 0.85;
-
-    src.connect(filter);
-    filter.connect(this.ambienceGain);
+    filter.type='lowpass';filter.frequency.value=280;filter.Q.value=.45;
+    const gain=this.ctx.createGain();gain.gain.value=0;
+    src.connect(filter);filter.connect(gain);gain.connect(this.ambienceGain);this.windGain=gain;
+    const lake=this.ctx.createBufferSource();lake.buffer=buf;lake.loop=true;
+    const waterFilter=this.ctx.createBiquadFilter();waterFilter.type='lowpass';waterFilter.frequency.value=410;waterFilter.Q.value=.4;
+    const waterGain=this.ctx.createGain();waterGain.gain.value=0;
+    lake.connect(waterFilter);waterFilter.connect(waterGain);waterGain.connect(this.ambienceGain);lake.start(0,4);this.lakeGain=waterGain;this.lakeSource=lake;
     src.start();
     this.windSource = src;
     this.windFilter = filter;
@@ -416,6 +430,7 @@ export class SoundEngine {
     this.stopMusicLoop();
     try {
       this.windSource?.stop();
+      this.lakeSource?.stop();
       this.grindOsc?.stop();
       void this.ctx?.close();
     } catch {

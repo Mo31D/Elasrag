@@ -1,0 +1,3 @@
+# V9 corrections
+
+Quieter modulated low-pass wind and shoreline ambience; actual rendered terrain/road triangle grounding and animated shoe clearance; perimeter-sampled foundations and local facade grades; additional terrace doors and longer fascia visibility. Tesco Express source node 2908529784 lies within mapped way 423643003: localized estimated shopfront, not a new invented building. Unresolved businesses remain in the directory. Custom landmarks unchanged. Generated ambience and architectural details are not field recordings or surveys. Actual mobile playback, performance and visual fit require manual verification.

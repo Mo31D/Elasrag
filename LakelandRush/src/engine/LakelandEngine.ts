@@ -162,6 +162,12 @@ export class LakelandEngine {
   private runner!: RunnerRig;
 
   private terrainMesh: THREE.Group | null = null;
+  private terrainSurface:(x:number,z:number)=>number=(x,z)=>this.region.getTerrainHeight(x,z);
+  private walkSurface(x:number,z:number):number{
+    let y=this.terrainSurface(x,z);
+    for(const chunk of this.loadedChunks.values())y=Math.max(y,chunk.surfaceAt(x,z)??-Infinity);
+    return y;
+  }
   private waterMesh: THREE.Mesh | null = null;
   private rainMesh: THREE.Points | null = null;
 
@@ -350,12 +356,13 @@ export class LakelandEngine {
       this.buildingSurfaces = surfaces;
       this.materials = createWorldMaterials(this.textures, surfaces);
 
-      const { terrainMesh, waterMesh } = buildTerrainAndWaterMeshes(
+      const { terrainMesh, waterMesh, surfaceAt } = buildTerrainAndWaterMeshes(
         this.region.terrain,
         this.region.lake,
         this.materials,
       );
       this.terrainMesh = terrainMesh;
+      this.terrainSurface=surfaceAt;
       this.waterMesh = waterMesh;
       this.scene.add(terrainMesh, waterMesh);
 
@@ -1167,6 +1174,7 @@ export class LakelandEngine {
               this.region.lake,
               this.materials,
               this.buildingAssets,
+              this.terrainSurface,
             );
             this.loadedChunks.set(key, built);
             this.scene.add(built.group);
@@ -1439,7 +1447,7 @@ export class LakelandEngine {
     }
 
     // Vertical physics & rooftop / terrain / grind rail grounding
-    let floorY = this.region.getTerrainHeight(this.playerX, this.playerZ);
+    let floorY = this.walkSurface(this.playerX,this.playerZ);
     const overLake = this.region.isInWater(this.playerX, this.playerZ);
     let deckY = -Infinity;
     for (const chunk of this.loadedChunks.values()) {
@@ -1463,7 +1471,7 @@ export class LakelandEngine {
       }
     }
     const inWater = overLake && deckY === -Infinity;
-    floorY = Math.max(overLake ? -0.6 : Math.max(0.45, floorY), deckY);
+    floorY = Math.max(overLake ? -0.6 : Math.max(0.45, floorY)+.025, deckY);
 
     // Check building roofs for landing
     for (const chunk of this.loadedChunks.values()) {
@@ -1474,6 +1482,7 @@ export class LakelandEngine {
           this.playerX <= c.maxX &&
           this.playerZ >= c.minZ &&
           this.playerZ <= c.maxZ &&
+          pointInRing(this.playerX,this.playerZ,c.outline) &&
           this.playerY >= c.topY - 0.85
         ) {
           floorY = Math.max(floorY, c.topY);
@@ -1565,6 +1574,21 @@ export class LakelandEngine {
       dt,
     });
 
+    if(roaming&&this.isGrounded&&!inWater){
+      this.runner.root.updateMatrixWorld(true);
+      let lift=0;
+      for(const leg of [this.runner.leftLeg,this.runner.rightLeg]){
+        const shoe=leg.children[1];if(!shoe)continue;
+        for(const x of [-.07,.07])for(const z of [-.125,.125]){
+          const p=shoe.localToWorld(new THREE.Vector3(x,-.055,z));
+          lift=Math.max(lift,this.walkSurface(p.x,p.z)+.025-p.y);
+        }
+      }
+      this.runner.bodyPivot.position.y+=lift;
+    }
+    let shore=0;
+    for(const r of [8,20,40])if([[r,0],[-r,0],[0,r],[0,-r]].some(([x,z])=>this.region.isInWater(this.playerX+x,this.playerZ+z))){shore=1-r/55;break;}
+    this.sound.setShoreFactor(shore);
     this.sound.setGameplayState(true, speed, this.isGrinding);
     this.updateChaseCamera(dt, speed);
     void this.updateChunkStreaming(this.playerX, this.playerZ, false);
@@ -1740,7 +1764,7 @@ export class LakelandEngine {
         }
       }
     }
-    const terrainAtCam=Math.max(.5,this.region.getTerrainHeight(desiredX,desiredZ));
+    const terrainAtCam=Math.max(.5,this.walkSurface(desiredX,desiredZ));
     desiredY=Math.max(terrainAtCam+(roaming?.65:1.4),desiredY);
 
     const damp = 1 - Math.exp(-9.5 * dt);

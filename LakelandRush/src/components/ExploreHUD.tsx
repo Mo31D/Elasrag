@@ -65,6 +65,6 @@ export function ExploreHUD(p:GameHUDProps){
     {touch&&!hud.insideShop&&<button type="button" aria-label="Jump" className={control+' h-16 w-16'} onPointerDown={e=>{e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
    </div>
   </div>
-  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V8</div>
+  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V9</div>
  </div>;
 }

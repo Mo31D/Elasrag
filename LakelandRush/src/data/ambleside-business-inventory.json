@@ -1470,10 +1470,11 @@
         "name": "Tesco Express",
         "x": 58.659,
         "z": -1562.837,
-        "source": "Existing mapped landmark / OSM 2908529784",
+        "source": "OSM node 2908529784 within way 423643003",
         "kind": "navigation",
         "travelId": "tesco",
-        "method": "normalized name match"
+        "method": "Existing OSM POI inside unique host footprint; storefront bay approximate",
+        "buildingId": 423643003
       },
       "status": "mapped-snapshot-match"
     },

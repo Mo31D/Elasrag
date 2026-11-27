@@ -10,6 +10,7 @@ import { isPointInLake, pointInRing, sampleTerrainHeight } from '../geo/projecti
 import { buildWaterheadShoreDistance, WATERHEAD_WATER_BOUNDS } from './waterhead-water';
 import { buildWaterfrontDetails, groundSurface, WATERHEAD_SIDEWALKS } from './waterfront';
 import { buildSignage } from './signage';
+import {triangleGround,buildingGrades,type Ground} from '../geo/surfaceGround';
 import { halfWidth as mappedRoadHalfWidth } from '../geo/signagePlan';
 import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
@@ -47,6 +48,7 @@ export interface BuiltChunkResult {
   pierDecks: Array<{ outline: Array<[number, number]>; y: number }>;
   grindSegments: Array<{ ax: number; az: number; bx: number; bz: number; y: number }>;
   updateSignage: (x: number, z: number, labels: boolean) => void;
+  surfaceAt:(x:number,z:number)=>number|undefined;
   dispose: () => void;
 }
 
@@ -324,7 +326,7 @@ export function buildTerrainAndWaterMeshes(
   terrain: TerrainGridData | null,
   lake: LakeData | null,
   materials: WorldMaterials,
-): { terrainMesh: THREE.Group; waterMesh: THREE.Mesh } {
+): { terrainMesh: THREE.Group; waterMesh: THREE.Mesh; surfaceAt:Ground } {
   const geo = terrainGeometry(terrain);
   const pos = geo.attributes.position;
   const colors = new Float32Array(pos.count * 3);
@@ -399,13 +401,14 @@ export function buildTerrainAndWaterMeshes(
     mesh.receiveShadow = true;
     terrainMesh.add(mesh);
   }
+  const sample=triangleGround(pos,index);
   geo.dispose();
 
   materials.waterUniforms.shoreMap.value = buildWaterheadShoreDistance(lake);
   const waterMesh = new THREE.Mesh(lakeGeometry(lake), materials.waterMat);
   waterMesh.receiveShadow = true;
 
-  return { terrainMesh, waterMesh };
+  return { terrainMesh, waterMesh, surfaceAt:(x,z)=>sample(x,z)??sampleTerrainHeight(terrain,x,z) };
 }
 
 function resampleRoad(
@@ -534,6 +537,7 @@ function createOrientedBox(
 function buildLakelandBuildingGeometries(
   b: BuildingFeature,
   terrain: TerrainGridData | null,
+  ground:Ground=(x,z)=>sampleTerrainHeight(terrain,x,z),
 ): {
   wallGeo: THREE.BufferGeometry;
   roofGeo: THREE.BufferGeometry;
@@ -542,7 +546,8 @@ function buildLakelandBuildingGeometries(
 } | null {
   if (b.pts.length < 3) return null;
 
-  const baseTerrainY = Math.max(0.45, sampleTerrainHeight(terrain, b.cx, b.cz));
+  const grades=buildingGrades(b,ground);
+  const baseTerrainY = grades.high;
   // Compute oriented bounding dimensions from footprint
   let minX = Infinity;
   let maxX = -Infinity;
@@ -578,7 +583,7 @@ function buildLakelandBuildingGeometries(
   }
   shape.closePath();
 
-  const foundationDepth = 2.2;
+  const foundationDepth = Math.max(2.2,baseTerrainY-grades.low+.6);
   const wallH = Math.max(3.4, b.h - 1.6);
   const wallGeo = new THREE.ExtrudeGeometry(shape, {
     depth: wallH + foundationDepth,
@@ -651,6 +656,7 @@ export function buildChunkGroup(
   lake: LakeData | null,
   materials: WorldMaterials,
   buildingAssets: ReadonlyMap<number, THREE.Object3D>,
+  surfaceGround:Ground=(x,z)=>sampleTerrainHeight(terrain,x,z),
 ): BuiltChunkResult {
   const group = new THREE.Group();
   const isWaterhead = chunk.key === '0_-1' && Boolean(terrain?.detail);
@@ -668,11 +674,12 @@ export function buildChunkGroup(
   const roofs: THREE.BufferGeometry[] = [];
   const windows: THREE.BufferGeometry[] = [];
   const facadePlans = new Map<number,FacadePlan>();
+  const surfaceSamplers:Array<(x:number,z:number)=>number|undefined>=[];
 
   for (const b of chunk.buildings) {
-    const built = buildLakelandBuildingGeometries(b, terrain);
-    if (!built) continue;
     const asset = buildingAssets.get(b.id);
+    const built = buildLakelandBuildingGeometries(b, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
+    if (!built) continue;
     if (asset) {
       const model = asset.clone();
       const authoredGround = buildingAssetMetadata.find(entry => entry.buildingId === b.id)?.groundElevationM;
@@ -698,8 +705,8 @@ export function buildChunkGroup(
     }
     if (!asset) {
       roofs.push(built.roofGeo);
-      const ground=Math.max(.45,sampleTerrainHeight(terrain,b.cx,b.cz));
-      const plan=inFacadeArea(b)?planFacade(b,chunk.roads,ground,built.bounds.topY-ground,chunk.buildings):null;
+      const ground=Math.max(.45,surfaceGround(b.cx,b.cz));
+      const plan=inFacadeArea(b)?planFacade(b,chunk.roads,ground,built.bounds.topY-ground,chunk.buildings,undefined,surfaceGround):null;
       if(plan){facadePlans.set(b.id,plan);built.windowGeo.dispose();}
       else windows.push(built.windowGeo);
     }
@@ -717,7 +724,7 @@ export function buildChunkGroup(
     }
   }
 
-  const addBatch = (geos: THREE.BufferGeometry[], mat: THREE.Material, castShadow: boolean) => {
+  const addBatch = (geos: THREE.BufferGeometry[], mat: THREE.Material, castShadow: boolean, walkable=false) => {
     if (geos.length === 0) return;
     const normalized = geos.map((orig) => {
       const g = orig.index ? orig.toNonIndexed() : orig;
@@ -732,6 +739,7 @@ export function buildChunkGroup(
     normalized.forEach((g) => g.dispose());
     if (!merged) return;
     disposables.push(merged);
+    if(walkable)surfaceSamplers.push(triangleGround(merged.attributes.position,merged.index));
     const mesh = new THREE.Mesh(merged, mat);
     mesh.castShadow = castShadow;
     mesh.receiveShadow = true;
@@ -783,9 +791,9 @@ export function buildChunkGroup(
     laneGeos.push(groundSurface(site.points, (x, z) => sampleTerrainHeight(terrain, x, z), .045));
   }
 
-  addBatch(primaryGeos, materials.primaryRoad, false);
-  addBatch(laneGeos, materials.countryLane, false);
-  addBatch(pathGeos, materials.footpath, false);
+  addBatch(primaryGeos, materials.primaryRoad, false,true);
+  addBatch(laneGeos, materials.countryLane, false,true);
+  addBatch(pathGeos, materials.footpath, false,true);
   addBatch(railGeos, materials.railSteel, false);
 
   // Dry-stone walls (also grindable!)
@@ -1021,6 +1029,7 @@ export function buildChunkGroup(
     key: chunk.key,
     group,
     updateSignage: signage.update,
+    surfaceAt:(x,z)=>{let y=-Infinity;for(const sample of surfaceSamplers)y=Math.max(y,sample(x,z)??-Infinity);return Number.isFinite(y)?y:undefined;},
     colliders,
     roadDecks,
     pierDecks,
