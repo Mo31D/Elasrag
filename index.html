@@ -224,8 +224,8 @@ function screen(g,x,y,z,title,bg="#203c50"){const body=add(g,box(1.68,1.08,.10,g
 
 for(const p of ui.projects){const o=setup(p),g=o.group,a=o.accent;
 if(p.id==="hub"){
- // Mo v5: original stylised character, not a photorealistic or photo-textured likeness.
- const coat=mat(0x202a36,0,.94),trim=mat(0x344251,0,.91),shirt=mat(0xe0e2de,0,.94),pants=mat(0x2c3c50,0,.96),skin=mat(0xc58b63,0,.88),shoe=mat(0x333b43,0,.9),sole=mat(0xd0d4d4,0,.94),hair=mat(0x292524,0,.86),hairLight=mat(0x403630,0,.89);
+ // Mo v6: original symmetrical editorial-style character, sculpted features and refined outfit.
+ const coat=mat(0x29313b,0,.91),trim=mat(0x232a34,0,.94),shirt=mat(0xe0e2de,0,.94),pants=mat(0x343c48,0,.92),skin=mat(0xc58b63,0,.88),shoe=mat(0x333b43,0,.9),sole=mat(0xd0d4d4,0,.94),hair=mat(0x292524,0,.86),hairLight=mat(0x403630,0,.89);
  const body=g(0,.38,0,0,0,0);
  function tailoredSurface(target,profile,material,segments=48){
   const v=[],ind=[];
@@ -247,14 +247,10 @@ if(p.id==="hub"){
  // Long legs, V-shaped athletic torso, relaxed standing pose, continuous sculpted surfaces.
  const jacketProfile=[[1.40,0,0,.005,.005],[1.43,0,0,.247,.158],[1.54,0,0,.252,.181],[1.66,0,0,.266,.183],[1.81,0,-.003,.308,.199],[1.97,0,-.012,.359,.211],[2.075,0,-.025,.391,.199],[2.13,0,-.028,.335,.162],[2.18,0,-.012,.215,.122],[2.21,0,0,.106,.093],[2.22,0,0,.005,.005]];
  tailoredSurface(body,jacketProfile,coat,56);
- // Fitted, open lightweight jacket over a simple white crew-neck shirt.
- function torsoFront(x,y){let i=0;while(i<jacketProfile.length-2&&y>jacketProfile[i+1][0])i++;const p=jacketProfile[i],q=jacketProfile[i+1],t=T.MathUtils.clamp((y-p[0])/(q[0]-p[0]),0,1),w=T.MathUtils.lerp(p[3],q[3],t),dep=T.MathUtils.lerp(p[4],q[4],t),z=T.MathUtils.lerp(p[2],q[2],t);return z+dep*Math.sqrt(Math.max(.01,1-(x/Math.max(w,.001))**2))}
- function panel(rows,material,offset=.008){const v=[],idx=[],cols=18;for(const [y,left,right] of rows)for(let j=0;j<=cols;j++){const x=T.MathUtils.lerp(left,right,j/cols);v.push(x,y,torsoFront(x,y)+offset)}for(let i=0;i<rows.length-1;i++)for(let j=0;j<cols;j++){const n=i*(cols+1)+j;idx.push(n,n+1,n+cols+1,n+1,n+cols+2,n+cols+1)}const geo=new T.BufferGeometry();geo.setAttribute("position",new T.Float32BufferAttribute(v,3));geo.setIndex(idx);geo.computeVertexNormals();const m=material.clone();m.side=T.DoubleSide;return add(body,new T.Mesh(geo,m))}
+ // Minimalist fitted charcoal knit, no intersecting jacket or shirt patches.
  function sculptLine(target,points,r,m,segments=20){const curve=new T.CatmullRomCurve3(points.map(v=>new T.Vector3(...v)));return add(target,new T.Mesh(new T.TubeGeometry(curve,segments,r,8,false),m))}
- const opening=[[1.445,.080],[1.55,.087],[1.70,.095],[1.85,.102],[2.00,.111],[2.10,.109],[2.15,.087],[2.174,.048],[2.179,.001]];
- panel(opening.map(([y,w])=>[y,-w,w]),shirt,.016);
+ const collar=add(body,new T.Mesh(new T.TorusGeometry(.103,.016,12,56),trim),0,2.208,.003);collar.rotation.x=Math.PI/2;collar.scale.set(1,.91,1);
  for(const side of [-1,1]){
-  sculptLine(body,opening.slice(0,-2).map(([y,w])=>[side*w,y,torsoFront(side*w,y)+.024]),.008,trim);
   tailoredSurface(body,[[.12,side*.158,.018,.076,.077],[.19,side*.158,.012,.083,.088],[.43,side*.156,0,.086,.092],[.68,side*.151,-.012,.093,.102],[.90,side*.140,-.008,.106,.111],[1.13,side*.126,0,.132,.129],[1.36,side*.119,0,.132,.135],[1.46,side*.112,0,.12,.119]],pants,40);
   // Rounded sneakers, slim light-coloured sole and simple lace detailing.
   oval(body,side*.158,.073,.092,.095,.052,.169,sole,28);
@@ -270,61 +266,66 @@ if(p.id==="hub"){
  oval(body,0,1.403,-.004,.24,.15,.154,pants,36);
  tapered(body,[0,2.15,-.006],[0,2.34,0],.092,.088,skin,36);
  const head=new T.Group();body.add(head);
- // Sculpted cartoon head: deliberately original simplified features, no photograph.
- const profile=[[2.155,.008,.070,.009],[2.178,.082,.049,.080],[2.225,.143,.032,.130],[2.278,.180,.014,.162],[2.35,.198,.005,.185],[2.42,.212,0,.192],[2.49,.209,-.006,.181],[2.56,.200,-.008,.174],[2.63,.170,-.012,.153],[2.69,.115,-.015,.105],[2.728,.004,-.015,.004]];
- const rings=64,steps=80,verts=[],colors=[],indices=[];
- const baseColor=new T.Color(0xc58b63),beardColor=new T.Color(0x896951),cheekColor=new T.Color(0xce9272);
+ // A single symmetrical smooth face surface: features follow its actual curvature.
+ const profile=[[2.15,.002,.061,.004],[2.174,.075,.044,.072],[2.215,.135,.026,.125],[2.265,.172,.014,.159],[2.33,.195,.004,.181],[2.40,.211,0,.193],[2.46,.214,-.005,.188],[2.53,.205,-.009,.181],[2.60,.192,-.014,.170],[2.66,.156,-.015,.140],[2.71,.091,-.014,.082],[2.736,.002,-.014,.003]];
  function gauss(v,c,w){return Math.exp(-Math.pow((v-c)/w,2))}
- function smoothProfile(y){let k=0;while(k<profile.length-2&&y>profile[k+1][0])k++;const p=profile[k],q=profile[k+1],a=profile[Math.max(0,k-1)],b=profile[Math.min(profile.length-1,k+2)],t=(y-p[0])/(q[0]-p[0]),t2=t*t,t3=t2*t;return [1,2,3].map(j=>{const m0=(q[j]-a[j])/(q[0]-a[0])*(q[0]-p[0]),m1=(b[j]-p[j])/(b[0]-p[0])*(q[0]-p[0]);return (2*t3-3*t2+1)*p[j]+(t3-2*t2+t)*m0+(-2*t3+3*t2)*q[j]+(t3-t2)*m1})}
- for(let i=0;i<=rings;i++){const y=2.155+.573*i/rings,[w,c,d]=smoothProfile(y);
-  for(let j=0;j<=steps;j++){const t=j/steps*Math.PI*2-Math.PI,x=Math.sin(t)*w,front=Math.max(0,Math.cos(t)),ax=Math.abs(x);
-   const socket=-.016*gauss(ax,.085,.06)*gauss(y,2.451,.030)*front;
-   const cheeks=.010*gauss(ax,.135,.06)*gauss(y,2.385,.053)*front;
-   const nose=(.020*gauss(x,0,.032)*gauss(y,2.42,.058)+.043*gauss(x,0,.037)*gauss(y,2.367,.028))*front;
-   const z=c+Math.cos(t)*d+socket+cheeks+nose;
-   verts.push(x,y,z);
-   const stubble=front*(.20*gauss(y,2.245,.058)+.12*gauss(y,2.315,.05)*gauss(ax,.15,.06));
-   const color=baseColor.clone().lerp(cheekColor,.19*gauss(y,2.38,.052)*gauss(ax,.13,.07)*front).lerp(beardColor,stubble);
-   colors.push(color.r,color.g,color.b);
-   if(i<rings&&j<steps){const n=i*(steps+1)+j;indices.push(n,n+1,n+steps+1,n+1,n+steps+2,n+steps+1)}
-  }
- }
+ function faceProfile(y){y=T.MathUtils.clamp(y,profile[0][0],profile[profile.length-1][0]);let k=0;while(k<profile.length-2&&y>profile[k+1][0])k++;const p=profile[k],q=profile[k+1],a=profile[Math.max(0,k-1)],b=profile[Math.min(profile.length-1,k+2)],t=(y-p[0])/(q[0]-p[0]),t2=t*t,t3=t2*t;return [1,2,3].map(j=>{const m0=(q[j]-a[j])/(q[0]-a[0])*(q[0]-p[0]),m1=(b[j]-p[j])/(b[0]-p[0])*(q[0]-p[0]);return (2*t3-3*t2+1)*p[j]+(t3-2*t2+t)*m0+(-2*t3+3*t2)*q[j]+(t3-t2)*m1})}
+ function relief(x,y){const ax=Math.abs(x);return -.013*gauss(ax,.088,.052)*gauss(y,2.455,.028)+.010*gauss(ax,.133,.056)*gauss(y,2.392,.050)+.009*gauss(ax,.081,.068)*gauss(y,2.500,.023)+.032*gauss(x,0,.025)*gauss(y,2.421,.060)+.048*gauss(x,0,.033)*gauss(y,2.369,.024)+.012*gauss(ax,.028,.016)*gauss(y,2.353,.017)+.007*gauss(x,0,.059)*gauss(y,2.306,.027)}
+ function faceZ(x,y){const [w,c,d]=faceProfile(y),f=Math.sqrt(Math.max(0,1-(x/Math.max(w,.001))**2));return c+d*f+relief(x,y)*f}
+ const rings=100,steps=112,verts=[],colors=[],indices=[],baseColor=new T.Color(0xc58d69),shadowColor=new T.Color(0x8a6856),warmColor=new T.Color(0xd59b77);
+ for(let i=0;i<=rings;i++){const y=2.15+.586*i/rings,[w,c,d]=faceProfile(y);for(let j=0;j<=steps;j++){
+  const t=j/steps*Math.PI*2-Math.PI,x=Math.sin(t)*w,f=Math.cos(t);
+  verts.push(x,y,c+f*d+Math.max(0,f)*relief(x,y));
+  const beard=Math.max(0,f)*(.18*gauss(y,2.245,.052)+.08*gauss(y,2.30,.048)*gauss(Math.abs(x),.15,.05));
+  const tone=baseColor.clone().lerp(warmColor,.18*gauss(Math.abs(x),.13,.06)*gauss(y,2.39,.049)*Math.max(0,f)).lerp(shadowColor,beard);colors.push(tone.r,tone.g,tone.b);
+  if(i<rings&&j<steps){const n=i*(steps+1)+j;indices.push(n,n+1,n+steps+1,n+1,n+steps+2,n+steps+1)}
+ }}
  const faceGeo=new T.BufferGeometry();faceGeo.setAttribute("position",new T.Float32BufferAttribute(verts,3));faceGeo.setAttribute("color",new T.Float32BufferAttribute(colors,3));faceGeo.setIndex(indices);faceGeo.computeVertexNormals();
- add(head,new T.Mesh(faceGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:.91,metalness:0})));
- const earInner=mat(0xa96951,0,.92),eyeWhite=mat(0xe9ded0,0,.82),iris=mat(0x5c3927,0,.68),pupil=mat(0x241c19,0,.78),lid=mat(0xb17a56,0,.9),lip=mat(0xa45e4d,0,.91),mouth=mat(0x754739,0,.96);
- for(const side of [-1,1]){
-  oval(head,side*.202,2.411,.005,.038,.064,.032,skin,28);
-  oval(head,side*.222,2.414,.030,.016,.031,.009,earInner,20);
-  // Clean expressive almond eyes; no enlarged glossy doll eyes.
-  const eye=oval(head,side*.083,2.452,.169,.047,.025,.021,eyeWhite,32);eye.rotation.y=side*.15;
-  oval(head,side*.080,2.452,.188,.017,.021,.007,iris,28);
-  oval(head,side*.080,2.452,.195,.009,.013,.003,pupil,24);
-  oval(head,side*.080-.005,2.461,.198,.004,.004,.002,eyeWhite,12);
-  sculptLine(head,[[side*.038,2.452,.180],[side*.060,2.474,.186],[side*.094,2.477,.181],[side*.128,2.453,.156]],.006,lid,16);
-  sculptLine(head,[[side*.040,2.451,.179],[side*.070,2.432,.185],[side*.105,2.435,.172],[side*.128,2.453,.156]],.004,skin,16);
-  sculptLine(head,[[side*.034,2.494,.185],[side*.064,2.508,.183],[side*.096,2.508,.169],[side*.135,2.493,.147]],.011,hair,18);
+ add(head,new T.Mesh(faceGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:.84,metalness:0})));
+ const eyeWhite=mat(0xf0e7dc,0,.72),iris=mat(0x563823,0,.62),pupil=mat(0x211c1b,0,.65),browMat=mat(0x302724,0,.92),lid=mat(0x875843,0,.9),lip=mat(0xb57460,0,.89),mouth=mat(0x75483d,0,.93),earInner=mat(0xb8795d,0,.9);
+ // Curved decals are actual 3D geometry, tightly conforming to the face.
+ // This avoids floating eyeballs, crooked lips and buried features.
+ function facePatch(cx,cy,rx,ry,material,offset=.004,shape=(x)=>Math.sqrt(Math.max(0,1-x*x)),slope=0){const v=[],ix=[],nx=36,ny=12;
+  for(let i=0;i<=nx;i++){const u=-1+2*i/nx,x=cx+rx*u,h=ry*shape(u);for(let j=0;j<=ny;j++){const y=cy+slope*u+h*(-1+2*j/ny);v.push(x,y,faceZ(x,y)+offset)}}
+  for(let i=0;i<nx;i++)for(let j=0;j<ny;j++){const n=i*(ny+1)+j;ix.push(n,n+ny+1,n+1,n+1,n+ny+1,n+ny+2)}
+  const geo=new T.BufferGeometry();geo.setAttribute("position",new T.Float32BufferAttribute(v,3));geo.setIndex(ix);geo.computeVertexNormals();const m=material.clone();m.side=T.DoubleSide;return add(head,new T.Mesh(geo,m));
  }
- oval(head,0,2.365,.222,.033,.022,.018,skin,28);
- for(const side of [-1,1])oval(head,side*.025,2.352,.214,.011,.005,.008,earInner,16);
- oval(head,0,2.307,.184,.041,.009,.009,lip,24);
- sculptLine(head,[[-.057,2.324,.167],[-.032,2.314,.185],[0,2.311,.190],[.032,2.314,.185],[.057,2.324,.167]],.0045,mouth,24);
- // Continuous swept hair with sculptural wave pattern, not separate balls.
- const hv=[],hc=[],hi=[],hr=42,hs=96,darkHair=new T.Color(0x262221),fadeHair=new T.Color(0x57443a);
+ function faceStroke(points,r,m,offset=.009){return sculptLine(head,points.map(([x,y])=>[x,y,faceZ(x,y)+offset]),r,m,28)}
+ for(const side of [-1,1]){
+  oval(head,side*.205,2.405,.006,.034,.057,.028,skin,32);
+  oval(head,side*.224,2.407,.029,.013,.027,.007,earInner,24);
+  const x=side*.086,y=2.458;
+  facePatch(x,y,.045,.020,eyeWhite,.009,u=>Math.pow(Math.max(0,1-u*u),.72),side*.002);
+  facePatch(x,y,.0145,.017,iris,.013);
+  facePatch(x,y,.0075,.011,pupil,.016);
+  facePatch(x-.0045,y+.006,.0035,.004,eyeWhite,.019);
+  const inner=side*.041,outer=side*.131;
+  faceStroke([[inner,y],[side*.058,y+.013],[side*.085,y+.020],[side*.113,y+.013],[outer,y+.002]],.0042,lid,.014);
+  faceStroke([[side*.039,2.501],[side*.064,2.512],[side*.092,2.514],[side*.116,2.508],[side*.138,2.497]],.008,browMat,.008);
+  facePatch(side*.022,2.350,.009,.0035,earInner,.005);
+ }
+ // One centred, softly smiling mouth with two symmetric corners and restrained lip colour.
+ facePatch(0,2.305,.048,.009,lip,.007,u=>Math.pow(Math.max(0,1-u*u),.72));
+ faceStroke([[-.055,2.318],[-.033,2.312],[0,2.309],[.033,2.312],[.055,2.318]],.0032,mouth,.013);
+ // A groomed, swept-back sculpted hairstyle, following the head rather than a cap.
+ const hv=[],hc=[],hi=[],hr=52,hs=112,darkHair=new T.Color(0x2b2523),fadeHair=new T.Color(0x59473c);
  for(let i=0;i<=hr;i++){const f=i/hr;for(let j=0;j<=hs;j++){
-  const theta=j/hs*Math.PI*2,frontness=Math.max(0,Math.cos(theta)),backness=Math.max(0,-Math.cos(theta));
-  const boundary=1.52-.33*frontness**2+.42*backness**1.5;
-  const polar=.001+f*(boundary+.035*Math.sin(theta*5+.4)*frontness);
-  const wave=(.0045*Math.sin(theta*12+polar*10)+.002*Math.sin(theta*25-polar*13))*Math.sin(polar)*Math.pow(1-f,.3);
-  const x=(.218+wave)*Math.sin(polar)*Math.sin(theta),y=2.489+(.278+wave)*Math.cos(polar),z=-.015+(.209+wave)*Math.sin(polar)*Math.cos(theta);
-  hv.push(x,y,z);const fade=T.MathUtils.smoothstep(f,.80,1)*(1-.95*frontness),tone=darkHair.clone().lerp(fadeHair,fade*.47).multiplyScalar(.94+.10*Math.sin(theta*12+polar*10)**2);hc.push(tone.r,tone.g,tone.b);
+  const theta=j/hs*Math.PI*2,front=Math.max(0,Math.cos(theta)),back=Math.max(0,-Math.cos(theta));
+  const boundary=1.60-.49*front**1.8+.34*back**1.3;
+  const polar=.001+f*(boundary+.034*Math.sin(theta*3+.9)*front);
+  const sweep=theta+.26*Math.sin(polar),wave=(.004*Math.sin(sweep*15+polar*8)+.002*Math.sin(sweep*31-polar*11))*Math.sin(polar)*Math.pow(1-f,.45);
+  const y=2.493+(.282+wave)*Math.cos(polar),[w,c,d]=faceProfile(Math.min(2.733,y));
+  const x=(.221+wave)*Math.sin(polar)*Math.sin(theta)+.012*Math.sin(polar)*Math.pow(1-f,1.2),z=-.018+(.211+wave)*Math.sin(polar)*Math.cos(theta);
+  hv.push(x,y,z);
+  const shade=T.MathUtils.smoothstep(f,.79,1)*(1-.96*front),tone=darkHair.clone().lerp(fadeHair,shade*.50).multiplyScalar(.94+.12*Math.sin(sweep*15+polar*8)**2);hc.push(tone.r,tone.g,tone.b);
   if(i<hr&&j<hs){const n=i*(hs+1)+j;hi.push(n,n+hs+1,n+1,n+1,n+hs+1,n+hs+2)}
  }}
  const hairGeo=new T.BufferGeometry();hairGeo.setAttribute("position",new T.Float32BufferAttribute(hv,3));hairGeo.setAttribute("color",new T.Float32BufferAttribute(hc,3));hairGeo.setIndex(hi);hairGeo.computeVertexNormals();
- add(head,new T.Mesh(hairGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:.86,metalness:0,side:T.DoubleSide})));
+ add(head,new T.Mesh(hairGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:.79,metalness:0,side:T.DoubleSide})));
  // Adult athletic silhouette: roughly 7 heads high; shoulders substantially wider than hips.
- head.scale.setScalar(.76);head.rotation.x=-.045;head.rotation.z=-.025;
+ head.scale.setScalar(.81);head.rotation.x=0;head.rotation.z=0;
  const chin=new T.Vector3(0,2.155,.02),seat=new T.Vector3(0,2.255,.02);
- head.position.copy(seat).sub(chin.clone().multiplyScalar(.76).applyEuler(head.rotation));
+ head.position.copy(seat).sub(chin.clone().multiplyScalar(.81).applyEuler(head.rotation));
  body.scale.setScalar(1.14);
  moAvatarJob={group:body,url:"/creation-engine/assets/mo-avatar-stylized.glb",height:2.72};
  const ring=g(0,.42,0,0,0,0);for(const [radius,width,material] of [[1.43,.022,mat(0xc5a77e,.72,.4)],[1.57,.009,a]]){const r=add(ring,torus(radius,width,material));r.rotation.x=Math.PI/2}
@@ -650,7 +651,7 @@ for(const [id,o] of objects){const want=id===active&&opened?1:0;o.progress=pause
  }
  const guideLayer=document.getElementById("labelGuides");if(phone){guideLayer.setAttribute("viewBox","0 0 "+canvasRect.width+" "+canvasRect.height);guideLayer.innerHTML=guides.join("")}else if(guideLayer.childNodes.length)guideLayer.replaceChildren();
  if(renderer.shadowMap.enabled&&frameCount%3===0)renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera)}
-ui.setEngine({select,setExpanded,highlight,setPanel});mobileReady=true;fly("hub",phoneLayout());refreshQuality(true);camera.updateMatrixWorld();orientExhibits(camera,objects.values());window.elasragPortfolioDiagnostics=()=>({version:"1.6",models:{...modelStatus},selected:active,quality,pixelRatio:renderer.getPixelRatio(),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,projectCount:objects.size-1,zoomLimits:{minDistance:controls.minDistance,maxDistance:controls.maxDistance,minZoom:controls.minZoom,maxZoom:controls.maxZoom},detailLevels:Object.fromEntries([...objects].map(([id,o])=>[id,o.detailLevel])),shadowSize:key.shadow.mapSize.x,facing:"camera-facing yaw / stationary pedestals",webgl:true});renderer.render(scene,camera);document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();rendering=false;for(const b of document.querySelectorAll("[data-view]"))b.disabled=true;labels.hidden=true;document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceMoAvatar();void enhanceLighting();
+ui.setEngine({select,setExpanded,highlight,setPanel});mobileReady=true;fly("hub",phoneLayout());refreshQuality(true);camera.updateMatrixWorld();orientExhibits(camera,objects.values());window.elasragPortfolioDiagnostics=()=>({version:"1.7",models:{...modelStatus},selected:active,quality,pixelRatio:renderer.getPixelRatio(),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,projectCount:objects.size-1,zoomLimits:{minDistance:controls.minDistance,maxDistance:controls.maxDistance,minZoom:controls.minZoom,maxZoom:controls.maxZoom},detailLevels:Object.fromEntries([...objects].map(([id,o])=>[id,o.detailLevel])),shadowSize:key.shadow.mapSize.x,facing:"camera-facing yaw / stationary pedestals",webgl:true});renderer.render(scene,camera);document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();rendering=false;for(const b of document.querySelectorAll("[data-view]"))b.disabled=true;labels.hidden=true;document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceMoAvatar();void enhanceLighting();
 }
 boot().catch(err=>{console.warn("Workspace rendering unavailable",err);document.getElementById("loadText").textContent="3D rendering is unavailable on this device or network.";renderStatus.textContent="Accessible project directory / fallback";document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true")});
 </script>
