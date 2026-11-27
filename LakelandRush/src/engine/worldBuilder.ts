@@ -18,7 +18,7 @@ import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
 import { buildCoffeeShop } from './coffeeShop';
 import {buildBlackSheepStreetFacade} from './blackSheepStreet';
-import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments} from '../geo/blackSheepStreet';
+import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow} from '../geo/blackSheepStreet';
 import {buildPetShop} from './petShop';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
@@ -862,6 +862,8 @@ export function buildChunkGroup(
     const yellow=new THREE.MeshStandardMaterial({color:0xd9b94c,roughness:.88,side:THREE.DoubleSide});streetMaterials.push(yellow);
     addBatch(lakeRoadPavements().map(p=>groundSurface(p,surfaceGround,.205,true)),pavement,false,true);
     addBatch(lakeRoadLineSegments().map(p=>groundSurface(p,surfaceGround,.139,true)),yellow,false);
+    const arrow=new THREE.MeshStandardMaterial({color:0xddd8c8,roughness:.93,side:THREE.DoubleSide});streetMaterials.push(arrow);
+    addBatch([groundSurface(lakeRoadArrow(),surfaceGround,.142,true)],arrow,false);
   }
   addBatch(gravelGeos,materials.gravelPath,false,true);
   addBatch(railGeos, materials.railSteel, false);
