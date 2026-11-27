@@ -18,6 +18,8 @@ import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
 import { buildCoffeeShop } from './coffeeShop';
 import {buildBlackSheepStreetFacade} from './blackSheepStreet';
+import {buildLibraryFacade,buildLibraryBusShelters} from './libraryBusStop';
+import {LIBRARY_ID,LIBRARY_NEIGHBOURS,KELSICK_CHUNK,busStopPavements,busStopBay,SHELTERS,kelsickZ} from '../geo/libraryBusStop';
 import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow,lakeRoadKerbs,lakeRoadPavingJoints,lakeRoadDrainCentres} from '../geo/blackSheepStreet';
 import {buildPetShop} from './petShop';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
@@ -704,12 +706,13 @@ export function buildChunkGroup(
   for (const b of chunk.buildings) {
     const street=chunk.key===BLACK_SHEEP_STREET_CHUNK&&(b.id===BLACK_SHEEP_BUILDING||b.id===LAKE_ROAD_CORNER_BUILDING);
     // Reference-authored streets replace legacy GLB assets instead of layering over them.
-    const asset = street?undefined:buildingAssets.get(b.id);
+    const library=chunk.key===KELSICK_CHUNK&&(b.id===LIBRARY_ID||LIBRARY_NEIGHBOURS.some(id=>id===b.id));
+    const asset = street||library?undefined:buildingAssets.get(b.id);
     const visualBuilding=street&&b.id===BLACK_SHEEP_BUILDING?{...b,h:Math.max(b.h,9.8),levels:3}:b;
     const built = buildLakelandBuildingGeometries(visualBuilding, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
     if (!built) continue;
     const coffee=chunk.key==='0_-1'?(b.id===WATERHEAD_COFFEE_ID?buildCoffeeShop(b,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):b.id===PET_SHOP_ID?buildPetShop(b,chunk,surfaceGround,materials.stoneWall,materials.slateRoof):null):null;
-    const localFrontage=street?buildBlackSheepStreetFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):null;
+    const localFrontage=street?buildBlackSheepStreetFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):library?buildLibraryFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.slateRoof):null;
     if(localFrontage){group.add(localFrontage.group);customBuildings.push(localFrontage);customIds.add(b.id);}
     let roofAt:SolidCollider['roofAt'];
     if(coffee){
@@ -1129,6 +1132,23 @@ export function buildChunkGroup(
     group.add(trunks, crowns);
   }
 
+  if(chunk.key===KELSICK_CHUNK){
+    const shelters=buildLibraryBusShelters(surfaceGround);group.add(shelters.group);customBuildings.push(shelters);
+    const paving=materials.footpath.clone();paving.color.set(0xa9a59b);streetMaterials.push(paving);
+    const paint=new THREE.MeshStandardMaterial({color:0xc7ab58,roughness:.96,side:THREE.DoubleSide});streetMaterials.push(paint);
+    addBatch(busStopPavements().map(p=>groundSurface(p,surfaceGround,.205,true)),paving,false,true);
+    addBatch(busStopBay().map(p=>groundSurface(p,surfaceGround,.145,true)),paint,false);
+    const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=256;
+    const ctx=canvas.getContext('2d')!;ctx.clearRect(0,0,1024,256);ctx.fillStyle='#cbb36a';ctx.font='bold 178px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('BUS STOP',512,128,980);
+    const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;
+    const mat=new THREE.MeshBasicMaterial({map:tex,transparent:true,depthWrite:false,side:THREE.DoubleSide,polygonOffset:true,polygonOffsetFactor:-1});streetMaterials.push(mat);
+    for(const s of SHELTERS){
+      const x=s.x,z=kelsickZ(x)-3.12,y=Math.max(.42,surfaceGround(x,z))+.157;
+      const geo=new THREE.PlaneGeometry(4.6,1.12);geo.rotateX(-Math.PI/2);disposables.push(geo);
+      const marking=new THREE.Mesh(geo,mat);marking.position.set(x,y,z);marking.rotation.y=Math.atan2(kelsickZ(x-1)-kelsickZ(x+1),2);group.add(marking);
+    }
+    customBuildings.push({group:new THREE.Group(),dispose:()=>tex.dispose()});
+  }
   const siteDetails=buildSiteDetails(chunk,terrain,lake,surfaceGround);
   group.add(siteDetails.group);
   colliders.push(...siteDetails.colliders);
