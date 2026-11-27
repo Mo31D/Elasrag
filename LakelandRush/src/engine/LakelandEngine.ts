@@ -468,12 +468,12 @@ export class LakelandEngine {
         return true;
       };
       this.rowBoats=createRowBoats(this.scene,(x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z));
-      this.pedestrians=new PedestrianWorld(this.scene,(x,z)=>this.walkSurface(x,z),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.25)));
+      this.pedestrians=new PedestrianWorld(this.scene,(x,z)=>this.walkSurface(x,z),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.25)),(x,z)=>this.region.isAnimalRoadFree(x,z));
       this.busService=new LakesiderService(this.scene,(x,z)=>this.walkSurface(x,z),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.12))&&!this.pedestrians?.near(x,z,.85)&&
         (!!this.busService?.mode||this.flying||Math.abs(this.playerY-this.walkSurface(x,z))>2||Math.hypot(x-this.playerX,z-this.playerZ)>1.0),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.4))&&!this.pedestrians?.near(x,z,.65),()=>[...(this.pedestrians?.vulnerablePositions()??[]),...(!this.busService?.mode&&!this.flying&&this.playerY<this.walkSurface(this.playerX,this.playerZ)+2?[{x:this.playerX,z:this.playerZ}]:[])]);
       this.waterheadLife=new WaterheadLife(this.scene,(x,z)=>this.region.isInWater(x,z),
         (x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z),
-        (x,z)=>!this.region.isInWater(x,z)&&unobstructed(x,z),
+        (x,z)=>!this.region.isInWater(x,z)&&unobstructed(x,z)&&this.region.isAnimalRoadFree(x,z),
         (x,z)=>this.walkSurface(x,z),(x,z,r)=>this.waterRipples?.emit(x,z,r));
 
       this.createExploreSheep();
@@ -913,10 +913,24 @@ export class LakelandEngine {
    let best:AnimalActor|null=null,dist=Infinity;for(const a of candidates){a.root.updateMatrixWorld(true);const hit=ray.intersectObject(a.root,true)[0];if(hit&&hit.distance<dist){let blocked=false;for(let t=.4;t<hit.distance-.25;t+=.4){const q=ray.ray.at(t,new THREE.Vector3());if(this.solidTop(q.x,q.z,.08)>q.y){blocked=true;break;}}if(!blocked){dist=hit.distance;best=a;}}}
    this.animalTarget=best;this.pushHudSnapshot();
   }
+  private grazingGround(x:number,z:number,clearance=0){
+   return this.region.isGrazingGround(x,z,clearance)&&!Number.isFinite(this.solidTop(x,z,.75))&&this.deckHeightAt(x,z)===-Infinity&&!this.busService?.blocks(x,z,0);
+  }
   private createExploreSheep(){
-   // Gameplay flock placements beside existing local mapped approaches; not real livestock locations.
+   // Small flocks only on open grass-rendered ground away from paved corridors.
    const path=compileRoutePolyline(navigation.approaches.find(a=>a.id==='west')!.points.map(q=>[q[0],q[1]]));
-   for(let i=0;i<12;i++){const s=sampleCompiledRoute(path,Math.min(path.totalLength-10,90+i*39));for(const side of [1,-1]){const x=s.x+s.rx*side*(18+i%3*4),z=s.z+s.rz*side*(18+i%3*4);if(this.region.isInWater(x,z)||Number.isFinite(this.solidTop(x,z,.7)))continue;const a=sheepActor();a.root.position.set(x,Math.max(.45,this.walkSurface(x,z)),z);a.root.rotation.y=i*2.4;a.root.visible=false;this.scene.add(a.root);this.animalSheep.push(a);this.sheepHomes.set(a,{x,z,phase:i*2.399});break;}}
+   for(let i=0;i<8;i++){
+    const s=sampleCompiledRoute(path,Math.min(path.totalLength-10,90+i*72));
+    let placed=false;
+    for(const offset of [38,55,75,95,120]){
+     for(const side of [1,-1]){
+      const x=s.x+s.rx*side*offset,z=s.z+s.rz*side*offset;
+      if(!this.grazingGround(x,z,9)||this.animalSheep.some(o=>Math.hypot(x-o.root.position.x,z-o.root.position.z)<14))continue;
+      const sheep=sheepActor();sheep.root.position.set(x,Math.max(.45,this.walkSurface(x,z)),z);sheep.root.rotation.y=i*2.4;sheep.root.visible=false;this.scene.add(sheep.root);this.animalSheep.push(sheep);this.sheepHomes.set(sheep,{x,z,phase:i*2.399});placed=true;break;
+     }
+     if(placed)break;
+    }
+   }
   }
   private enterAnimal(){
    const a=this.animalTarget;if(!a||this.animal||!a.root.visible||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.flying||this.occupiedBoat||this.busService?.mode||Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)>14){this.animalTarget=null;return false;}
@@ -1304,20 +1318,8 @@ export class LakelandEngine {
       });
     }
 
-    // Grazing Herdwick Sheep along road verges
-    for (let d = 80; d < total - 80; d += 140) {
-      const s = sampleCompiledRoute(this.compiledRoute, d);
-      const side = (d / 140) % 2 === 0 ? 1 : -1;
-      const sx = s.x + s.rx * (side * 10.5);
-      const sz = s.z + s.rz * (side * 10.5);
-      if (this.region.isInWater(sx, sz)) continue;
-      const sy = Math.max(0.5, this.region.getTerrainHeight(sx, sz));
-      const sh = createHerdwickSheepModel();
-      sh.position.set(sx, sy, sz);
-      sh.rotation.y = (d % 6.28);
-      this.routePropsGroup.add(sh);
-      this.sheep.push({ mesh: sh, x: sx, z: sz, baseX: sx, baseZ: sz, phase: d * 0.1 });
-    }
+    // No automatic livestock alongside sprint carriageways.
+
   }
 
   private populateExplorerTokens(): void {
@@ -1453,14 +1455,14 @@ export class LakelandEngine {
     for(const a of this.animalSheep){
       if(a.root.userData.animalControlled)continue;const pos=a.root.position,home=this.sheepHomes.get(a)!;
       a.root.visible=this.activeRoute.mode==='freeroam'&&Math.hypot(pos.x-this.playerX,pos.z-this.playerZ)<150;if(!a.root.visible)continue;
-      const valid=(x:number,z:number)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.65))&&!this.busService?.blocks(x,z,0);
-      if(!valid(pos.x,pos.z)){a.root.visible=false;continue;}
+      const valid=(x:number,z:number)=>Math.hypot(x-home.x,z-home.z)<=9&&this.grazingGround(x,z,1);
+      if(!valid(pos.x,pos.z)){if(valid(home.x,home.z)){pos.set(home.x,Math.max(.45,this.walkSurface(home.x,home.z)),home.z);}else{a.root.visible=false;continue;}}
       const alarm=fleeDirection(pos.x,pos.z,animalThreats),distance=Math.hypot(pos.x-home.x,pos.z-home.z),graze=!alarm&&distance<7&&Math.sin(this.elapsedTime*.16+home.phase)<.55;
       const yaw=alarm?alarm.yaw:distance>7?Math.atan2(pos.x-home.x,pos.z-home.z):home.phase+Math.sin(this.elapsedTime*.12+home.phase)*1.7;
       a.root.rotation.y=turnTowards(a.root.rotation.y,yaw,alarm?3:1.1,dt);
       const speed=alarm?1.1+alarm.alarm*1.8:graze?0:.52,nx=pos.x-Math.sin(a.root.rotation.y)*speed*dt,nz=pos.z-Math.cos(a.root.rotation.y)*speed*dt;
       const moved=speed>0&&valid(nx,nz)&&!this.animalSheep.some(o=>o!==a&&o.root.visible&&Math.hypot(nx-o.root.position.x,nz-o.root.position.z)<.8);
-      if(moved){pos.x=nx;pos.z=nz;}pos.y=Math.max(.45,this.walkSurface(pos.x,pos.z));a.pose(this.elapsedTime,moved?speed:0,false,false,graze);
+      if(moved){pos.x=nx;pos.z=nz;}else if(speed>0){a.root.rotation.y=turnTowards(a.root.rotation.y,Math.atan2(pos.x-home.x,pos.z-home.z),3,dt);}pos.y=Math.max(.45,this.walkSurface(pos.x,pos.z));a.pose(this.elapsedTime,moved?speed:0,false,false,graze);
     }
     if(this.activeRoute.mode==='freeroam'){
       if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
