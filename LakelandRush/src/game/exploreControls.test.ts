@@ -13,8 +13,8 @@ test('fast movement cannot tunnel through a narrow obstacle',()=>{const r=sweepM
 
 import {EXPLORE_MPH,EXPLORE_SPEED,EXPLORE_JUMP_VELOCITY,EXPLORE_JUMP_HEIGHT,EXPLORE_GRAVITY,secondJumpVelocity,advanceExploreJump} from './exploreControls';
 test('exact requested miles-per-hour settings converted to metres per second',()=>{
- assert.deepEqual(EXPLORE_MPH,{walk:6,run:10,sprint:20});
- near(EXPLORE_SPEED.walk,2.68224);near(EXPLORE_SPEED.run,4.4704);near(EXPLORE_SPEED.sprint,8.9408);
+ assert.deepEqual(EXPLORE_MPH,{walk:10,run:25,sprint:50});
+ near(EXPLORE_SPEED.walk,4.4704);near(EXPLORE_SPEED.run,11.176);near(EXPLORE_SPEED.sprint,22.352);
 });
 test('second jump reaches twice the original apex from early, apex or descending positions',()=>{
  for(const t of [0,.05,EXPLORE_JUMP_VELOCITY/EXPLORE_GRAVITY,.35]){

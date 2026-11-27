@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState,type PointerEvent} from 'react';
 import {Map,Menu,ArrowUp,RotateCcw,Compass} from 'lucide-react';
 import type {GameHUDProps} from './GameHUD';
-import {floatingInput,EXPLORE_MPH,EXPLORE_PACE_LABEL,type ExplorePace} from '../game/exploreControls';
+import {floatingInput,EXPLORE_PACE_LABEL,type ExplorePace} from '../game/exploreControls';
 import navigation from '../data/ambleside-navigation.json';
 const control='pointer-events-auto flex items-center justify-center rounded-full border border-white/35 bg-slate-950/55 text-white active:bg-white/30 touch-none';
 const paceOrder:ExplorePace[]=['walk','run','sprint'];
@@ -58,13 +58,13 @@ export function ExploreHUD(p:GameHUDProps){
   {!touch&&<div className="absolute bottom-4 left-4 rounded-lg bg-slate-950/60 p-2 text-xs text-white">WASD · drag to look · 1 / 2 / 3 pace · Space jump · E interact</div>}
   <div className="absolute flex flex-col items-end gap-2" style={{right:'max(14px, env(safe-area-inset-right))',bottom:'calc(max(16px, env(safe-area-inset-bottom)) + 4px)'}}>
    {(hud.canEnterShop||hud.insideShop)&&<button type="button" className="pointer-events-auto rounded-xl bg-teal-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={p.onShopDoor}>{hud.insideShop?'Leave shop':'Enter shop'}</button>}
-   {!hud.insideShop&&<div className="pointer-events-auto flex rounded-xl border border-white/20 bg-slate-950/65 p-1 text-xs text-white" role="group" aria-label="Movement speed">{paceOrder.map(mode=><button key={mode} type="button" aria-pressed={pace===mode} className={'min-h-9 rounded-lg px-2.5 touch-none '+(pace===mode?'bg-white/90 font-bold text-slate-900':'text-white/85')} onClick={()=>p.onSetExplorePace(mode)}><span className="block whitespace-nowrap">{EXPLORE_PACE_LABEL[mode]}</span><span className="block text-[10px] opacity-75">{EXPLORE_MPH[mode]} mph</span></button>)}</div>}
+   {!hud.insideShop&&<div className="pointer-events-auto flex rounded-xl border border-white/20 bg-slate-950/65 p-1 text-xs text-white" role="group" aria-label="Movement speed">{paceOrder.map(mode=><button key={mode} type="button" aria-pressed={pace===mode} className={'min-h-9 rounded-lg px-2.5 touch-none '+(pace===mode?'bg-white/90 font-bold text-slate-900':'text-white/85')} onClick={()=>p.onSetExplorePace(mode)}><span className="block whitespace-nowrap">{EXPLORE_PACE_LABEL[mode]}</span></button>)}</div>}
    <div className="flex items-end gap-3">
     <button type="button" aria-label="Recenter camera behind player" onClick={p.onRecenterExploreCamera} className={control+' h-11 w-11'}><RotateCcw size={19}/></button>
     <button type="button" aria-label="Switch camera view" onClick={p.onToggleExploreView} className={control+' h-11 w-11'}><Compass size={21}/></button>
     {touch&&!hud.insideShop&&<button type="button" aria-label="Jump (tap twice for double jump)" className={control+' h-16 w-16'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
    </div>
   </div>
-  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V12</div>
+  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V13</div>
  </div>;
 }
