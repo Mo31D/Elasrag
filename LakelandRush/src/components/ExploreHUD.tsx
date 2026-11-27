@@ -1,7 +1,7 @@
 import {useEffect,useRef,useState,type PointerEvent} from 'react';
 import {Map,Menu,ArrowUp,ArrowDown,RotateCcw,Compass,Bird} from 'lucide-react';
 import type {GameHUDProps} from './GameHUD';
-import {floatingInput,fixedStickHit,EXPLORE_PACE_LABEL,type ExplorePace} from '../game/exploreControls';
+import {floatingInput,floatingStickOrigin,EXPLORE_PACE_LABEL,type ExplorePace} from '../game/exploreControls';
 import navigation from '../data/ambleside-navigation.json';
 import {mapDistance} from '../geo/mapTravel';
 const control='pointer-events-auto flex items-center justify-center rounded-full border border-white/35 bg-slate-950/55 text-white active:bg-white/30 touch-none';
@@ -11,11 +11,14 @@ export function ExploreHUD(p:GameHUDProps){
  const {hud}=p;
  const [touch,setTouch]=useState(()=>window.matchMedia('(pointer: coarse)').matches||navigator.maxTouchPoints>0);
  const [stick,setStick]=useState<{dx:number;dy:number}|null>(null);
+ const [origin,setOrigin]=useState<{x:number;y:number}|null>(null);
+ const zoneRef=useRef<HTMLDivElement>(null);
  const active=useRef<{id:number;x:number;y:number}|null>(null);
  const latest=useRef(p);latest.current=p;
  const mapRef=useRef<HTMLCanvasElement>(null);
  const radius=32;
- function clear(){active.current=null;setStick(null);latest.current.onTouchSteer(0);latest.current.onTouchAdvance(0);latest.current.onFlightVertical(0);}
+ function clearMove(){const a=active.current;active.current=null;setStick(null);setOrigin(null);latest.current.onTouchSteer(0);latest.current.onTouchAdvance(0);if(a&&zoneRef.current?.hasPointerCapture(a.id))zoneRef.current.releasePointerCapture(a.id);}
+ function clear(){clearMove();latest.current.onFlightVertical(0);}
  useEffect(()=>{
    const media=window.matchMedia('(pointer: coarse)');
    const update=()=>{clear();setTouch(media.matches||navigator.maxTouchPoints>0)};
@@ -52,11 +55,13 @@ export function ExploreHUD(p:GameHUDProps){
   </div>
   {p.waypoint&&!hud.insideShop&&<button type="button" aria-label="Clear waypoint" onClick={p.onClearWaypoint} className="absolute top-[112px] left-3 pointer-events-auto max-w-[65vw] rounded-lg bg-slate-950/75 px-2.5 py-1.5 text-left text-xs text-cyan-200"><span className="block truncate">◆ {p.waypoint.name} · {mapDistance({x:hud.playerX,z:hud.playerZ},p.waypoint)}</span><span className="text-[9px] opacity-70">Direct distance · tap to clear</span></button>}
   {hud.actionCallout&&<div className="absolute left-1/2 top-28 max-w-[70%] -translate-x-1/2 rounded-lg bg-slate-950/75 px-3 py-2 text-xs text-white">{hud.actionCallout}</div>}
-  {touch&&<div role="group" aria-label="Fixed movement joystick" data-testid="fixed-joystick" className="pointer-events-auto absolute flex h-[110px] w-[110px] items-center justify-center rounded-full border-2 border-white/30 bg-slate-950/25 touch-none"
-   style={{left:'max(22px, env(safe-area-inset-left))',bottom:'calc(max(18px, env(safe-area-inset-bottom)) + 6px)'}}
-   onPointerDown={e=>{if(active.current||e.button!==0)return;const center=fixedStickHit(e.currentTarget.getBoundingClientRect(),{x:e.clientX,y:e.clientY});if(!center)return;e.preventDefault();e.stopPropagation();active.current={id:e.pointerId,...center};e.currentTarget.setPointerCapture(e.pointerId);move(e);}}
-   onPointerMove={move} onPointerUp={e=>{if(active.current?.id===e.pointerId)clear()}} onPointerCancel={e=>{if(active.current?.id===e.pointerId)clear()}} onLostPointerCapture={e=>{if(active.current?.id===e.pointerId)clear()}}>
-    <div className="pointer-events-none h-12 w-12 rounded-full border border-white/70 bg-white/40 shadow-md" style={{transform:'translate('+(stick?.dx??0)+'px,'+(stick?.dy??0)+'px)'}}/>
+  {touch&&<div ref={zoneRef} role="group" aria-label="Floating movement joystick" data-testid="floating-joystick-zone" className="pointer-events-auto absolute left-0 top-1/2 bottom-0 w-1/2 touch-none"
+   onPointerDown={e=>{if(active.current||e.button!==0)return;const rect=e.currentTarget.getBoundingClientRect();const hit=floatingStickOrigin(rect,{x:e.clientX,y:e.clientY},55);if(!hit)return;e.preventDefault();e.stopPropagation();active.current={id:e.pointerId,...hit.input};setOrigin(hit.visual);setStick({dx:0,dy:0});e.currentTarget.setPointerCapture(e.pointerId);}}
+   onPointerMove={move} onPointerUp={e=>{if(active.current?.id===e.pointerId)clearMove()}} onPointerCancel={e=>{if(active.current?.id===e.pointerId)clearMove()}} onLostPointerCapture={e=>{if(active.current?.id===e.pointerId)clearMove()}}>
+    <div data-testid="floating-joystick" className="pointer-events-none absolute flex h-[110px] w-[110px] items-center justify-center rounded-full border-2 border-white/30 bg-slate-950/25"
+      style={origin?{left:origin.x-55,top:origin.y-55}:{left:'max(22px, env(safe-area-inset-left))',bottom:'calc(clamp(48px, 10dvh, 100px) + env(safe-area-inset-bottom, 0px))'}}>
+      <div className="pointer-events-none h-12 w-12 rounded-full border border-white/70 bg-white/40 shadow-md" style={{transform:'translate('+(stick?.dx??0)+'px,'+(stick?.dy??0)+'px)'}}/>
+    </div>
   </div>}
   {!touch&&<div className="absolute bottom-4 left-4 rounded-lg bg-slate-950/60 p-2 text-xs text-white">WASD · drag to look · 1 / 2 / 3 pace · Space jump/up · Q down · F fly · E interact</div>}
   <div className="absolute flex flex-col items-end gap-2" style={{right:'max(14px, env(safe-area-inset-right))',bottom:'calc(max(16px, env(safe-area-inset-bottom)) + 4px)'}}>
@@ -74,6 +79,6 @@ export function ExploreHUD(p:GameHUDProps){
     {touch&&!hud.busMode&&!hud.insideShop&&!hud.flying&&hud.waterMode!=='swimming'&&hud.waterMode!=='rowing'&&<button type="button" aria-label="Jump (tap twice for double jump)" className={control+' h-16 w-16'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
    </div>
   </div>
-  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V25</div>
+  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V26</div>
  </div>;
 }

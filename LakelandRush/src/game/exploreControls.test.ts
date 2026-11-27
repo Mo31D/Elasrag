@@ -42,3 +42,16 @@ test('fixed joystick stays centred and rejects touches outside the visible disc'
  assert.deepEqual(floatingInput(origin,{x:77,y:535},32),{x:0,y:0});
  const v=floatingInput(origin,{x:110,y:535},32);near(v.x,1);near(v.y,0);
 });
+
+import {floatingStickOrigin} from './exploreControls';
+test('lower-left floating zone accepts arbitrary touches on tablet and phone, starts neutral and keeps disc visible',()=>{
+ for(const [w,h] of [[1024,768],[768,1024],[390,650]]){
+  const rect={left:0,top:h/2,width:w/2,height:h/2};
+  for(const point of [{x:2,y:h/2+2},{x:w/4,y:h*.76},{x:w/2-2,y:h-2}]){
+   const origin=floatingStickOrigin(rect,point)!;assert.ok(origin);assert.deepEqual(floatingInput(origin.input,point,32),{x:0,y:0});
+   assert.ok(origin.visual.x>=55&&origin.visual.x<=rect.width-55);assert.ok(origin.visual.y>=55&&origin.visual.y<=rect.height-55);
+   const v=floatingInput(origin.input,{x:point.x,y:point.y-35},32);near(v.y,1);near(v.x,0);
+  }
+  assert.equal(floatingStickOrigin(rect,{x:w/2+1,y:h*.75}),null);assert.equal(floatingStickOrigin(rect,{x:w/4,y:h/2-1}),null);
+ }
+});

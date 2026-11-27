@@ -19,13 +19,21 @@ try{
  assert.ok(await title.evaluate(e=>e.scrollTop)>0,'title scroll must move');
  await page.screenshot({path:dir+'/title.png'});
  await page.getByRole('button',{name:'Explore freely',exact:true}).click({timeout:60000});
- const stick=page.getByTestId('fixed-joystick');
+ const stick=page.getByTestId('floating-joystick');
  await stick.waitFor({timeout:120000});const before=await stick.boundingBox();
  const bird=page.getByRole('button',{name:'Toggle free flight'});
  assert.equal(await bird.getAttribute('aria-pressed'),'false');
  const canvas=page.getByTestId('game-canvas-mount');
  await page.mouse.move(200,240);await page.mouse.down();await page.mouse.move(260,250,{steps:3});await page.mouse.up();
  const after=await stick.boundingBox();assert.deepEqual(before,after,'camera drag must not move joystick');
+ for(const viewport of [{width:1024,height:768},{width:768,height:1024},{width:390,height:650}]){
+  await page.setViewportSize(viewport);const zone=page.getByTestId('floating-joystick-zone');const z=await zone.boundingBox(),idle=await stick.boundingBox();
+  assert.ok(z&&idle);assert.ok(Math.abs(z.width-viewport.width/2)<2);assert.ok(Math.abs(z.y-viewport.height/2)<2);
+  assert.ok(viewport.height-idle.y-idle.height>=47,'default stick raised above bottom');
+  const x=z.x+z.width*.72,y=z.y+z.height*.28;await page.mouse.move(x,y);await page.mouse.down();
+  const floating=await stick.boundingBox();assert.ok(floating);assert.ok(Math.abs(floating.x+floating.width/2-x)<2);assert.ok(Math.abs(floating.y+floating.height/2-y)<2);
+  await page.mouse.move(x,y-24,{steps:3});await page.mouse.up();assert.deepEqual(await stick.boundingBox(),idle,'release restores idle position');
+ }
  for(const pace of ['Walk','Jog','Run']){const b=page.getByRole('button',{name:pace,exact:true});await b.click();assert.equal(await b.getAttribute('aria-pressed'),'true');}
  await bird.click();await page.waitForFunction(()=>document.querySelector('[aria-label="Toggle free flight"]')?.getAttribute('aria-pressed')==='true');
  await page.getByRole('button',{name:'Fly up',exact:true}).waitFor();await page.getByRole('button',{name:'Fly down',exact:true}).waitFor();
@@ -52,8 +60,8 @@ try{
  await page.getByRole('button',{name:'Ambleside & Waterhead',exact:true}).click();
  await page.getByRole('button',{name:'Bridge House',exact:true}).last().click();
  await page.getByRole('button',{name:'Fast travel',exact:true}).click();
- await page.getByTestId('fixed-joystick').waitFor({timeout:60000});
+ await page.getByTestId('floating-joystick').waitFor({timeout:60000});
  await page.getByRole('button',{name:'Clear waypoint',exact:true}).waitFor();
  await page.screenshot({path:dir+'/arrival.png'});
- assert.deepEqual(errors,[],'uncaught browser errors');console.log('PASS: title scroll, fixed joystick, pace labels, camera gesture, flight toggle, altitude buttons, landing control, gameplay gesture CSS');
+ assert.deepEqual(errors,[],'uncaught browser errors');console.log('PASS: title scroll, floating joystick at phone and tablet sizes, pace labels, camera gesture, flight toggle, altitude buttons, landing control, gameplay gesture CSS');
 }finally{await browser.close();}

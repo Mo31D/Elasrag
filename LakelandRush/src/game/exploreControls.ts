@@ -55,3 +55,12 @@ export function fixedStickHit(rect:{left:number;top:number;width:number;height:n
  const x=rect.left+rect.width/2,y=rect.top+rect.height/2;
  return Math.hypot(point.x-x,point.y-y)<=Math.min(rect.width,rect.height)/2?{x,y}:null;
 }
+
+// The lower-left quadrant owns movement; the actual touch remains the neutral
+// input origin even when the drawn disc must be kept inside the touch area.
+export function floatingStickOrigin(rect:{left:number;top:number;width:number;height:number},point:{x:number;y:number},discRadius=55){
+ const x=point.x-rect.left,y=point.y-rect.top;
+ if(x<0||y<0||x>rect.width||y>rect.height)return null;
+ const clamp=(v:number,size:number)=>size<2*discRadius?size/2:Math.max(discRadius,Math.min(size-discRadius,v));
+ return {input:{x:point.x,y:point.y},visual:{x:clamp(x,rect.width),y:clamp(y,rect.height)}};
+}
