@@ -1,5 +1,6 @@
 import type { RouteDefinition } from '../types/game';
 import navigation from './ambleside-navigation.json';
+import mapped from 'virtual:sprint-network';
 
 function calcLength(pts: Array<[number, number]>): number {
   let len = 0;
@@ -67,7 +68,7 @@ const explorerPts: Array<[number, number]> = [
   [92.6, -247.8],
 ];
 
-export const LAKELAND_ROUTES: RouteDefinition[] = [
+const routeDefinitions: RouteDefinition[] = [
   {
     id: 'waterhead_ambleside',
     title: 'Waterhead & Ambleside Scramble',
@@ -102,11 +103,11 @@ export const LAKELAND_ROUTES: RouteDefinition[] = [
   {
     id: 'bowness_ferry',
     title: 'Bowness & Ferry Nab Dash',
-    subtitle: 'Carve along Glebe Road promenade, cross the Ferry Nab pontoon bridge and race into Far Sawrey.',
+    subtitle: 'Follow the connected mapped road and path network from Bowness to Ferry Nab.',
     difficulty: 'Challenging',
     mode: 'sprint',
     startName: 'Bowness Bay',
-    finishName: 'Far Sawrey',
+    finishName: 'Ferry Nab',
     lengthMeters: calcLength(bownessPts),
     targetTimeSec: 120,
     parScore: 12000,
@@ -121,11 +122,11 @@ export const LAKELAND_ROUTES: RouteDefinition[] = [
   {
     id: 'troutbeck_brockhole',
     title: 'Troutbeck to Brockhole Descent',
-    subtitle: 'High-velocity fell descent from stone-built Troutbeck through Troutbeck Bridge to Low Wood.',
+    subtitle: 'Follow connected mapped roads and paths from Troutbeck towards Brockhole.',
     difficulty: 'Expert',
     mode: 'sprint',
     startName: 'Troutbeck Village',
-    finishName: 'Low Wood Shore',
+    finishName: 'Brockhole',
     lengthMeters: calcLength(troutbeckPts),
     targetTimeSec: 165,
     parScore: 16000,
@@ -173,3 +174,6 @@ export const LAKELAND_ROUTES: RouteDefinition[] = [
     ],
   },
 ];
+
+const localApproaches:RouteDefinition[]=[['lake_road_sprint','Lake Road · A591','Waterhead road split','Ambleside · Lake Road'],['borrans_road_sprint','Borrans Road · A5075 / A593','Waterhead road split','Ambleside · Rothay Road'],['old_lake_road_sprint','Old Lake Road','Lake Road junction','Ambleside · Old Lake Road']].map(([id,title,startName,finishName])=>({id,title,startName,finishName,subtitle:'Race along the same mapped approach used in Free Roam.',difficulty:'Accessible',mode:'sprint',lengthMeters:0,targetTimeSec:100,parScore:6500,waypoints:[],corridorHalfWidth:4.4,landmarks:[]}));
+export const LAKELAND_ROUTES:RouteDefinition[]=[...routeDefinitions.slice(0,2),...localApproaches,...routeDefinitions.slice(2)].flatMap(r=>{if(r.mode==='freeroam')return [r];const path=mapped[r.id];if(!path)return [];return [{...r,waypoints:path.points,raceSegments:path.segments,lengthMeters:calcLength(path.points),landmarks:r.id==='bowness_ferry'||r.id==='troutbeck_brockhole'||r.id==='lakeside_newby'?[]:r.landmarks}];});

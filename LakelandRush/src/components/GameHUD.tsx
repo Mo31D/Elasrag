@@ -337,7 +337,7 @@ const SprintHUD: React.FC<GameHUDProps> = ({
       <button type="button" onClick={onExploreHere} className="pointer-events-auto self-center rounded-xl bg-teal-200 px-4 py-2 text-xs font-bold text-slate-950">Leave race · Explore freely</button>
       {/* Mobile / Touch Controls */}
       {isTouchViewport && (
-        <div className="flex items-end justify-between gap-4 pb-2 pointer-events-auto">
+        <div className="flex items-end justify-between gap-4 pb-[clamp(22px,4dvh,46px)] pointer-events-auto">
           {touchMode === 'joystick' ? (
             <div
               className="relative w-28 h-28 rounded-full bg-slate-950/70 border-2 border-white/25 flex items-center justify-center touch-none"
@@ -371,28 +371,18 @@ const SprintHUD: React.FC<GameHUDProps> = ({
               <button
                 type="button"
                 aria-label="Steer Left"
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  onTouchSteer(-1);
-                }}
-                onTouchEnd={() => onTouchSteer(0)}
-                onMouseDown={() => onTouchSteer(-1)}
-                onMouseUp={() => onTouchSteer(0)}
-                className="w-14 h-14 rounded-2xl bg-slate-950/80 active:bg-amber-500 active:text-slate-950 border border-white/20 text-white font-display font-bold text-xl flex items-center justify-center"
+                onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);onTouchSteer(-1);}}
+                onPointerUp={()=>onTouchSteer(0)} onPointerCancel={()=>onTouchSteer(0)} onLostPointerCapture={()=>onTouchSteer(0)}
+                className="w-[68px] h-[68px] sm:w-[76px] sm:h-[76px] touch-none rounded-2xl bg-slate-950/80 active:bg-amber-500 active:text-slate-950 border border-white/20 text-white font-display font-bold text-2xl flex items-center justify-center"
               >
                 ←
               </button>
               <button
                 type="button"
                 aria-label="Steer Right"
-                onTouchStart={(e) => {
-                  e.preventDefault();
-                  onTouchSteer(1);
-                }}
-                onTouchEnd={() => onTouchSteer(0)}
-                onMouseDown={() => onTouchSteer(1)}
-                onMouseUp={() => onTouchSteer(0)}
-                className="w-14 h-14 rounded-2xl bg-slate-950/80 active:bg-amber-500 active:text-slate-950 border border-white/20 text-white font-display font-bold text-xl flex items-center justify-center"
+                onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);onTouchSteer(1);}}
+                onPointerUp={()=>onTouchSteer(0)} onPointerCancel={()=>onTouchSteer(0)} onLostPointerCapture={()=>onTouchSteer(0)}
+                className="w-[68px] h-[68px] sm:w-[76px] sm:h-[76px] touch-none rounded-2xl bg-slate-950/80 active:bg-amber-500 active:text-slate-950 border border-white/20 text-white font-display font-bold text-2xl flex items-center justify-center"
               >
                 →
               </button>

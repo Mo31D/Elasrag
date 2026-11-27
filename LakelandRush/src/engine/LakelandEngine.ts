@@ -5,7 +5,8 @@ import {driveThrottle,swimSpeed} from '../game/propulsion';
 import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from './rowBoats';
 import {WaterRipples} from './waterRipples';
 import {WaterheadLife} from './waterheadLife';
-import {LakesiderService} from './lakesider';
+import {LakesiderService,makeBus} from './lakesider';
+import {raceWidth,raceTrafficPose} from '../game/raceGeometry';
 import {PedestrianWorld} from './pedestrians';
 import {highestSolid,blocksMove,cameraFraction,WALK_RADIUS,FLIGHT_RADIUS,CAMERA_RADIUS,ROOF_SKIN} from '../game/buildingCollision';
 import { createBlackSheepInterior } from './shopInterior';
@@ -47,7 +48,6 @@ import {
   createDefenderModel,
   createHerdwickSheepModel,
   createLakeSteamerModel,
-  createLakesBusModel,
   createRunnerModel,
   type RunnerRig,
 } from './models';
@@ -99,6 +99,7 @@ interface TrafficActor {
   halfW: number;
   halfL: number;
   nearMissed: boolean;
+  bus?:ReturnType<typeof makeBus>;
 }
 
 interface SteamerActor {
@@ -990,6 +991,7 @@ export class LakelandEngine {
     }
     this.obstacles = [];
     this.tokens = [];
+    for(const v of this.traffic)v.bus?.dispose();
     this.traffic = [];
     this.sheep = [];
 
@@ -1048,12 +1050,13 @@ export class LakelandEngine {
       const s = sampleCompiledRoute(this.compiledRoute, dist);
       const yaw = Math.atan2(-s.tx, -s.tz);
       const yBase = Math.max(0.5, this.region.getTerrainHeight(s.x, s.z));
-      const pattern = Math.floor(dist / 48) % 5;
+      const width=raceWidth(this.compiledRoute,this.activeRoute.raceSegments,dist,this.activeRoute.corridorHalfWidth);
+      const pattern = width<3.4?4:Math.floor(dist / 48) % 5;
 
       if (pattern === 0) {
         // Grindable Lakeside/Stone Parapet Rail + arc of 4 Cairn Tokens
         const railLen = 22;
-        const lane = ((dist / 48) % 2 === 0 ? -1 : 1) * 2.8;
+        const lane = ((Math.floor(dist / 48)) % 2 === 0 ? -1 : 1) * Math.min(2.4,width-.7);
         const railGroup = new THREE.Group();
         const bar = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.22, railLen), railMat);
         bar.position.y = 1.05;
@@ -1090,7 +1093,7 @@ export class LakelandEngine {
         }
       } else if (pattern === 1) {
         // Low Hanging Lakeland Pub/Village Sign Archway -> SLIDE under!
-        const lane = ((dist / 48) % 3 - 1) * 2.5;
+        const lane = 0;
         const arch = new THREE.Group();
         const postL = new THREE.Mesh(new THREE.BoxGeometry(0.35, 3.2, 0.35), timberMat);
         postL.position.set(-2.3, 1.6, 0);
@@ -1120,7 +1123,7 @@ export class LakelandEngine {
         this.tokens.push({ id: tid++, dist, laneOffset: lane, y: yBase + 0.1, mesh: tok, collected: false });
       } else if (pattern === 2) {
         // Dry-Stone Wall Hurdle -> JUMP / VAULT over!
-        const lane = ((dist / 48) % 2 === 0 ? 1 : -1) * 1.8;
+        const lane = 0;
         const hurdle = new THREE.Mesh(new THREE.BoxGeometry(4.4, 1.05, 0.65), stoneMat);
         hurdle.position.set(s.x + s.rx * lane, yBase + 0.52, s.z + s.rz * lane);
         hurdle.rotation.y = yaw;
@@ -1175,7 +1178,7 @@ export class LakelandEngine {
         for (let k = 0; k < 3; k++) {
           const td = dist + k * 6;
           const ts = sampleCompiledRoute(this.compiledRoute, td);
-          const lane = (k - 1) * 2.4;
+          const lane = (k - 1) * Math.min(2.4,raceWidth(this.compiledRoute,this.activeRoute.raceSegments,td,this.activeRoute.corridorHalfWidth)*.75);
           const ty = Math.max(0.5, this.region.getTerrainHeight(ts.x, ts.z)) + 0.3;
           const tok = createCairnTokenModel();
           tok.position.set(ts.x + ts.rx * lane, ty, ts.z + ts.rz * lane);
@@ -1189,17 +1192,6 @@ export class LakelandEngine {
     const fin = sampleCompiledRoute(this.compiledRoute, total);
     const finY = Math.max(0.5, this.region.getTerrainHeight(fin.x, fin.z));
 
-    // Build floating timber pontoon causeway if any route segment crosses water (e.g. Ferry Nab)
-    for (let d = 10; d < total - 10; d += 12) {
-      const sp = sampleCompiledRoute(this.compiledRoute, d);
-      if (this.region.isInWater(sp.x, sp.z)) {
-        const deck = new THREE.Mesh(new THREE.BoxGeometry(8.5, 0.38, 12.6), timberMat);
-        deck.position.set(sp.x, 0.45, sp.z);
-        deck.rotation.y = Math.atan2(-sp.tx, -sp.tz);
-        deck.receiveShadow = true;
-        this.routePropsGroup.add(deck);
-      }
-    }
     const finArch = new THREE.Group();
     const pMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.35, metalness: 0.4 });
     const pL = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.32, 6.2, 10), pMat);
@@ -1221,11 +1213,10 @@ export class LakelandEngine {
     for (let i = 0; i < numVehicles; i++) {
       const isBus = i % 3 === 0;
       const dir: 1 | -1 = i % 2 === 0 ? -1 : 1; // -1 oncoming on right side (UK LHT), +1 same direction on left
-      const lane = dir === -1 ? 3.1 : -3.1;
+      const lane = 0;
       const dist = 130 + (i / numVehicles) * (total - 200);
-      const mesh = isBus
-        ? createLakesBusModel()
-        : createDefenderModel(i % 2 === 0 ? 0x3f6212 : 0x334155);
+      const bus=isBus?makeBus():undefined;
+      const mesh=bus?.root??createDefenderModel(i % 2 === 0 ? 0x3f6212 : 0x334155);mesh.visible=false;
       this.routePropsGroup.add(mesh);
       this.traffic.push({
         mesh,
@@ -1234,8 +1225,8 @@ export class LakelandEngine {
         speedMps: isBus ? 9.5 : 12.5,
         direction: dir,
         halfW: isBus ? 1.25 : 1.0,
-        halfL: isBus ? 4.1 : 2.1,
-        nearMissed: false,
+        halfL: isBus ? 5.1 : 2.1,
+        nearMissed: false,bus,
       });
     }
 
@@ -1558,18 +1549,15 @@ export class LakelandEngine {
         steer * latSpeed,
         1 - Math.exp(-14 * dt),
       );
-      this.laneOffset = THREE.MathUtils.clamp(
-        this.laneOffset + this.targetLaneVelocity * dt,
-        -this.activeRoute.corridorHalfWidth,
-        this.activeRoute.corridorHalfWidth,
-      );
+      const width=raceWidth(this.compiledRoute,this.activeRoute.raceSegments,this.routeDist,this.activeRoute.corridorHalfWidth);
+      this.laneOffset=THREE.MathUtils.clamp(this.laneOffset+this.targetLaneVelocity*dt,-width,width);
 
       const sample = sampleCompiledRoute(this.compiledRoute, this.routeDist);
       const targetX=sample.x+sample.rx*this.laneOffset,targetZ=sample.z+sample.rz*this.laneOffset;
       const next=sweepMove(oldX,oldZ,targetX-oldX,targetZ-oldZ,blockedBuilding);
       if(Math.hypot(next.x-targetX,next.z-targetZ)>.001){this.routeDist=oldDist;this.totalDistanceM=oldDist;this.laneOffset=oldLane;speed=0;
         // Preserve progress while permitting a safe lateral escape from a blocked lane.
-        const back=sampleCompiledRoute(this.compiledRoute,oldDist),lane=THREE.MathUtils.clamp(oldLane+this.targetLaneVelocity*dt,-this.activeRoute.corridorHalfWidth,this.activeRoute.corridorHalfWidth);
+        const back=sampleCompiledRoute(this.compiledRoute,oldDist),oldWidth=raceWidth(this.compiledRoute,this.activeRoute.raceSegments,oldDist,this.activeRoute.corridorHalfWidth),lane=THREE.MathUtils.clamp(oldLane+this.targetLaneVelocity*dt,-oldWidth,oldWidth);
         const lx=back.x+back.rx*lane,lz=back.z+back.rz*lane,side=sweepMove(oldX,oldZ,lx-oldX,lz-oldZ,blockedBuilding);
         if(Math.hypot(side.x-lx,side.z-lz)<.001){this.laneOffset=lane;this.playerX=side.x;this.playerZ=side.z;}
       }else{this.playerX=next.x;this.playerZ=next.z;}
@@ -1799,16 +1787,13 @@ export class LakelandEngine {
       if (v.dist < 40) v.dist = total - 50;
       if (v.dist > total - 40) v.dist = 50;
 
-      const s = sampleCompiledRoute(this.compiledRoute, v.dist);
-      const vx = s.x + s.rx * v.laneOffset;
-      const vz = s.z + s.rz * v.laneOffset;
-      const vy = Math.max(0.45, this.region.getTerrainHeight(vx, vz));
-      v.mesh.position.set(vx, vy, vz);
-      const yaw = Math.atan2(-s.tx, -s.tz) + (v.direction === -1 ? Math.PI : 0);
-      v.mesh.rotation.y = yaw;
-
-      const dAlong = Math.abs(this.routeDist - v.dist);
-      const dLat = Math.abs(this.laneOffset - v.laneOffset);
+      const p=raceTrafficPose(this.compiledRoute,this.activeRoute.raceSegments,v.dist,v.direction,v.halfW,v.halfL);
+      if(!p||Math.hypot(p.x-this.playerX,p.z-this.playerZ)>220||this.region.isInWater(p.x,p.z)||Number.isFinite(this.solidTop(p.x,p.z,v.halfW))){v.mesh.visible=false;continue;}
+      v.mesh.visible=true;v.laneOffset=p.lane;
+      const vx=p.x,vz=p.z,vy=Math.max(.45,this.walkSurface(vx,vz),this.deckHeightAt(vx,vz));
+      v.mesh.position.set(vx,vy+.12,vz);v.mesh.rotation.y=p.yaw;for(const w of v.bus?.wheels??[])w.rotation.x-=v.speedMps*dt/.51;
+      const dx=this.playerX-vx,dz=this.playerZ-vz;
+      const dAlong=Math.abs(dx*Math.sin(p.yaw)+dz*Math.cos(p.yaw)),dLat=Math.abs(dx*Math.cos(p.yaw)-dz*Math.sin(p.yaw));
       if (dAlong < v.halfL + 0.5 && dLat < v.halfW + 0.45 && this.playerY - vy < 2.2) {
         this.handleHazardHit('Traffic collision!', false);
       } else if (!v.nearMissed && dAlong < v.halfL + 1.5 && dLat < v.halfW + 1.6) {

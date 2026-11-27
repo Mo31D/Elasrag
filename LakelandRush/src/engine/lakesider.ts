@@ -5,7 +5,7 @@ import navigation from '../data/ambleside-navigation.json';
 import realm from '../data/waterhead-public-realm.json';
 type P={x:number;z:number};
 type Clear=(x:number,z:number)=>boolean;
-function makeBus(){
+export function makeBus(){
  const root=new THREE.Group(),body=new THREE.Group();root.add(body);
  const mats:THREE.Material[]=[],geos:THREE.BufferGeometry[]=[],texs:THREE.Texture[]=[];
  const m=(color:number,roughness=.65)=>{const mat=new THREE.MeshStandardMaterial({color,roughness});mats.push(mat);return mat;};

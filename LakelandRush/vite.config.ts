@@ -3,10 +3,12 @@ import react from '@vitejs/plugin-react';
 import fs from 'fs';
 import path from 'node:path';
 import {defineConfig} from 'vite';
+import {generateSprintNetwork} from './scripts/sprint-network.mjs';
 
 export default defineConfig(() => {
   return {
     plugins: [
+      {name:'mapped-sprint-network',resolveId(id){if(id==='virtual:sprint-network')return '\0'+id;},load(id){if(id==='\0virtual:sprint-network')return 'export default '+JSON.stringify(generateSprintNetwork());}},
       {
         name: 'lakeland-source-html',
         // GitHub Pages serves the generated index.html from the repository.

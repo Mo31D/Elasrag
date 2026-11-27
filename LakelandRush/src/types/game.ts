@@ -204,7 +204,9 @@ export interface RegionManifest {
   };
 }
 
+export interface RaceRoadSegment {roadId:number;halfWidth:number;drivable:boolean;direction:number;bridge:boolean;}
 export interface RouteDefinition {
+  raceSegments?:RaceRoadSegment[];
   id: string;
   title: string;
   subtitle: string;
