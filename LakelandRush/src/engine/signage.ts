@@ -9,7 +9,7 @@ import buildingAssets from '../data/building-assets.json';
 import { TRANSIT } from '../data/transit';
 import navigation from '../data/ambleside-navigation.json';
 
-export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,lake:LakeData|null, facadePlans:ReadonlyMap<number,FacadePlan>=new Map()) {
+export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,lake:LakeData|null, facadePlans:ReadonlyMap<number,FacadePlan>=new Map(),customIds:ReadonlySet<number>=new Set()) {
   const group=new THREE.Group();
   group.name='World signage and place identities';
   const geometries:THREE.BufferGeometry[]=[];
@@ -83,7 +83,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   }
   // Original text-only frontage plaques on approximate public/commercial building geometry.
   // Do not alter custom authored landmark models.
-  const frontageBuildings=chunk.buildings.filter(b=>!facadePlans.has(b.id)&&['shop','food','hotel','fuel','supermarket','rail'].includes(classifyBuilding(b)||'')&&!assetIds.has(b.id)&&inChunk(b.cx,b.cz)).slice(0,70);
+  const frontageBuildings=chunk.buildings.filter(b=>!customIds.has(b.id)&&!facadePlans.has(b.id)&&['shop','food','hotel','fuel','supermarket','rail'].includes(classifyBuilding(b)||'')&&!assetIds.has(b.id)&&inChunk(b.cx,b.cz)).slice(0,70);
   for(const b of frontageBuildings){
     const anchor=frontageAnchor(b,chunk.roads);
     if(!anchor||!b.name)continue;

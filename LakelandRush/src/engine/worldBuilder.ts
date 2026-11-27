@@ -16,6 +16,8 @@ import { halfWidth as mappedRoadHalfWidth } from '../geo/signagePlan';
 import {roadSurface,junctionPoints,unmarkedNearJunction,convexFootprint} from '../geo/roadPresentation';
 import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
+import { buildCoffeeShop } from './coffeeShop';
+import { WATERHEAD_COFFEE_ID } from '../geo/coffeeShopPlan';
 import { buildSiteDetails } from './siteDetails';
 import amblesideSurfaces from '../data/ambleside-surfaces.json';
 import amblesideNavigation from '../data/ambleside-navigation.json';
@@ -687,13 +689,18 @@ export function buildChunkGroup(
   const roofs: THREE.BufferGeometry[] = [];
   const windows: THREE.BufferGeometry[] = [];
   const facadePlans = new Map<number,FacadePlan>();
+  const customBuildings:Array<NonNullable<ReturnType<typeof buildCoffeeShop>>>=[];
   const surfaceSamplers:Array<(x:number,z:number)=>number|undefined>=[];
 
   for (const b of chunk.buildings) {
     const asset = buildingAssets.get(b.id);
     const built = buildLakelandBuildingGeometries(b, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
     if (!built) continue;
-    if (asset) {
+    const coffee=b.id===WATERHEAD_COFFEE_ID&&chunk.key==='0_-1'?buildCoffeeShop(b,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):null;
+    if(coffee){
+      group.add(coffee.group);customBuildings.push(coffee);
+      built.wallGeo.dispose();built.roofGeo.dispose();built.windowGeo.dispose();
+    } else if (asset) {
       const model = asset.clone();
       const authoredGround = buildingAssetMetadata.find(entry => entry.buildingId === b.id)?.groundElevationM;
       const ground = authoredGround == null ? sampleTerrainHeight(terrain, b.cx, b.cz)
@@ -716,7 +723,7 @@ export function buildChunkGroup(
     } else {
       stoneWalls.push(built.wallGeo);
     }
-    if (!asset) {
+    if (!asset && !coffee) {
       roofs.push(built.roofGeo);
       const ground=Math.max(.45,surfaceGround(b.cx,b.cz));
       const plan=inFacadeArea(b)?planFacade(b,chunk.roads,ground,built.bounds.topY-ground,chunk.buildings,undefined,surfaceGround):null;
@@ -1060,7 +1067,7 @@ export function buildChunkGroup(
   colliders.push(...siteDetails.colliders);
   const facades=buildFacadeBatch(facadePlans.values());
   group.add(facades.group);
-  const signage = buildSignage(chunk, terrain, lake, facadePlans);
+  const signage = buildSignage(chunk, terrain, lake, facadePlans,new Set(customBuildings.length?[WATERHEAD_COFFEE_ID]:[]));
   group.add(signage.group);
   return {
     key: chunk.key,
@@ -1075,7 +1082,7 @@ export function buildChunkGroup(
       disposables.forEach((g) => g.dispose());
       waterfront?.dispose();grass.dispose();
       signage.dispose();
-      facades.dispose();
+      facades.dispose();customBuildings.forEach(b=>b.dispose());
       siteDetails.dispose();
     },
   };
