@@ -1,4 +1,6 @@
 import * as THREE from 'three';
+import {BoatAttendant} from './boatAttendant';
+import {ATTENDANT_STATION} from '../game/boatAttendant';
 import {compileRoutePolyline,sampleCompiledRoute,type CompiledRoute} from '../geo/projection';
 import realm from '../data/waterhead-public-realm.json';
 import town from '../data/town-walks.json';
@@ -9,9 +11,11 @@ type Dog={root:THREE.Group;legs:THREE.Group[];tail:THREE.Group;lead:THREE.Line<T
 const colours=[0x31455d,0xb55945,0x62765b,0xd2ae73,0x795b88,0x397d87,0x5f6061,0xb9b5a7];
 const skin=[0xd2a07b,0x9b674c,0xe1b695,0x744a35,0xbc8862];
 export class PedestrianWorld{
+ readonly attendant:BoatAttendant;
  private people:Person[]=[];private geos=new Set<THREE.BufferGeometry>();private mats=new Set<THREE.Material>();private materialCache=new Map<number,THREE.MeshStandardMaterial>();private time=0;
  private boxGeo=new THREE.BoxGeometry(1,1,1);private sphereGeo=new THREE.SphereGeometry(1,10,7);
  constructor(private scene:THREE.Scene,private ground:(x:number,z:number)=>number,private clear:Clear){
+  this.attendant=new BoatAttendant(scene,ground,clear);
   this.geos.add(this.boxGeo);this.geos.add(this.sphereGeo);
   const shore=realm.sidewalk.filter(p=>p.id===121559793||p.id===339185882||p.id===1567958533||p.id===1567958538);
   const specs=[...shore.map((p,i)=>({p,n:i===0?8:i===1?3:2})),...town.map(p=>({p,n:2}))];
@@ -48,14 +52,14 @@ export class PedestrianWorld{
   return {root,legs,tail,lead,x,z,yaw:0,phase:i};
  }
  update(dt:number,playerX:number,playerZ:number,playerY:number,busBlocked:(x:number,z:number)=>boolean){
-  this.time+=dt;
+  this.time+=dt;this.attendant.update(dt,playerX,playerZ,playerY);
   for(const p of this.people){
    const near=Math.hypot(p.x-playerX,p.z-playerZ)<120;p.root.visible=near;if(p.dog)p.dog.root.visible=p.dog.lead.visible=near;if(!near)continue;
    const playerDist=Math.hypot(p.x-playerX,p.z-playerZ),close=playerDist<1.65&&Math.abs(playerY-p.root.position.y)<2;
    p.pause=Math.max(0,p.pause-dt);
    const n=nextWalkDistance(p.distance,p.dir,p.speed,dt,p.route.totalLength),q=sampleCompiledRoute(p.route,n.distance);
    const crowded=this.people.some(a=>a!==p&&a.root.visible&&Math.hypot(q.x-a.x,q.z-a.z)<.62&&Math.hypot(q.x-a.x,q.z-a.z)<Math.hypot(p.x-a.x,p.z-a.z));
-   let moving=!close&&!crowded&&(!p.dog||Math.hypot(p.x-p.dog.x,p.z-p.dog.z)<2.2)&&p.pause===0&&this.clear(q.x,q.z)&&!busBlocked(q.x,q.z);
+   let moving=!close&&!crowded&&this.attendant.distance(q.x,q.z)>.65&&(!p.dog||Math.hypot(p.x-p.dog.x,p.z-p.dog.z)<2.2)&&p.pause===0&&this.clear(q.x,q.z)&&!busBlocked(q.x,q.z);
    if(moving){p.distance=n.distance;p.dir=n.dir;p.x=q.x;p.z=q.z;p.phase+=dt*p.speed*7;if(n.distance===0||n.distance===p.route.totalLength)p.pause=1.2+p.kind*.5;}
    else if(!close&&!crowded&&p.pause===0){p.dir=p.dir===1?-1:1;p.pause=.8;}
    const desired=close?Math.atan2(p.x-playerX,p.z-playerZ):Math.atan2(-q.tx*p.dir,-q.tz*p.dir);
@@ -73,9 +77,9 @@ export class PedestrianWorld{
    }
   }
  }
- distanceToNearest(x:number,z:number){let d=Infinity;for(const p of this.people){if(!p.root.visible)continue;d=Math.min(d,Math.hypot(x-p.x,z-p.z));if(p.dog)d=Math.min(d,Math.hypot(x-p.dog.x,z-p.dog.z));}return d;}
+ distanceToNearest(x:number,z:number){let d=this.attendant.distance(x,z);for(const p of this.people){if(!p.root.visible)continue;d=Math.min(d,Math.hypot(x-p.x,z-p.z));if(p.dog)d=Math.min(d,Math.hypot(x-p.dog.x,z-p.dog.z));}return d;}
  near(x:number,z:number,r=.65){return this.distanceToNearest(x,z)<r;}
- hide(){for(const p of this.people){p.root.visible=false;if(p.dog)p.dog.root.visible=p.dog.lead.visible=false;}}
- threats():Threat[]{const out:Threat[]=[];for(const p of this.people){if(!p.root.visible)continue;out.push({x:p.x,z:p.z,radius:3.4});if(p.dog)out.push({x:p.dog.x,z:p.dog.z,radius:6});}return out;}
- dispose(){for(const p of this.people){p.root.removeFromParent();p.dog?.root.removeFromParent();p.dog?.lead.removeFromParent();}this.geos.forEach(g=>g.dispose());this.mats.forEach(m=>m.dispose());}
+ hide(){this.attendant.hide();for(const p of this.people){p.root.visible=false;if(p.dog)p.dog.root.visible=p.dog.lead.visible=false;}}
+ threats():Threat[]{const out:Threat[]=[];if(this.attendant.root.visible)out.push({x:ATTENDANT_STATION.x,z:ATTENDANT_STATION.z,radius:3.4});for(const p of this.people){if(!p.root.visible)continue;out.push({x:p.x,z:p.z,radius:3.4});if(p.dog)out.push({x:p.dog.x,z:p.dog.z,radius:6});}return out;}
+ dispose(){this.attendant.dispose();for(const p of this.people){p.root.removeFromParent();p.dog?.root.removeFromParent();p.dog?.lead.removeFromParent();}this.geos.forEach(g=>g.dispose());this.mats.forEach(m=>m.dispose());}
 }

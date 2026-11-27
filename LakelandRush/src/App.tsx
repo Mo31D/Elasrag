@@ -415,6 +415,7 @@ export default function App() {
           onTouchJump={() => engineRef.current?.triggerTouchJump()}
           onToggleFlight={()=>engineRef.current?.toggleFreeFlight()}
           onWaterInteract={()=>engineRef.current?.interactWater()}
+          onTalkAttendant={()=>engineRef.current?.talkAttendant()}
           onBusInteract={()=>engineRef.current?.interactBus()}
           onBusDrive={()=>engineRef.current?.takeBusWheel()}
           onAccelerator={pressed=>engineRef.current?.setAccelerator(pressed)}

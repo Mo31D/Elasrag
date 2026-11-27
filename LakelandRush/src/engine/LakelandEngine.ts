@@ -893,6 +893,8 @@ export class LakelandEngine {
     this.waterEffectTimer-=dt;if(Math.abs(b.speed)>.15&&this.waterEffectTimer<=0){this.waterEffectTimer=.18;const motor=b.kind==='motorboat',stern=motor?2.8:1.7;const wx=b.x+Math.sin(b.yaw)*stern,wz=b.z+Math.cos(b.yaw)*stern;this.waterRipples?.emit(wx,wz,motor?2.0:1.35,.48,b.yaw);if(motor&&this.region.isInWater(wx,wz))this.emitParticles(wx,.05,wz,2,0xe1edf0,.55);for(const oar of b.oars){const tip=oar.localToWorld(new THREE.Vector3(Math.sign(oar.position.x)*1.5,0,0));if(tip.y<.25&&this.region.isInWater(tip.x,tip.z))this.waterRipples?.emit(tip.x,tip.z,.48);}}
     this.sound.setShoreFactor(1);this.sound.setGameplayState(true,0,false);this.updateChaseCamera(dt,this.exploreSpeed);void this.updateChunkStreaming(b.x,b.z,false);this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
   }
+  private canTalkAttendant(){return this.gameState==='playing'&&this.activeRoute.mode==='freeroam'&&!this.flying&&!this.inShop&&!this.occupiedBoat&&!this.busService?.mode&&this.waterMode==='land'&&!!this.pedestrians?.attendant.canTalk(this.playerX,this.playerZ,this.playerY);}
+  public talkAttendant(){if(!this.canTalkAttendant()||!this.pedestrians)return false;this.setCallout(this.pedestrians.attendant.talk());this.calloutTimer=6;this.pushHudSnapshot();return true;}
   private canBoardBus(){return !this.busService?.mode&&!this.flying&&!this.inShop&&!this.occupiedBoat&&this.waterMode==='land'&&this.activeRoute.mode==='freeroam'&&!!this.busService?.nearby(this.playerX,this.playerZ,this.playerY);}
   public interactBus():boolean{
     const bus=this.busService;if(!bus||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam')return false;
@@ -2004,6 +2006,7 @@ export class LakelandEngine {
       cleanExploreMode: !this.exploreLabels,
       insideShop: this.inShop,
       canEnterShop: this.nearShopDoor(),
+      canTalkAttendant:this.canTalkAttendant(),
       nearLandmark: navigation.stops.find(stop => Math.hypot(stop.point[0] - this.playerX, stop.point[1] - this.playerZ) < 20)?.name,
       hearts: this.scoring.hearts,
       maxHearts: 3,
@@ -2039,7 +2042,7 @@ export class LakelandEngine {
       if(firstPress&&e.code==='Digit3')this.setExplorePace('sprint');
       if(firstPress&&e.code==='KeyC')this.recenterExploreCamera();
       if(firstPress&&e.code==='KeyF')this.toggleFreeFlight();
-      if (firstPress && e.code === 'KeyE' && !this.interactBus() && !this.interactWater()) this.toggleShop();
+      if (firstPress && e.code === 'KeyE' && !this.interactBus() && !this.interactWater() && !this.talkAttendant()) this.toggleShop();
       if(firstPress&&e.code==='KeyG')this.takeBusWheel();
       if (firstPress && e.code === 'KeyV') this.toggleExploreView();
       if (firstPress && e.code === 'Space' && !this.inShop && !this.flying) this.triggerTouchJump();

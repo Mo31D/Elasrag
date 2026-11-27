@@ -70,6 +70,7 @@ export function ExploreHUD(p:GameHUDProps){
   </div>}
   {!touch&&<div className="absolute bottom-4 left-4 rounded-lg bg-slate-950/60 p-2 text-xs text-white">WASD · drag to look · Shift boost · 1 / 2 / 3 pace · Space jump/up · Q down · F fly · E interact</div>}
   <div className="absolute flex flex-col items-end gap-2" style={{right:'max(14px, env(safe-area-inset-right))',bottom:'calc(max(16px, env(safe-area-inset-bottom)) + 4px)'}}>
+   {hud.canTalkAttendant&&<button type="button" data-testid="talk-boat-attendant" className="pointer-events-auto rounded-xl bg-teal-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={()=>{clear();p.onTalkAttendant()}}>Talk to boat attendant</button>}
    {(hud.canEnterShop||hud.insideShop)&&<button type="button" className="pointer-events-auto rounded-xl bg-teal-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={p.onShopDoor}>{hud.insideShop?'Leave shop':'Enter shop'}</button>}
    {(hud.canBoardBus||hud.busMode)&&<button type="button" className="pointer-events-auto rounded-xl bg-lime-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={()=>{clear();p.onBusInteract()}}>{hud.busMode?'Leave bus':'Board 599 bus'}</button>}
    {hud.canDriveBus&&<button type="button" className="pointer-events-auto rounded-xl bg-white/90 px-4 py-3 text-sm font-semibold text-slate-950" onClick={()=>{clear();p.onBusDrive()}}>Take the wheel</button>}
@@ -87,6 +88,6 @@ export function ExploreHUD(p:GameHUDProps){
     {touch&&!hud.busMode&&!hud.insideShop&&!hud.flying&&hud.waterMode!=='swimming'&&hud.waterMode!=='rowing'&&<button type="button" aria-label="Jump (tap twice for double jump)" className={control+' h-16 w-16'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
    </div>
   </div>
-  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V28</div>
+  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V29</div>
  </div>;
 }

@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {ATTENDANT_STATION,attendantInRange,ATTENDANT_LINES} from './boatAttendant';
+test('boat attendant interaction is confined to nearby ground-level visitors',()=>{const {x,z}=ATTENDANT_STATION;assert.ok(attendantInRange(x+2,z,1,1));assert.equal(attendantInRange(x+4,z,1,1),false);assert.equal(attendantInRange(x,z,5,1),false);assert.ok(ATTENDANT_LINES.length>2);});
