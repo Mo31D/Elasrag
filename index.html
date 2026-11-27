@@ -149,7 +149,7 @@ header{background:#10151b;box-shadow:0 1px 18px #0003}.brand{letter-spacing:.23e
 <p class="mobile-hint">Choose a project above to inspect its components.</p>
 </aside>
 </main>
-<footer class="footer"><span>ELASRAG / PORTFOLIO V.13</span><span id="renderStatus" role="status">Initialising</span><a href="https://github.com/Mo31D">GitHub</a><a href="mailto:mo@elasrag.com">mo@elasrag.com</a></footer>
+<footer class="footer"><span>ELASRAG / PORTFOLIO V.14</span><span id="renderStatus" role="status">Initialising</span><a href="https://github.com/Mo31D">GitHub</a><a href="mailto:mo@elasrag.com">mo@elasrag.com</a></footer>
 <script>
 const projects=[
 {id:"hub",name:"Mohamed El-Asrag",short:"Mo",color:"#8cc8d5",status:"Portfolio overview",desc:"I build businesses, develop original ideas and design practical digital solutions that connect technology with real-world needs.",parts:[["Technology","Digital platforms, interactive environments and practical software."],["Creativity","Visual design, product concepts and experimental experiences."],["Solutions","Connecting business needs with useful technology."]],links:[["GitHub","https://github.com/Mo31D"],["Get in touch","mailto:mo@elasrag.com"]]},
@@ -179,14 +179,14 @@ const viewport=document.getElementById("viewport"),canvas=document.getElementByI
 const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
 async function boot(){
 const T=await import("three");const {OrbitControls}=await import("three/addons/controls/OrbitControls.js");
-const renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:"high-performance"});const initialRatio=Math.min(devicePixelRatio,innerWidth<760?1.35:1.75);renderer.setPixelRatio(initialRatio);renderer.setClearColor(0x0a1016);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.93;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
-const scene=new T.Scene();scene.fog=new T.Fog(0x0a1016,48,110);scene.background=new T.Color(0x0a1016);
-const perspective=new T.PerspectiveCamera(42,1,.1,150),ortho=new T.OrthographicCamera(-10,10,10,-10,.1,150);let camera=perspective,orthographic=false;
+const renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:"high-performance"});const initialRatio=Math.min(devicePixelRatio,1.85,Math.sqrt(1800000/Math.max(1,viewport.clientWidth*viewport.clientHeight)));renderer.setPixelRatio(initialRatio);renderer.setClearColor(0x0a1016);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.02;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
+const scene=new T.Scene();scene.fog=new T.Fog(0x0a1016,82,175);scene.background=new T.Color(0x0a1016);
+const perspective=new T.PerspectiveCamera(42,1,.045,230),ortho=new T.OrthographicCamera(-10,10,10,-10,.045,230);let camera=perspective,orthographic=false;
 camera.position.set(17,17,23);let controls;
 const target=new T.Vector3(0,0,0);let flight=null,paused=reduced,wire=false,active="hub",opened=false,part=-1,panel=false;
-function bindControls(){controls?.dispose();controls=new OrbitControls(camera,canvas);controls.target.copy(target);controls.enableDamping=!reduced;controls.dampingFactor=.08;controls.minDistance=5;controls.maxDistance=65;controls.minZoom=.4;controls.maxZoom=4;controls.maxPolarAngle=Math.PI*.47;controls.addEventListener("start",()=>{flight=null});controls.update()}bindControls();
+function bindControls(){controls?.dispose();controls=new OrbitControls(camera,canvas);controls.target.copy(target);controls.enableDamping=!reduced;controls.dampingFactor=.08;controls.minDistance=.65;controls.maxDistance=105;controls.minZoom=.18;controls.maxZoom=36;controls.maxPolarAngle=Math.PI*.47;controls.addEventListener("start",()=>{flight=null});controls.update()}bindControls();
 scene.add(new T.HemisphereLight(0xe1e5ed,0x504641,1.35));
-const key=new T.DirectionalLight(0xffead5,2.55);key.position.set(-8,16,10);key.castShadow=true;key.shadow.mapSize.set(1024,1024);Object.assign(key.shadow.camera,{left:-12,right:12,top:12,bottom:-12,near:1,far:45});key.shadow.bias=-.0005;key.shadow.normalBias=.025;scene.add(key);const rim=new T.DirectionalLight(0xc6dcf1,1.65);rim.position.set(11,7,-9);scene.add(rim);const fill=new T.DirectionalLight(0xffdfbb,.65);fill.position.set(0,8,15);scene.add(fill);
+const key=new T.DirectionalLight(0xffead5,2.55);key.position.set(-8,16,10);key.castShadow=true;key.shadow.mapSize.set(1024,1024);Object.assign(key.shadow.camera,{left:-12,right:12,top:12,bottom:-12,near:1,far:45});key.shadow.bias=-.0005;key.shadow.normalBias=.012;scene.add(key);const rim=new T.DirectionalLight(0xc6dcf1,1.65);rim.position.set(11,7,-9);scene.add(rim);const fill=new T.DirectionalLight(0xffdfbb,.65);fill.position.set(0,8,15);scene.add(fill);
 const materialCache=new Map();const mat=(color,metal=.3,rough=.45)=>{const k=[color,metal,rough].join("/");if(!materialCache.has(k))materialCache.set(k,new T.MeshStandardMaterial({color,metalness:metal,roughness:rough}));return materialCache.get(k)};const graphite=mat(0x263b49,.65,.35),steel=mat(0x9aadb9,.7,.3),dark=mat(0x101c25,.4,.55);
 const glow=color=>new T.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.65,metalness:.25,roughness:.3});
 const geomCache=new Map();function geom(k,make){if(!geomCache.has(k))geomCache.set(k,make());return geomCache.get(k)}
@@ -214,7 +214,7 @@ function orientExhibits(view,exhibits){
  }
 }
 function torus(r,t,m){return new T.Mesh(new T.TorusGeometry(r,t,10,48),m)}
-function sign(text,bg="#263641",fg="#f3e6c9",w=1.9,h=.22){const c=document.createElement("canvas");c.width=768;c.height=128;const ctx=c.getContext("2d");ctx.fillStyle=bg;ctx.fillRect(0,0,768,128);ctx.strokeStyle=fg;ctx.globalAlpha=.55;ctx.lineWidth=3;ctx.strokeRect(9,9,750,110);ctx.globalAlpha=1;ctx.fillStyle=fg;ctx.font="600 55px Georgia, serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(text,384,66,710);const texture=new T.CanvasTexture(c);texture.colorSpace=T.SRGBColorSpace;return new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:texture,side:T.DoubleSide}))}
+function sign(text,bg="#263641",fg="#f3e6c9",w=1.9,h=.22){const c=document.createElement("canvas");c.width=768;c.height=128;const ctx=c.getContext("2d");ctx.fillStyle=bg;ctx.fillRect(0,0,768,128);ctx.strokeStyle=fg;ctx.globalAlpha=.55;ctx.lineWidth=3;ctx.strokeRect(9,9,750,110);ctx.globalAlpha=1;ctx.fillStyle=fg;ctx.font="600 55px Georgia, serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(text,384,66,710);const texture=new T.CanvasTexture(c);texture.colorSpace=T.SRGBColorSpace;texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());return new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:texture,side:T.DoubleSide}))}
 function tapered(g,a,b,r0,r1,m,segments=20){const u=new T.Vector3(...a),v=new T.Vector3(...b),delta=v.clone().sub(u);const mesh=new T.Mesh(new T.CylinderGeometry(r1,r0,delta.length(),segments),m);mesh.position.copy(u).add(v).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),delta.normalize());g.add(mesh);return mesh}
 function oval(g,x,y,z,sx,sy,sz,m,segments=24){const mesh=add(g,sphere(1,m,segments),x,y,z);mesh.scale.set(sx,sy,sz);return mesh}
 function shapeMesh(points,depth,material){const shape=new T.Shape();points.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));shape.closePath();return new T.Mesh(new T.ExtrudeGeometry(shape,{depth,bevelEnabled:false}),material)}
@@ -379,35 +379,119 @@ function mobilePose(id){
 function size(){const w=viewport.clientWidth,h=viewport.clientHeight;if(!w||!h)return;const phone=phoneLayout(),changed=!previousSize||Math.abs(w-previousSize.w)>2||Math.abs(h-previousSize.h)>20;
  const wasPhone=previousSize?.phone;renderer.setSize(w,h,false);perspective.aspect=w/h;perspective.fov=phone?T.MathUtils.clamp(T.MathUtils.radToDeg(2*Math.atan(Math.tan(T.MathUtils.degToRad(25))/(w/h))),55,108):w/h<.8?55:42;perspective.updateProjectionMatrix();
  const v=Math.max(11.5,11.5/(w/h));ortho.left=-v*w/h;ortho.right=v*w/h;ortho.top=v;ortho.bottom=-v;ortho.updateProjectionMatrix();applyFraming();
- if(changed){previousSize={w,h,phone};for(const [id,o] of objects)o.label.textContent=phone?phoneNames[id]||o.p.short:o.p.short;if(mobileReady&&(phone||wasPhone))fly(active,true)}
+ if(changed){previousSize={w,h,phone};for(const [id,o] of objects)o.label.textContent=phone?phoneNames[id]||o.p.short:o.p.short;if(mobileReady){refreshQuality(false);refreshZoomLimits();if(phone||wasPhone)fly(active,true)}}
 }
 new ResizeObserver(size).observe(viewport);size();
 function fly(id,immediate=false){
  const root=objects.get(id).root,portrait=portraitLayout();let t=new T.Vector3(0,.48,0),pos,oz=id==="hub"?1:1.65;
  if(phoneLayout()){applyFraming();const fit=mobilePose(id);t=fit.t;pos=fit.pos;oz=fit.zoom}
  else if(id==="hub"){pos=homePos()}else{const radial=new T.Vector3(root.position.x,0,root.position.z).normalize(),tangent=new T.Vector3(-radial.z,0,radial.x);t.copy(root.position).add(new T.Vector3(0,1.1,0)).addScaledVector(radial,-1.25);pos=t.clone().addScaledVector(radial,portrait?11.6:10.8).addScaledVector(tangent,3.0).add(new T.Vector3(0,6.2,0))}
- if(immediate||paused||reduced){camera.position.copy(pos);controls.target.copy(t);controls.update();flight=null}else flight={start:performance.now(),p:camera.position.clone(),t:controls.target.clone(),end:pos,target:t};
+ if(immediate||paused||reduced){camera.position.copy(pos);controls.target.copy(t);refreshZoomLimits();controls.update();flight=null}else flight={start:performance.now(),p:camera.position.clone(),t:controls.target.clone(),end:pos,target:t};
  if(orthographic){ortho.zoom=oz;ortho.updateProjectionMatrix()}
 }
-function setExpanded(v){opened=v;if(phoneLayout()&&active!=="hub")fly(active)}
-function select(id,exp,focus){active=id;opened=exp;part=-1;stage.visible=true;grid.visible=true;for(const o of objects.values()){o.root.visible=true;updateProjectTone(o)}applyFraming();renderer.shadowMap.needsUpdate=true;if(focus)fly(id)}
+function setExpanded(v){opened=v;refreshZoomLimits();if(phoneLayout()&&active!=="hub")fly(active)}
+function select(id,exp,focus){const changed=(active==="hub")!==(id==="hub");active=id;opened=exp;part=-1;stage.visible=true;grid.visible=true;for(const o of objects.values()){o.root.visible=true;updateProjectTone(o)}applyFraming();refreshZoomLimits();if(changed)refreshQuality(true);renderer.shadowMap.needsUpdate=true;if(focus)fly(id)}
 function highlight(i){part=i}function setPanel(v){const changed=panel!==v;panel=v;applyFraming();if(changed&&mobileReady&&phoneLayout()&&v)fly(active)}
-function switchProjection(){flight=null;target.copy(controls.target);const old=camera;orthographic=!orthographic;camera=orthographic?ortho:perspective;camera.position.copy(old.position);if(orthographic){ortho.zoom=active==="hub"?1:1.65;ortho.updateProjectionMatrix()}bindControls();if(phoneLayout())fly(active,true);document.getElementById("viewMode").innerHTML=(orthographic?"Orthographic":"Perspective")+"<br>Real-time scene";document.querySelector('[data-view="projection"]').setAttribute("aria-pressed",String(orthographic))}
-function zoom(f){flight=null;if(orthographic){camera.zoom=T.MathUtils.clamp(camera.zoom*f,.4,4);camera.updateProjectionMatrix()}else{const offset=camera.position.clone().sub(controls.target);offset.setLength(T.MathUtils.clamp(offset.length()/f,5,65));camera.position.copy(controls.target).add(offset)}controls.update()}
+function switchProjection(){flight=null;target.copy(controls.target);const old=camera;orthographic=!orthographic;camera=orthographic?ortho:perspective;camera.position.copy(old.position);if(orthographic){ortho.zoom=active==="hub"?1:1.65;ortho.updateProjectionMatrix()}bindControls();refreshZoomLimits();if(phoneLayout())fly(active,true);document.getElementById("viewMode").innerHTML=(orthographic?"Orthographic":"Perspective")+"<br>Real-time scene";document.querySelector('[data-view="projection"]').setAttribute("aria-pressed",String(orthographic))}
+function zoom(f){flight=null;refreshZoomLimits();if(orthographic){camera.zoom=T.MathUtils.clamp(camera.zoom*f,controls.minZoom,controls.maxZoom);camera.updateProjectionMatrix()}else{const offset=camera.position.clone().sub(controls.target);offset.setLength(T.MathUtils.clamp(offset.length()/f,controls.minDistance,controls.maxDistance));camera.position.copy(controls.target).add(offset)}controls.update()}
+// Bounds are measured in authored component coordinates, not from the camera-facing world AABB.
+const metricBox=new T.Box3(),metricMatrix=new T.Matrix4(),metricInverse=new T.Matrix4(),metricPartMatrix=new T.Matrix4(),metricQuat=new T.Quaternion(),metricEuler=new T.Euler(),metricScale=new T.Vector3(),metricPosition=new T.Vector3();
+function measureExhibit(o){
+ const limits={};
+ o.root.updateWorldMatrix(true,true);
+ for(const expanded of [false,true]){
+  const bounds=new T.Box3();bounds.expandByPoint(new T.Vector3(0,0,0));bounds.expandByPoint(new T.Vector3(0,.37,0));
+  for(let i=0;i<o.parts.length;i++){
+   if(!expanded&&i>0&&(o.p.id==="sheep"||o.p.id==="picnic"))continue;
+   const p=o.parts[i];metricInverse.copy(p.g.matrixWorld).invert();
+   metricPosition.copy(p.base);if(expanded)metricPosition.add(p.delta);
+   metricEuler.set(expanded?p.rotation.x:0,expanded?p.rotation.y:0,expanded?p.rotation.z:0);
+   metricQuat.setFromEuler(metricEuler);metricScale.setScalar(o.p.id==="hub"&&i===0?1.14:expanded?1.12:1);
+   metricPartMatrix.compose(metricPosition,metricQuat,metricScale);
+   p.g.traverse(m=>{if(!m.isMesh||!m.geometry)return;if(!m.geometry.boundingBox)m.geometry.computeBoundingBox();if(!m.geometry.boundingBox||m.geometry.boundingBox.isEmpty())return;metricMatrix.multiplyMatrices(metricInverse,m.matrixWorld);metricMatrix.premultiply(metricPartMatrix);metricBox.copy(m.geometry.boundingBox).applyMatrix4(metricMatrix);bounds.union(metricBox)});
+  }
+  const centerY=(bounds.min.y+bounds.max.y)/2;
+  const radial=Math.max(o.p.id==="hub"?2.07:1.92,Math.hypot(Math.max(Math.abs(bounds.min.x),Math.abs(bounds.max.x)),Math.max(Math.abs(bounds.min.z),Math.abs(bounds.max.z))));
+  // A yaw-invariant enclosing volume; actual model size determines the close limit.
+  limits[expanded?"expanded":"assembled"]={centerY,radius:Math.hypot(radial,(bounds.max.y-bounds.min.y)/2),diameter:2*radial,height:bounds.max.y-bounds.min.y};
+ }
+ o.metrics=limits;
+}
+const zoomDirection=new T.Vector3(),zoomRelative=new T.Vector3(),zoomCenter=new T.Vector3();
+function safeApproach(target,eye,center,radius){
+ zoomDirection.copy(eye).sub(target);if(zoomDirection.lengthSq()<1e-10)return .65;zoomDirection.normalize();
+ zoomRelative.copy(center).sub(target);const projection=zoomRelative.dot(zoomDirection),disc=radius*radius-zoomRelative.lengthSq()+projection*projection;
+ if(disc<=0||zoomRelative.length()>radius*1.7)return .65;
+ return Math.max(.65,projection+Math.sqrt(disc)+.12);
+}
+function refreshZoomLimits(){
+ const o=objects.get(active);if(!o?.metrics||!controls)return;
+ const m=o.metrics[opened?"expanded":"assembled"];
+ zoomCenter.copy(o.root.position);zoomCenter.y+=m.centerY;
+ controls.minDistance=safeApproach(controls.target,camera.position,zoomCenter,m.radius);
+ controls.maxDistance=105;controls.minZoom=.18;
+ controls.maxZoom=T.MathUtils.clamp((ortho.right-ortho.left)/Math.max(.32,m.diameter*.095),8,36);
+}
 const wireMaterials=new Set();
 function registerMaterials(root){root.traverse(o=>{if(o.isMesh&&o!==ground){for(const m of (Array.isArray(o.material)?o.material:[o.material])){if(!m)continue;wireMaterials.add(m);m.wireframe=wire}}})}
 function registerProjectTone(project,root){
  if(!project.toneMaterials)project.toneMaterials=new Map();
  const local=new Map();
  root.traverse(mesh=>{if(!mesh.isMesh||mesh.userData.toneRegistered)return;
-  const swap=m=>{if(!m?.color||m===project.accent||m===project.rimMaterial)return m;if(!local.has(m)){const copy=m.clone();local.set(m,copy);project.toneMaterials.set(copy,m.color.clone())}return local.get(m)};
+  const swap=m=>{if(!m?.color||m===project.accent||m===project.rimMaterial)return m;if(!local.has(m)){const copy=m.clone();local.set(m,copy);project.toneMaterials.set(copy,m.color.clone());for(const k of ["map","normalMap","roughnessMap","metalnessMap","aoMap","emissiveMap"]){if(copy[k]?.isTexture)copy[k].anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy())}}return local.get(m)};
   mesh.material=Array.isArray(mesh.material)?mesh.material.map(swap):swap(mesh.material);mesh.userData.toneRegistered=true
  });registerMaterials(root);updateProjectTone(project);
 }
-function updateProjectTone(project){const factor=active==="hub"||project.p.id===active?1:project.p.id==="hub"?.85:.72;for(const [material,base] of project.toneMaterials||[])material.color.copy(base).multiplyScalar(factor)}
-for(const project of objects.values())registerProjectTone(project,project.root);registerMaterials(stage);
+function updateProjectTone(project){const factor=active==="hub"||project.p.id===active?1:project.p.id==="hub"?.91:.83;for(const [material,base] of project.toneMaterials||[])material.color.copy(base).multiplyScalar(factor)}
+// Real geometry LOD for authored curved components; imported GLBs and intentionally faceted shapes retain their source geometry.
+const geometryVariants=new WeakMap();
+function detailGeometry(base,level){
+ if(level==="base")return base;
+ let variants=geometryVariants.get(base);if(!variants){variants={};geometryVariants.set(base,variants)}if(variants[level])return variants[level];
+ const p=base.parameters||{},high=level==="high";let g=base;
+ if(base.type==="SphereGeometry"&&p.widthSegments>=12){g=new T.SphereGeometry(p.radius,high?Math.max(p.widthSegments,56):Math.min(p.widthSegments,12),high?Math.max(p.heightSegments,32):Math.min(p.heightSegments,8),p.phiStart,p.phiLength,p.thetaStart,p.thetaLength)}
+ else if(base.type==="CylinderGeometry"&&p.radialSegments>=12){g=new T.CylinderGeometry(p.radiusTop,p.radiusBottom,p.height,high?Math.max(p.radialSegments,96):Math.min(p.radialSegments,16),p.heightSegments,p.openEnded,p.thetaStart,p.thetaLength)}
+ else if(base.type==="TorusGeometry"&&p.tubularSegments>=16){g=new T.TorusGeometry(p.radius,p.tube,high?Math.max(p.radialSegments,20):Math.min(p.radialSegments,8),high?Math.max(p.tubularSegments,96):Math.min(p.tubularSegments,24),p.arc)}
+ variants[level]=g;return g;
+}
+function registerDetailMeshes(o){
+ o.detailMeshes=[];o.facingPivot.traverse(m=>{if(!m.isMesh||!m.geometry)return;const base=m.userData.detailBase||m.geometry,p=base.parameters||{};
+ if((base.type==="SphereGeometry"&&p.widthSegments>=12)||(base.type==="CylinderGeometry"&&p.radialSegments>=12)||(base.type==="TorusGeometry"&&p.tubularSegments>=16)){m.userData.detailBase=base;o.detailMeshes.push(m)}});
+ o.detailLevel=null;
+}
+function chooseDetail(project,mode,pixels,selected){
+ if(mode==="eco")return pixels>150&&selected?"base":"low";
+ if((selected&&pixels>80)||(mode==="high"&&pixels>155))return "high";
+ if(pixels<65&&!selected)return "low";
+ return "base";
+}
+function updateDetailLevels(){
+ const h=viewport.clientHeight;for(const o of objects.values()){
+ const radius=o.metrics.assembled.radius,d=Math.max(.2,camera.position.distanceTo(o.root.position));
+ const pixels=orthographic?h*ortho.zoom*radius*2/(ortho.top-ortho.bottom):h*radius/(d*Math.tan(T.MathUtils.degToRad(perspective.fov/2)));
+ const level=chooseDetail(o,quality,pixels,active!=="hub"&&o.p.id===active);
+ if(o.detailLevel===level)continue;for(const m of o.detailMeshes)m.geometry=detailGeometry(m.userData.detailBase,level);o.detailLevel=level;renderer.shadowMap.needsUpdate=true;
+ }
+}
+for(const project of objects.values()){registerProjectTone(project,project.root);measureExhibit(project);registerDetailMeshes(project)}registerMaterials(stage);
 let quality="auto",pixelRatio=initialRatio,slowWindows=0,fastWindows=0;
-function applyQuality(mode){quality=mode;slowWindows=0;fastWindows=0;pixelRatio=mode==="high"?Math.min(devicePixelRatio,2):mode==="eco"?Math.min(devicePixelRatio,1):initialRatio;renderer.setPixelRatio(pixelRatio);renderer.shadowMap.enabled=mode!=="eco";renderer.shadowMap.needsUpdate=true;size();const b=document.querySelector('[data-view="quality"]');b.textContent=mode==="auto"?"Auto":mode==="high"?"High":"Eco";b.setAttribute("aria-label","Rendering quality: "+mode+". Click to change.");}
+function qualityBudget(mode,focus,dpr,w,h){
+ const area=Math.max(1,w*h),limit=mode==="high"?3:mode==="eco"?1:focus?2.5:2.05;
+ const budget=mode==="high"?5500000:mode==="eco"?area:focus?3300000:2200000;
+ const cap=Math.min(dpr,limit,Math.sqrt(budget/area)),floor=Math.min(cap,focus?1.45:1.15);
+ return {cap,floor};
+}
+function qualityRange(){return qualityBudget(quality,active!=="hub",devicePixelRatio,viewport.clientWidth,viewport.clientHeight)}
+function setRenderRatio(value){if(Math.abs(value-pixelRatio)<.015)return;pixelRatio=value;renderer.setPixelRatio(value);renderer.setSize(viewport.clientWidth,viewport.clientHeight,false);renderer.shadowMap.needsUpdate=true}
+function refreshQuality(reset=false){
+ const r=qualityRange();if(reset){slowWindows=0;fastWindows=0}
+ setRenderRatio(reset||quality!=="auto"?r.cap:T.MathUtils.clamp(pixelRatio,r.floor,r.cap));
+ renderer.shadowMap.enabled=quality!=="eco";
+ const shadowSize=quality==="high"||quality==="auto"&&active!=="hub"?Math.min(2048,renderer.capabilities.maxTextureSize):1024;
+ if(key.shadow.mapSize.x!==shadowSize){key.shadow.map?.dispose();key.shadow.map=null;key.shadow.mapSize.set(shadowSize,shadowSize)}
+ renderer.shadowMap.needsUpdate=true;updateDetailLevels();
+}
+function applyQuality(mode){quality=mode;refreshQuality(true);const b=document.querySelector('[data-view="quality"]');b.textContent=mode==="auto"?"Auto":mode==="high"?"High":"Eco";b.setAttribute("aria-label","Rendering quality: "+mode+". Click to change.")}
 async function enhanceModels(){
  try{
   const {GLTFLoader}=await import("/creation-engine/vendor/loaders/GLTFLoader.js");
@@ -422,22 +506,22 @@ async function enhanceModels(){
     const scale=Math.min(3.0/Math.max(dims.x,dims.z),2.25/dims.y);pivot.scale.setScalar(scale);pivot.updateMatrixWorld(true);bounds.setFromObject(pivot);const centre=bounds.getCenter(new T.Vector3());pivot.position.set(-centre.x,-.35-bounds.min.y,-centre.z);
     pivot.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});
     // Preserve the procedural miniature until the replacement has loaded and been validated.
-    j.group.clear();j.group.add(pivot);registerProjectTone(objects.get(j.id),pivot);renderer.shadowMap.needsUpdate=true;modelStatus[j.id]="reference GLB";return j.id;}catch(e){modelStatus[j.id]="fallback: "+String(e?.message||e).slice(0,160);throw e}
+    j.group.clear();j.group.add(pivot);const exhibit=objects.get(j.id);registerProjectTone(exhibit,pivot);measureExhibit(exhibit);registerDetailMeshes(exhibit);refreshZoomLimits();updateDetailLevels();renderer.shadowMap.needsUpdate=true;modelStatus[j.id]="reference GLB";return j.id;}catch(e){modelStatus[j.id]="fallback: "+String(e?.message||e).slice(0,160);throw e}
   }));
   const ok=results.filter(r=>r.status==="fulfilled").length;renderStatus.textContent="WebGL / "+ok+" architectural assets loaded";
-  if(signatureJob){try{const gltf=await loader.loadAsync("/creation-engine/assets/mo-signature.glb");const mark=gltf.scene;const pivot=new T.Group();pivot.add(mark);mark.updateMatrixWorld(true);let b=new T.Box3().setFromObject(mark),d=b.getSize(new T.Vector3());if(!Number.isFinite(d.length())||d.length()<=0)throw Error("Invalid signature bounds");pivot.scale.setScalar(.65/Math.max(d.x,d.y,d.z));pivot.updateMatrixWorld(true);b.setFromObject(pivot);const c=b.getCenter(new T.Vector3());pivot.position.set(.99-c.x,.04-b.min.y,.65-c.z);signatureJob.group.add(pivot);registerProjectTone(objects.get("hub"),pivot);renderer.shadowMap.needsUpdate=true;modelStatus.signature="loaded"}catch(err){modelStatus.signature="fallback";console.warn("Optional signature unavailable",err)}}
+  if(signatureJob){try{const gltf=await loader.loadAsync("/creation-engine/assets/mo-signature.glb");const mark=gltf.scene;const pivot=new T.Group();pivot.add(mark);mark.updateMatrixWorld(true);let b=new T.Box3().setFromObject(mark),d=b.getSize(new T.Vector3());if(!Number.isFinite(d.length())||d.length()<=0)throw Error("Invalid signature bounds");pivot.scale.setScalar(.65/Math.max(d.x,d.y,d.z));pivot.updateMatrixWorld(true);b.setFromObject(pivot);const c=b.getCenter(new T.Vector3());pivot.position.set(.99-c.x,.04-b.min.y,.65-c.z);signatureJob.group.add(pivot);const exhibit=objects.get("hub");registerProjectTone(exhibit,pivot);measureExhibit(exhibit);registerDetailMeshes(exhibit);refreshZoomLimits();updateDetailLevels();renderer.shadowMap.needsUpdate=true;modelStatus.signature="loaded"}catch(err){modelStatus.signature="fallback";console.warn("Optional signature unavailable",err)}}
   results.filter(r=>r.status==="rejected").forEach(r=>console.warn("Architectural model fallback retained",r.reason));
  }catch(err){console.warn("Optional architectural assets unavailable",err)}
 }
 async function enhanceLighting(){
- try{const {RoomEnvironment}=await import("/creation-engine/vendor/environments/RoomEnvironment.js");const room=new RoomEnvironment();const pmrem=new T.PMREMGenerator(renderer);const env=pmrem.fromScene(room,.04);scene.environment=env.texture;scene.environmentIntensity=.36;room.dispose();pmrem.dispose();renderer.shadowMap.needsUpdate=true;}catch(err){console.warn("Optional studio reflections unavailable",err)}
+ try{const {RoomEnvironment}=await import("/creation-engine/vendor/environments/RoomEnvironment.js");const room=new RoomEnvironment();const pmrem=new T.PMREMGenerator(renderer);const env=pmrem.fromScene(room,.04);scene.environment=env.texture;scene.environmentIntensity=.46;room.dispose();pmrem.dispose();renderer.shadowMap.needsUpdate=true;}catch(err){console.warn("Optional studio reflections unavailable",err)}
 }
 for(const b of document.querySelectorAll("[data-view]")){b.disabled=false;b.onclick=()=>{switch(b.dataset.view){case"home":ui.select("hub");ui.inspector(false);break;case"projection":switchProjection();break;case"zoomIn":zoom(1.25);break;case"zoomOut":zoom(.8);break;case"wire":wire=!wire;wireMaterials.forEach(m=>m.wireframe=wire);b.setAttribute("aria-pressed",String(wire));break;case"quality":applyQuality(quality==="auto"?"high":quality==="high"?"eco":"auto");break;case"motion":paused=!paused;b.setAttribute("aria-pressed",String(paused));b.textContent=paused?"Play":"Pause";break;case"full":if(document.fullscreenElement)document.exitFullscreen?.().catch(()=>{});else if(viewport.requestFullscreen)viewport.requestFullscreen().catch(()=>{});break}}}
 const motionButton=document.querySelector('[data-view="motion"]');motionButton.setAttribute("aria-pressed",String(paused));motionButton.textContent=paused?"Play":"Pause";if(!viewport.requestFullscreen)document.querySelector('[data-view="full"]').disabled=true;
 const ray=new T.Raycaster(),pointer=new T.Vector2();let down=null;canvas.addEventListener("pointerdown",e=>{if(!e.isPrimary||e.button!==0){down=null;return}down={x:e.clientX,y:e.clientY,id:e.pointerId,t:performance.now(),distance:0}});canvas.addEventListener("pointermove",e=>{if(down?.id===e.pointerId)down.distance=Math.max(down.distance,Math.hypot(e.clientX-down.x,e.clientY-down.y))});canvas.addEventListener("pointercancel",()=>down=null);canvas.addEventListener("pointerup",e=>{if(!down||down.id!==e.pointerId||down.distance>8||performance.now()-down.t>650||Math.hypot(e.clientX-down.x,e.clientY-down.y)>8){down=null;return}down=null;const r=canvas.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects([...objects.values()].map(o=>o.root),true);for(const hit of hits){let q=hit.object,idx=-1,id=null;while(q){if(q.userData.part!==undefined)idx=q.userData.part;if(q.userData.project){id=q.userData.project;break}q=q.parent}if(id){let visible=true;for(let v=hit.object;v;v=v.parent){if(!v.visible){visible=false;break}}if(!visible)continue;if(id==="hub"){const wasFocused=active!=="hub";ui.select("hub");ui.inspector(!wasFocused)}else if(id===active&&idx>=0&&opened)ui.showPart(idx,true);else ui.select(id);return}}if(active!=="hub"){ui.select("hub");ui.inspector(false)}});
 let last=performance.now(),elapsed=0,frameCount=0,sampleTime=0,sampleCount=0;const projected=new T.Vector3(),labelQueue=[];let cardRect=null,canvasRect=null;
-let rendering=true;function frame(now){if(!rendering)return;requestAnimationFrame(frame);if(document.hidden){last=now;return;}const raw=(now-last)/1000,dt=Math.min(.06,raw);last=now;frameCount++;if(raw>0&&raw<.2){sampleTime+=raw;sampleCount++}if(sampleTime>=3){const fps=sampleCount/sampleTime;if(quality==="auto"){slowWindows=fps<33?slowWindows+1:0;fastWindows=fps>54?fastWindows+1:0;if(slowWindows>=2&&pixelRatio>1){pixelRatio=Math.max(1,pixelRatio-.25);renderer.setPixelRatio(pixelRatio);size();slowWindows=0}else if(fastWindows>=4&&pixelRatio<initialRatio){pixelRatio=Math.min(initialRatio,pixelRatio+.15);renderer.setPixelRatio(pixelRatio);size();fastWindows=0}}sampleTime=0;sampleCount=0}if(!paused){elapsed+=dt;for(const animate of animated)animate(elapsed)}
-if(flight){const t=Math.min(1,(now-flight.start)/850),e=t*t*(3-2*t);camera.position.lerpVectors(flight.p,flight.end,e);controls.target.lerpVectors(flight.t,flight.target,e);if(t===1)flight=null}controls.update();camera.updateMatrixWorld();orientExhibits(camera,objects.values());labelQueue.length=0;canvasRect=viewport.getBoundingClientRect();cardRect=panel?document.getElementById("inspector").getBoundingClientRect():null;
+let rendering=true;function frame(now){if(!rendering)return;requestAnimationFrame(frame);if(document.hidden){last=now;return;}const raw=(now-last)/1000,dt=Math.min(.06,raw);last=now;frameCount++;if(raw>0&&raw<.5){sampleTime+=raw;sampleCount++}if(sampleTime>=3){const fps=sampleCount/sampleTime;if(quality==="auto"){const r=qualityRange();slowWindows=fps<28?slowWindows+1:0;fastWindows=fps>49?fastWindows+1:0;if(slowWindows>=2&&pixelRatio>r.floor+.01){setRenderRatio(Math.max(r.floor,pixelRatio-.15));slowWindows=0}else if(fastWindows>=3&&pixelRatio<r.cap-.01){setRenderRatio(Math.min(r.cap,pixelRatio+.15));fastWindows=0}}sampleTime=0;sampleCount=0}if(!paused){elapsed+=dt;for(const animate of animated)animate(elapsed)}
+if(flight){const t=Math.min(1,(now-flight.start)/850),e=t*t*(3-2*t);camera.position.lerpVectors(flight.p,flight.end,e);controls.target.lerpVectors(flight.t,flight.target,e);if(t===1)flight=null}refreshZoomLimits();controls.update();camera.updateMatrixWorld();orientExhibits(camera,objects.values());if(frameCount%8===0)updateDetailLevels();labelQueue.length=0;canvasRect=viewport.getBoundingClientRect();cardRect=panel?document.getElementById("inspector").getBoundingClientRect():null;
 for(const [id,o] of objects){const want=id===active&&opened?1:0;o.progress=paused||reduced?want:T.MathUtils.damp(o.progress,want,8,dt);o.parts.forEach((p,i)=>{if((id==="sheep"||id==="picnic")&&i>0)p.g.visible=id===active&&opened&&o.progress>.08;p.g.position.copy(p.base).addScaledVector(p.delta,o.progress);p.g.rotation.set(p.rotation.x*o.progress,p.rotation.y*o.progress,p.rotation.z*o.progress);const selected=id===active&&part===i&&opened;p.g.scale.setScalar(T.MathUtils.lerp(p.g.scale.x,selected?1.12:1,paused||reduced?1:.15));if(id==="hub"&&i===0){p.g.rotation.y=.12;p.g.scale.setScalar(1.14)}});o.accent.emissiveIntensity=id===active?.85:active==="hub"?.35:.19;if(o.connection){o.connection.material.opacity=o.hover||id===active?.95:active==="hub"?.48:.22;o.rimMaterial.emissiveIntensity=o.hover||id===active?.42:active==="hub"?.12:.05}function placeLabel(el,point){projected.copy(point).project(camera);const visible=projected.z>-1&&projected.z<1&&Math.abs(projected.x)<.96&&Math.abs(projected.y)<.90;if(!visible){el.hidden=true;return false}labelQueue.push({el,x:(projected.x*.5+.5)*canvasRect.width,y:(-.5*projected.y+.5)*canvasRect.height,priority:el.classList.contains("part-label")?3:id==="hub"?2:id===active?1:0});return true}if(phoneLayout()&&panel){o.label.hidden=true}else if(active==="hub"||id==="hub"||id!==active||!panel){placeLabel(o.label,new T.Vector3(o.root.position.x,id==="hub"?4.0:phoneLayout()?2.35:2.65,o.root.position.z))}else{o.label.hidden=true}o.partLabels.forEach((b,i)=>{b.hidden=true;if(id===active&&id!=="hub"&&opened&&o.parts[i]&&o.progress>.5){const q=o.parts[i].g.getWorldPosition(new T.Vector3());q.y+=id==="sheep"||id==="picnic"?(i===0?1.55:.55):.65;placeLabel(b,q);b.setAttribute("aria-pressed",String(i===part))}})}
 // Place labels in screen space without overlapping the inspector or each other.
  const placed=[],phone=phoneLayout(),guides=[];labelQueue.sort((a,b)=>b.priority-a.priority);
@@ -453,7 +537,7 @@ for(const [id,o] of objects){const want=id===active&&opened?1:0;o.progress=pause
  }
  const guideLayer=document.getElementById("labelGuides");if(phone){guideLayer.setAttribute("viewBox","0 0 "+canvasRect.width+" "+canvasRect.height);guideLayer.innerHTML=guides.join("")}else if(guideLayer.childNodes.length)guideLayer.replaceChildren();
  if(renderer.shadowMap.enabled&&frameCount%3===0)renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera)}
-ui.setEngine({select,setExpanded,highlight,setPanel});mobileReady=true;fly("hub",phoneLayout());camera.updateMatrixWorld();orientExhibits(camera,objects.values());window.elasragPortfolioDiagnostics=()=>({version:"1.3",models:{...modelStatus},selected:active,quality,pixelRatio:renderer.getPixelRatio(),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,projectCount:objects.size-1,facing:"camera-facing yaw / stationary pedestals",webgl:true});renderer.render(scene,camera);document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();rendering=false;for(const b of document.querySelectorAll("[data-view]"))b.disabled=true;labels.hidden=true;document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceLighting();
+ui.setEngine({select,setExpanded,highlight,setPanel});mobileReady=true;fly("hub",phoneLayout());refreshQuality(true);camera.updateMatrixWorld();orientExhibits(camera,objects.values());window.elasragPortfolioDiagnostics=()=>({version:"1.4",models:{...modelStatus},selected:active,quality,pixelRatio:renderer.getPixelRatio(),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,projectCount:objects.size-1,zoomLimits:{minDistance:controls.minDistance,maxDistance:controls.maxDistance,minZoom:controls.minZoom,maxZoom:controls.maxZoom},detailLevels:Object.fromEntries([...objects].map(([id,o])=>[id,o.detailLevel])),shadowSize:key.shadow.mapSize.x,facing:"camera-facing yaw / stationary pedestals",webgl:true});renderer.render(scene,camera);document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();rendering=false;for(const b of document.querySelectorAll("[data-view]"))b.disabled=true;labels.hidden=true;document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceLighting();
 }
 boot().catch(err=>{console.warn("Workspace rendering unavailable",err);document.getElementById("loadText").textContent="3D rendering is unavailable on this device or network.";renderStatus.textContent="Accessible project directory / fallback";document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true")});
 </script>
