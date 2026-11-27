@@ -19,7 +19,7 @@ import { buildFacadeBatch } from './facades';
 import { buildCoffeeShop } from './coffeeShop';
 import {buildBlackSheepStreetFacade} from './blackSheepStreet';
 import {buildLibraryFacade,buildLibraryBusShelters} from './libraryBusStop';
-import {LIBRARY_ID,LIBRARY_NEIGHBOURS,KELSICK_CHUNK,KELSICK_CHUNKS,isShelterFootprint,busStopPavements,busStopBay,sheltersForChunk,kelsickZ} from '../geo/libraryBusStop';
+import {LIBRARY_ID,LIBRARY_NEIGHBOURS,KELSICK_CHUNK,KELSICK_CHUNKS,isShelterFootprint,busStopPavements,busStopBay,sheltersForChunk,kelsickZ,busStopKerbs} from '../geo/libraryBusStop';
 import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow,lakeRoadKerbs,lakeRoadPavingJoints,lakeRoadDrainCentres,usesReferenceStreetBuilding,referenceStreetBuilding} from '../geo/blackSheepStreet';
 import {buildPetShop} from './petShop';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
@@ -1139,6 +1139,8 @@ export function buildChunkGroup(
     const paint=new THREE.MeshStandardMaterial({color:0xc7ab58,roughness:.96,side:THREE.DoubleSide});streetMaterials.push(paint);
     addBatch(busStopPavements(chunk.key).map(p=>groundSurface(p,surfaceGround,.205,true)),paving,false,true);
     addBatch(busStopBay(chunk.key).map(p=>groundSurface(p,surfaceGround,.145,true)),paint,false);
+    const kerb=new THREE.MeshStandardMaterial({color:0x918c80,roughness:.94,side:THREE.DoubleSide});streetMaterials.push(kerb);
+    addBatch(busStopKerbs(chunk.key).map(p=>groundSurface(p,surfaceGround,.216,true)),kerb,false,true);
     const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=256;
     const ctx=canvas.getContext('2d')!;ctx.clearRect(0,0,1024,256);ctx.fillStyle='#cbb36a';ctx.font='bold 178px Arial';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('BUS STOP',512,128,980);
     const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;
