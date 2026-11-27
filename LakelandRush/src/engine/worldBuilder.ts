@@ -50,7 +50,7 @@ export interface BuiltChunkResult {
   roadDecks: Array<{ ax: number; az: number; bx: number; bz: number; ay: number; by: number; halfWidth: number }>;
   pierDecks: Array<{ outline: Array<[number, number]>; y: number }>;
   grindSegments: Array<{ ax: number; az: number; bx: number; bz: number; y: number }>;
-  updateSignage: (x: number, z: number, labels: boolean) => void;
+  updateSignage: (x: number, z: number, labels: boolean, y?:number) => void;
   surfaceAt:(x:number,z:number)=>number|undefined;
   dispose: () => void;
 }
@@ -1065,7 +1065,7 @@ export function buildChunkGroup(
   return {
     key: chunk.key,
     group,
-    updateSignage:(x,z,labels)=>{signage.update(x,z,labels);grass.update(x,z);},
+    updateSignage:(x,z,labels,y)=>{signage.update(x,z,labels);grass.update(x,z,y);},
     surfaceAt:(x,z)=>{let y=-Infinity;for(const sample of surfaceSamplers)y=Math.max(y,sample(x,z)??-Infinity);return Number.isFinite(y)?y:undefined;},
     colliders,
     roadDecks,

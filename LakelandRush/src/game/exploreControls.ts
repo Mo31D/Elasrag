@@ -27,7 +27,7 @@ export const EXPLORE_PACE_LABEL:Record<ExplorePace,string>={walk:'Walk',run:'Jog
 export const EXPLORE_SPEED:Record<ExplorePace,number>={walk:10*.44704,run:25*.44704,sprint:50*.44704};
 // Keep legacy internal pace keys for saved settings and HUD compatibility.
 export const EXPLORE_GRAVITY=28;
-export const EXPLORE_JUMP_VELOCITY=5.8;
+export const EXPLORE_JUMP_VELOCITY=5.8*Math.SQRT2;
 export const EXPLORE_JUMP_HEIGHT=EXPLORE_JUMP_VELOCITY**2/(2*EXPLORE_GRAVITY);
 export function secondJumpVelocity(startY:number,currentY:number){
  const targetY=startY+2*EXPLORE_JUMP_HEIGHT;
@@ -46,3 +46,6 @@ export function sweepMove(x:number,z:number,dx:number,dz:number,blocked:(x:numbe
  for(let i=0;i<steps;i++){const next=slideMove(x,z,dx/steps,dz/steps,blocked);x=next.x;z=next.z;}
  return {x,z};
 }
+
+// Free flight holds altitude until the player explicitly climbs or descends.
+export function flightHeight(y:number,vertical:number,dt:number,floor:number){return Math.max(floor+1.25,Math.min(floor+180,y+Math.max(-1,Math.min(1,vertical))*12*dt));}

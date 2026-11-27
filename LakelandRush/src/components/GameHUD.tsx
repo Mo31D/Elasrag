@@ -21,6 +21,8 @@ export interface GameHUDProps {
   onRestart: () => void;
   onTouchSteer: (val: number) => void;
   onTouchJump: () => void;
+  onToggleFlight:()=>void;
+  onFlightVertical:(value:number)=>void;
   onTouchSlide: () => void;
   onOpenMap: () => void;
   onTouchAdvance: (value: number) => void;

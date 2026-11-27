@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { cameraRelative, smoothAngle, slideMove, sweepMove, paceSpeed, EXPLORE_JUMP_VELOCITY, secondJumpVelocity, advanceExploreJump, type ExplorePace } from '../game/exploreControls';
+import { cameraRelative, smoothAngle, slideMove, sweepMove, paceSpeed, EXPLORE_JUMP_VELOCITY, secondJumpVelocity, advanceExploreJump, flightHeight, type ExplorePace } from '../game/exploreControls';
 import { createBlackSheepInterior } from './shopInterior';
 import navigation from '../data/ambleside-navigation.json';
 import { createAtmosphere } from './atmosphere';
@@ -226,6 +226,8 @@ export class LakelandEngine {
   private exploreJumpPresses=0;
   private exploreJumpCount=0;
   private exploreJumpStartY=0;
+  private flying=false;
+  private flightVertical=0;
   private slideTimer = 0;
   private isGrinding = false;
   private grindHeight = 0;
@@ -712,7 +714,7 @@ export class LakelandEngine {
       this.keysHeld.clear();
       this.virtualSteer = 0;
       this.touchAdvance = 0;
-      this.exploreJumpPresses=0;this.jumpBufferTimer=0;
+      this.exploreJumpPresses=0;this.jumpBufferTimer=0;this.flightVertical=0;
       this.sound.setGameplayState(false, 0, false);
     } else {
       this.sound.unlock();
@@ -742,8 +744,15 @@ export class LakelandEngine {
     this.photoZoom = THREE.MathUtils.clamp(this.photoZoom + deltaZoom, 0.65, 3.2);
   }
 
+  public toggleFreeFlight():void {
+    if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop)return;
+    this.flying=!this.flying;this.flightVertical=0;this.playerVy=0;this.exploreJumpPresses=0;this.exploreJumpCount=0;this.coyoteTimer=0;this.isGrounded=false;
+    if(this.flying)this.playerY=Math.max(this.playerY+2,this.walkSurface(this.playerX,this.playerZ)+3);
+    this.setCallout(this.flying?'Free flight':'Landing');this.pushHudSnapshot();
+  }
+  public setFlightVertical(value:number):void {this.flightVertical=this.flying?THREE.MathUtils.clamp(value,-1,1):0;}
   public triggerTouchJump(): void {
-    if(this.gameState!=='playing'||this.inShop)return;
+    if(this.gameState!=='playing'||this.inShop||this.flying)return;
     this.sound.unlock();
     if(this.activeRoute.mode==='freeroam'){
       // Preserve two distinct taps even when both arrive between animation frames.
@@ -805,7 +814,7 @@ export class LakelandEngine {
 
   private nearShopDoor(): boolean {
     const stop = navigation.stops.find(place => place.id === 'black-sheep')!;
-    return this.activeRoute.mode === 'freeroam'
+    return this.activeRoute.mode === 'freeroam' && !this.flying
       && Math.hypot(this.playerX - stop.spawn[0], this.playerZ - stop.spawn[1]) < 6;
   }
 
@@ -868,7 +877,7 @@ export class LakelandEngine {
     this.laneOffset = 0;
     this.targetLaneVelocity = 0;
     this.playerVy = 0;
-    this.exploreJumpPresses=0;this.exploreJumpCount=0;this.exploreJumpStartY=0;
+    this.exploreJumpPresses=0;this.exploreJumpCount=0;this.exploreJumpStartY=0;this.flying=false;this.flightVertical=0;
     this.jumpBufferTimer=0;this.coyoteTimer=0;
     this.isGrounded = true;
     this.isGrinding = false;
@@ -1300,7 +1309,7 @@ export class LakelandEngine {
     this.atmosphere?.dome.position.copy(this.camera.position);
     for (const chunk of this.loadedChunks.values()) {
       chunk.updateSignage(this.camera.position.x, this.camera.position.z,
-        !view && this.gameState === 'playing' && this.activeRoute?.mode === 'freeroam' && this.exploreLabels);
+        !view && this.gameState === 'playing' && this.activeRoute?.mode === 'freeroam' && this.exploreLabels,this.camera.position.y);
     }
     this.renderer.render(this.inShop && this.shop ? this.shop.scene : this.scene, this.camera);
     if (view) {
@@ -1400,7 +1409,7 @@ export class LakelandEngine {
       this.slideTimer = Math.max(0, this.slideTimer - dt);
     }
 
-    if(roaming){
+    if(roaming&&!this.flying){
       const presses=this.exploreJumpPresses;this.exploreJumpPresses=0;
       for(let i=0;i<presses;i++){
         if(this.exploreJumpCount===0&&(this.isGrounded||this.coyoteTimer>0)){
@@ -1415,7 +1424,7 @@ export class LakelandEngine {
         this.slideTimer=0;this.squashY=1.24;this.sound.playJump();
         this.emitParticles(this.playerX,this.playerY,this.playerZ,6,0xe2e8f0,3.2);
       }
-    }else if (this.jumpBufferTimer > 0 && this.coyoteTimer > 0) {
+    }else if (!roaming && this.jumpBufferTimer > 0 && this.coyoteTimer > 0) {
       this.playerVy = 11.4;
       this.isGrounded = false;
       this.isGrinding = false;
@@ -1511,7 +1520,7 @@ export class LakelandEngine {
           this.playerZ >= c.minZ &&
           this.playerZ <= c.maxZ &&
           pointInRing(this.playerX,this.playerZ,c.outline) &&
-          this.playerY >= c.topY - 0.85
+          (this.flying || this.playerY >= c.topY - 0.85)
         ) {
           floorY = Math.max(floorY, c.topY);
         }
@@ -1547,10 +1556,13 @@ export class LakelandEngine {
       }
     }
 
-    if(roaming){const step=advanceExploreJump(this.playerY,this.playerVy,dt);this.playerY=step.y;this.playerVy=step.vy;}
+    if(this.flying&&roaming){
+      const vertical=this.flightVertical+(this.keysHeld.has('Space')?1:0)-(this.keysHeld.has('KeyQ')?1:0);
+      this.playerY=flightHeight(this.playerY,vertical,dt,Math.max(floorY,overLake?0:-Infinity));this.playerVy=0;this.isGrounded=false;
+    }else if(roaming){const step=advanceExploreJump(this.playerY,this.playerVy,dt);this.playerY=step.y;this.playerVy=step.vy;}
     else {this.playerVy -= 28.0 * dt;this.playerY += this.playerVy * dt;}
 
-    if (this.playerY <= floorY) {
+    if (!this.flying && this.playerY <= floorY) {
       if (!this.isGrounded && this.playerVy < -6) {
         this.squashY = 0.76;
         this.sound.playFootstep(inWater ? 'water' : 'road');
@@ -1916,6 +1928,7 @@ export class LakelandEngine {
       cameraViewMode: this.exploreFirst || this.inShop ? 'first_person' : 'third_person',
       exploreWalkPace: this.explorePace==='walk',
       explorePace: this.explorePace,
+      flying:this.flying,
       cleanExploreMode: !this.exploreLabels,
       insideShop: this.inShop,
       canEnterShop: this.nearShopDoor(),
@@ -1953,9 +1966,10 @@ export class LakelandEngine {
       if(firstPress&&e.code==='Digit2')this.setExplorePace('run');
       if(firstPress&&e.code==='Digit3')this.setExplorePace('sprint');
       if(firstPress&&e.code==='KeyC')this.recenterExploreCamera();
+      if(firstPress&&e.code==='KeyF')this.toggleFreeFlight();
       if (firstPress && e.code === 'KeyE') this.toggleShop();
       if (firstPress && e.code === 'KeyV') this.toggleExploreView();
-      if (firstPress && e.code === 'Space' && !this.inShop) this.triggerTouchJump();
+      if (firstPress && e.code === 'Space' && !this.inShop && !this.flying) this.triggerTouchJump();
       return;
     }
 
@@ -1979,6 +1993,7 @@ export class LakelandEngine {
   };
 
   private onWindowBlur = () => {
+    this.flightVertical=0;
     this.exploreJumpPresses=0;this.jumpBufferTimer=0;
     this.keysHeld.clear();
     this.virtualSteer = 0;

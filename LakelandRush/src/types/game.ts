@@ -262,6 +262,7 @@ export interface HudSnapshot {
   explorePace?: 'walk'|'run'|'sprint';
   cleanExploreMode?: boolean;
   insideShop?: boolean;
+  flying?: boolean;
   canEnterShop?: boolean;
 }
 

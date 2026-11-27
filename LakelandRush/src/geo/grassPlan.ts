@@ -4,7 +4,7 @@ import {displayHalfWidth} from './roadPresentation';
 import {segmentDistance,type Point} from './parking';
 import realm from '../data/waterhead-public-realm.json';
 import surfaces from '../data/ambleside-surfaces.json';
-export const GRASS_RADIUS=25,GRASS_SPACING=.65,GRASS_MAX=4800;
+export const GRASS_RADIUS=16,GRASS_SPACING=1.05,GRASS_MAX=600;
 export function grassHash(x:number,z:number,salt=0){let n=Math.imul(x,374761393)^Math.imul(z,668265263)^Math.imul(salt+1,1274126177);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296;}
 export function grassExclusion(chunk:WorldChunkData,water:(x:number,z:number)=>boolean){
  const polygons:Point[][]=[...chunk.buildings.map(b=>b.pts.map(([x,z])=>[x+b.cx,z+b.cz] as Point)),...(surfaces[chunk.key as keyof typeof surfaces]??[]).map(s=>s.points as Point[])];
@@ -28,8 +28,18 @@ export function grassCandidates(chunk:WorldChunkData,x:number,z:number,blocked:(
  for(let i=Math.ceil(minX/GRASS_SPACING);i<=Math.floor(maxX/GRASS_SPACING);i++)for(let j=Math.ceil(minZ/GRASS_SPACING);j<=Math.floor(maxZ/GRASS_SPACING);j++){
   const px=(i+(grassHash(i,j,1)-.5)*.65)*GRASS_SPACING,pz=(j+(grassHash(i,j,2)-.5)*.65)*GRASS_SPACING;
   if(px<minX||px>maxX||pz<minZ||pz>maxZ||Math.hypot(px-x,pz-z)>GRASS_RADIUS||blocked(px,pz))continue;
-  const seed=grassHash(i,j,3);if(seed<.18)continue;
+  const seed=grassHash(i,j,3);const patch=grassHash(Math.floor(px/5),Math.floor(pz/5),7);if(seed<.28+patch*.28)continue;
   out.push({x:px,z:pz,seed});if(out.length>=GRASS_MAX)return out;
  }
  return out;
+}
+
+export type PlantFamily='short'|'rough'|'bracken'|'flower';
+// Representative Lakeland meadow/verge vegetation, not individual surveyed plants.
+// Flower patches are sparse: dry stems, grasses and bracken dominate the late-autumn look.
+export function plantFamily(x:number,z:number,seed:number):PlantFamily{
+ const patch=grassHash(Math.floor(x/4),Math.floor(z/4),9);
+ if(patch>.76&&seed>.85)return 'flower';
+ if(patch<.20&&seed>.62)return 'bracken';
+ return seed>.72?'rough':'short';
 }

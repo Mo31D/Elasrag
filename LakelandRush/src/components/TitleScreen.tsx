@@ -42,9 +42,9 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   const rec = saveData.records[selectedRoute.id];
 
   return (
-    <div className="fixed inset-0 z-20 flex flex-col justify-between p-4 sm:p-6 md:p-8 pointer-events-none bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-950/20">
+    <div className="fixed inset-0 z-20 flex flex-col gap-5 overflow-y-auto overscroll-contain touch-pan-y p-4 sm:p-6 md:p-8 pointer-events-auto bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-950/20">
       {/* Top Header Row: Bespoke SVG Crest + Utility Buttons */}
-      <div className="flex items-start justify-between gap-4 pointer-events-auto">
+      <div className="flex flex-wrap shrink-0 items-start justify-between gap-4 pointer-events-auto">
         <div className="flex items-center gap-3.5">
           <svg
             viewBox="0 0 56 56"
@@ -98,9 +98,9 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
       </div>
 
       {/* Main Left-Anchored Selection Panel */}
-      <div className="my-auto max-w-2xl w-full pointer-events-auto flex flex-col gap-4">
+      <div className="my-auto shrink-0 max-w-2xl w-full pointer-events-auto flex flex-col gap-4">
         {/* Route Selection Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[46vh] overflow-y-auto pr-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pr-1">
           {routes.map((route) => {
             const active = route.id === selectedRoute.id;
             const rRec = saveData.records[route.id];
@@ -180,7 +180,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
           </div>
 
           {/* Weather & Time-of-Day Selector */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+          <div className="flex flex-wrap items-center gap-1.5 pb-0.5">
             {WEATHER_OPTIONS.map((w) => (
               <button
                 key={w.id}
@@ -200,7 +200,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
       </div>
 
       {/* Bottom Safe-Margin Control Hint */}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300/90 pointer-events-none">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 text-xs text-slate-300/90 pointer-events-none">
         <span>A / D Steer · Space / W Jump &amp; Vault · S Slide · Esc Pause · M Mute</span>
         <span>Map data © OpenStreetMap contributors · EU-DEM 25m</span>
       </div>

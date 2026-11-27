@@ -390,6 +390,8 @@ export default function App() {
           onRestart={handleStartCurrentRun}
           onTouchSteer={(val) => engineRef.current?.setTouchSteer(val)}
           onTouchJump={() => engineRef.current?.triggerTouchJump()}
+          onToggleFlight={()=>engineRef.current?.toggleFreeFlight()}
+          onFlightVertical={value=>engineRef.current?.setFlightVertical(value)}
           onTouchSlide={() => engineRef.current?.triggerTouchSlide()}
           onOpenMap={openTravelMap}
           onTouchAdvance={value => engineRef.current?.setTouchAdvance(value)}

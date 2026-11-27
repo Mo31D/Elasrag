@@ -22,3 +22,6 @@ test('dense parking surface conforms to supplied ground and has world-scale UVs'
  for(let i=0;i<p.count;i++)assert.ok(Math.abs(p.getY(i)-(p.getX(i)*.05+p.getZ(i)*.03+.065))<.00001);
  g.dispose();
 });
+
+import {plantFamily,GRASS_RADIUS} from './grassPlan';
+test('vegetation has bounded sparse grass, rough stems, bracken and occasional flowers',()=>{const counts:Record<string,number>={};for(let i=0;i<100;i++)for(let j=0;j<100;j++){const k=plantFamily(i*.6,j*.6,((i*13+j*17)%101)/101);counts[k]=(counts[k]??0)+1;}assert.equal(Object.keys(counts).length,4);assert.ok(counts.flower<counts.short*.15);assert.ok(GRASS_MAX<=600&&GRASS_RADIUS<=16);});

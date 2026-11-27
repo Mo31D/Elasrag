@@ -15,7 +15,7 @@
     margin: 0;
     padding: 0;
     overflow: hidden;
-    touch-action: none;
+    touch-action: manipulation;
     overscroll-behavior: none;
     font-family: var(--font-sans);
     -webkit-tap-highlight-color: transparent;
@@ -37,4 +37,6 @@
 }
 
 /* Game controls must not opt back into Safari viewport gestures. */
-html,body,#root,button,canvas {touch-action:none !important;}
+body[data-state='playing'] [data-testid='game-canvas-mount'],
+body[data-state='playing'] [data-testid='explore-hud-v5'] {touch-action:none;}
+body:not([data-state='playing']) button {touch-action:manipulation;}

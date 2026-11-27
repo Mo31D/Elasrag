@@ -23,3 +23,10 @@ test('second jump reaches twice the original apex from early, apex or descending
    near(apex.y,start+2*EXPLORE_JUMP_HEIGHT);near(apex.vy,0);
  }
 });
+
+import {flightHeight} from './exploreControls';
+test('V14 doubles original single jump height and doubles it again with second press',()=>{
+ near(EXPLORE_JUMP_HEIGHT,2*5.8**2/(2*EXPLORE_GRAVITY));
+ const v=secondJumpVelocity(10,10+EXPLORE_JUMP_HEIGHT);near(10+EXPLORE_JUMP_HEIGHT+v*v/(2*EXPLORE_GRAVITY),10+2*EXPLORE_JUMP_HEIGHT);
+});
+test('flight holds altitude, climbs, descends and remains above surfaces',()=>{near(flightHeight(20,0,.5,10),20);near(flightHeight(20,1,.5,10),26);near(flightHeight(20,-1,.5,10),14);near(flightHeight(12,-1,1,10),11.25);near(flightHeight(190,1,1,10),190);});

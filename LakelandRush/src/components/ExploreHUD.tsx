@@ -1,5 +1,5 @@
 import {useEffect,useRef,useState,type PointerEvent} from 'react';
-import {Map,Menu,ArrowUp,RotateCcw,Compass} from 'lucide-react';
+import {Map,Menu,ArrowUp,ArrowDown,RotateCcw,Compass,Bird} from 'lucide-react';
 import type {GameHUDProps} from './GameHUD';
 import {floatingInput,EXPLORE_PACE_LABEL,type ExplorePace} from '../game/exploreControls';
 import navigation from '../data/ambleside-navigation.json';
@@ -14,7 +14,7 @@ export function ExploreHUD(p:GameHUDProps){
  const latest=useRef(p);latest.current=p;
  const mapRef=useRef<HTMLCanvasElement>(null);
  const radius=43;
- function clear(){active.current=null;setStick(null);latest.current.onTouchSteer(0);latest.current.onTouchAdvance(0);}
+ function clear(){active.current=null;setStick(null);latest.current.onTouchSteer(0);latest.current.onTouchAdvance(0);latest.current.onFlightVertical(0);}
  useEffect(()=>{
    const media=window.matchMedia('(pointer: coarse)');
    const update=()=>{clear();setTouch(media.matches||navigator.maxTouchPoints>0)};
@@ -45,7 +45,8 @@ export function ExploreHUD(p:GameHUDProps){
     <span className="relative block h-[84px] w-[84px] sm:h-[104px] sm:w-[104px] shrink-0 overflow-hidden rounded-full border-2 border-white/40 bg-slate-950/70"><canvas ref={mapRef} width={116} height={116} className="h-full w-full"/><Map size={15} className="absolute bottom-2 right-3 text-white"/></span>
     <span className="mt-1 max-w-[34vw] rounded-lg bg-slate-950/65 px-2 py-1.5"><span className="block truncate text-xs font-semibold">{hud.insideShop?'The Black Sheep Shop':hud.nearSettlement}</span>{!hud.insideShop&&!hud.cleanExploreMode&&hud.nearLandmark&&<span className="block truncate text-[10px] text-teal-100">{hud.nearLandmark}</span>}</span>
    </button>
-   <button type="button" aria-label="Pause and settings menu" onClick={p.onPause} className={control+' h-12 w-12 rounded-xl'}><Menu size={23}/></button>
+   <div className="flex items-center gap-2 pointer-events-auto">{!hud.insideShop&&<button type="button" aria-label="Toggle free flight" aria-pressed={!!hud.flying} onClick={()=>{p.onFlightVertical(0);p.onToggleFlight()}} className={control+' h-10 w-10 '+(hud.flying?'!bg-teal-500 !text-slate-950':'')}><Bird size={21}/></button>}
+   <button type="button" aria-label="Pause and settings menu" onClick={p.onPause} className={control+' h-12 w-12 rounded-xl'}><Menu size={23}/></button></div>
   </div>
   {hud.actionCallout&&<div className="absolute left-1/2 top-28 max-w-[70%] -translate-x-1/2 rounded-lg bg-slate-950/75 px-3 py-2 text-xs text-white">{hud.actionCallout}</div>}
   {touch&&<div role="group" aria-label="Floating movement joystick" data-testid="floating-joystick-zone" className="pointer-events-auto absolute left-0 bottom-0 w-[46%] h-[43%] touch-none" 
@@ -55,16 +56,17 @@ export function ExploreHUD(p:GameHUDProps){
     <div className="h-12 w-12 rounded-full border border-white/70 bg-white/40 shadow-md" style={{transform:'translate('+(stick?.dx??0)+'px,'+(stick?.dy??0)+'px)'}}/>
    </div>
   </div>}
-  {!touch&&<div className="absolute bottom-4 left-4 rounded-lg bg-slate-950/60 p-2 text-xs text-white">WASD · drag to look · 1 / 2 / 3 pace · Space jump · E interact</div>}
+  {!touch&&<div className="absolute bottom-4 left-4 rounded-lg bg-slate-950/60 p-2 text-xs text-white">WASD · drag to look · 1 / 2 / 3 pace · Space jump/up · Q down · F fly · E interact</div>}
   <div className="absolute flex flex-col items-end gap-2" style={{right:'max(14px, env(safe-area-inset-right))',bottom:'calc(max(16px, env(safe-area-inset-bottom)) + 4px)'}}>
    {(hud.canEnterShop||hud.insideShop)&&<button type="button" className="pointer-events-auto rounded-xl bg-teal-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={p.onShopDoor}>{hud.insideShop?'Leave shop':'Enter shop'}</button>}
    {!hud.insideShop&&<div className="pointer-events-auto flex rounded-xl border border-white/20 bg-slate-950/65 p-1 text-xs text-white" role="group" aria-label="Movement speed">{paceOrder.map(mode=><button key={mode} type="button" aria-pressed={pace===mode} className={'min-h-9 rounded-lg px-2.5 touch-none '+(pace===mode?'bg-white/90 font-bold text-slate-900':'text-white/85')} onClick={()=>p.onSetExplorePace(mode)}><span className="block whitespace-nowrap">{EXPLORE_PACE_LABEL[mode]}</span></button>)}</div>}
    <div className="flex items-end gap-3">
     <button type="button" aria-label="Recenter camera behind player" onClick={p.onRecenterExploreCamera} className={control+' h-11 w-11'}><RotateCcw size={19}/></button>
     <button type="button" aria-label="Switch camera view" onClick={p.onToggleExploreView} className={control+' h-11 w-11'}><Compass size={21}/></button>
-    {touch&&!hud.insideShop&&<button type="button" aria-label="Jump (tap twice for double jump)" className={control+' h-16 w-16'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
+    {touch&&hud.flying&&[-1,1].map(dir=><button key={dir} type="button" aria-label={dir>0?'Fly up':'Fly down'} className={control+' h-12 w-12'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);p.onFlightVertical(dir)}} onPointerUp={()=>p.onFlightVertical(0)} onPointerCancel={()=>p.onFlightVertical(0)} onLostPointerCapture={()=>p.onFlightVertical(0)}>{dir>0?<ArrowUp size={23}/>:<ArrowDown size={23}/>}</button>)}
+    {touch&&!hud.insideShop&&!hud.flying&&<button type="button" aria-label="Jump (tap twice for double jump)" className={control+' h-16 w-16'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
    </div>
   </div>
-  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V13</div>
+  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V14</div>
  </div>;
 }
