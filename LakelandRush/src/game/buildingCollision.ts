@@ -17,7 +17,7 @@ export function solidHeight(c:SolidCollider,x:number,z:number,r:number):number{
  let top=-Infinity;
  const sample=(a:number,b:number)=>{const h=c.roofAt!(a,b);if(h!==undefined&&Number.isFinite(h))top=Math.max(top,h);};
  if(inside)sample(x,z);
- sample(px,pz);
+ if(nearest<=r*r+1e-9)sample(px,pz);
  for(const [u,v] of directions){const a=x+u*r,b=z+v*r;if(pointInRing(a,b,c.outline))sample(a,b);}
  // Keep mapped wall volume solid even if an asset has incomplete roof geometry.
  return Number.isFinite(top)?top:c.topY;

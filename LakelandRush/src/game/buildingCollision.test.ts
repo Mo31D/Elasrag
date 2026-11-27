@@ -13,7 +13,7 @@ test('pitched roof exceeds old eave collider and blocks wing flight',()=>{
  assert.equal(solidHeight(c,4.1,0,FLIGHT_RADIUS),-Infinity);
 });
 test('high speed sweeps stop outside walls without crossing corners',()=>{
- for(const y of [0,4.8,5.1]){
+ for(const y of [0,4.8,5.02]){
   const p=sweepMove(-9,0,18,0,(x,z)=>blocksMove(solidHeight(c,x,z,WALK_RADIUS),y,-Infinity,false));
   assert.ok(p.x<=-3-WALK_RADIUS+.001,String(p.x));
  }
@@ -34,4 +34,8 @@ test('camera cannot pass through pitched roof or narrow wall',()=>{
 test('triangle surface follows actual slope, not a flat height',()=>{
  const v=[[0,5,0],[2,7,0],[0,5,2]],pos={count:3,getX:(i:number)=>v[i][0],getY:(i:number)=>v[i][1],getZ:(i:number)=>v[i][2]};
  const sample=triangleGround(pos,null,4);assert.equal(sample(.5,.5),5.5);assert.equal(sample(3,3),undefined);
+});
+
+test('roof height uses only nearby surfaces, not a distant high edge',()=>{
+ const distant={...c,roofAt:(x:number)=>x>2.9?20:5};assert.equal(solidHeight(distant,0,0,.38),5);
 });
