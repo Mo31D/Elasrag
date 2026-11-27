@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import type {BuildingFeature} from '../types/game';
 import type {Ground} from '../geo/surfaceGround';
-import {streetEdge,BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_FRONT_EDGE} from '../geo/blackSheepStreet';
+import {streetEdge,BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_FRONT_EDGE,facadeWindowFits} from '../geo/blackSheepStreet';
 
 export function buildBlackSheepStreetFacade(b:BuildingFeature,ground:Ground,wallTop:number,stone:THREE.MeshStandardMaterial,roof:THREE.MeshStandardMaterial){
  if(b.id!==BLACK_SHEEP_BUILDING&&b.id!==LAKE_ROAD_CORNER_BUILDING)return null;
@@ -24,7 +24,7 @@ export function buildBlackSheepStreetFacade(b:BuildingFeature,ground:Ground,wall
   const sphere=(r:number,x:number,y:number,z:number,mat:THREE.Material,sx=1,sy=1,sz=1)=>{const g=new THREE.SphereGeometry(r,8,6);g.scale(sx,sy,sz);g.translate(x,y,z);add(g,mat);};
   const rod=(x:number,y:number,z:number,h:number,r:number,mat:THREE.Material)=>add(new THREE.CylinderGeometry(r,r,h,8).translate(x,y,z),mat);
   const sign=(label:string,w:number,h:number,x:number,y:number,z:number,bg:string,fg:string,serif=false)=>{const c=document.createElement('canvas');c.width=1024;c.height=Math.max(64,Math.round(1024*h/Math.max(.05,w)));const ctx=c.getContext('2d')!;ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=fg;ctx.font=(serif?'normal ':'bold ')+Math.round(c.height*.60)+'px '+(serif?'Georgia':'Arial');ctx.fillText(label,c.width/2,c.height/2,c.width*.94);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;textures.push(t);const mat=new THREE.MeshBasicMaterial({map:t});materials.push(mat);const g=new THREE.PlaneGeometry(w,h);geos.push(g);const mesh=new THREE.Mesh(g,mat);mesh.position.set(x,y,z);root.add(mesh);};
-  const sash=(x:number,y:number,w:number,h:number,z=.07,frame=cream)=>{box(w+.26,h+.26,.14,x,y,z,pale);box(w+.10,h+.10,.13,x,y,z+.08,black);box(w,h,.065,x,y,z+.15,frame);box(w-.12,h-.12,.045,x,y,z+.19,glass);box(w,.055,.06,x,y-.05,z+.23,frame);box(.045,h*.47,.055,x,y+h*.24,z+.23,frame);for(const k of [-1,1])box(.042,h*.47,.055,x+k*w*.26,y+h*.24,z+.23,frame);box(w,.045,.06,x,y+h*.24,z+.23,frame);box(w+.3,.11,.25,x,y-h/2-.12,z+.09,sill);};
+  const sash=(x:number,y:number,w:number,h:number,z=.07,frame=cream)=>{if(!facadeWindowFits(wallTop,base,y,h))return;box(w+.26,h+.26,.14,x,y,z,pale);box(w+.10,h+.10,.13,x,y,z+.08,black);box(w,h,.065,x,y,z+.15,frame);box(w-.12,h-.12,.045,x,y,z+.19,glass);box(w,.055,.06,x,y-.05,z+.23,frame);box(.045,h*.47,.055,x,y+h*.24,z+.23,frame);for(const k of [-1,1])box(.042,h*.47,.055,x+k*w*.26,y+h*.24,z+.23,frame);box(w,.045,.06,x,y+h*.24,z+.23,frame);box(w+.3,.11,.25,x,y-h/2-.12,z+.09,sill);};
   const cornice=(x:number,y:number,w:number,mat:THREE.Material)=>{box(w,.12,.26,x,y,.15,mat);box(w+.10,.075,.34,x,y+.10,.17,mat);};
   const pilaster=(x:number,y:number,h:number,w:number,mat:THREE.Material)=>{box(w,h,.16,x,y,.12,mat);box(w+.075,.15,.24,x,y-h/2+.08,.15,mat);box(w+.08,.13,.25,x,y+h/2-.07,.15,mat);};
   function bayDisplay(x:number,w:number){
@@ -110,7 +110,7 @@ export function buildBlackSheepStreetFacade(b:BuildingFeature,ground:Ground,wall
   // Horizontal stone stringcourse and dark rainwater brackets.
   box(L,.065,.21,0,3.10,.11,darkStone);
   for(const u of [split,shopRight-.06])for(let y=3.25;y<upper-.15;y+=1.6)box(.15,.065,.09,u,y,.21,iron);
-  for(const u of [-L/2+.13,L/2-.13])for(let y=3.45,k=0;y<upper-.3;y+=.39,k++)box(k%2?.30:.43,.36,.10,u,y,.055,pale);
+  for(const u of [-L/2+.13,L/2-.13])for(let y=3.45,k=0;y+.24<upper;y+=.39,k++)box(k%2?.30:.43,.36,.10,u,y,.055,pale);
   sign('LAKE ROAD',.76,.20,officeLeft+.48,3.47,.15,'#e0daca','#2e2e2b',true);
   f.flush();
   // Sandstone entrance and decorative projecting oriel immediately north of the shop.
