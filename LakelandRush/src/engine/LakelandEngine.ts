@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { cameraRelative, smoothAngle, slideMove, sweepMove, paceSpeed, type ExplorePace } from '../game/exploreControls';
+import { cameraRelative, smoothAngle, slideMove, sweepMove, paceSpeed, EXPLORE_JUMP_VELOCITY, secondJumpVelocity, advanceExploreJump, type ExplorePace } from '../game/exploreControls';
 import { createBlackSheepInterior } from './shopInterior';
 import navigation from '../data/ambleside-navigation.json';
 import { createAtmosphere } from './atmosphere';
@@ -223,6 +223,9 @@ export class LakelandEngine {
   private isGrounded = true;
   private coyoteTimer = 0;
   private jumpBufferTimer = 0;
+  private exploreJumpPresses=0;
+  private exploreJumpCount=0;
+  private exploreJumpStartY=0;
   private slideTimer = 0;
   private isGrinding = false;
   private grindHeight = 0;
@@ -709,6 +712,7 @@ export class LakelandEngine {
       this.keysHeld.clear();
       this.virtualSteer = 0;
       this.touchAdvance = 0;
+      this.exploreJumpPresses=0;this.jumpBufferTimer=0;
       this.sound.setGameplayState(false, 0, false);
     } else {
       this.sound.unlock();
@@ -739,8 +743,14 @@ export class LakelandEngine {
   }
 
   public triggerTouchJump(): void {
+    if(this.gameState!=='playing'||this.inShop)return;
     this.sound.unlock();
-    this.jumpBufferTimer = 0.14;
+    if(this.activeRoute.mode==='freeroam'){
+      // Preserve two distinct taps even when both arrive between animation frames.
+      this.exploreJumpPresses=Math.min(2,this.exploreJumpPresses+1);
+      return;
+    }
+    this.jumpBufferTimer=0.14;
   }
 
   public triggerTouchSlide(): void {
@@ -813,6 +823,7 @@ export class LakelandEngine {
       this.playerHeading = 0;
     }
     this.keysHeld.clear();
+    this.exploreJumpPresses=0;this.exploreJumpCount=0;this.jumpBufferTimer=0;this.coyoteTimer=0;
     this.touchAdvance = 0;
     this.virtualSteer = 0;
     this.explorePitch = 0;
@@ -857,6 +868,8 @@ export class LakelandEngine {
     this.laneOffset = 0;
     this.targetLaneVelocity = 0;
     this.playerVy = 0;
+    this.exploreJumpPresses=0;this.exploreJumpCount=0;this.exploreJumpStartY=0;
+    this.jumpBufferTimer=0;this.coyoteTimer=0;
     this.isGrounded = true;
     this.isGrinding = false;
     this.slideTimer = 0;
@@ -1387,8 +1400,23 @@ export class LakelandEngine {
       this.slideTimer = Math.max(0, this.slideTimer - dt);
     }
 
-    if (this.jumpBufferTimer > 0 && this.coyoteTimer > 0) {
-      this.playerVy = roaming ? 5.8 : 11.4;
+    if(roaming){
+      const presses=this.exploreJumpPresses;this.exploreJumpPresses=0;
+      for(let i=0;i<presses;i++){
+        if(this.exploreJumpCount===0&&(this.isGrounded||this.coyoteTimer>0)){
+          this.exploreJumpStartY=this.playerY;
+          this.exploreJumpCount=1;this.playerVy=EXPLORE_JUMP_VELOCITY;
+        }else if(this.exploreJumpCount===1&&!this.isGrounded){
+          this.exploreJumpCount=2;
+          this.playerVy=secondJumpVelocity(this.exploreJumpStartY,this.playerY);
+          this.setCallout('Double jump');
+        }else continue;
+        this.isGrounded=false;this.isGrinding=false;this.coyoteTimer=0;
+        this.slideTimer=0;this.squashY=1.24;this.sound.playJump();
+        this.emitParticles(this.playerX,this.playerY,this.playerZ,6,0xe2e8f0,3.2);
+      }
+    }else if (this.jumpBufferTimer > 0 && this.coyoteTimer > 0) {
+      this.playerVy = 11.4;
       this.isGrounded = false;
       this.isGrinding = false;
       this.coyoteTimer = 0;
@@ -1519,8 +1547,8 @@ export class LakelandEngine {
       }
     }
 
-    this.playerVy -= 28.0 * dt;
-    this.playerY += this.playerVy * dt;
+    if(roaming){const step=advanceExploreJump(this.playerY,this.playerVy,dt);this.playerY=step.y;this.playerVy=step.vy;}
+    else {this.playerVy -= 28.0 * dt;this.playerY += this.playerVy * dt;}
 
     if (this.playerY <= floorY) {
       if (!this.isGrounded && this.playerVy < -6) {
@@ -1529,6 +1557,7 @@ export class LakelandEngine {
       }
       this.playerY = floorY;
       this.playerVy = 0;
+      this.exploreJumpCount=0;
       this.isGrounded = true;
 
       if (inWater && this.activeRoute.mode === 'freeroam' && !this.isGrinding) {
@@ -1926,7 +1955,7 @@ export class LakelandEngine {
       if(firstPress&&e.code==='KeyC')this.recenterExploreCamera();
       if (firstPress && e.code === 'KeyE') this.toggleShop();
       if (firstPress && e.code === 'KeyV') this.toggleExploreView();
-      if (firstPress && e.code === 'Space' && !this.inShop) this.jumpBufferTimer = .14;
+      if (firstPress && e.code === 'Space' && !this.inShop) this.triggerTouchJump();
       return;
     }
 
@@ -1942,7 +1971,7 @@ export class LakelandEngine {
     this.keysHeld.delete(e.code);
     // Variable jump height cut
     if (
-      (e.code === 'Space' || (this.activeRoute.mode==='sprint' && (e.code === 'KeyW' || e.code === 'ArrowUp'))) &&
+      this.activeRoute.mode==='sprint' && (e.code === 'Space' || e.code === 'KeyW' || e.code === 'ArrowUp') &&
       this.playerVy > 4
     ) {
       this.playerVy *= 0.52;
@@ -1950,6 +1979,7 @@ export class LakelandEngine {
   };
 
   private onWindowBlur = () => {
+    this.exploreJumpPresses=0;this.jumpBufferTimer=0;
     this.keysHeld.clear();
     this.virtualSteer = 0;
     this.touchAdvance = 0;

@@ -35,3 +35,6 @@
   paint-order: stroke fill;
   text-shadow: 0 2px 10px rgba(8, 15, 26, 0.88);
 }
+
+/* Game controls must not opt back into Safari viewport gestures. */
+html,body,#root,button,canvas {touch-action:none !important;}
