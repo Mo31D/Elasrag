@@ -106,7 +106,7 @@ export function frontageAnchor(b:WorldChunkData['buildings'][number],roads:RoadF
       const rx=p[0]+vx*t-x,rz=p[1]+vz*t-z;
       if(rx*nx+rz*nz>0)distance=Math.min(distance,Math.hypot(rx,rz));
     }
-    if(distance<=40&&(!best||distance<best.distance))best={x:x+nx*.13,z:z+nz*.13,yaw:Math.atan2(nx,nz),width:Math.min(4.2,length*.78),distance};
+    if(distance<=40&&(!best||distance<best.distance))best={x:x+nx*.025,z:z+nz*.025,yaw:Math.atan2(nx,nz),width:Math.min(4.2,length*.78),distance};
   }
   return best;
 }

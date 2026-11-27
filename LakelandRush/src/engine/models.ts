@@ -10,6 +10,7 @@ export interface RunnerRig {
   rightLeg: THREE.Group;
   contactShadow: THREE.Mesh;
   scarfTail: THREE.Mesh;
+  flightSuit: THREE.Mesh<THREE.BufferGeometry, THREE.MeshStandardMaterial>;
 }
 
 /**
@@ -141,6 +142,15 @@ export function createRunnerModel(contactShadowMap: THREE.Texture): RunnerRig {
   const leftLeg = makeLeg(-1);
   const rightLeg = makeLeg(1);
 
+  // Lightweight wingsuit membranes: two arm wings and one leg wing, attached to the existing rig.
+  const flightGeo=new THREE.BufferGeometry();
+  flightGeo.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(24*3),3).setUsage(THREE.DynamicDrawUsage));
+  const flightColors:number[]=[];
+  for(let i=0;i<24;i++){const col=new THREE.Color(i<18?(i%9<6?0x147b80:0xe8a832):0x24516a);flightColors.push(col.r,col.g,col.b);}
+  flightGeo.setAttribute('color',new THREE.Float32BufferAttribute(flightColors,3));
+  const flightSuit=new THREE.Mesh(flightGeo,new THREE.MeshStandardMaterial({vertexColors:true,side:THREE.DoubleSide,roughness:.88,metalness:.02}));
+  flightSuit.name='Deployable wingsuit';flightSuit.visible=false;flightSuit.frustumCulled=false;bodyPivot.add(flightSuit);
+
   // 10. Grounded Contact Shadow Disc
   const contactShadow = new THREE.Mesh(
     new THREE.CircleGeometry(0.55, 20),
@@ -164,7 +174,7 @@ export function createRunnerModel(contactShadowMap: THREE.Texture): RunnerRig {
     leftLeg,
     rightLeg,
     contactShadow,
-    scarfTail,
+    scarfTail,flightSuit,
   };
 }
 
@@ -180,6 +190,8 @@ export function animateRunnerRig(
     squashY: number;
     time: number;
     dt: number;
+    flying?:boolean;
+    flightVertical?:number;
   },
 ): void {
   const { stridePhase, speedMps, isAirborne, isSliding, isGrinding, steerTilt, squashY, time, dt } =
@@ -187,6 +199,37 @@ export function animateRunnerRig(
 
   const damp = 1 - Math.exp(-14 * dt);
 
+  if(params.flying){
+    rig.flightSuit.visible=true;rig.contactShadow.visible=false;
+    const vertical=THREE.MathUtils.clamp(params.flightVertical??0,-1,1);
+    rig.bodyPivot.position.y=THREE.MathUtils.lerp(rig.bodyPivot.position.y,.87,damp);
+    rig.bodyPivot.rotation.x=THREE.MathUtils.lerp(rig.bodyPivot.rotation.x,-1.35+vertical*.18,damp);
+    rig.bodyPivot.rotation.z=THREE.MathUtils.lerp(rig.bodyPivot.rotation.z,-steerTilt*.35,damp);
+    rig.bodyPivot.scale.set(1,1,1);
+    rig.headGroup.rotation.x=THREE.MathUtils.lerp(rig.headGroup.rotation.x,1.04,damp);
+    rig.leftArm.rotation.set(0,0,THREE.MathUtils.lerp(rig.leftArm.rotation.z,-1.32,damp));
+    rig.rightArm.rotation.set(0,0,THREE.MathUtils.lerp(rig.rightArm.rotation.z,1.32,damp));
+    rig.leftLeg.rotation.set(0,0,THREE.MathUtils.lerp(rig.leftLeg.rotation.z,-.14,damp));
+    rig.rightLeg.rotation.set(0,0,THREE.MathUtils.lerp(rig.rightLeg.rotation.z,.14,damp));
+    rig.scarfTail.rotation.x=.25+Math.sin(time*14)*.10;
+    const pos=rig.flightSuit.geometry.attributes.position;
+    let i=0;
+    const tri=(a:THREE.Vector3,b:THREE.Vector3,c:THREE.Vector3)=>{for(const p of [a,b,c])pos.setXYZ(i++,p.x,p.y,p.z);};
+    const limb=(part:THREE.Group,y:number)=>new THREE.Vector3(0,y,.015).applyQuaternion(part.quaternion).add(part.position);
+    for(const [side,arm,leg] of [[-1,rig.leftArm,rig.leftLeg],[1,rig.rightArm,rig.rightLeg]] as const){
+      const shoulder=limb(arm,0),wrist=limb(arm,-.40),hip=new THREE.Vector3(side*.21,-.10,.02),thigh=limb(leg,-.30);
+      const seam=wrist.clone().lerp(thigh,.36);seam.z+=.025;
+      tri(shoulder,wrist,hip);tri(wrist,seam,hip);tri(seam,thigh,hip);
+    }
+    const lh=limb(rig.leftLeg,0),rh=limb(rig.rightLeg,0),la=limb(rig.leftLeg,-.56),ra=limb(rig.rightLeg,-.56);
+    tri(lh,la,rh);tri(la,ra,rh);
+    pos.needsUpdate=true;rig.flightSuit.geometry.computeVertexNormals();
+    return;
+  }
+  if(rig.flightSuit.visible){
+    rig.flightSuit.visible=false;rig.contactShadow.visible=true;rig.leftLeg.rotation.z=0;rig.rightLeg.rotation.z=0;
+  }
+  rig.headGroup.rotation.x=THREE.MathUtils.lerp(rig.headGroup.rotation.x,0,damp);
   if (isSliding) {
     rig.bodyPivot.position.y = THREE.MathUtils.lerp(rig.bodyPivot.position.y, 0.42, damp);
     rig.bodyPivot.rotation.x = THREE.MathUtils.lerp(rig.bodyPivot.rotation.x, 1.05, damp);

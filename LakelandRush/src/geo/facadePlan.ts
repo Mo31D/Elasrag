@@ -125,7 +125,7 @@ export function planFacade(b:BuildingFeature,roads:readonly RoadFeature[],ground
    const sideW=(usable-doorW-.65)/2;
    if(sideW>.70)for(const s of [-1,1])frame(front,s*(doorW/2+.32+sideW/2),Math.min(1.55,doorH*.74),Math.min(cfg.window,sideW),Math.min(1.25,doorH*.62));
  }
- if(cfg.fascia>0)put(front,'timber',0,fasciaY,fasciaWidth,cfg.fascia,.16,.09);
+ if(cfg.fascia>0)put(front,'trim',0,fasciaY,fasciaWidth,cfg.fascia,.045,.025);
  if(!cfg.shop&&front.length>9)for(let u=-usable/2+1.1;u<usable/2-1;u+=4.5){if(Math.abs(u)<1.8)continue;const y=localGrade(front,u,1)-ground;put(front,'timber',u,y+1.02,.92,2.04,.07,.07);put(front,'trim',u,y+2.09,1.08,.11,.16,.1);for(const s of [-1,1])put(front,'trim',u+s*.49,y+1.02,.1,2.04,.15,.1);}
  // Deterministic awning on selected wide retail frontages, only with clear forecourt.
  if(cfg.shop&&b.id%5===0&&usable>4.5&&front.distance>5&&front.distance<50&&wallH>3){
@@ -145,6 +145,6 @@ export function planFacade(b:BuildingFeature,roads:readonly RoadFeature[],ground
    if(e!==front&&wallH>=2.6)for(let k=0;k<n;k++){const u=(k-(n-1)/2)*spacing,y=localGrade(e,u,Math.min(cfg.window,spacing*.65))-ground; if(ground+y+2.1<top)frame(e,u,y+1.5,Math.min(cfg.window,spacing*.65),1.15);}
  }
  const name=record?.name??(b.name&&classifyBuilding(b)&&!records.some(r=>names(r.name)===names(b.name!))?b.name:undefined);
- const sign=name&&cfg.fascia>0?{name,x:front.x+front.nx*.185,y:ground+fasciaY,z:front.z+front.nz*.185,yaw:front.yaw,width:Math.min(6,fasciaWidth-.12),height:cfg.fascia-.055}:undefined;
+ const sign=name&&cfg.fascia>0?{name,x:front.x+front.nx*.052,y:ground+fasciaY,z:front.z+front.nz*.052,yaw:front.yaw,width:Math.min(6,fasciaWidth-.12),height:cfg.fascia-.055}:undefined;
  return {family,front,pieces,sign};
 }

@@ -1605,6 +1605,8 @@ export class LakelandEngine {
 
     animateRunnerRig(this.runner, {
       stridePhase: this.stridePhase,
+      flying:roaming&&this.flying,
+      flightVertical:this.flightVertical+(this.keysHeld.has('Space')?1:0)-(this.keysHeld.has('KeyQ')?1:0),
       speedMps: speed,
       isAirborne: !this.isGrounded && !this.isGrinding,
       isSliding: this.isSliding(),

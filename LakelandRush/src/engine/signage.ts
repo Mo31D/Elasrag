@@ -8,7 +8,6 @@ import type { FacadePlan } from '../geo/facadePlan';
 import buildingAssets from '../data/building-assets.json';
 import { TRANSIT } from '../data/transit';
 import navigation from '../data/ambleside-navigation.json';
-import inventory from '../data/ambleside-business-inventory.json';
 
 export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,lake:LakeData|null, facadePlans:ReadonlyMap<number,FacadePlan>=new Map()) {
   const group=new THREE.Group();
@@ -19,22 +18,21 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   const boards:THREE.Group[]=[];
   const plaques:THREE.Mesh[]=[];
   const assetIds=new Set(buildingAssets.map(b=>b.buildingId));
-  const labels:THREE.Sprite[]=[];
   const postMat=new THREE.MeshStandardMaterial({color:0x777f80,roughness:.7,metalness:.3});
   materials.push(postMat);
   const ground=(x:number,z:number)=>Math.max(.45,sampleTerrainHeight(terrain,x,z));
-  function artwork(lines:string[],style:'road'|'street'|'bus'|'rail'|'label'|'welcome'|'direction'|'facade') {
+  function artwork(lines:string[],style:'road'|'street'|'bus'|'rail'|'welcome'|'direction'|'facade') {
     const canvas=document.createElement('canvas');canvas.width=512;canvas.height=lines.length>1?192:112;
     const ctx=canvas.getContext('2d')!;
-    const bg=style==='direction'||style==='road'?'#087044':style==='welcome'?'#79512c':style==='facade'?'#25352f':style==='bus'?'#f3f5f4':style==='rail'?'#263d70':style==='label'?'#182a31':'#f4f3e9';
+    const bg=style==='direction'||style==='road'?'#087044':style==='welcome'?'#79512c':style==='facade'?'#e7dfc9':style==='bus'?'#f3f5f4':style==='rail'?'#263d70':'#f4f3e9';
     ctx.fillStyle=bg;ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.strokeStyle=style==='street'||style==='bus'?'#182425':'#f4f5ef';ctx.lineWidth=7;
-    ctx.strokeRect(7,7,canvas.width-14,canvas.height-14);
+    if(style!=='facade')ctx.strokeRect(7,7,canvas.width-14,canvas.height-14);
     ctx.textAlign='center';ctx.textBaseline='middle';
     lines.forEach((line,i)=>{
       let size=lines.length>1?53:62;
       do{ctx.font='600 '+size+'px Arial, sans-serif';if(ctx.measureText(line).width<=474||size<=14)break;size--;}while(true);
-      ctx.fillStyle=style==='road'&&i===1?'#f8cf44':style==='street'||style==='bus'?'#182425':'#ffffff';
+      ctx.fillStyle=style==='road'&&i===1?'#f8cf44':style==='street'||style==='bus'||style==='facade'?'#273a35':'#ffffff';
       ctx.fillText(line,256,canvas.height*(i+.5)/lines.length);
     });
     const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;textures.push(texture);
@@ -103,45 +101,10 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
     const mesh=new THREE.Mesh(geom,mat);mesh.position.set(a.x,a.y,a.z);mesh.rotation.y=a.yaw;
     mesh.name='facade-sign-'+id;mesh.visible=false;plaques.push(mesh);group.add(mesh);
   }
-  function label(name:string,x:number,z:number,height:number) {
-    const {texture,ratio}=artwork([name],'label');
-    const mat=new THREE.SpriteMaterial({map:texture,depthTest:true,depthWrite:false,toneMapped:false});materials.push(mat);
-    const sprite=new THREE.Sprite(mat);sprite.position.set(x,ground(x,z)+height,z);
-    const w=Math.max(2.8,Math.min(7,name.length*.23));sprite.scale.set(w,w*ratio,1);sprite.visible=false;
-    labels.push(sprite);group.add(sprite);
-  }
-  const names=new Set<string>();
-  const mapped=inventory.records.filter(r=>r.position&&inChunk(r.position.x,r.position.z));
-  for(const stop of navigation.stops)if(inChunk(...(stop.point as [number,number]))&&stop.kind!=='junction'){
-    const [x,z]=stop.point;
-    const business=mapped.find(r=>r.position?.name===stop.name&&Math.hypot(r.position.x-x,r.position.z-z)<1);
-    const name=business?.name??stop.name;
-    label(name,x,z,3.2);names.add(name.toLowerCase());names.add(stop.name.toLowerCase());
-  }
-  // Imported identities use existing map feature coordinates only, never street-centroid guesses.
-  for(const r of mapped){
-    const p=r.position;
-    if(!p||names.has(r.name.toLowerCase())||isPointInLake(lake,p.x,p.z))continue;
-    const b=chunk.buildings.find(b=>b.name===p.name&&Math.hypot(b.cx-p.x,b.cz-p.z)<45);
-    label(r.name,p.x,p.z,b?Math.max(3.5,b.h+.5):3.2);
-    names.add(r.name.toLowerCase());names.add(p.name.toLowerCase());
-  }
-  for(const b of chunk.buildings) {
-    if(!b.name||names.has(b.name.toLowerCase())||!inChunk(b.cx,b.cz))continue;
-    // Avoid labelling private cottages by default.
-    if(!classifyBuilding(b)&&!(/zeffirellis|yha|kayak hire/i.test(b.name)))continue;
-    label(b.name,b.cx,b.cz,Math.max(3.5,b.h+.5));names.add(b.name.toLowerCase());
-    if(labels.length>=24)break;
-  }
-  for(const poi of chunk.pois??[])if(inChunk(poi.x,poi.z)&&!names.has(poi.name.toLowerCase())&&labels.length<24){
-    label(poi.name,poi.x,poi.z,3.2);names.add(poi.name.toLowerCase());
-  }
-  return {group, update(x:number,z:number,showLabels:boolean) {
+  // No floating business billboards: names belong on physical facades, the HUD and searchable map.
+  return {group, update(x:number,z:number,_showLabels:boolean) {
     for(const b of boards)b.visible=Math.hypot(b.position.x-x,b.position.z-z)<110;
     for(const plaque of plaques)plaque.visible=Math.hypot(plaque.position.x-x,plaque.position.z-z)<95;
-    const nearby=labels.map(l=>({l,d:Math.hypot(l.position.x-x,l.position.z-z)})).filter(v=>v.d<45).sort((a,b)=>a.d-b.d).slice(0,3);
-    const visible=new Set(nearby.map(v=>v.l));
-    for(const l of labels)l.visible=showLabels&&visible.has(l);
   },dispose() {
     geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());
   }};

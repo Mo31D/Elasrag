@@ -31,7 +31,7 @@ export const TutorialModal: React.FC<TutorialModalProps> = ({ onClose }) => {
         <div className="mt-4 flex flex-col gap-3 text-sm text-slate-300">
           <div className="p-3 rounded-xl bg-slate-900 border border-white/10">
             <div className="font-semibold text-white">Free exploration</div>
-            <p className="mt-1 text-xs text-slate-400">Touch anywhere in the lower-left movement zone to place the joystick, then drag to move. Drag elsewhere to look. Choose Walk, Jog or Run. Tap Jump twice before landing for double height. Tap the bird to fly, use the joystick and hold up/down to change altitude (desktop F, Space/Q); tap the bird again to land; use the camera reset button to face forward. Tap the minimap to explore. On desktop use WASD, 1/2/3 for pace, C to recenter. No time limit or hearts.</p>
+            <p className="mt-1 text-xs text-slate-400">Drag the fixed lower-left joystick to move. Drag elsewhere to look. Choose Walk, Jog or Run. Tap Jump twice before landing for double height. Tap the bird to deploy the wingsuit and fly, use the joystick and hold up/down to change altitude (desktop F, Space/Q); tap the bird again to land; use the camera reset button to face forward. Tap the minimap to explore. On desktop use WASD, 1/2/3 for pace, C to recenter. No time limit or hearts.</p>
           </div>
           <div className="p-3 rounded-xl bg-slate-900 border border-white/10">
             <div className="font-semibold text-white">Race mode: Steer &amp; Weave</div>
