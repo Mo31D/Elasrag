@@ -1,105 +1,189 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#08090a">
-  <meta name="description" content="ELASRAG. Technology. Creativity. Solutions. Exploring possibilities, solving problems and turning ideas into reality. Mohamed El-Asrag, United Kingdom.">
-  <link rel="canonical" href="https://elasrag.com/">
-  <title>ELASRAG — Mo. Turning ideas into reality.</title>
-  <link rel="stylesheet" href="creation-engine/runtime/style-a3059f1f5b05.css">
-  <link rel="preload" as="image" href="creation-engine/assets/mo-poster.webp">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1016">
+<meta name="description" content="ELASRAG — an interactive creation workspace by Mohamed El-Asrag. Explore technology, digital worlds, commerce and design.">
+<link rel="canonical" href="https://elasrag.com/">
+<title>ELASRAG — The Creation Workspace</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1016;--panel:#101820;--line:#263642;--muted:#9aabba;--ink:#e8eef4;--accent:#82c6db;--gold:#d1b58b;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink)}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;background:#15212b;border:1px solid var(--line);border-radius:5px;cursor:pointer}button:hover,button[aria-pressed=true]{border-color:var(--accent);color:#c7f3ff;background:#203845}button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}[hidden]{display:none!important}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.12em;text-transform:uppercase;font-size:10px;color:var(--muted)}.skip{position:absolute;left:12px;top:-60px;z-index:10;background:#fff;color:#000;padding:10px}.skip:focus{top:10px}
+header{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--line);background:#0d141b;gap:12px}.brand{color:var(--ink);font-size:23px;font-weight:750;letter-spacing:.11em}.brand b{color:var(--accent)}.header-mid{display:flex;align-items:center;gap:13px}.header-mid:before{content:"";width:7px;height:7px;background:#92c6ae;border-radius:50%;box-shadow:0 0 12px #92c6ae70}.headlinks{display:flex;gap:18px;font-size:13px}.headlinks a{color:var(--muted)}
+.workspace{display:grid;grid-template-columns:222px minmax(0,1fr) 292px;min-height:650px;height:calc(100svh - 104px);max-height:1100px}.sidebar,.inspector{background:var(--panel);padding:20px 14px;overflow:auto;min-width:0}.sidebar{border-right:1px solid var(--line)}.inspector{border-left:1px solid var(--line);padding:22px 18px}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}.panel-head span:last-child{color:var(--accent)}.scene-list{display:grid;gap:6px}.scene-list button{display:flex;align-items:center;text-align:left;gap:9px;min-height:47px;padding:9px;background:transparent;border-color:transparent;font-size:13px}.scene-list button:hover,.scene-list button[aria-pressed=true]{background:#1b2b36;border-color:#3a5969}.num{font:10px ui-monospace,monospace;color:var(--muted)}.dot{width:7px;height:7px;border-radius:2px;background:var(--c,#82c6db);flex:none}.sidebar hr,.inspector hr{border:0;border-top:1px solid var(--line);margin:22px 0}.sidebar p{font-size:12px;color:var(--muted);line-height:1.6}.side-foot{margin-top:26px}
+.viewport{position:relative;overflow:hidden;min-width:0;min-height:0;background:radial-gradient(ellipse at 50% 54%,#1a2a35,#0b1016 70%)}#scene{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}.intro{position:absolute;z-index:2;top:24px;left:24px;pointer-events:none;max-width:85%;text-shadow:0 2px 18px #000}.intro h1{font-size:clamp(25px,3vw,43px);font-weight:500;letter-spacing:-.045em;line-height:1.05;margin:10px 0 8px}.intro p{font-size:12px;color:#b2c3cd;margin:0;max-width:310px}.intro.compact h1{font-size:25px}.intro.compact p{display:none}.viewport-meta{position:absolute;top:25px;right:18px;text-align:right;pointer-events:none}.axis{position:absolute;left:20px;bottom:76px;pointer-events:none}.toolbar{position:absolute;z-index:4;bottom:15px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:5px;background:#111b24ed;border:1px solid #344655;border-radius:8px;padding:6px;max-width:calc(100% - 20px)}.toolbar button{min-height:38px;min-width:38px;padding:6px 9px;font-size:11px;white-space:nowrap}.toolbar button:disabled{opacity:.45;cursor:not-allowed}.labels{position:absolute;inset:0;pointer-events:none;z-index:3;overflow:hidden}.object-label{position:absolute;transform:translate(-50%,-100%);pointer-events:auto;white-space:nowrap;border:1px solid #465b69;border-radius:4px;padding:5px 8px;background:#101a23ed;color:#dce8f0;font:10px ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 4px 12px #0006}.object-label[aria-pressed=true]{background:#244453;border-color:var(--accent);color:#fff}.fallback{position:absolute;inset:120px 22px 75px;display:grid;place-items:center;text-align:center;color:var(--muted);line-height:1.6;pointer-events:none}.fallback-inner{max-width:320px}.fallback-mark{font-size:48px;color:var(--accent);margin-bottom:12px}.inspector h2{font-size:25px;letter-spacing:-.035em;line-height:1.15;margin:13px 0}.inspector p{font-size:13px;line-height:1.65;color:#b8c7d3}.status{font:10px ui-monospace,monospace;letter-spacing:.06em;color:#b6d9c5;border:1px solid #3b554d;display:inline-block;padding:5px 7px;border-radius:3px}.components{display:grid;gap:7px;margin:13px 0}.components button{text-align:left;display:flex;align-items:center;justify-content:space-between;padding:11px;font-size:12px;gap:7px}.components button span:last-child{color:var(--accent)}.detail{border-left:2px solid #649aab;padding:3px 0 3px 10px;margin:13px 0;min-height:40px}.detail h3{font-size:13px;margin:4px 0}.detail p{margin:4px 0}.actions{display:flex;gap:7px;flex-wrap:wrap;margin:17px 0}.actions button{padding:9px 11px;font-size:12px}.project-links{display:grid;gap:8px;margin-top:12px;font-size:13px}.project-links a{display:block;border:1px solid var(--line);padding:10px;border-radius:4px}.footer{height:36px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 22px;border-top:1px solid var(--line);font-size:10px;color:var(--muted)}.footer a{color:var(--muted)}.mobile-hint{display:none}
+@media(max-width:1100px){.workspace{grid-template-columns:175px minmax(0,1fr) 255px}.sidebar{padding:16px 8px}.inspector{padding:16px 12px}.header-mid{display:none}}
+@media(max-width:760px){header{height:56px;padding:0 15px}.brand{font-size:19px}.headlinks{gap:12px;font-size:12px}.workspace{display:flex;flex-direction:column;height:auto;max-height:none;min-height:0}.viewport{order:0;height:66svh;min-height:400px;max-height:650px}.sidebar{order:1;border:0;border-top:1px solid var(--line);padding:15px}.inspector{order:2;border:0;border-top:1px solid var(--line);padding:18px;overflow:visible}.panel-head{margin-bottom:9px}.scene-list{grid-template-columns:1fr 1fr;gap:4px}.scene-list button{border-color:#263642;min-height:44px;font-size:12px}.side-foot,.sidebar hr{display:none}.intro{top:18px;left:16px}.intro h1{font-size:31px}.viewport-meta{display:none}.toolbar{bottom:12px}.toolbar button{padding:6px 7px;font-size:10px}.object-label{font-size:9px;padding:4px 5px;letter-spacing:0}.axis{bottom:65px;left:12px}.mobile-hint{display:block;font-size:11px;color:var(--muted)}.footer{height:auto;padding:12px 15px;flex-wrap:wrap}.fallback{inset:110px 15px 75px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+
+/* Scene-first workspace: all project information stays in the viewport. */
+html,body{height:100%;overflow:hidden}
+header{height:56px;padding:0 20px;position:relative;z-index:8}
+.workspace{position:relative;display:block;height:calc(100dvh - 56px);min-height:0;max-height:none;overflow:hidden}
+.viewport{position:absolute;inset:0;height:auto;min-height:0;max-height:none;width:100%}
+.footer{display:none}
+.sidebar{position:absolute;z-index:7;top:12px;left:12px;width:min(235px,calc(100% - 24px));max-height:calc(100% - 24px);border:1px solid #344655;border-radius:10px;box-shadow:0 10px 36px #0009;display:none;background:#111b24f5}
+.workspace.show-directory .sidebar{display:block}
+.inspector{position:absolute;z-index:6;right:16px;top:16px;bottom:auto;width:300px;max-height:calc(100% - 90px);padding:15px;border:1px solid #344655;border-radius:10px;box-shadow:0 10px 36px #0008;background:#111b24ef;backdrop-filter:blur(12px);display:none;overflow:auto}
+.workspace.show-inspector .inspector{display:block}
+.inspector .panel-head{margin-bottom:9px}.inspector h2{font-size:21px;margin:8px 0 4px}.inspector p{font-size:12px;margin:5px 0;line-height:1.45}.inspector hr{margin:10px 0}.inspector .status{font-size:9px;padding:3px 5px}.inspector .actions{margin:8px 0;gap:5px}.inspector .actions button{padding:6px 9px;font-size:11px}.components{display:flex;flex-wrap:wrap;gap:5px;margin:7px 0}.components button{padding:7px;font-size:11px}.components button span:last-child{display:none}.detail{margin:7px 0;min-height:0}.detail h3{font-size:12px}.project-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.project-links a{padding:6px 8px;font-size:11px}.mobile-hint{display:none!important}.close-panel{padding:3px 8px;margin-left:8px}.panel-head>span:nth-child(2){margin-left:auto}.scene-list{display:grid;grid-template-columns:1fr}
+.intro{top:22px;left:22px;max-width:65%}.intro h1{font-size:clamp(26px,3.4vw,42px);margin:7px 0}.intro p{font-size:12px}.intro.compact{max-width:55%}.intro.compact h1{font-size:25px}.viewport-meta{top:18px;right:20px}.workspace.show-inspector .viewport-meta{display:none}
+.toolbar{bottom:14px}.axis{bottom:68px}.object-label{border-color:#41586b;background:#101a23e8;box-shadow:0 3px 13px #0006;font-size:10px;max-width:180px;white-space:normal;text-align:center}.part-label{background:#14232ef2;border-color:#88b8c8;color:#d9f5ff;font-size:10px;max-width:150px;white-space:normal}.part-label[aria-pressed=true]{background:#306072;color:white;border-color:#b8e7f8}.workspace.show-inspector .toolbar{left:calc(50% - 100px)}.workspace.show-directory .intro{visibility:hidden}
+@media(max-width:760px){
+ header{height:52px;padding:0 14px}.brand{font-size:18px}.headlinks{gap:13px}.workspace{height:calc(100dvh - 52px)}.viewport{height:auto;min-height:0;max-height:none}.intro{top:17px;left:15px;max-width:93%}.intro h1{font-size:29px}.intro p{font-size:11px}.intro.compact h1{font-size:22px}.intro.compact{max-width:92%}.sidebar{top:10px;left:10px;width:min(280px,calc(100% - 20px));padding:12px}.scene-list{grid-template-columns:1fr}.scene-list button{min-height:38px;padding:7px}.inspector{top:auto;bottom:70px;left:9px;right:9px;width:auto;max-height:min(34dvh,250px);padding:11px 12px}.inspector .panel-head{margin-bottom:4px}.inspector h2{font-size:19px;margin:5px 0}.inspector .status{display:none}.inspector hr{display:none}.inspector .actions{margin:5px 0}.inspector .actions button{min-height:32px}.inspector .components{margin:5px 0}.inspector .components button{min-height:32px}.inspector .project-links a{min-height:32px;display:flex;align-items:center}.workspace.show-inspector .toolbar{left:50%}.toolbar{bottom:10px;gap:4px;padding:4px}.toolbar button{padding:5px 6px;min-width:32px;min-height:36px}.axis{bottom:64px;width:48px}.object-label{font-size:9px;max-width:112px;padding:5px}.part-label{font-size:9px;max-width:125px}.workspace.show-inspector .axis{bottom:calc(min(34dvh,250px) + 82px)}.fallback{inset:100px 10px 65px}
+}
+@media(max-height:500px) and (orientation:landscape){header{height:45px}.workspace{height:calc(100dvh - 45px)}.intro p{display:none}.intro h1{font-size:22px}.inspector{top:8px;bottom:8px;right:8px;left:auto;max-height:none;width:265px}.workspace.show-inspector .toolbar{left:calc(50% - 80px)}}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
-<body data-phase="hero" data-experience="loading">
-  <a class="skip-link" href="#work">Skip to content</a>
-  <header class="site-header page-width">
-    <a class="wordmark" href="#" aria-label="ELASRAG home">ELASRAG<span class="wordmark-dot" aria-hidden="true">.</span></a>
-    <span class="brand-line">Technology. Creativity. Solutions.</span>
-    <a class="header-contact" href="mailto:mo@elasrag.com">Let's talk<span class="contact-mark" aria-hidden="true">+</span></a>
-  </header>
-  <main>
-    <section id="experience" aria-label="The Creation Engine, an interactive exploration of turning ideas into reality">
-      <div class="experience-stage">
-        <div class="exhibition-label"><span class="fine-line" aria-hidden="true"></span> THE CREATION ENGINE</div>
-        <div class="hero-copy">
-          <p class="personal-greeting">Hi, I’m Mo.</p>
-          <h1>Turning ideas<br><span>into reality.</span></h1>
-          <p class="hero-introduction">Exploring possibilities. Solving problems.<br>Building what matters.</p>
-          <button id="explore-engine" class="explore-button" type="button"><span class="explore-symbol" aria-hidden="true">+</span> Explore what I create</button>
-        </div>
-        <div class="stage-copy" aria-live="polite" aria-atomic="true">
-          <p class="stage-overline"><span id="stage-index">01</span><span class="stage-overline-line" aria-hidden="true"></span> THE PROCESS</p>
-          <h2 id="stage-name">IDEA</h2>
-          <p id="stage-description">Everything begins somewhere.</p>
-        </div>
-        <div id="engine-viewport" class="engine-viewport" role="group" aria-label="Explore Mo’s work through an original three-dimensional M and O signature sculpture">
-          <img id="engine-poster" class="engine-poster" src="creation-engine/assets/mo-poster.webp" width="1200" height="1200" alt="" fetchpriority="high">
-          <canvas id="engine-canvas" aria-hidden="true"></canvas>
-          <div class="engine-ground" aria-hidden="true"></div>
-          <div id="capability-hotspots" class="capability-hotspots" role="group" aria-label="Choose an area to explore" hidden>
-            <button class="capability-hotspot" type="button" data-capability="technology" aria-label="Build: technology and digital solutions" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">+</span><span class="hotspot-label">Build</span></button>
-            <button class="capability-hotspot" type="button" data-capability="ai" aria-label="Think: artificial intelligence and innovation" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">+</span><span class="hotspot-label">Think</span></button>
-            <button class="capability-hotspot" type="button" data-capability="design" aria-label="Design: design and development" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">+</span><span class="hotspot-label">Design</span></button>
-            <button class="capability-hotspot" type="button" data-capability="strategy" aria-label="Solve: strategy and problem solving" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">+</span><span class="hotspot-label">Solve</span></button>
-            <button class="capability-hotspot capability-hotspot-mo" type="button" data-capability="mo" aria-label="Meet Mo, Mohamed El-Asrag" aria-controls="capability-panel" aria-expanded="false"><span class="hotspot-symbol" aria-hidden="true">M</span><span class="hotspot-label">Meet Mo</span></button>
-          </div>
-        </div>
-        <section id="capability-panel" class="capability-panel" role="region" aria-labelledby="capability-title" aria-describedby="capability-description" tabindex="-1" hidden>
-          <button class="capability-close" type="button" data-action="close-capability" aria-label="Close this detail"><span aria-hidden="true">×</span></button>
-          <p id="capability-kicker" class="capability-kicker">BEHIND THE SIGNATURE</p>
-          <h2 id="capability-title">Meet Mo.</h2>
-          <p id="capability-description">Mohamed El-Asrag. You can call me Mo.</p>
-          <a id="capability-example" class="capability-example" hidden></a>
-        </section>
-        <div class="engine-caption" aria-hidden="true"><span>ELASRAG</span><span>CREATION ENGINE / V.01</span></div>
-        <p id="engine-status" class="engine-status" role="status" aria-live="polite">Preparing the experience</p>
-        <div id="engine-controls" class="engine-controls" role="group" aria-label="Explore the Creation Engine" hidden>
-          <div class="view-controls">
-            <button type="button" data-action="explode" aria-label="Explode engine assembly" aria-pressed="false" title="Exploded view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 7 4-7 4-7-4 7-4Zm-7 9 7 4 7-4M5 17l7 4 7-4"/></svg><span>Explode</span></button>
-            <button type="button" data-action="wireframe" aria-label="Show engine wireframe" aria-pressed="false" title="Wireframe view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 8 5v9l-8 4-8-4V8l8-5Zm0 0v18M4 8l16 9M20 8 4 17"/></svg><span>Structure</span></button>
-            <span class="control-divider" aria-hidden="true"></span>
-            <button type="button" data-action="zoom-out" class="icon-control" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg></button>
-            <button type="button" data-action="zoom-in" class="icon-control" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12M12 6v12"/></svg></button>
-            <button type="button" data-action="reset" class="icon-control" aria-label="Reset engine view" title="Reset view"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8a8 8 0 1 1-1 7M5 3v5h5"/></svg></button>
-            <button type="button" data-action="pause" class="icon-control" aria-label="Pause engine motion" aria-pressed="false" title="Pause motion"><svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6v12M15 6v12"/></svg><svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 10 7-10 7V5Z"/></svg></button>
-          </div>
-          <p class="interaction-hint">Choose a point. See what it means.</p>
-        </div>
-        <div class="sequence-navigation page-width">
-          <div class="sequence-intro"><span class="sequence-kicker">FROM POSSIBILITY TO PURPOSE</span><span class="sequence-scroll">A process of creation</span></div>
-          <nav class="stage-navigation" aria-label="Creation stages">
-            <button type="button" data-stage="0"><span class="step-number">01</span>Idea</button>
-            <button type="button" data-stage="1"><span class="step-number">02</span>Design</button>
-            <button type="button" data-stage="2"><span class="step-number">03</span>Build</button>
-            <button type="button" data-stage="3"><span class="step-number">04</span>Reality</button>
-          </nav>
-          <div class="sequence-track" aria-hidden="true"><span id="stage-progress"></span></div>
-        </div>
-      </div>
-    </section>
-    <div class="content-surface">
-      <section id="work" class="work-section page-width" aria-labelledby="work-title">
-        <div class="section-heading"><span class="section-mark" aria-hidden="true">+</span><h2 id="work-title">Areas of work</h2></div>
-        <div id="capability-directory" class="work-list" role="group" aria-label="Explore areas of work">
-          <button class="work-item" type="button" data-capability="technology" aria-controls="capability-panel" aria-expanded="false"><span class="work-label">Technology &amp; Digital Solutions</span><span class="work-mark" aria-hidden="true">+</span></button>
-          <button class="work-item" type="button" data-capability="ai" aria-controls="capability-panel" aria-expanded="false"><span class="work-label">Artificial Intelligence &amp; Innovation</span><span class="work-mark" aria-hidden="true">+</span></button>
-          <button class="work-item" type="button" data-capability="design" aria-controls="capability-panel" aria-expanded="false"><span class="work-label">Design &amp; Development</span><span class="work-mark" aria-hidden="true">+</span></button>
-          <button class="work-item" type="button" data-capability="strategy" aria-controls="capability-panel" aria-expanded="false"><span class="work-label">Strategy &amp; Problem Solving</span><span class="work-mark" aria-hidden="true">+</span></button>
-        </div>
-      </section>
-      <section class="about-section page-width" aria-labelledby="about-title">
-        <div class="section-heading"><span class="section-mark" aria-hidden="true">+</span><p>The person behind the ideas</p></div>
-        <div class="about-content"><h2 id="about-title">Mo.</h2><p class="personal-name">Mohamed El-Asrag. You can call me Mo.</p><p>Driven by curiosity, creativity and a lifelong passion for technology. I turn complex ideas into simple, practical solutions.</p><span class="location">United Kingdom · Working globally</span></div>
-      </section>
-      <section id="contact" class="contact-section page-width" aria-labelledby="contact-title">
-        <p class="contact-kicker">LET'S CREATE SOMETHING</p>
-        <h2 id="contact-title">Every solution<br>starts with an idea.</h2>
-        <a class="email-link" href="mailto:mo@elasrag.com">mo@elasrag.com<span aria-hidden="true">+</span></a>
-      </section>
-      <footer class="site-footer page-width"><a class="footer-brand" href="#" aria-label="ELASRAG, back to top">ELASRAG.</a><span>© 2026 ELASRAG</span><a href="https://github.com/Mo31D" target="_blank" rel="noopener noreferrer">GitHub</a></footer>
-    </div>
-  </main>
-  <noscript><style>.explore-button,.stage-navigation,.sequence-track,.engine-status{display:none}.sequence-navigation{justify-content:flex-start}.engine-poster{opacity:1}</style></noscript>
-  <script type="module" src="creation-engine/runtime/home-YM3IJXPA.js"></script>
+<body>
+<a class="skip" href="#outliner">Skip to projects</a>
+<header><a class="brand" href="./" aria-label="ELASRAG home">ELASRAG<b>.</b></a><div class="header-mid mono">Independent creation workspace / 03</div><nav class="headlinks" aria-label="Main navigation"><a href="#outliner" id="projectsLink" aria-expanded="false">Projects</a><a href="#inspector" id="aboutLink">About</a><a href="mailto:mo@elasrag.com">Contact</a></nav></header>
+<main class="workspace">
+<aside class="sidebar" id="outliner" aria-label="Project outliner">
+<div class="panel-head mono"><span>Scene hierarchy</span><span>07 objects</span><button type="button" class="close-panel" id="closeDirectory" aria-label="Close project list">×</button></div>
+<div id="projectList" class="scene-list"></div>
+<div class="side-foot"><hr><div class="mono">Navigation</div><p>Drag to orbit. Scroll or pinch to zoom. Select an object to inspect its layers. Use the controls to change the view.</p><p>All projects are also accessible from this list.</p></div>
+<noscript><p>JavaScript is disabled. Visit <a href="https://theblacksheepshop.co.uk/">The Black Sheep Shop</a>, <a href="https://lakesidepicnic.co.uk/">Lakeside Picnic</a> or <a href="https://github.com/Mo31D">GitHub</a> to explore selected work.</p></noscript>
+</aside>
+<section class="viewport" id="viewport" aria-label="Interactive 3D creation workspace">
+<canvas id="scene" aria-label="Three-dimensional project objects. Use the project list for accessible selection."></canvas>
+<div class="intro" id="intro"><div class="mono">The creation workspace</div><h1 id="sceneTitle">Ideas take shape here.</h1><p>Technology. Creativity. Solutions.<br>Explore the projects behind ELASRAG.</p></div>
+<div class="viewport-meta mono" id="viewMode">Perspective<br>Real-time scene</div>
+<div class="labels" id="labels"></div><button type="button" id="sceneInfo" hidden aria-label="Show selected project information" style="position:absolute;z-index:5;top:68px;left:16px;padding:7px 11px;font-size:11px;background:#14232e;border-color:#608b9b">Project info +</button>
+<div class="fallback" id="fallback"><div class="fallback-inner"><div class="fallback-mark">◇</div><div id="loadText">Preparing the 3D workspace…</div><p>Explore every project from the scene hierarchy.</p></div></div>
+<svg class="axis" viewBox="0 0 65 58" width="65" aria-hidden="true"><path d="M27 35V9" stroke="#7cb79d"/><path d="M27 35L52 45" stroke="#d28f8f"/><path d="M27 35L8 48" stroke="#82b0db"/><g font-size="9" font-family="monospace"><text x="25" y="8" fill="#7cb79d">Y</text><text x="53" y="48" fill="#d28f8f">X</text><text x="1" y="55" fill="#82b0db">Z</text></g><circle cx="27" cy="35" r="3" fill="#b6c8d7"/></svg>
+<div class="toolbar" aria-label="3D view controls"><button data-view="home" disabled title="Reset view">Overview</button><button data-view="projection" disabled aria-pressed="false" title="Toggle orthographic view">Ortho</button><button data-view="zoomIn" disabled aria-label="Zoom in">+</button><button data-view="zoomOut" disabled aria-label="Zoom out">−</button><button data-view="wire" disabled aria-pressed="false">Wire</button><button data-view="motion" disabled aria-pressed="false">Pause</button><button data-view="full" disabled aria-label="Fullscreen">⛶</button></div>
+</section>
+<aside class="inspector" id="inspector" aria-label="Project inspector">
+<div class="panel-head mono"><span>Object inspector</span><span id="objectId">00 / MO</span><button type="button" class="close-panel" id="closeInspector" aria-label="Close details">×</button></div>
+<span id="status" class="status">Portfolio overview</span>
+<h2 id="name">Mo</h2><p id="description">Hi, I'm Mo. I explore ideas, build technology and create practical solutions.</p>
+<div class="actions"><button id="explode" aria-pressed="false" disabled>Explode</button><button id="assemble" disabled>Assemble</button><button id="overview">Overview</button></div>
+<hr><div class="mono">Components / branches</div><div id="components" class="components"></div>
+<div class="detail" id="detail" aria-live="polite"><h3 id="detailTitle">Explore the workspace</h3><p id="detailText">Select a component to reveal more information.</p></div>
+<div id="projectLinks" class="project-links"></div>
+<p class="mobile-hint">Choose a project above to inspect its components.</p>
+</aside>
+</main>
+<footer class="footer"><span>ELASRAG / CREATION WORKSPACE V.03</span><span id="renderStatus" role="status">Initialising</span><a href="https://github.com/Mo31D">GitHub</a><a href="mailto:mo@elasrag.com">mo@elasrag.com</a></footer>
+<script>
+const projects=[
+{id:"hub",name:"Mohamed El-Asrag",short:"Mo",color:"#8cc8d5",status:"Portfolio overview",desc:"Hi, I'm Mo — Mohamed El-Asrag. I explore ideas, build technology and create practical solutions that connect imagination with reality.",parts:[["Technology","Digital platforms, interactive environments and practical software."],["Creativity","Visual design, product concepts and experimental experiences."],["Solutions","Connecting business needs with useful technology."]],links:[["GitHub","https://github.com/Mo31D"],["Get in touch","mailto:mo@elasrag.com"]]},
+{id:"land",name:"Lakeland World",short:"Lakeland World",color:"#8bc3a0",status:"Prototype / in development",desc:"An interactive digital recreation of the Lake District. The first proof of concept explored real routes and locations; a more ambitious Unity version is in development.",parts:[["Geography","Roads, terrain and mapped places form the foundation."],["Digital landscape","A more detailed representation of lakes, mountains and settlements is a development goal."],["Exploration & gameplay","The prototype demonstrates free exploration and a game mode."],["AI & tourism","Planned intelligent navigation, discovery and interaction with local places."]],links:[["Ask about Lakeland World","mailto:mo@elasrag.com?subject=Lakeland%20World"]]},
+{id:"sheep",name:"The Black Sheep Shop",short:"Black Sheep Shop",color:"#d4b384",status:"Live business",desc:"Gift and souvenir retail in Ambleside, with a digital storefront.",parts:[["The Black Sheep Shop","Browse the online shop and its Lake District gift ranges.","https://theblacksheepshop.co.uk/"],["Online store","Product browsing and order requests."],["Commerce systems","Catalogue, order and stock management tools."]],links:[["Visit website","https://theblacksheepshop.co.uk/"]]},
+{id:"picnic",name:"Lakeside Picnic",short:"Lakeside Picnic",color:"#93c7c5",status:"Live business",desc:"A lakeside souvenir and ice cream shop at Waterhead, Ambleside.",parts:[["Lakeside Picnic","Explore the business and its online presence.","https://lakesidepicnic.co.uk/"],["Local products","Souvenirs, ice cream and local treats."],["Digital storefront","Online presentation of the shop and product ranges."]],links:[["Visit website","https://lakesidepicnic.co.uk/"]]},
+{id:"ai",name:"AI & Innovation",short:"AI & Innovation",color:"#94b7e8",status:"Research & development",desc:"Exploring practical uses of artificial intelligence, intelligent workflows and automation.",parts:[["Intelligence","Explore how models can support reasoning and information retrieval."],["Automation","Connect repeatable tasks into reliable workflows."],["Assistants","Design interfaces that make complex systems easier to use."],["Evaluation","Test capabilities and limitations before making production claims."]],links:[["Discuss a solution","mailto:mo@elasrag.com?subject=AI%20and%20innovation"]]},
+{id:"design",name:"Product Design",short:"Product Design",color:"#c1b3e6",status:"Concepts & prototypes",desc:"From early sketches to 3D modelling, mechanical assemblies and digital prototypes.",parts:[["Concept","Define the problem, intended use and constraints."],["CAD modelling","Develop editable geometry and inspect the structure."],["Prototyping","Explore materials, assembly and feasibility."],["Development","Iterate and validate before manufacturing."]],links:[["Discuss a design","mailto:mo@elasrag.com?subject=Product%20design"]]},
+{id:"education",name:"Interactive Learning",short:"Learning",color:"#8abbd5",status:"Exploration & development",desc:"Exploring digital tools that help people learn through interaction, visualisation and experimentation.",parts:[["Learning design","Structure topics and activities around clear outcomes."],["Interactive experiences","Use playable or visual experiences to make ideas tangible."],["Digital literacy","Explore practical approaches to technology and digital skills."]],links:[["Discuss education","mailto:mo@elasrag.com?subject=Interactive%20learning"]]}
+];
+const $=id=>document.getElementById(id);
+let selected="hub", selectedPart=-1, expanded=false, engine=null;const workspace=document.querySelector(".workspace");function directory(v){workspace.classList.toggle("show-directory",v);$("projectsLink").setAttribute("aria-expanded",String(v))}function inspector(v){workspace.classList.toggle("show-inspector",v);engine?.setPanel(v)}
+function makeButton(text,fn){const b=document.createElement("button");b.type="button";b.textContent=text;b.addEventListener("click",fn);return b}
+function showPart(i,fromScene=false){const p=projects.find(x=>x.id===selected);if(!p.parts[i])return;selectedPart=i;[...$("components").children].forEach((b,n)=>b.setAttribute("aria-pressed",String(n===i)));$("detailTitle").textContent=p.parts[i][0];$("detailText").textContent=p.parts[i][1];const url=p.parts[i][2];if(url){const a=document.createElement("a");a.href=url;a.textContent=" Visit website ↗";a.target="_blank";a.rel="noopener";$("detailText").append(a)}if(!expanded&&engine&&selected!=="hub"){expanded=true;engine.setExpanded(true);syncControls()}inspector(true);if(engine)engine.highlight(i)}
+function syncControls(){$("explode").disabled=!engine||selected==="hub";$("assemble").disabled=!engine||selected==="hub";$("explode").setAttribute("aria-pressed",String(expanded));$("assemble").setAttribute("aria-pressed",String(!expanded))}
+function select(id,focus=true){directory(false);inspector(false);const p=projects.find(x=>x.id===id);if(!p)return;selected=id;selectedPart=-1;expanded=id!=="hub";$("sceneInfo").hidden=id==="hub";$("objectId").textContent=String(projects.indexOf(p)).padStart(2,"0")+" / "+p.id.toUpperCase();$("name").textContent=p.name;$("status").textContent=p.status;$("description").textContent=p.desc;$("sceneTitle").textContent=id==="hub"?"Hi, I’m Mo.":p.name;$("intro").classList.toggle("compact",id!=="hub");$("detailTitle").textContent="Inspect the components";$("detailText").textContent="Select a component to reveal its purpose and details.";document.querySelectorAll("[data-project]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.project===id)));$("components").replaceChildren();p.parts.forEach((part,i)=>{const b=makeButton("",()=>showPart(i));b.setAttribute("aria-pressed","false");const s=document.createElement("span");s.textContent=String(i+1).padStart(2,"0")+"  "+part[0];const mark=document.createElement("span");mark.textContent="+";b.append(s,mark);$("components").append(b)});$("projectLinks").replaceChildren();p.links.forEach(([label,url])=>{const a=document.createElement("a");a.href=url;a.textContent=label+" ↗";if(url.startsWith("https:")){a.target="_blank";a.rel="noopener noreferrer"}$("projectLinks").append(a)});if(engine)engine.select(id,expanded,focus);syncControls();if(focus&&!engine)inspector(true)}
+projects.forEach((p,i)=>{const b=makeButton("",()=>select(p.id));b.dataset.project=p.id;b.style.setProperty("--c",p.color);const n=document.createElement("span");n.className="num";n.textContent=String(i).padStart(2,"0");const d=document.createElement("span");d.className="dot";const s=document.createElement("span");s.textContent=p.name;b.append(n,d,s);$("projectList").append(b)});
+$("explode").onclick=()=>{expanded=true;engine?.setExpanded(true);syncControls()};$("assemble").onclick=()=>{expanded=false;selectedPart=-1;engine?.setExpanded(false);engine?.highlight(-1);[...$("components").children].forEach(b=>b.setAttribute("aria-pressed","false"));syncControls()};$("overview").onclick=()=>{select("hub");inspector(false)};$("aboutLink").onclick=e=>{e.preventDefault();select("hub");inspector(true)};$("projectsLink").onclick=e=>{e.preventDefault();directory(!workspace.classList.contains("show-directory"))};$("closeDirectory").onclick=()=>directory(false);$("closeInspector").onclick=()=>inspector(false);$("sceneInfo").onclick=()=>inspector(!workspace.classList.contains("show-inspector"));document.addEventListener("keydown",e=>{if(e.key==="Escape"){directory(false);inspector(false)}});select("hub",false);
+window.workspaceUI={projects,select,showPart,inspector,setEngine:e=>{engine=e;select(selected,false);syncControls()}};
+</script>
+<script type="module">
+const ui=window.workspaceUI;
+const viewport=document.getElementById("viewport"),canvas=document.getElementById("scene"),labels=document.getElementById("labels"),renderStatus=document.getElementById("renderStatus");
+const reduced=matchMedia("(prefers-reduced-motion: reduce)").matches;
+async function boot(){
+const T=await import("three");const {OrbitControls}=await import("three/addons/controls/OrbitControls.js");
+const renderer=new T.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:"high-performance"});renderer.setPixelRatio(Math.min(devicePixelRatio,innerWidth<760?1.5:2));renderer.setClearColor(0x0b1118);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.35;
+const scene=new T.Scene();scene.fog=new T.Fog(0x0b1118,35,85);
+const perspective=new T.PerspectiveCamera(42,1,.1,150),ortho=new T.OrthographicCamera(-10,10,10,-10,.1,150);let camera=perspective,orthographic=false;
+camera.position.set(17,17,23);let controls;
+const target=new T.Vector3(0,0,0);let flight=null,paused=reduced,wire=false,active="hub",opened=false,part=-1,panel=false;
+function bindControls(){controls?.dispose();controls=new OrbitControls(camera,canvas);controls.target.copy(target);controls.enableDamping=!reduced;controls.dampingFactor=.08;controls.minDistance=5;controls.maxDistance=65;controls.minZoom=.4;controls.maxZoom=4;controls.maxPolarAngle=Math.PI*.47;controls.addEventListener("start",()=>{flight=null});controls.update()}bindControls();
+scene.add(new T.HemisphereLight(0xb9d8f2,0x283139,2.2));
+const key=new T.DirectionalLight(0xffead5,3.1);key.position.set(-8,16,10);scene.add(key);const rim=new T.DirectionalLight(0x9fdcff,2.3);rim.position.set(11,7,-9);scene.add(rim);
+const mat=(color,metal=.3,rough=.45)=>new T.MeshStandardMaterial({color,metalness:metal,roughness:rough});const graphite=mat(0x263b49,.65,.35),steel=mat(0x9aadb9,.7,.3),dark=mat(0x101c25,.4,.55);
+const glow=color=>new T.MeshStandardMaterial({color,emissive:color,emissiveIntensity:.65,metalness:.25,roughness:.3});
+const box=(w,h,d,m)=>new T.Mesh(new T.BoxGeometry(w,h,d),m);
+const cyl=(r,h,m,n=48)=>new T.Mesh(new T.CylinderGeometry(r,r,h,n),m);
+const sphere=(r,m,n=18)=>new T.Mesh(new T.SphereGeometry(r,n,12),m);
+function add(g,m,x=0,y=0,z=0){m.position.set(x,y,z);g.add(m);return m}
+function line(points,color=0x4a7187,opacity=.5){const geo=new T.BufferGeometry().setFromPoints(points.map(p=>new T.Vector3(...p)));return new T.Line(geo,new T.LineBasicMaterial({color,transparent:true,opacity}))}
+const ground=new T.Mesh(new T.PlaneGeometry(130,130),mat(0x101923,.1,.85));ground.rotation.x=-Math.PI/2;ground.position.y=-.09;scene.add(ground);
+const grid=new T.GridHelper(90,90,0x304b5c,0x25343e);grid.position.y=-.07;grid.material.transparent=true;grid.material.opacity=.6;scene.add(grid);
+const coords={hub:[0,0],land:[0,-6.0],sheep:[5.6,-3.1],picnic:[5.6,3.1],ai:[-5.6,-3.1],design:[-5.6,3.1],education:[0,6.0]};
+const objects=new Map();
+function setup(p){const root=new T.Group();root.position.set(coords[p.id][0],0,coords[p.id][1]);root.userData.project=p.id;scene.add(root);const accent=glow(p.color),platform=new T.Group();root.add(platform);add(platform,cyl(p.id==="hub"?2.05:1.9,.25,graphite,6),0,.12,0);add(platform,cyl(p.id==="hub"?1.94:1.79,.045,accent,6),0,.26,0);add(platform,cyl(p.id==="hub"?1.88:1.73,.10,dark,6),0,.31,0);const parts=[];function group(x,y,z,dx,dy,dz,rx=0,ry=0,rz=0){const g=new T.Group();g.position.set(x,y,z);g.userData.part=parts.length;root.add(g);parts.push({g,base:g.position.clone(),delta:new T.Vector3(dx,dy,dz),rotation:new T.Vector3(rx,ry,rz)});return g}const label=document.createElement("button");label.className="object-label";label.dataset.project=p.id;label.textContent=p.short;label.type="button";label.onclick=()=>ui.select(p.id);labels.append(label);const partLabels=p.parts.map((part,i)=>{const b=document.createElement("button");b.type="button";b.className="object-label part-label";b.textContent=part[0];b.hidden=true;b.onclick=()=>ui.showPart(i,true);labels.append(b);return b});const obj={p,root,parts,group,accent,label,partLabels,platform,progress:0};objects.set(p.id,obj);return obj}
+function torus(r,t,m){return new T.Mesh(new T.TorusGeometry(r,t,10,48),m)}
+for(const p of ui.projects){const o=setup(p),g=o.group,a=o.accent;
+if(p.id==="hub"){
+ // A stylised human avatar, not a scan or a claim of exact likeness.
+ const suit=mat(0x273947,.15,.7),skin=mat(0xb98968,.02,.75),hair=mat(0x302923,.02,.9),shoe=mat(0x18212a,.1,.65);
+ const body=g(0,.34,0,0,0,0);
+ const torso=add(body,sphere(.57,suit,28),0,1.65,0);torso.scale.set(.87,1.05,.52);
+ add(body,new T.Mesh(new T.CylinderGeometry(.24,.28,.23,24),suit),0,1.07,0);
+ for(const side of [-1,1]){const leg=add(body,new T.Mesh(new T.CapsuleGeometry(.18,.57,5,12),suit),side*.23,.61,0);leg.rotation.z=side*.035;const foot=add(body,sphere(.24,shoe,18),side*.23,.13,.10);foot.scale.set(.8,.48,1.35);
+ const arm=add(body,new T.Mesh(new T.CapsuleGeometry(.135,.56,5,12),suit),side*.54,1.53,0);arm.rotation.z=side*.20;add(body,sphere(.125,skin),side*.65,1.10,.02);}
+ add(body,cyl(.15,.18,skin,24),0,2.18,0);
+ const head=add(body,sphere(.34,skin,32),0,2.47,0);head.scale.set(.82,1.12,.9);
+ const cap=add(body,new T.Mesh(new T.SphereGeometry(.348,28,16,0,Math.PI*2,0,Math.PI*.48),hair),0,2.52,0);cap.scale.set(.86,1.05,.94);
+ for(const side of [-1,1]){const ear=add(body,sphere(.075,skin),side*.29,2.45,0);ear.scale.set(.6,1.2,.7);add(body,sphere(.026,dark),side*.104,2.49,.271)}
+ const nose=add(body,sphere(.055,skin),0,2.41,.297);nose.scale.set(.72,1.25,1.2);
+ add(body,box(.1,.018,.015,hair),0,2.32,.264);
+ const shirt=add(body,box(.21,.46,.026,steel),0,1.77,.293);shirt.rotation.x=-.04;
+ body.rotation.y=.25;
+ const ring=g(0,.41,0,0,0,0);const r=add(ring,torus(1.43,.035,a));r.rotation.x=Math.PI/2;
+ const plate=g(0,.45,0,0,0,0);add(plate,box(1.15,.08,.23,graphite),0,0,1.22);
+}else if(p.id==="land"){
+ const terrain=g(0,.58,0,-.7,.4,0);add(terrain,box(2.65,.22,2.4,mat(0x49664f,.05,.9)));add(terrain,box(2.5,.05,.65,mat(0x4b9fb9,.3,.24)),.02,.14,.25);
+ const mountains=g(0,.83,0,-.65,1.05,-.8);for(const [x,z,h,r] of [[-.95,-.65,1.3,.55],[-.36,-.8,1.7,.68],[.45,-.75,.98,.5]]){add(mountains,new T.Mesh(new T.ConeGeometry(r,h,5),mat(0x71837f,.02,.85)),x,h/2-.12,z);add(mountains,new T.Mesh(new T.ConeGeometry(r*.37,h*.29,5),mat(0xcad6d4,.05,.8)),x,h*.80-.12,z)}
+ const town=g(0,.86,0,.95,1.3,.4);for(let i=0;i<5;i++){const x=-.9+i*.4,z=.8-(i%2)*.35;add(town,box(.26,.28,.27,mat(0xb5b2a5)),x,0,z);const roof=add(town,new T.Mesh(new T.ConeGeometry(.22,.18,4),mat(0x586571)),x,.22,z);roof.rotation.y=Math.PI/4}add(town,box(2.5,.025,.12,steel),0,-.12,.48);
+ const marker=g(.35,1.25,.18,.45,2.1,.3);add(marker,new T.Mesh(new T.OctahedronGeometry(.2),a));add(marker,box(.025,.6,.025,a),0,-.3,0);
+}else if(p.id==="sheep"||p.id==="picnic"){
+ const isSheep=p.id==="sheep",walls=mat(isSheep?0x8d9292:0xddd6bd,.08,.75),roofMat=mat(isSheep?0x343d45:0x496c64,.12,.6),windowMat=mat(0x47768c,.3,.22);
+ const shop=g(0,.75,0,0,.18,0);
+ add(shop,box(2.05,1.02,1.5,walls),0,.33,0);
+ add(shop,box(2.12,.12,1.57,graphite),0,-.23,0);
+ const roof=add(shop,new T.Mesh(new T.ConeGeometry(1.48,.55,4),roofMat),0,1.03,0);roof.rotation.y=Math.PI/4;roof.scale.set(1,.9,.78);
+ add(shop,box(2.12,.19,.08,isSheep?dark:a),0,.76,.79);
+ for(const side of [-1,1]){add(shop,box(.67,.59,.06,windowMat),side*.62,.27,.78);add(shop,box(.035,.59,.07,steel),side*.62,.27,.83);add(shop,box(.67,.035,.07,steel),side*.62,.27,.83)}
+ add(shop,box(.39,.73,.065,dark),0,.16,.81);add(shop,box(.28,.38,.04,windowMat),0,.3,.855);add(shop,sphere(.027,steel),.12,.09,.87);
+ if(!isSheep){for(let k=0;k<9;k++){const aw=add(shop,box(.225,.065,.46,k%2===0?a:steel),-.9+k*.225,.61,1.01);aw.rotation.x=.16}}
+ else{for(let k=0;k<6;k++)add(shop,box(.09,.13,.09,mat(0xa3b19c)), -.83+k*.13,.04,.84)}
+ const screen=g(-.7,1.08,.03,-1.20,1.1,.3,0,-.35,0);add(screen,box(.82,.62,.075,graphite));add(screen,box(.69,.48,.02,windowMat),0,0,.049);for(let k=0;k<3;k++)add(screen,box(.14,.13,.025,a),-.21+k*.21,.02,.065);
+ const systems=g(.69,.72,-.05,1.13,1.15,-.1,0,.35,0);for(let k=0;k<3;k++){add(systems,box(.69,.12,.62,steel),0,k*.19,0);add(systems,box(.36,.025,.035,a),0,k*.19,.32)}
+}else if(p.id==="ai"){
+ const core=g(0,1.43,0,0,.7,0);add(core,new T.Mesh(new T.IcosahedronGeometry(.48,1),a));
+ for(let k=0;k<3;k++){const t=k*Math.PI*2/3,m=g(Math.cos(t)*.9,1.35+(k%2)*.4,Math.sin(t)*.9,Math.cos(t)*1.2,.65+k*.2,Math.sin(t)*1.2,0,.5,0);add(m,sphere(.19,steel));const hoop=add(m,torus(.42,.035,a));hoop.rotation.set(.5+k,0,.5);m.add(line([[0,0,0],[-Math.cos(t)*.9,0,-Math.sin(t)*.9]],0x8cb4df,.8))}
+}else if(p.id==="design"){
+ for(let i=0;i<4;i++){const m=g(0,.67+i*.4,0,0,i*.62,0,0,i*.24,0);if(i===1||i===2){const r=add(m,torus(.7,.13,i===1?steel:a));r.rotation.x=Math.PI/2;for(let j=0;j<4;j++){const q=j*Math.PI/2;add(m,box(.2,.19,.21,graphite),Math.cos(q)*.73,0,Math.sin(q)*.73)}}else{add(m,cyl(.88,.19,i===3?steel:graphite,8));add(m,cyl(.37,.05,a,8),0,.12,0);for(let j=0;j<4;j++){const q=j*Math.PI/2;add(m,cyl(.07,.07,steel,12),Math.cos(q)*.65,.13,Math.sin(q)*.65)}}}
+}else if(p.id==="education"){
+ const base=g(0,.7,0,0,.3,-.6);add(base,box(2.2,.28,1.6,steel));add(base,box(1.98,.05,1.38,dark),0,.17,0);for(let j=0;j<5;j++)add(base,box(.29,.035,.13,a),-.75+j*.37,.21,.3);
+ const left=g(-.49,1.17,0,-.75,.9,0,0,0,.55);const right=g(.49,1.17,0,.75,.9,0,0,0,-.55);for(const m of [left,right]){add(m,box(.94,.12,1.35,steel));for(let j=0;j<5;j++)add(m,box(.65,.02,.035,graphite),0,.07,-.4+j*.16)}
+}
+}
+for(const [id,o] of objects){if(id!=="hub"){const x=o.root.position.x,z=o.root.position.z;scene.add(line([[0,.02,0],[x*.5,.02,z*.5],[x,.02,z]],0x5a8ca2,.6))}}
+function homePos(){return innerWidth<=760?new T.Vector3(9,19,22):new T.Vector3(12,16,22)}
+function size(){const w=viewport.clientWidth,h=viewport.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);perspective.aspect=w/h;perspective.fov=w/h<.8?55:42;perspective.updateProjectionMatrix();const v=innerWidth<=760?14:10.5;ortho.left=-v*w/h;ortho.right=v*w/h;ortho.top=v;ortho.bottom=-v;ortho.updateProjectionMatrix()}
+new ResizeObserver(size).observe(viewport);size();
+function fly(id){const root=objects.get(id).root;const t=id==="hub"?new T.Vector3(0,.45,0):root.position.clone().add(new T.Vector3(0,1.6,0));const pos=id==="hub"?homePos():t.clone().add(new T.Vector3(4.5,5.5,9.0));if(paused||reduced){camera.position.copy(pos);controls.target.copy(t);controls.update();flight=null}else flight={start:performance.now(),p:camera.position.clone(),t:controls.target.clone(),end:pos,target:t};if(orthographic){ortho.zoom=id==="hub"?1:2.25;ortho.updateProjectionMatrix()}}
+function setExpanded(v){opened=v}
+function select(id,exp,focus){active=id;opened=exp;part=-1;if(focus)fly(id)}
+function highlight(i){part=i}function setPanel(v){panel=v}
+function switchProjection(){flight=null;target.copy(controls.target);const old=camera;orthographic=!orthographic;camera=orthographic?ortho:perspective;camera.position.copy(old.position);if(orthographic){ortho.zoom=active==="hub"?1:2.25;ortho.updateProjectionMatrix()}bindControls();document.getElementById("viewMode").innerHTML=(orthographic?"Orthographic":"Perspective")+"<br>Real-time scene";document.querySelector('[data-view="projection"]').setAttribute("aria-pressed",String(orthographic))}
+function zoom(f){flight=null;if(orthographic){camera.zoom=T.MathUtils.clamp(camera.zoom*f,.4,4);camera.updateProjectionMatrix()}else{const offset=camera.position.clone().sub(controls.target);offset.setLength(T.MathUtils.clamp(offset.length()/f,5,65));camera.position.copy(controls.target).add(offset)}controls.update()}
+const wireMaterials=new Set();scene.traverse(o=>{if(o.isMesh&&o!==ground)wireMaterials.add(o.material)});
+for(const b of document.querySelectorAll("[data-view]")){b.disabled=false;b.onclick=()=>{switch(b.dataset.view){case"home":ui.select("hub");ui.inspector(false);break;case"projection":switchProjection();break;case"zoomIn":zoom(1.25);break;case"zoomOut":zoom(.8);break;case"wire":wire=!wire;wireMaterials.forEach(m=>m.wireframe=wire);b.setAttribute("aria-pressed",String(wire));break;case"motion":paused=!paused;b.setAttribute("aria-pressed",String(paused));b.textContent=paused?"Play":"Pause";break;case"full":if(document.fullscreenElement)document.exitFullscreen?.().catch(()=>{});else if(viewport.requestFullscreen)viewport.requestFullscreen().catch(()=>{});break}}}
+const motionButton=document.querySelector('[data-view="motion"]');motionButton.setAttribute("aria-pressed",String(paused));motionButton.textContent=paused?"Play":"Pause";if(!viewport.requestFullscreen)document.querySelector('[data-view="full"]').disabled=true;
+const ray=new T.Raycaster(),pointer=new T.Vector2();let down=null;canvas.addEventListener("pointerdown",e=>{down={x:e.clientX,y:e.clientY}});canvas.addEventListener("pointercancel",()=>down=null);canvas.addEventListener("pointerup",e=>{if(!down||Math.hypot(e.clientX-down.x,e.clientY-down.y)>8){down=null;return}down=null;const r=canvas.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects([...objects.values()].map(o=>o.root),true);for(const hit of hits){let q=hit.object,idx=-1,id=null;while(q){if(q.userData.part!==undefined)idx=q.userData.part;if(q.userData.project){id=q.userData.project;break}q=q.parent}if(id){if(id==="hub"){ui.select("hub");ui.inspector(true)}else if(id===active&&idx>=0&&opened)ui.showPart(idx,true);else ui.select(id);break}}});
+let last=performance.now();const projected=new T.Vector3();
+function frame(now){requestAnimationFrame(frame);if(document.hidden)return;const dt=Math.min(.06,(now-last)/1000);last=now;
+if(flight){const t=Math.min(1,(now-flight.start)/850),e=t*t*(3-2*t);camera.position.lerpVectors(flight.p,flight.end,e);controls.target.lerpVectors(flight.t,flight.target,e);if(t===1)flight=null}controls.update();
+for(const [id,o] of objects){const want=id===active&&opened?1:0;o.progress=paused||reduced?want:T.MathUtils.damp(o.progress,want,8,dt);o.parts.forEach((p,i)=>{p.g.position.copy(p.base).addScaledVector(p.delta,o.progress);p.g.rotation.set(p.rotation.x*o.progress,p.rotation.y*o.progress,p.rotation.z*o.progress);const selected=id===active&&part===i&&opened;p.g.scale.setScalar(T.MathUtils.lerp(p.g.scale.x,selected?1.12:1,paused||reduced?1:.15));if(id==="hub"&&i===0)p.g.rotation.y=.25});o.accent.emissiveIntensity=id===active?.85:.35;function placeLabel(el,point){projected.copy(point).project(camera);const visible=projected.z>-1&&projected.z<1&&Math.abs(projected.x)<.96&&Math.abs(projected.y)<.90;el.hidden=!visible;if(visible){el.style.left=(projected.x*.5+.5)*viewport.clientWidth+"px";el.style.top=(-projected.y*.5+.5)*viewport.clientHeight+"px"}return visible}if(active==="hub"){placeLabel(o.label,new T.Vector3(o.root.position.x,id==="hub"?3.5:2.4,o.root.position.z))}else{o.label.hidden=true}o.partLabels.forEach((b,i)=>{b.hidden=true;if(id===active&&id!=="hub"&&opened&&o.parts[i]&&o.progress>.5){const q=o.parts[i].g.getWorldPosition(new T.Vector3());q.y+=id==="sheep"||id==="picnic"?(i===0?1.55:.55):.65;placeLabel(b,q);b.setAttribute("aria-pressed",String(i===part))}})}
+renderer.render(scene,camera)}
+ui.setEngine({select,setExpanded,highlight,setPanel});fly("hub");document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);
+}
+boot().catch(err=>{console.warn("Workspace rendering unavailable",err);document.getElementById("loadText").textContent="3D rendering is unavailable on this device or network.";renderStatus.textContent="Accessible project directory / fallback";document.querySelector(".workspace").classList.add("show-directory")});
+</script>
 </body>
 </html>
