@@ -5,6 +5,7 @@ import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from '.
 import {WaterRipples} from './waterRipples';
 import {WaterheadLife} from './waterheadLife';
 import {LakesiderService} from './lakesider';
+import {PedestrianWorld} from './pedestrians';
 import {highestSolid,blocksMove,cameraFraction,WALK_RADIUS,FLIGHT_RADIUS,CAMERA_RADIUS,ROOF_SKIN} from '../game/buildingCollision';
 import { createBlackSheepInterior } from './shopInterior';
 import navigation from '../data/ambleside-navigation.json';
@@ -241,6 +242,7 @@ export class LakelandEngine {
   private rowBoats:RowBoat[]=[];
   private occupiedBoat:RowBoat|null=null;
   private busService:LakesiderService|null=null;
+  private pedestrians:PedestrianWorld|null=null;
   private waterEffectTimer=0;
   private waterRipples:WaterRipples|null=null;
   private waterheadLife:WaterheadLife|null=null;
@@ -456,7 +458,9 @@ export class LakelandEngine {
         return true;
       };
       this.rowBoats=createRowBoats(this.scene,(x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z));
-      this.busService=new LakesiderService(this.scene,(x,z)=>this.walkSurface(x,z),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.12)),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.4)));
+      this.pedestrians=new PedestrianWorld(this.scene,(x,z)=>this.walkSurface(x,z),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.25)));
+      this.busService=new LakesiderService(this.scene,(x,z)=>this.walkSurface(x,z),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.12))&&!this.pedestrians?.near(x,z,.85)&&
+        (!!this.busService?.mode||this.flying||Math.abs(this.playerY-this.walkSurface(x,z))>2||Math.hypot(x-this.playerX,z-this.playerZ)>1.0),(x,z)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.4))&&!this.pedestrians?.near(x,z,.65));
       this.waterheadLife=new WaterheadLife(this.scene,(x,z)=>this.region.isInWater(x,z),
         (x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z),
         (x,z)=>!this.region.isInWater(x,z)&&unobstructed(x,z),
@@ -880,7 +884,7 @@ export class LakelandEngine {
     this.waterEffectTimer-=dt;if(Math.abs(b.speed)>.15&&this.waterEffectTimer<=0){this.waterEffectTimer=.18;const motor=b.kind==='motorboat',stern=motor?2.8:1.7;const wx=b.x+Math.sin(b.yaw)*stern,wz=b.z+Math.cos(b.yaw)*stern;this.waterRipples?.emit(wx,wz,motor?2.0:1.35,.48,b.yaw);if(motor&&this.region.isInWater(wx,wz))this.emitParticles(wx,.05,wz,2,0xe1edf0,.55);for(const oar of b.oars){const tip=oar.localToWorld(new THREE.Vector3(Math.sign(oar.position.x)*1.5,0,0));if(tip.y<.25&&this.region.isInWater(tip.x,tip.z))this.waterRipples?.emit(tip.x,tip.z,.48);}}
     this.sound.setShoreFactor(1);this.sound.setGameplayState(true,0,false);this.updateChaseCamera(dt,this.exploreSpeed);void this.updateChunkStreaming(b.x,b.z,false);this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
   }
-  private canBoardBus(){return !this.flying&&!this.inShop&&!this.occupiedBoat&&this.waterMode==='land'&&this.activeRoute.mode==='freeroam'&&!!this.busService?.nearby(this.playerX,this.playerZ,this.playerY);}
+  private canBoardBus(){return !this.busService?.mode&&!this.flying&&!this.inShop&&!this.occupiedBoat&&this.waterMode==='land'&&this.activeRoute.mode==='freeroam'&&!!this.busService?.nearby(this.playerX,this.playerZ,this.playerY);}
   public interactBus():boolean{
     const bus=this.busService;if(!bus||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam')return false;
     if(bus.mode){const q=bus.leave();if(!q){this.setCallout('Stop the bus before leaving');return true;}this.playerX=q.x;this.playerZ=q.z;this.playerY=Math.max(.45,this.walkSurface(q.x,q.z))+.04;this.setCallout('Left bus');}
@@ -1373,7 +1377,8 @@ export class LakelandEngine {
     for(const b of this.rowBoats)if(b!==this.occupiedBoat)animateBoat(b,this.elapsedTime,dt,false);
     this.updateAmbientActors(dt);
     if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
-    this.waterheadLife?.update(dt,this.playerX,this.playerZ);
+    this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0));
+    this.waterheadLife?.update(dt,this.playerX,this.playerZ,[...(this.pedestrians?.threats()??[]),...(!this.flying&&!this.occupiedBoat&&!this.busService?.mode&&this.playerY<4?[{x:this.playerX,z:this.playerZ,radius:4.5}]:[])]);
     this.waterRipples?.update(dt);
     this.updateParticles(dt);
     this.updateRain(dt);
@@ -2140,7 +2145,7 @@ export class LakelandEngine {
     this.waterMesh?.geometry.dispose();
     this.materials?.waterUniforms.shoreMap.value?.dispose();
     this.materials?.weatheredDeck.dispose();
-    this.busService?.dispose();this.waterheadLife?.dispose();this.waterRipples?.dispose();disposeBoats(this.rowBoats);this.shop?.dispose();
+    this.pedestrians?.dispose();this.busService?.dispose();this.waterheadLife?.dispose();this.waterRipples?.dispose();disposeBoats(this.rowBoats);this.shop?.dispose();
     this.textures?.dispose();
     this.sound.dispose();
     this.renderer?.dispose();

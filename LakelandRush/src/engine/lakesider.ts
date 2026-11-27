@@ -9,11 +9,11 @@ function makeBus(){
  const root=new THREE.Group(),body=new THREE.Group();root.add(body);
  const mats:THREE.Material[]=[],geos:THREE.BufferGeometry[]=[],texs:THREE.Texture[]=[];
  const m=(color:number,roughness=.65)=>{const mat=new THREE.MeshStandardMaterial({color,roughness});mats.push(mat);return mat;};
- const lime=m(0x90ce18,.36),green=m(0x176044,.4),black=m(0x18272a),grey=m(0xb9c5c4,.35),rubber=m(0x202324),seat=m(0x316d50),glass=m(0x284e5d,.22),floor=m(0x555854),light=m(0xf3f2d9),red=m(0xb63b2f);
+ const lime=m(0x90ce18,.36),green=m(0x176044,.4),black=m(0x18272a),grey=m(0xb9c5c4,.35),rubber=m(0x202324),seat=m(0x316d50),glass=m(0x284e5d,.22),floor=m(0x555854),light=m(0xf3f2d9),red=m(0xb63b2f);glass.transparent=true;glass.opacity=.52;glass.depthWrite=false;
  const buckets=new Map<THREE.Material,THREE.BufferGeometry[]>();
  const add=(g:THREE.BufferGeometry,mat:THREE.Material)=>{const a=buckets.get(mat)??[];a.push(g);buckets.set(mat,a)};
  const box=(w:number,h:number,d:number,x:number,y:number,z:number,mat:THREE.Material,rx=0)=>{const g=new THREE.BoxGeometry(w,h,d);g.rotateX(rx);g.translate(x,y,z);add(g,mat)};
- box(2.48,.74,10.2,0,.84,0,lime);box(2.48,.18,10.2,0,2.52,0,green);box(2.40,.19,10.02,0,2.72,0,floor);box(2.45,.10,10,0,1.23,0,green);
+ box(2.48,.74,10.2,0,.84,0,lime);box(2.3,.08,9.8,0,1.22,0,floor);box(2.48,.18,10.2,0,2.52,0,green);box(2.40,.19,10.02,0,2.72,0,floor);box(2.45,.10,10,0,1.23,0,green);
  box(2.39,.55,10,0,3.06,0,lime);box(2.45,.14,3.45,0,4.12,-3.25,lime);
  for(const side of [-1,1]){
   for(let i=0;i<7;i++){const z=-3.95+i*1.29;box(.055,1.11,1.19,side*1.22,1.91,z,glass);box(.09,1.27,.08,side*1.23,1.93,z+.63,black);}
@@ -62,7 +62,7 @@ export class LakesiderService{
  }
  takeWheel(){const b=this.active;if(!b||this.mode!=='passenger'||Math.abs(b.state.speed)>.5)return false;const q=this.exitPoint(b);if(!q)return false;this.mode='driver';b.model.driver.visible=false;
   // The fictional driver steps out; no attack animation. Restore when the bus is released.
-  const g=b.model.driver.clone();g.visible=true;g.position.set(q.x,Math.max(.45,this.ground(q.x,q.z)),q.z);g.rotation.y=b.model.root.rotation.y;this.scene.add(g);this.formerDriver=g;return true;}
+  const g=b.model.driver.clone();g.visible=true;g.children[0].position.y=1.04;g.children[1].position.y=1.46;g.children[2].scale.set(1,3.5,.45);g.children[2].position.y=.42;g.children[2].position.z=0;g.position.set(q.x,Math.max(.45,this.ground(q.x,q.z)),q.z);g.rotation.y=b.model.root.rotation.y;this.scene.add(g);this.formerDriver=g;return true;}
  leave(){const b=this.active;if(!b||Math.abs(b.state.speed)>.5)return null;const q=this.exitPoint(b);if(q)this.reset();return q;}
  reset(){if(this.active)this.active.model.driver.visible=true;this.formerDriver?.removeFromParent();this.formerDriver=null;this.active=null;this.mode=null;}
  get speed(){return this.active?.state.speed??0;}

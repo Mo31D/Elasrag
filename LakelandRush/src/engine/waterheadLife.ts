@@ -1,3 +1,4 @@
+import {fleeDirection,type Threat} from '../game/crowdMotion';
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {cruisePose,CRUISE_SPEED,CRUISE_LENGTH,cruiseHullWet,shorePoint} from '../game/waterheadLife';
@@ -86,7 +87,7 @@ export class WaterheadLife{
   if(!this.routeValid)return false;const p=this.cruiser.root,dx=x-p.position.x,dz=z-p.position.z,a=p.rotation.y;
   return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<4.5&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<23;
  }
- update(dt:number,playerX:number,playerZ:number){
+ update(dt:number,playerX:number,playerZ:number,threats:readonly Threat[]=[]){
   this.t+=dt;this.travelled+=dt*CRUISE_SPEED;
   if(this.routeValid){const p=cruisePose(this.travelled+CRUISE_LENGTH*.48),g=this.cruiser.root;g.position.set(p.x,Math.sin(this.t*.85)*.055,p.z);g.rotation.set(Math.sin(this.t*.74)*.003,p.yaw,Math.sin(this.t*.93)*.007);
    this.cruiser.wake.position.set(p.x,0,p.z);this.cruiser.wake.rotation.y=p.yaw;this.cruiser.wakeMat.opacity=.22+Math.sin(this.t*1.4)*.035;
@@ -94,13 +95,13 @@ export class WaterheadLife{
   this.rippleClock+=dt;const emit=this.rippleClock>.48;if(emit)this.rippleClock=0;
   for(let i=0;i<this.birds.length;i++){
    const b=this.birds[i],near=Math.hypot(playerX-b.x,playerZ-b.z)<170;b.root.visible=near;if(!near)continue;
-   const d=Math.hypot(b.x-b.homeX,b.z-b.homeZ),target=d>7?Math.atan2(b.x-b.homeX,b.z-b.homeZ):b.angle+Math.sin(this.t*.28+b.phase)*dt*.38;
-   let diff=Math.atan2(Math.sin(target-b.angle),Math.cos(target-b.angle));b.angle+=THREE.MathUtils.clamp(diff,-1.4*dt,1.4*dt);
-   const moving=Math.sin(this.t*.62+b.phase)>-.45,step=moving?b.speed*dt:0,x=b.x-Math.sin(b.angle)*step,z=b.z-Math.cos(b.angle)*step;
-   if((b.swimming?this.clearWater(x,z):this.clearLand(x,z))){b.x=x;b.z=z;}else b.angle+=dt*2.8;
+   const alarm=fleeDirection(b.x,b.z,threats),d=Math.hypot(b.x-b.homeX,b.z-b.homeZ),target=alarm?alarm.yaw:d>7?Math.atan2(b.x-b.homeX,b.z-b.homeZ):b.angle+Math.sin(this.t*.28+b.phase)*dt*.38;
+   let diff=Math.atan2(Math.sin(target-b.angle),Math.cos(target-b.angle));b.angle+=THREE.MathUtils.clamp(diff,-(alarm?4.2:1.4)*dt,(alarm?4.2:1.4)*dt);
+   const moving=!!alarm||Math.sin(this.t*.62+b.phase)>-.45,step=moving?(alarm?b.speed+alarm.alarm*1.9:b.speed)*dt:0,x=b.x-Math.sin(b.angle)*step,z=b.z-Math.cos(b.angle)*step;
+   if((b.swimming?this.clearWater(x,z):this.clearLand(x,z))){b.x=x;b.z=z;}else if(!b.swimming&&alarm&&this.clearWater(x,z)){b.swimming=true;b.x=x;b.z=z;b.homeX=x;b.homeZ=z;}else b.angle+=dt*2.8;
    b.root.position.set(b.x,b.swimming?-.10*b.scale+Math.sin(this.t*2+b.phase)*.015:Math.max(.45,this.ground(b.x,b.z)),b.z);b.root.rotation.y=b.angle;
    b.body.rotation.z=Math.sin(this.t*2+b.phase)*(b.swimming?.035:.055);b.neck.rotation.x=Math.sin(this.t*1.1+b.phase)*.09+(moving?0:Math.max(0,Math.sin(this.t*.8+b.phase))*.34);
-   for(let j=0;j<2;j++){b.feet[j].visible=!b.swimming;b.feet[j].rotation.x=moving?Math.sin(this.t*8+b.phase+j*Math.PI)*.55:0;b.wings[j].rotation.z=Math.sin(this.t*1.5+b.phase)*.035;}
+   for(let j=0;j<2;j++){b.feet[j].visible=!b.swimming;b.feet[j].rotation.x=moving?Math.sin(this.t*8+b.phase+j*Math.PI)*.55:0;b.wings[j].rotation.z=Math.sin(this.t*(alarm?9:1.5)+b.phase)*(alarm?.20:.035);}
    if(emit&&moving&&b.swimming&&i%3===Math.floor(this.t)%3)this.ripple(b.x,b.z,b.scale*.55);
   }
  }

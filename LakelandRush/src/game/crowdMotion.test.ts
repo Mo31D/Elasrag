@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {fleeDirection,nextWalkDistance} from './crowdMotion';
+test('birds turn away from humans and respond to dogs at larger radius',()=>{assert.equal(fleeDirection(0,0,[{x:4,z:0,radius:3}]),null);const f=fleeDirection(0,0,[{x:4,z:0,radius:6}])!;assert.ok(f.alarm>0);assert.ok(Math.sin(f.yaw)>.99);});
+test('walkers remain within their mapped path and turn at ends',()=>{let s=nextWalkDistance(9.9,1,1,.5,10);assert.equal(s.distance,10);assert.equal(s.dir,-1);s=nextWalkDistance(.1,-1,1,.5,10);assert.equal(s.distance,0);assert.equal(s.dir,1);});
