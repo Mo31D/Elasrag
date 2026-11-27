@@ -14,3 +14,19 @@ test('traffic yields before contact and alarms decay rather than flicker',()=>{
  assert.equal(safeTrafficThrottle(1,0,6),0);assert.ok(safeTrafficThrottle(1,5,6)<1);assert.equal(safeTrafficThrottle(1,100,6),1);
  assert.ok(rememberedAlarm(1,0,.1)>.9);assert.equal(rememberedAlarm(0,.8,.1),.8);
 });
+
+import {dogOwnerStep,DOG_OWNER_SPEED_RATIO} from './crowdMotion';
+test('only 90 percent of actual dog speed is available at every pace',()=>{
+ assert.equal(DOG_OWNER_SPEED_RATIO,.9);
+ for(const speed of [0,.3,.95,1.3,3.5,7]){
+  const step=dogOwnerStep(0,0,50,0,speed,.1,()=>true);
+  assert.ok(Math.abs(Math.hypot(step.x,step.z)-speed*.09)<1e-8);
+ }
+});
+test('owner stops near dog and cannot run through a blocked surface',()=>{
+ assert.equal(dogOwnerStep(0,0,.5,0,7,.1,()=>true).moved,0);
+ assert.equal(dogOwnerStep(0,0,50,0,7,.1,()=>false).moved,0);
+ const step=dogOwnerStep(0,0,50,0,7,.1,(x,z)=>x<.1||Math.abs(z)>.1);
+ assert.ok(step.moved<=.63000001);
+ assert.ok(Math.hypot(step.x,step.z)<=.63000001);
+});
