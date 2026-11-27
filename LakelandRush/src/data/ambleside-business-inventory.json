@@ -1876,7 +1876,17 @@
       "postcode": "LA22 0DW",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "Bloom & Bites",
+          "x": 34.5,
+          "z": -801.1,
+          "buildingId": 1344796029,
+          "height": 8.2,
+          "source": "OSM way 1344796029",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0148",
@@ -2888,7 +2898,17 @@
       "postcode": "LA22 0DH",
       "sourceUrls": "https://thelakesproperties.co.uk/venues/ambleside",
       "verification": "Listed — current trading status unverified",
-      "candidates": []
+      "candidates": [
+        {
+          "name": "The Sourdough Pizza Co",
+          "x": 161.5,
+          "z": -940.5,
+          "buildingId": 423818336,
+          "height": 6.4,
+          "source": "OSM way 423818336",
+          "kind": "building"
+        }
+      ]
     },
     {
       "id": "AMB-0229",
@@ -3053,7 +3073,13 @@
     "0_-3",
     "-1_-3",
     "0_-5",
-    "-1_-5"
+    "-1_-5",
+    "1_-4",
+    "1_-3",
+    "1_-5",
+    "-2_-3",
+    "-2_-4",
+    "0_-2"
   ],
   "missingChunks": []
 }
