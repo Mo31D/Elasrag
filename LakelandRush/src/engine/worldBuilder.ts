@@ -18,7 +18,7 @@ import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
 import { buildCoffeeShop } from './coffeeShop';
 import {buildBlackSheepStreetFacade} from './blackSheepStreet';
-import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow} from '../geo/blackSheepStreet';
+import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow,lakeRoadKerbs,lakeRoadPavingJoints,lakeRoadDrainCentres} from '../geo/blackSheepStreet';
 import {buildPetShop} from './petShop';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
@@ -864,6 +864,29 @@ export function buildChunkGroup(
     addBatch(lakeRoadLineSegments().map(p=>groundSurface(p,surfaceGround,.139,true)),yellow,false);
     const arrow=new THREE.MeshStandardMaterial({color:0xddd8c8,roughness:.93,side:THREE.DoubleSide});streetMaterials.push(arrow);
     addBatch([groundSurface(lakeRoadArrow(),surfaceGround,.142,true)],arrow,false);
+    const kerb=new THREE.MeshStandardMaterial({color:0xaaa69b,roughness:.96,side:THREE.DoubleSide});
+    const joint=new THREE.MeshStandardMaterial({color:0x66645f,roughness:1,side:THREE.DoubleSide});
+    const drain=new THREE.MeshStandardMaterial({color:0x353737,roughness:.83,metalness:.22,side:THREE.DoubleSide});
+    const grate=new THREE.MeshStandardMaterial({color:0x101415,roughness:.85,side:THREE.DoubleSide});
+    streetMaterials.push(kerb,joint,drain,grate);
+    const kerbs=lakeRoadKerbs();
+    addBatch(kerbs.map(p=>groundSurface(p,surfaceGround,.215,true)),kerb,false,true);
+    const faces:THREE.BufferGeometry[]=[];
+    for(const p of kerbs){
+      // Visible raised stone lip on the carriageway side.
+      const a=p[0],b=p[1],q=p[2],d=p[3];
+      const edge=(a:number[],b:number[])=>{const g=new THREE.BufferGeometry(),ay=Math.max(.42,surfaceGround(a[0],a[1])),by=Math.max(.42,surfaceGround(b[0],b[1]));
+      g.setAttribute('position',new THREE.Float32BufferAttribute([a[0],ay+.12,a[1],b[0],by+.12,b[1],b[0],by+.215,b[1],a[0],ay+.12,a[1],b[0],by+.215,b[1],a[0],ay+.215,a[1]],3));g.computeVertexNormals();faces.push(g);};
+      edge(a,b);edge(q,d);
+    }
+    addBatch(faces,kerb,false);
+    addBatch(lakeRoadPavingJoints().map(p=>groundSurface(p,surfaceGround,.208,false)),joint,false);
+    const drainFrames:THREE.BufferGeometry[]=[],drainSlots:THREE.BufferGeometry[]=[];
+    for(const [x,z] of lakeRoadDrainCentres()){
+      drainFrames.push(groundSurface([[x-.16,z-.26],[x+.16,z-.26],[x+.16,z+.26],[x-.16,z+.26]],surfaceGround,.151,false));
+      for(let i=0;i<7;i++){const q=z-.20+i*.065;drainSlots.push(groundSurface([[x-.125,q],[x+.125,q],[x+.125,q+.028],[x-.125,q+.028]],surfaceGround,.155,false));}
+    }
+    addBatch(drainFrames,drain,false);addBatch(drainSlots,grate,false);
   }
   addBatch(gravelGeos,materials.gravelPath,false,true);
   addBatch(railGeos, materials.railSteel, false);
