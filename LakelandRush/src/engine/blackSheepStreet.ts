@@ -28,47 +28,57 @@ export function buildBlackSheepStreetFacade(b:BuildingFeature,ground:Ground,wall
   const cornice=(x:number,y:number,w:number,mat:THREE.Material)=>{box(w,.12,.26,x,y,.15,mat);box(w+.10,.075,.34,x,y+.10,.17,mat);};
   const pilaster=(x:number,y:number,h:number,w:number,mat:THREE.Material)=>{box(w,h,.16,x,y,.12,mat);box(w+.075,.15,.24,x,y-h/2+.08,.15,mat);box(w+.08,.13,.25,x,y+h/2-.07,.15,mat);};
   function bayDisplay(x:number,w:number){
-   const h=2.05,z=.34,y=1.39;
-   box(w+.04,h+.05,.055,x,y,.045,back);box(w,.32,.34,x,.21,.19,blackTrim);box(w+.08,.09,.42,x,.08,.23,sill);
+   const h=2.12,z=.45,y=1.38;
+   box(w+.04,h+.05,.055,x,y,.045,back);box(w,.30,.44,x,.19,.24,blackTrim);box(w+.11,.095,.53,x,.065,.27,sill);box(w+.04,.055,.48,x,.355,.25,black);
    const left=x-w/2,right=x+w/2;
    for(const u of [left,right])box(.075,h,.13,u,y,z,black);
    for(const yy of [y-h/2,y+h/2])box(w,.075,.16,x,yy,z,black);
    // A shallow glass bay with angled returns and a true recessed doorway.
-   for(const s of [-1,1])box(.34,h,.022,x+s*(w/2+.10),y,.20,displayGlass,s*Math.PI/3);
-   box(w-.12,h-.10,.018,x,y,z+.075,displayGlass);box(.045,h,.07,x,y,z+.06,black);
-   for(let row=0;row<4;row++){const sy=.48+row*.47;box(w-.16,.035,.23,x,sy,.18,warm);
+   for(const s of [-1,1]){box(.43,h,.022,x+s*(w/2+.055),y,.28,displayGlass,s*Math.PI/3);box(.06,h,.055,x+s*(w/2+.14),y,.12,black);}
+   box(w-.12,h-.10,.018,x,y,z+.035,displayGlass);box(.048,h,.07,x,y,z+.025,black);
+   box(w,.07,.12,x,2.47,.41,blackTrim);
+   for(let row=0;row<4;row++){const sy=.48+row*.47;box(w-.16,.035,.31,x,sy,.235,warm);
     for(let j=0;j<7;j++){const u=x+(j-3)*(w-.22)/7,mat=gifts[(row*3+j)%gifts.length];const height=.10+.055*((row+j)%4);
      if((row+j)%4===0){sphere(.062,u,sy+.075,.21,mat,1,1.2,.75);sphere(.038,u,sy+.15,.21,mat);for(const s of [-1,1])sphere(.023,u+s*.035,sy+.182,.21,mat,1,1.2,.8);}
      else box(.085+.027*(j%3),height,.09,u,sy+height/2+.018,.21,mat);
     }
    }
    box(w-.15,.035,.12,x,2.30,.19,lit);
+   // Larger recognisable soft toys at the top of each bay, with layered stock below.
+   const toy=x+(x>0?-.18:.18),fur=x>0?gifts[0]:gifts[5];
+   sphere(.17,toy,1.92,.30,fur,.85,1.05,.55);sphere(.12,toy,2.13,.31,fur,1,.95,.65);
+   for(const s of [-1,1]){sphere(.058,toy+s*.105,2.24,.31,fur,.68,1.6,.60);sphere(.065,toy+s*.13,1.88,.33,fur);sphere(.019,toy+s*.046,2.15,.408,black);}
+   sphere(.025,toy,2.10,.415,black);box(.22,.15,.065,toy,1.93,.408,gifts[x>0?6:4]);
   }
   const flush=()=>{for(const [mat,list] of buckets){const g=mergeGeometries(list,false);list.forEach(v=>v.dispose());if(!g)continue;geos.push(g);const mesh=new THREE.Mesh(g,mat);mesh.castShadow=!mat.transparent;mesh.receiveShadow=true;root.add(mesh);}};
   return {e,base,root,box,sphere,rod,sign,sash,cornice,pilaster,bayDisplay,flush};
  }
  if(b.id===BLACK_SHEEP_BUILDING){
-  const f=frontage(8),{box,sign,sash,pilaster,cornice,bayDisplay,rod}=f,L=f.e.length;
-  const split=-.65,shopLeft=split,shopRight=L/2-.08,shopW=shopRight-shopLeft,shopX=(shopLeft+shopRight)/2;
+  const f=frontage(7),{box,sign,sash,pilaster,cornice,bayDisplay,rod,sphere}=f,L=f.e.length;
+  const split=-.56,shopLeft=split,shopRight=L/2-.08,shopW=shopRight-shopLeft,shopX=(shopLeft+shopRight)/2;
   const officeLeft=-L/2+.08,officeW=split-officeLeft,officeX=(officeLeft+split)/2;
   // Black timber frontage, warm metallic serif lettering, twin projecting display bays.
   box(shopW,2.91,.08,shopX,1.46,.06,black);
   box(shopW,.49,.30,shopX,2.72,.18,black);cornice(shopX,2.99,shopW,blackTrim);
-  sign('THE BLACK SHEEP',shopW*.82,.34,shopX,2.73,.344,'#121516','#c4ae86',true);
-  const doorW=1.10,available=(shopW-doorW-.67)/2,doorX=shopX-.13;
+  sign('THE BLACK SHEEP',shopW*.67,.29,shopX,2.73,.344,'#121516','#c4ae86',true);
+  box(shopW,.045,.34,shopX,2.47,.18,blackTrim);box(shopW,.055,.35,shopX,2.96,.18,blackTrim);
+  const doorW=1.08,available=(shopW-doorW-.80)/2,doorX=shopX-.19;
   bayDisplay(doorX-doorW/2-available/2-.11,available);
   bayDisplay(doorX+doorW/2+available/2+.11,available);
-  box(doorW,2.32,.05,doorX,1.16,.105,door);box(doorW-.14,1.38,.055,doorX,1.43,.15,glass);
+  box(doorW,2.32,.05,doorX,1.16,.105,black);box(doorW-.14,1.38,.055,doorX,1.43,.15,back);
+  for(let row=0;row<5;row++){const y=.54+row*.28;box(.73,.025,.035,doorX,y,.185,warm);for(let j=0;j<4;j++)box(.13,.17,.025,doorX-.26+j*.17,y+.10,.195,gifts[(row+j)%gifts.length]);}
+  box(doorW-.15,1.40,.015,doorX,1.43,.235,displayGlass);box(doorW-.16,.29,.03,doorX,2.15,.205,lit);
+  box(doorW+.08,.055,.47,doorX,.035,.25,sill);
   box(doorW-.15,.49,.075,doorX,.32,.17,blackTrim);box(doorW,.07,.12,doorX,2.34,.20,black);
   for(const s of [-1,1])pilaster(doorX+s*(doorW/2+.035),1.19,2.38,.075,black);
   box(.052,.22,.055,doorX+.40,1.08,.207,warm);sign('2',.23,.20,doorX,2.13,.185,'#292521','#f2e2c4',true);
   pilaster(shopLeft+.07,1.40,2.8,.14,black);pilaster(shopRight-.06,1.40,2.8,.16,black);
-  const menuX=shopRight-.23;box(.37,1.99,.065,menuX,1.39,.35,black);
+  const menuX=shopRight-.25;box(.39,2.24,.065,menuX,1.31,.45,black);
   const canvas=document.createElement('canvas');canvas.width=256;canvas.height=1024;const ctx=canvas.getContext('2d')!;
   ctx.fillStyle='#151a19';ctx.fillRect(0,0,256,1024);ctx.textAlign='center';ctx.fillStyle='#d9c49a';ctx.font='bold 43px Georgia';ctx.fillText('LAKES',128,90);ctx.font='17px Arial';ctx.fillText('ICE CREAM',128,123);
   const flavours=['#f1e2c1','#bca17a','#e7b2b1','#bd976c','#e9e0b2','#b8c29b','#eee8da','#9b7965','#e2c7bc','#c4c7d0','#ddd4b1','#e7d3b9'];
   for(let i=0;i<12;i++){const x=i%2?184:72,y=180+Math.floor(i/2)*128;ctx.fillStyle=flavours[i];ctx.beginPath();ctx.arc(x,y,31,0,Math.PI*2);ctx.fill();ctx.fillStyle='#d6c8a9';ctx.fillRect(x-26,y+43,52,3);}
-  const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;textures.push(tex);const menuMat=new THREE.MeshBasicMaterial({map:tex});materials.push(menuMat);const mg=new THREE.PlaneGeometry(.33,1.9);geos.push(mg);const menu=new THREE.Mesh(mg,menuMat);menu.position.set(menuX,1.39,.388);f.root.add(menu);
+  const tex=new THREE.CanvasTexture(canvas);tex.colorSpace=THREE.SRGBColorSpace;textures.push(tex);const menuMat=new THREE.MeshBasicMaterial({map:tex});materials.push(menuMat);const mg=new THREE.PlaneGeometry(.35,2.14);geos.push(mg);const menu=new THREE.Mesh(mg,menuMat);menu.position.set(menuX,1.31,.488);f.root.add(menu);
   // Davenport & Scott: cream joinery, navy fascia, glazed central door and red blinds.
   box(officeW,2.86,.09,officeX,1.43,.07,cream);box(officeW-.18,.32,.15,officeX,2.76,.15,navy);
   sign('Davenport & Scott SOLICITORS',officeW-.30,.25,officeX,2.76,.236,'#182c49','#e9e9e0');
@@ -93,7 +103,7 @@ export function buildBlackSheepStreetFacade(b:BuildingFeature,ground:Ground,wall
   sign('LAKE ROAD',.76,.20,officeLeft+.48,3.47,.15,'#e0daca','#2e2e2b',true);
   f.flush();
   // Sandstone entrance and decorative projecting oriel immediately north of the shop.
-  const n=frontage(9),u=-n.e.length/2+3.15;
+  const n=frontage(9);
   // Edge 9 begins at the chamfer and extends north; local x increases north.
   const frontU= -n.e.length/2+3.1;
   n.box(5.4,2.95,.12,frontU,1.48,.07,sandstone);
@@ -101,16 +111,16 @@ export function buildBlackSheepStreetFacade(b:BuildingFeature,ground:Ground,wall
   for(const s of [-1,1]){n.pilaster(frontU+s*.82,1.24,2.44,.28,sandstone);n.box(.76,1.65,.12,frontU+s*1.82,1.44,.19,sandDark);n.box(.52,1.43,.06,frontU+s*1.82,1.44,.26,glass);n.box(.05,1.43,.08,frontU+s*1.82,1.44,.30,sandstone);}
   for(let i=0;i<=10;i++){const a=i*Math.PI/10;const gX=frontU+Math.cos(a)*.77,gY=1.86+Math.sin(a)*.77;n.sphere(.148,gX,gY,.22,sandstone,.95,.8,.55);}
   n.cornice(frontU,3.04,3.1,sandDark);n.box(2.51,.47,.48,frontU,3.37,.33,black);
-  for(const k of [-1,0,1]){n.box(.20,.26,.035,frontU+k*.70,3.38,.60,white);n.box(.32,.10,.04,frontU+k*.70,3.38,.61,white);}
+  for(const k of [-1,0,1]){const x=frontU+k*.70;for(const [dx,dy] of [[0,.08],[0,-.08],[-.08,0],[.08,0]])n.sphere(.085,x+dx,3.38+dy,.59,white,1,1,.25);}
   n.box(2.52,1.95,.36,frontU,4.57,.24,black);n.sash(frontU,4.57,1.95,1.70,.42,cream);
   for(const s of [-1,1])n.box(.37,1.76,.12,frontU+s*1.24,4.58,.32,glass,s*Math.PI/4);
   n.cornice(frontU,5.62,2.75,black);
-  for(const s of [-1,1])n.box(1.82,.13,.79,frontU+s*.67,6.22,.32,slate,0,0);
+  for(const s of [-1,1]){const panel=new THREE.Mesh(new THREE.BoxGeometry(2.19,.13,.90),slate);geos.push(panel.geometry);panel.position.set(frontU+s*.69,6.51,.37);panel.rotation.z=-s*.86;n.root.add(panel);}
   // Steep decorative triangular gable outlined in black timber.
   const shape=new THREE.Shape();shape.moveTo(-1.38,0);shape.lineTo(1.38,0);shape.lineTo(0,1.65);shape.closePath();
   const g=new THREE.ShapeGeometry(shape);geos.push(g);const face=new THREE.Mesh(g,cream);face.position.set(frontU,5.7,.41);n.root.add(face);
-  for(const s of [-1,1]){const bar=new THREE.Mesh(new THREE.BoxGeometry(.12,2.20,.15),black);geos.push(bar.geometry);bar.position.set(frontU+s*.69,6.51,.49);bar.rotation.z=s*.69;n.root.add(bar);}
-  n.sphere(.33,frontU,6.28,.48,black,1.3,1,.15);n.sphere(.25,frontU,6.28,.53,cream,1.25,1,.15);
+  for(const s of [-1,1]){const bar=new THREE.Mesh(new THREE.BoxGeometry(.12,2.20,.15),black);geos.push(bar.geometry);bar.position.set(frontU+s*.69,6.51,.49);bar.rotation.z=-s*.69;n.root.add(bar);}
+  for(const [dx,dy] of [[0,.30],[-.27,-.14],[.27,-.14]]){n.sphere(.34,frontU+dx,6.18+dy,.48,black,1.1,1,.12);n.sphere(.28,frontU+dx,6.18+dy,.53,cream,1.1,1,.12);}
   for(let x=frontU+4;x<n.e.length/2-1;x+=2.8){n.sash(x,1.55,.85,1.64);if(wallTop-n.base>4.9)n.sash(x,4.2,.93,1.65);if(wallTop-n.base>7)n.sash(x,6.65,.88,1.5);}
   n.flush();
  }else{
