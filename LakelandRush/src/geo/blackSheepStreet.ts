@@ -41,3 +41,10 @@ export function lakeRoadLineSegments():StreetPoint[][]{
  }
  return out;
 }
+
+export function lakeRoadArrow():StreetPoint[]{
+ const z=-1390.1,x=lakeRoadCentre(z),dx=.059,dz=-1,angle=Math.atan2(dx,-dz);
+ const shape:StreetPoint[]=[[-.12,-1.55],[.12,-1.55],[.12,.52],[.45,.52],[0,1.55],[-.45,.52],[-.12,.52]];
+ // Forward follows the actual northbound road alignment.
+ return shape.map(([u,v])=>[x+u*Math.cos(angle)+v*Math.sin(angle),z+u*Math.sin(angle)-v*Math.cos(angle)]);
+}
