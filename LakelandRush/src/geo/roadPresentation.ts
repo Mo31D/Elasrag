@@ -2,7 +2,7 @@ import type {RoadFeature} from '../types/game';
 type P=[number,number];
 // Provisional rendering widths, based on clearance to existing mapped footprints.
 // They are not measured carriageway widths. Keep source coordinates and OSM IDs unchanged.
-const compstonHalfWidth:Readonly<Record<number,number>>={561321008:1.8,561321009:3.0,4600162:2.9,4600163:2.9};
+const compstonHalfWidth:Readonly<Record<number,number>>={32132710:2.9,561321008:1.8,561321009:3.0,4600162:2.9,4600163:2.9};
 export function displayHalfWidth(r:RoadFeature):number{
  return r.widthM&&r.widthM>0?r.widthM/2:compstonHalfWidth[r.id]??(r.kind==='primary'?4.4:r.kind==='secondary'?3.4:r.kind==='lane'?2.6:r.kind==='railway'?1.5:r.sidewalk?.85:1.35);
 }
