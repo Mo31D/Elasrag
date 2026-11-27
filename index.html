@@ -56,8 +56,13 @@ header{background:#10151b;box-shadow:0 1px 18px #0003}.brand{letter-spacing:.23e
 .project-note{font-size:11px!important;color:#9eafbb!important;border-left:1px solid #617484;padding-left:9px;margin:10px 0!important}
 @media(max-width:760px){.brand{font-size:17px;letter-spacing:.15em}.object-label{font-size:10px;max-width:104px;padding:5px 6px}.toolbar button{padding:5px 6px}.toolbar button[data-view="quality"]{min-width:57px}.intro h1{font-size:29px}}
 @media(max-width:360px){.toolbar button[data-view="projection"]{display:none}.toolbar button[data-view="full"]{display:none}}
+
+/* V.06: cinematic exhibition and selected-project composition. */
+.intro .mono{color:#d0b58d}.intro h1{font-size:clamp(27px,3.6vw,47px)}.intro p{max-width:none}.object-label{font-size:11px;white-space:nowrap;max-width:158px;overflow:hidden;text-overflow:ellipsis}.object-label[data-project="hub"]{background:#292824ef;color:#f4e2c4;border-color:#c4a77c99}.object-label:focus-visible{z-index:10}.workspace.show-inspector .object-label:not(.part-label){visibility:hidden}
+.viewport-meta{top:21px;right:24px}.toolbar{border-color:#a0b1ba35}.toolbar button{color:#d0dbe2}.inspector{box-shadow:0 20px 60px #000a}.inspector .project-links{margin-top:14px}.inspector .project-note{line-height:1.45}.scene-list button:focus-visible{outline-offset:-2px}
+@media(max-width:760px){.intro h1{font-size:29px}.object-label{font-size:10px;max-width:118px}.viewport-meta{display:none}.workspace.show-inspector .inspector{max-height:36dvh}.toolbar{bottom:calc(9px + env(safe-area-inset-bottom))}.inspector{bottom:calc(60px + env(safe-area-inset-bottom))}}
 </style>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"/creation-engine/vendor/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body>
 <a class="skip" href="#outliner">Skip to projects</a>
@@ -67,7 +72,7 @@ header{background:#10151b;box-shadow:0 1px 18px #0003}.brand{letter-spacing:.23e
 <div class="panel-head mono"><span>Scene hierarchy</span><span id="objectCount">Projects</span><button type="button" class="close-panel" id="closeDirectory" aria-label="Close project list">×</button></div>
 <div id="projectList" class="scene-list"></div>
 <div class="side-foot"><hr><div class="mono">Navigation</div><p>Drag to orbit. Scroll or pinch to zoom. Select an object to inspect its layers. Use the controls to change the view.</p><p>All projects are also accessible from this list.</p></div>
-<noscript><p>JavaScript is disabled. Visit <a href="https://theblacksheepshop.co.uk/">The Black Sheep Shop</a>, <a href="https://lakesidepicnic.co.uk/">Lakeside Picnic</a> or <a href="https://github.com/Mo31D">GitHub</a> to explore selected work.</p></noscript>
+<noscript><style>.sidebar{display:block!important}.fallback{display:none!important}.intro{display:none!important}</style><p>JavaScript is disabled. Visit <a href="https://theblacksheepshop.co.uk/">The Black Sheep Shop</a>, <a href="https://lakesidepicnic.co.uk/">Lakeside Picnic</a> or <a href="https://github.com/Mo31D">GitHub</a> to explore selected work.</p></noscript>
 </aside>
 <section class="viewport" id="viewport" aria-label="Interactive 3D creation workspace">
 <canvas id="scene" aria-label="Three-dimensional project objects. Use the project list for accessible selection."></canvas>
@@ -89,7 +94,7 @@ header{background:#10151b;box-shadow:0 1px 18px #0003}.brand{letter-spacing:.23e
 <p class="mobile-hint">Choose a project above to inspect its components.</p>
 </aside>
 </main>
-<footer class="footer"><span>ELASRAG / PORTFOLIO V.05</span><span id="renderStatus" role="status">Initialising</span><a href="https://github.com/Mo31D">GitHub</a><a href="mailto:mo@elasrag.com">mo@elasrag.com</a></footer>
+<footer class="footer"><span>ELASRAG / PORTFOLIO V.06</span><span id="renderStatus" role="status">Initialising</span><a href="https://github.com/Mo31D">GitHub</a><a href="mailto:mo@elasrag.com">mo@elasrag.com</a></footer>
 <script>
 const projects=[
 {id:"hub",name:"Mohamed El-Asrag",short:"Mo",color:"#8cc8d5",status:"Portfolio overview",desc:"Hi, I'm Mo — Mohamed El-Asrag. I explore ideas, build technology and create practical solutions that connect imagination with reality.",parts:[["Technology","Digital platforms, interactive environments and practical software."],["Creativity","Visual design, product concepts and experimental experiences."],["Solutions","Connecting business needs with useful technology."]],links:[["GitHub","https://github.com/Mo31D"],["Get in touch","mailto:mo@elasrag.com"]]},
@@ -140,41 +145,69 @@ const grid=new T.GridHelper(90,90,0x304b5c,0x25343e);grid.position.y=-.07;grid.m
 const deck=new T.Mesh(new T.CylinderGeometry(11.2,11.35,.22,96),mat(0x303b44,.32,.69));deck.position.y=-.01;deck.receiveShadow=true;scene.add(deck);const deckEdge=cyl(11.24,.055,mat(0x9c8469,.65,.4),96);deckEdge.position.y=-.10;scene.add(deckEdge);
 for(const [r,c,op] of [[2.45,0xd5b38a,.7],[5.05,0x7295a7,.23],[9.75,0x7295a7,.35],[10.92,0x9bb5be,.45]]){const ring=new T.Mesh(new T.TorusGeometry(r,.018,6,120),new T.MeshBasicMaterial({color:c,transparent:true,opacity:op}));ring.rotation.x=-Math.PI/2;ring.position.y=.11;scene.add(ring)}
 const coords={hub:[0,0]};const orbit=["land","sheep","picnic","caline","hair","silk","education","design","ai"];orbit.forEach((id,i)=>{const q=-Math.PI/2+i*Math.PI*2/orbit.length;coords[id]=[7.65*Math.cos(q),7.65*Math.sin(q)]});
-const objects=new Map(),animated=[],architectureJobs=[];
+const objects=new Map(),animated=[],architectureJobs=[];let signatureJob=null;
 function setup(p){const root=new T.Group();root.position.set(coords[p.id][0],.12,coords[p.id][1]);root.userData.project=p.id;scene.add(root);const accent=glow(p.color),platform=new T.Group();root.add(platform);add(platform,cyl(p.id==="hub"?2.07:1.92,.22,mat(0x26313b,.45,.46),64),0,.11,0);add(platform,cyl(p.id==="hub"?2.03:1.88,.045,mat(0x9e917f,.55,.48),64),0,.235,0);add(platform,cyl(p.id==="hub"?1.98:1.83,.035,accent,64),0,.27,0);add(platform,cyl(p.id==="hub"?1.93:1.78,.095,mat(0x39444e,.23,.66),64),0,.32,0);const parts=[];function group(x,y,z,dx,dy,dz,rx=0,ry=0,rz=0){const g=new T.Group();g.position.set(x,y,z);g.userData.part=parts.length;root.add(g);parts.push({g,base:g.position.clone(),delta:new T.Vector3(dx,dy,dz),rotation:new T.Vector3(rx,ry,rz)});return g}const label=document.createElement("button");label.className="object-label";label.dataset.project=p.id;label.textContent=p.short;label.type="button";label.onclick=()=>{ui.select(p.id);if(p.id==="hub")ui.inspector(true)};labels.append(label);const partLabels=p.parts.map((part,i)=>{const b=document.createElement("button");b.type="button";b.className="object-label part-label";b.textContent=part[0];b.hidden=true;b.onclick=()=>ui.showPart(i,true);labels.append(b);return b});const obj={p,root,parts,group,accent,label,partLabels,platform,progress:0};objects.set(p.id,obj);return obj}
 function torus(r,t,m){return new T.Mesh(new T.TorusGeometry(r,t,10,48),m)}
 function sign(text,bg="#263641",fg="#f3e6c9",w=1.9,h=.22){const c=document.createElement("canvas");c.width=768;c.height=128;const ctx=c.getContext("2d");ctx.fillStyle=bg;ctx.fillRect(0,0,768,128);ctx.strokeStyle=fg;ctx.globalAlpha=.55;ctx.lineWidth=3;ctx.strokeRect(9,9,750,110);ctx.globalAlpha=1;ctx.fillStyle=fg;ctx.font="600 55px Georgia, serif";ctx.textAlign="center";ctx.textBaseline="middle";ctx.fillText(text,384,66,710);const texture=new T.CanvasTexture(c);texture.colorSpace=T.SRGBColorSpace;return new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({map:texture,side:T.DoubleSide}))}
+function tapered(g,a,b,r0,r1,m,segments=20){const u=new T.Vector3(...a),v=new T.Vector3(...b),delta=v.clone().sub(u);const mesh=new T.Mesh(new T.CylinderGeometry(r1,r0,delta.length(),segments),m);mesh.position.copy(u).add(v).multiplyScalar(.5);mesh.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),delta.normalize());g.add(mesh);return mesh}
+function oval(g,x,y,z,sx,sy,sz,m,segments=24){const mesh=add(g,sphere(1,m,segments),x,y,z);mesh.scale.set(sx,sy,sz);return mesh}
+function shapeMesh(points,depth,material){const shape=new T.Shape();points.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));shape.closePath();return new T.Mesh(new T.ExtrudeGeometry(shape,{depth,bevelEnabled:false}),material)}
 function tree(g,x,z,y=.0){const trunk=mat(0x6e5843,.0,.92),leaf=mat(0x46694f,.0,.88);add(g,cyl(.035,.22,trunk,8),x,y+.11,z);add(g,sphere(.14,leaf,10),x,y+.26,z);add(g,sphere(.1,leaf,10),x+.07,y+.32,z)}
 function vehicle(g,color=0xc9a66b){const v=new T.Group();g.add(v);const m=mat(color,.28,.44);add(v,box(.25,.09,.12,m),0,.06,0);add(v,box(.13,.07,.10,mat(0x354b5a,.35,.3)),0,.135,0);for(const x of [-.078,.078])for(const z of [-.063,.063])add(v,sphere(.03,dark,8),x,.035,z);return v}
 function screen(g,x,y,z,title,bg="#203c50"){const body=add(g,box(1.68,1.08,.10,graphite),x,y,z);add(g,box(1.55,.94,.024,mat(0x587c8b,.2,.4)),x,y,z+.065);add(g,sign(title,bg,"#f4e8d5",1.51,.22),x,y+.34,z+.086);for(let j=0;j<3;j++){add(g,box(.32,.35,.018,mat([0xcbb99e,0x9d7e70,0xe0d0ba][j],.1,.6)),x-.5+j*.5,y-.02,z+.09);add(g,box(.32,.025,.02,steel),x-.5+j*.5,y-.29,z+.091)}add(g,box(.14,.27,.12,steel),x,y-.66,z);add(g,box(.62,.06,.42,graphite),x,y-.81,z);return body}
 
 for(const p of ui.projects){const o=setup(p),g=o.group,a=o.accent;
 if(p.id==="hub"){
- // A stylised human avatar, not a scan or a claim of exact likeness.
- const suit=mat(0x273947,.15,.7),skin=mat(0xb98968,.02,.75),hair=mat(0x302923,.02,.9),shoe=mat(0x18212a,.1,.65);
- const body=g(0,.34,0,0,0,0);
- const torso=add(body,sphere(.57,suit,28),0,1.65,0);torso.scale.set(.87,1.05,.52);
- add(body,new T.Mesh(new T.CylinderGeometry(.24,.28,.23,24),suit),0,1.07,0);
- for(const side of [-1,1]){const leg=add(body,new T.Mesh(new T.CapsuleGeometry(.18,.57,5,12),suit),side*.23,.61,0);leg.rotation.z=side*.035;const foot=add(body,sphere(.24,shoe,18),side*.23,.13,.10);foot.scale.set(.8,.48,1.35);
- const arm=add(body,new T.Mesh(new T.CapsuleGeometry(.135,.56,5,12),suit),side*.54,1.53,0);arm.rotation.z=side*.20;add(body,sphere(.125,skin),side*.65,1.10,.02);}
- add(body,cyl(.15,.18,skin,24),0,2.18,0);
- const head=add(body,sphere(.34,skin,32),0,2.47,0);head.scale.set(.82,1.12,.9);
- const cap=add(body,new T.Mesh(new T.SphereGeometry(.348,28,16,0,Math.PI*2,0,Math.PI*.48),hair),0,2.52,0);cap.scale.set(.86,1.05,.94);
- for(const side of [-1,1]){const ear=add(body,sphere(.075,skin),side*.29,2.45,0);ear.scale.set(.6,1.2,.7);add(body,sphere(.026,dark),side*.104,2.49,.271)}
- const nose=add(body,sphere(.055,skin),0,2.41,.297);nose.scale.set(.72,1.25,1.2);
- add(body,box(.1,.018,.015,hair),0,2.32,.264);
- const shirt=add(body,box(.21,.46,.026,steel),0,1.77,.293);shirt.rotation.x=-.04;
- body.rotation.y=.25;
- const ring=g(0,.41,0,0,0,0);const r=add(ring,torus(1.43,.035,a));r.rotation.x=Math.PI/2;
- const plate=g(0,.45,0,0,0,0);add(plate,box(1.15,.08,.23,graphite),0,0,1.22);
+ // Deliberately stylised, sculptural human representation; not a biometric likeness.
+ const coat=mat(0x25313c,.44,.46),lapel=mat(0x415260,.42,.42),shirtMat=mat(0xd6d8d4,.2,.5),bronze=mat(0xc2a383,.62,.39),shoe=mat(0x18232c,.5,.38),hair=mat(0x66594e,.48,.56);
+ const body=g(0,.38,0,0,0,0);
+ // Tailored torso with separate jacket panels, shirt, lapels and sleeves.
+ const torso=oval(body,0,1.67,0,.40,.55,.235,coat,32);
+ oval(body,0,1.22,0,.295,.22,.20,coat);
+ oval(body,0,1.79,.173,.19,.31,.075,shirtMat);
+ for(const side of [-1,1]){
+  const front=shapeMesh([[side*.055,1.34],[side*.29,1.31],[side*.37,1.92],[side*.19,2.03],[side*.06,1.78]],.045,coat);front.position.z=.179;body.add(front);
+  const l=shapeMesh([[side*.18,2.04],[side*.29,1.88],[side*.12,1.65],[side*.065,1.82]],.025,lapel);l.position.z=.244;body.add(l);
+  tapered(body,[side*.16,1.14,0],[side*.17,.62,.02],.155,.132,coat);tapered(body,[side*.17,.65,.02],[side*.19,.14,.025],.132,.105,coat);
+  oval(body,side*.19,.10,.092,.115,.085,.235,shoe);
+  oval(body,side*.385,1.93,0,.15,.16,.155,coat);
+  tapered(body,[side*.40,1.92,0],[side*.49,1.50,.018],.135,.108,coat);
+  tapered(body,[side*.49,1.50,.018],[side*.46,1.11,.09],.109,.086,coat);
+  tapered(body,[side*.46,1.15,.08],[side*.46,1.09,.09],.09,.085,shirtMat);
+  oval(body,side*.46,1.015,.09,.085,.145,.073,bronze);
+  for(let i=0;i<3;i++)add(body,sphere(.019,lapel,10),side*.48,1.20+i*.047,.158);
+ }
+ for(let i=0;i<2;i++)add(body,sphere(.022,bronze,12),.028,1.42+i*.18,.254);
+ tapered(body,[0,2.02,0],[0,2.24,0],.116,.115,bronze);
+ oval(body,0,2.42,.015,.217,.294,.20,bronze,36);oval(body,0,2.285,.055,.174,.165,.17,bronze,28);
+ for(const side of [-1,1]){oval(body,side*.211,2.42,.008,.045,.077,.038,bronze);oval(body,side*.088,2.447,.181,.043,.014,.011,hair);oval(body,side*.082,2.487,.172,.051,.009,.014,hair)}
+ oval(body,0,2.387,.200,.037,.071,.048,bronze);
+ oval(body,0,2.320,.178,.057,.010,.014,hair);
+ const cap=add(body,new T.Mesh(new T.SphereGeometry(.222,36,20,0,Math.PI*2,0,Math.PI*.46),hair),0,2.46,.005);cap.scale.set(1,1.19,.96);
+ body.scale.setScalar(1.14);
+ const ring=g(0,.42,0,0,0,0);for(const [radius,width,material] of [[1.43,.022,mat(0xc5a77e,.72,.4)],[1.57,.009,a]]){const r=add(ring,torus(radius,width,material));r.rotation.x=Math.PI/2}
+ const plate=g(0,.44,0,0,0,0);add(plate,box(1.40,.075,.27,graphite),0,0,1.32);const plaque=add(plate,sign("ELASRAG","#222d35","#e7d3ad",1.28,.20),0,.048,1.32);plaque.rotation.x=-Math.PI/2;
+ signatureJob={group:plate};
 }else if(p.id==="land"){
- const terrain=g(0,.58,0,-.7,.4,0);add(terrain,box(2.65,.22,2.4,mat(0x49664f,.05,.9)));add(terrain,box(2.5,.05,.65,mat(0x4b9fb9,.3,.24)),.02,.14,.25);
- const mountains=g(0,.83,0,-.65,1.05,-.8);for(const [x,z,h,r] of [[-.95,-.65,1.3,.55],[-.36,-.8,1.7,.68],[.45,-.75,.98,.5]]){add(mountains,new T.Mesh(new T.ConeGeometry(r,h,5),mat(0x71837f,.02,.85)),x,h/2-.12,z);add(mountains,new T.Mesh(new T.ConeGeometry(r*.37,h*.29,5),mat(0xcad6d4,.05,.8)),x,h*.80-.12,z)}
- const town=g(0,.86,0,.95,1.3,.4);for(let i=0;i<5;i++){const x=-.9+i*.4,z=.8-(i%2)*.35;add(town,box(.26,.28,.27,mat(0xb5b2a5)),x,0,z);const roof=add(town,new T.Mesh(new T.ConeGeometry(.22,.18,4),mat(0x586571)),x,.22,z);roof.rotation.y=Math.PI/4}add(town,box(2.5,.025,.12,steel),0,-.12,.48);
- const marker=g(.35,1.25,.18,.45,2.1,.3);add(marker,new T.Mesh(new T.OctahedronGeometry(.14),a));add(marker,box(.025,.38,.025,a),0,-.2,0);
- for(const [x,z] of [[-1.1,-.15],[-.83,-.3],[1.08,-.23],[.89,-.17],[1.14,.91],[-1.12,.93]])tree(terrain,x,z,.14);
- const road=add(town,box(2.5,.026,.16,mat(0x333a3e,.05,.8)),0,-.105,.48);for(let j=0;j<12;j++)add(town,box(.10,.005,.014,mat(0xe6d8ae)), -1.15+j*.2,-.089,.48);const car=vehicle(town);animated.push(t=>{car.position.set(Math.sin(t*.55)*1.04,-.08,.48);car.rotation.y=Math.cos(t*.55)>=0?0:Math.PI});
- const boat=new T.Group();terrain.add(boat);add(boat,box(.35,.07,.12,mat(0xf0e8d6,.08,.5)),0,.04,0);add(boat,box(.14,.08,.10,mat(0x4f7184)),0,.105,0);animated.push(t=>{boat.position.set(Math.sin(t*.33)*.9,.17,.25);boat.rotation.y=Math.cos(t*.33)>=0?0:Math.PI});
+ const terrain=g(0,.54,0,-.7,.4,0);add(terrain,box(2.91,.23,2.65,mat(0x465647,.08,.85)));
+ const terrainTop=add(terrain,box(2.83,.07,2.57,mat(0x73836a,.02,.94)),0,.15,0);
+ const shore=[[-1.38,-.36],[-.99,-.25],[-.71,-.37],[-.44,-.21],[-.19,-.30],[.05,-.16],[.43,-.25],[.73,-.12],[1.38,-.19],[1.38,.41],[.88,.50],[.42,.40],[.03,.58],[-.36,.43],[-.77,.52],[-1.38,.45]];
+ const lakeShape=new T.Shape();shore.forEach(([x,z],i)=>i?lakeShape.lineTo(x,-z):lakeShape.moveTo(x,-z));lakeShape.closePath();
+ const water=add(terrain,new T.Mesh(new T.ShapeGeometry(lakeShape,24),new T.MeshPhysicalMaterial({color:0x3d8798,metalness:.25,roughness:.20,clearcoat:.65,clearcoatRoughness:.25})),0,.194,0);water.rotation.x=-Math.PI/2;
+ const mountains=g(0,.74,-.64,-.65,1.05,-.8);
+ const hillsGeo=new T.PlaneGeometry(2.74,1.16,44,24);hillsGeo.rotateX(-Math.PI/2);
+ const pos=hillsGeo.attributes.position,colors=[];const low=new T.Color(0x617353),high=new T.Color(0x9da497),rock=new T.Color(0x717b75);
+ for(let i=0;i<pos.count;i++){const x=pos.getX(i),z=pos.getZ(i);const edge=Math.max(0,1-Math.pow(Math.abs(x)/1.37,4))*Math.max(0,1-Math.pow(Math.abs(z)/.58,2));const h=edge*(.27+1.02*Math.exp(-Math.pow((x+.61)/.45,2))+ .77*Math.exp(-Math.pow((x-.51)/.42,2)))*(.79+.12*Math.sin(x*9+z*8)+.07*Math.cos(z*17-x*5));pos.setY(i,h);const c=low.clone().lerp(h>.82?high:rock,Math.min(1,h/.95));colors.push(c.r,c.g,c.b)}
+ hillsGeo.setAttribute("color",new T.Float32BufferAttribute(colors,3));hillsGeo.computeVertexNormals();add(mountains,new T.Mesh(hillsGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:.96,metalness:0,side:T.DoubleSide})));
+ const town=g(0,.78,.64,.95,1.3,.4);
+ const roadMat=mat(0x41464a,.04,.87),wall=mat(0xb4b1a5,.04,.85),slate=mat(0x465058,.06,.76),windowMat=mat(0x7694a0,.12,.38);
+ add(town,box(2.67,.028,.21,roadMat),0,-.015,.16);for(let i=0;i<12;i++)add(town,box(.10,.006,.012,mat(0xe4d7b7)), -1.1+i*.20,.002,.16);
+ for(let i=0;i<6;i++){const x=-1.05+i*.42,z=-.14-(i%2)*.07,h=.24+(i%3)*.06;add(town,box(.30,h,.28,wall),x,h/2,z);const roof=add(town,new T.Mesh(new T.ConeGeometry(.25,.18,4),slate),x,h+.06,z);roof.rotation.y=Math.PI/4;add(town,box(.07,.12,.07,slate),x+.06,h+.16,z);for(const q of [-.075,.075])add(town,box(.055,.069,.013,windowMat),x+q,h*.66,z+.146);add(town,box(.055,.12,.016,graphite),x,.06,z+.147)}
+ for(const [x,z] of [[-1.22,.96],[1.21,.89],[-1.18,-.20],[1.22,-.10],[-.62,.84],[.65,.85]])tree(terrain,x,z,.19);
+ for(let i=0;i<3;i++)add(terrain,box(.27,.035,.05,mat(0xc2af92,.06,.8)),.91-i*.1,.215,.45+i*.10);
+ const marker=g(.35,1.20,.18,.45,2.1,.3);add(marker,new T.Mesh(new T.OctahedronGeometry(.105),a));add(marker,box(.018,.27,.018,a),0,-.14,0);
+ const car=vehicle(town);animated.push(t=>{car.position.set(Math.sin(t*.55)*1.05,.008,.16);car.rotation.y=Math.cos(t*.55)>=0?0:Math.PI});
+ const boat=new T.Group();terrain.add(boat);add(boat,box(.36,.064,.12,mat(0xe8e5d8,.12,.52)),0,.037,0);add(boat,box(.15,.07,.10,mat(0x526c79)),0,.10,0);add(boat,box(.19,.016,.11,mat(0xf5eee0)),0,.143,0);animated.push(t=>{boat.position.set(Math.sin(t*.30)*1.06,.20,.13);boat.rotation.y=Math.cos(t*.30)>=0?0:Math.PI});
 }else if(p.id==="sheep"||p.id==="picnic"){
  const isSheep=p.id==="sheep",walls=mat(isSheep?0x8d9292:0xddd6bd,.08,.75),roofMat=mat(isSheep?0x343d45:0x496c64,.12,.6),windowMat=mat(0x47768c,.3,.22);
  const shop=g(0,.75,0,0,.18,0);architectureJobs.push({id:p.id,group:shop,file:isSheep?"black-sheep-shop.glb":"lakeside-picnic.glb",angle:isSheep?-1.5505970542138288:.4984594104666788});
@@ -192,10 +225,22 @@ if(p.id==="hub"){
  const screen=g(-.7,1.08,.03,-1.20,1.1,.3,0,-.35,0);screen.visible=false;add(screen,box(.82,.62,.075,graphite));add(screen,box(.69,.48,.02,windowMat),0,0,.049);for(let k=0;k<3;k++)add(screen,box(.14,.13,.025,a),-.21+k*.21,.02,.065);
  const systems=g(.69,.72,-.05,1.13,1.15,-.1,0,.35,0);systems.visible=false;for(let k=0;k<3;k++){add(systems,box(.69,.12,.62,steel),0,k*.19,0);add(systems,box(.36,.025,.035,a),0,k*.19,.32)}
 }else if(p.id==="ai"){
- const core=g(0,1.43,0,0,.7,0);add(core,new T.Mesh(new T.IcosahedronGeometry(.48,1),a));
- for(let k=0;k<3;k++){const t=k*Math.PI*2/3,m=g(Math.cos(t)*.9,1.35+(k%2)*.4,Math.sin(t)*.9,Math.cos(t)*1.2,.65+k*.2,Math.sin(t)*1.2,0,.5,0);add(m,sphere(.19,steel));const hoop=add(m,torus(.42,.035,a));hoop.rotation.set(.5+k,0,.5);m.add(line([[0,0,0],[-Math.cos(t)*.9,0,-Math.sin(t)*.9]],0x8cb4df,.8))}
+ const core=g(0,1.43,0,0,.7,0);const shell=add(core,new T.Mesh(new T.IcosahedronGeometry(.50,2),new T.MeshPhysicalMaterial({color:0x7898bd,metalness:.45,roughness:.28,clearcoat:.65,transparent:true,opacity:.37,depthWrite:false})));const inner=add(core,new T.Mesh(new T.IcosahedronGeometry(.29,1),a));const frameMesh=add(core,new T.LineSegments(new T.EdgesGeometry(new T.IcosahedronGeometry(.52,1)),new T.LineBasicMaterial({color:0xc5dfef,transparent:true,opacity:.65})));
+ for(let k=0;k<3;k++){const q=k*Math.PI*2/3,m=g(Math.cos(q)*.91,1.38+(k%2)*.32,Math.sin(q)*.91,Math.cos(q)*1.1,.65+k*.2,Math.sin(q)*1.1,0,.5,0);
+  const node=oval(m,0,0,0,.17,.17,.17,steel);const hoop=add(m,torus(.39,.018,a));hoop.rotation.set(.65+k*.7,0,.5);
+  for(let j=0;j<4;j++){const u=j*Math.PI/2;add(m,sphere(.048,a,12),Math.cos(u)*.39,Math.sin(u)*.39,0)}
+  m.add(line([[0,0,0],[-Math.cos(q)*.45,.09,-Math.sin(q)*.45],[-Math.cos(q)*.91,1.43-(1.38+(k%2)*.32),-Math.sin(q)*.91]],0x94b9e5,.62));
+  animated.push(t=>{hoop.rotation.z=.5+t*.16*(k%2?1:-1);node.scale.setScalar(1+.035*Math.sin(t*1.3+k))});
+ }
+ const outer=add(core,torus(.77,.014,steel));outer.rotation.set(.8,.3,.15);const orbitRing=add(core,torus(.66,.013,a));orbitRing.rotation.set(.32,.7,1.0);
+ animated.push(t=>{inner.rotation.y=t*.27;frameMesh.rotation.y=-t*.14;outer.rotation.z=.15+t*.12;orbitRing.rotation.z=1-t*.19});
 }else if(p.id==="design"){
- for(let i=0;i<4;i++){const m=g(0,.67+i*.4,0,0,i*.62,0,0,i*.24,0);if(i===1||i===2){const r=add(m,torus(.7,.13,i===1?steel:a));r.rotation.x=Math.PI/2;for(let j=0;j<4;j++){const q=j*Math.PI/2;add(m,box(.2,.19,.21,graphite),Math.cos(q)*.73,0,Math.sin(q)*.73)}}else{add(m,cyl(.88,.19,i===3?steel:graphite,8));add(m,cyl(.37,.05,a,8),0,.12,0);for(let j=0;j<4;j++){const q=j*Math.PI/2;add(m,cyl(.07,.07,steel,12),Math.cos(q)*.65,.13,Math.sin(q)*.65)}}}
+ const alloy=mat(0xb8c3c8,.83,.26),black=mat(0x293740,.58,.4),brass=mat(0xb9a17b,.76,.35);
+ function flange(group,y,r,material){add(group,cyl(r,.15,material,64),0,y,0);add(group,cyl(r*.78,.065,black,64),0,y+.105,0);for(let j=0;j<8;j++){const q=j*Math.PI/4;add(group,cyl(.057,.07,brass,6),Math.cos(q)*r*.87,y+.095,Math.sin(q)*r*.87)}}
+ const bottom=g(0,.63,0,0,.0,0);flange(bottom,0,.88,alloy);add(bottom,cyl(.40,.22,black,48),0,.17,0);
+ const sleeve=g(0,.99,0,-.57,.65,0);const shape=new T.Shape();shape.absarc(0,0,.69,0,Math.PI*2,false);const hole=new T.Path();hole.absarc(0,0,.45,0,Math.PI*2,true);shape.holes.push(hole);const tube=add(sleeve,new T.Mesh(new T.ExtrudeGeometry(shape,{depth:.36,bevelEnabled:true,bevelThickness:.018,bevelSize:.018,bevelSegments:2,steps:1,curveSegments:48}),alloy),0,-.15,0);tube.rotation.x=-Math.PI/2;for(let j=0;j<8;j++){const q=j*Math.PI/4;add(sleeve,box(.11,.29,.11,black),Math.cos(q)*.70,.015,Math.sin(q)*.70).rotation.y=-q}
+ const rotor=g(0,1.39,0,.55,1.03,0);add(rotor,cyl(.22,.56,alloy,32));add(rotor,cyl(.48,.14,brass,48),0,.05,0);for(let j=0;j<10;j++){const q=j*Math.PI/5;const fin=add(rotor,box(.29,.18,.08,alloy),Math.cos(q)*.36,.06,Math.sin(q)*.36);fin.rotation.y=-q+.3}
+ const cap=g(0,1.74,0,0,1.61,0,0,.24,0);flange(cap,0,.82,alloy);add(cap,cyl(.24,.17,brass,48),0,.18,0);add(cap,cyl(.10,.06,black,24),0,.285,0);
 }else if(p.id==="silk"){
  const map=g(0,.57,0,-.65,.3,0);add(map,box(2.75,.20,2.32,mat(0xb3986f,.06,.92)));const route=[[-1.0,0,-.6],[-.48,0,.1],[.15,0,-.2],[.8,0,.57],[1.1,0,.17]];map.add(line(route.map(v=>[v[0],.12,v[2]]),0x6e492f,1));for(let i=0;i<route.length;i++){const [x,,z]=route[i];add(map,box(.18,.19,.19,mat(0xe0c59a)),x,.2,z);add(map,cyl(.075,.08,a,12),x,.33,z)}
  const caravan=g(0,.82,0,.5,.9,.3);const camelMat=mat(0xb98c54,.05,.78);for(let i=0;i<3;i++){const camel=new T.Group();caravan.add(camel);camel.position.x=-.44+i*.36;const b=add(camel,sphere(.105,camelMat,12),0,.15,0);b.scale.set(1.4,.8,.6);add(camel,sphere(.075,camelMat,12),-.01,.23,0);const neck=add(camel,box(.06,.22,.06,camelMat),.12,.22,0);neck.rotation.z=-.35;add(camel,sphere(.048,camelMat,12),.18,.34,0);for(const x of [-.09,.09])for(const z of [-.055,.055])add(camel,box(.025,.16,.025,camelMat),x,.05,z);add(camel,box(.12,.08,.15,mat(0x895f43)),0,.25,0)}animated.push(t=>{caravan.children.forEach((c,i)=>c.position.z=Math.sin(t*.7+i*.5)*.14)});
@@ -214,12 +259,12 @@ if(p.id==="hub"){
 }
 }
 for(const [id,o] of objects){o.root.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});if(id!=="hub"){const x=o.root.position.x,z=o.root.position.z;scene.add(line([[0,.12,0],[x*.5,.12,z*.5],[x,.12,z]],0x7b9bad,.42))}}
-function homePos(){const aspect=viewport.clientWidth/Math.max(1,viewport.clientHeight);const distance=Math.max(1, .74/aspect);return new T.Vector3(5,23,27).multiplyScalar(Math.min(1.9,distance))}
+function homePos(){const aspect=viewport.clientWidth/Math.max(1,viewport.clientHeight);const scale=Math.max(.91,.73/aspect);return new T.Vector3(4.0,23.0,25.5).multiplyScalar(Math.min(1.95,scale))}
 function size(){const w=viewport.clientWidth,h=viewport.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);perspective.aspect=w/h;perspective.fov=w/h<.8?55:42;perspective.updateProjectionMatrix();const v=Math.max(11.5,11.5/(w/h));ortho.left=-v*w/h;ortho.right=v*w/h;ortho.top=v;ortho.bottom=-v;ortho.updateProjectionMatrix()}
 new ResizeObserver(size).observe(viewport);size();
-function fly(id){const root=objects.get(id).root;const t=id==="hub"?new T.Vector3(0,.55,0):root.position.clone().add(new T.Vector3(innerWidth>760?1.0:0,innerWidth>760?1.4:.7,0));const pos=id==="hub"?homePos():t.clone().add(new T.Vector3(3.8,4.7,7.5));if(paused||reduced){camera.position.copy(pos);controls.target.copy(t);controls.update();flight=null}else flight={start:performance.now(),p:camera.position.clone(),t:controls.target.clone(),end:pos,target:t};if(orthographic){ortho.zoom=id==="hub"?1:2.25;ortho.updateProjectionMatrix()}}
+function fly(id){const root=objects.get(id).root;const mobile=innerWidth<=760;const t=id==="hub"?new T.Vector3(0,.48,0):root.position.clone().add(new T.Vector3(mobile?0:.85,mobile?.2:1.35,mobile?.18:-.35));const pos=id==="hub"?homePos():t.clone().add(new T.Vector3(3.0,4.3,mobile?8.3:7.2));if(paused||reduced){camera.position.copy(pos);controls.target.copy(t);controls.update();flight=null}else flight={start:performance.now(),p:camera.position.clone(),t:controls.target.clone(),end:pos,target:t};if(orthographic){ortho.zoom=id==="hub"?1:2.25;ortho.updateProjectionMatrix()}}
 function setExpanded(v){opened=v}
-function select(id,exp,focus){active=id;opened=exp;part=-1;if(focus)fly(id)}
+function select(id,exp,focus){active=id;opened=exp;part=-1;for(const [key,o] of objects){o.root.visible=id==="hub"||key===id}renderer.shadowMap.needsUpdate=true;if(focus)fly(id)}
 function highlight(i){part=i}function setPanel(v){panel=v}
 function switchProjection(){flight=null;target.copy(controls.target);const old=camera;orthographic=!orthographic;camera=orthographic?ortho:perspective;camera.position.copy(old.position);if(orthographic){ortho.zoom=active==="hub"?1:2.25;ortho.updateProjectionMatrix()}bindControls();document.getElementById("viewMode").innerHTML=(orthographic?"Orthographic":"Perspective")+"<br>Real-time scene";document.querySelector('[data-view="projection"]').setAttribute("aria-pressed",String(orthographic))}
 function zoom(f){flight=null;if(orthographic){camera.zoom=T.MathUtils.clamp(camera.zoom*f,.4,4);camera.updateProjectionMatrix()}else{const offset=camera.position.clone().sub(controls.target);offset.setLength(T.MathUtils.clamp(offset.length()/f,5,65));camera.position.copy(controls.target).add(offset)}controls.update()}
@@ -228,7 +273,7 @@ let quality="auto",pixelRatio=initialRatio,slowWindows=0,fastWindows=0;
 function applyQuality(mode){quality=mode;slowWindows=0;fastWindows=0;pixelRatio=mode==="high"?Math.min(devicePixelRatio,2):mode==="eco"?Math.min(devicePixelRatio,1):initialRatio;renderer.setPixelRatio(pixelRatio);renderer.shadowMap.enabled=mode!=="eco";renderer.shadowMap.needsUpdate=true;size();const b=document.querySelector('[data-view="quality"]');b.textContent=mode==="auto"?"Auto":mode==="high"?"High":"Eco";b.setAttribute("aria-label","Rendering quality: "+mode+". Click to change.");}
 async function enhanceModels(){
  try{
-  const {GLTFLoader}=await import("three/addons/loaders/GLTFLoader.js");
+  const {GLTFLoader}=await import("/creation-engine/vendor/loaders/GLTFLoader.js");
   const loader=new GLTFLoader();const base="/LakelandRush-preview/regions/windermere/assets/";
   const results=await Promise.allSettled(architectureJobs.map(async j=>{
     const gltf=await loader.loadAsync(base+j.file);const model=gltf.scene;
@@ -240,21 +285,22 @@ async function enhanceModels(){
     j.group.clear();j.group.add(pivot);registerMaterials(pivot);renderer.shadowMap.needsUpdate=true;return j.id;
   }));
   const ok=results.filter(r=>r.status==="fulfilled").length;renderStatus.textContent="WebGL / "+ok+" architectural assets loaded";
+  if(signatureJob){try{const gltf=await loader.loadAsync("/creation-engine/assets/mo-signature.glb");const mark=gltf.scene;const pivot=new T.Group();pivot.add(mark);mark.updateMatrixWorld(true);let b=new T.Box3().setFromObject(mark),d=b.getSize(new T.Vector3());if(!Number.isFinite(d.length())||d.length()<=0)throw Error("Invalid signature bounds");pivot.scale.setScalar(.65/Math.max(d.x,d.y,d.z));pivot.updateMatrixWorld(true);b.setFromObject(pivot);const c=b.getCenter(new T.Vector3());pivot.position.set(.99-c.x,.04-b.min.y,.65-c.z);signatureJob.group.add(pivot);registerMaterials(pivot);renderer.shadowMap.needsUpdate=true}catch(err){console.warn("Optional signature unavailable",err)}}
   results.filter(r=>r.status==="rejected").forEach(r=>console.warn("Architectural model fallback retained",r.reason));
  }catch(err){console.warn("Optional architectural assets unavailable",err)}
 }
 async function enhanceLighting(){
- try{const {RoomEnvironment}=await import("three/addons/environments/RoomEnvironment.js");const room=new RoomEnvironment();const pmrem=new T.PMREMGenerator(renderer);const env=pmrem.fromScene(room,.04);scene.environment=env.texture;scene.environmentIntensity=.55;room.dispose();pmrem.dispose();renderer.shadowMap.needsUpdate=true;}catch(err){console.warn("Optional studio reflections unavailable",err)}
+ try{const {RoomEnvironment}=await import("/creation-engine/vendor/environments/RoomEnvironment.js");const room=new RoomEnvironment();const pmrem=new T.PMREMGenerator(renderer);const env=pmrem.fromScene(room,.04);scene.environment=env.texture;scene.environmentIntensity=.55;room.dispose();pmrem.dispose();renderer.shadowMap.needsUpdate=true;}catch(err){console.warn("Optional studio reflections unavailable",err)}
 }
 for(const b of document.querySelectorAll("[data-view]")){b.disabled=false;b.onclick=()=>{switch(b.dataset.view){case"home":ui.select("hub");ui.inspector(false);break;case"projection":switchProjection();break;case"zoomIn":zoom(1.25);break;case"zoomOut":zoom(.8);break;case"wire":wire=!wire;wireMaterials.forEach(m=>m.wireframe=wire);b.setAttribute("aria-pressed",String(wire));break;case"quality":applyQuality(quality==="auto"?"high":quality==="high"?"eco":"auto");break;case"motion":paused=!paused;b.setAttribute("aria-pressed",String(paused));b.textContent=paused?"Play":"Pause";break;case"full":if(document.fullscreenElement)document.exitFullscreen?.().catch(()=>{});else if(viewport.requestFullscreen)viewport.requestFullscreen().catch(()=>{});break}}}
 const motionButton=document.querySelector('[data-view="motion"]');motionButton.setAttribute("aria-pressed",String(paused));motionButton.textContent=paused?"Play":"Pause";if(!viewport.requestFullscreen)document.querySelector('[data-view="full"]').disabled=true;
-const ray=new T.Raycaster(),pointer=new T.Vector2();let down=null;canvas.addEventListener("pointerdown",e=>{down={x:e.clientX,y:e.clientY}});canvas.addEventListener("pointercancel",()=>down=null);canvas.addEventListener("pointerup",e=>{if(!down||Math.hypot(e.clientX-down.x,e.clientY-down.y)>8){down=null;return}down=null;const r=canvas.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects([...objects.values()].map(o=>o.root),true);for(const hit of hits){let q=hit.object,idx=-1,id=null;while(q){if(q.userData.part!==undefined)idx=q.userData.part;if(q.userData.project){id=q.userData.project;break}q=q.parent}if(id){let visible=true;for(let v=hit.object;v;v=v.parent){if(!v.visible){visible=false;break}}if(!visible)continue;if(id==="hub"){ui.select("hub");ui.inspector(true)}else if(id===active&&idx>=0&&opened)ui.showPart(idx,true);else ui.select(id);break}}});
+const ray=new T.Raycaster(),pointer=new T.Vector2();let down=null;canvas.addEventListener("pointerdown",e=>{if(!e.isPrimary||e.button!==0){down=null;return}down={x:e.clientX,y:e.clientY,id:e.pointerId,t:performance.now(),distance:0}});canvas.addEventListener("pointermove",e=>{if(down?.id===e.pointerId)down.distance=Math.max(down.distance,Math.hypot(e.clientX-down.x,e.clientY-down.y))});canvas.addEventListener("pointercancel",()=>down=null);canvas.addEventListener("pointerup",e=>{if(!down||down.id!==e.pointerId||down.distance>8||performance.now()-down.t>650||Math.hypot(e.clientX-down.x,e.clientY-down.y)>8){down=null;return}down=null;const r=canvas.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);const hits=ray.intersectObjects([...objects.values()].map(o=>o.root),true);for(const hit of hits){let q=hit.object,idx=-1,id=null;while(q){if(q.userData.part!==undefined)idx=q.userData.part;if(q.userData.project){id=q.userData.project;break}q=q.parent}if(id){let visible=true;for(let v=hit.object;v;v=v.parent){if(!v.visible){visible=false;break}}if(!visible)continue;if(id==="hub"){ui.select("hub");ui.inspector(true)}else if(id===active&&idx>=0&&opened)ui.showPart(idx,true);else ui.select(id);break}}});
 let last=performance.now(),elapsed=0,frameCount=0,sampleTime=0,sampleCount=0;const projected=new T.Vector3();
 function frame(now){requestAnimationFrame(frame);if(document.hidden)return;const raw=(now-last)/1000,dt=Math.min(.06,raw);last=now;frameCount++;if(raw>0&&raw<.2){sampleTime+=raw;sampleCount++}if(sampleTime>=3){const fps=sampleCount/sampleTime;if(quality==="auto"){slowWindows=fps<33?slowWindows+1:0;fastWindows=fps>54?fastWindows+1:0;if(slowWindows>=2&&pixelRatio>1){pixelRatio=Math.max(1,pixelRatio-.25);renderer.setPixelRatio(pixelRatio);size();slowWindows=0}else if(fastWindows>=4&&pixelRatio<initialRatio){pixelRatio=Math.min(initialRatio,pixelRatio+.15);renderer.setPixelRatio(pixelRatio);size();fastWindows=0}}sampleTime=0;sampleCount=0}if(!paused){elapsed+=dt;for(const animate of animated)animate(elapsed)}
-if(flight){const t=Math.min(1,(now-flight.start)/850),e=t*t*(3-2*t);camera.position.lerpVectors(flight.p,flight.end,e);controls.target.lerpVectors(flight.t,flight.target,e);if(t===1)flight=null}controls.update();
-for(const [id,o] of objects){const want=id===active&&opened?1:0;o.progress=paused||reduced?want:T.MathUtils.damp(o.progress,want,8,dt);o.parts.forEach((p,i)=>{if((id==="sheep"||id==="picnic")&&i>0)p.g.visible=id===active&&opened&&o.progress>.08;p.g.position.copy(p.base).addScaledVector(p.delta,o.progress);p.g.rotation.set(p.rotation.x*o.progress,p.rotation.y*o.progress,p.rotation.z*o.progress);const selected=id===active&&part===i&&opened;p.g.scale.setScalar(T.MathUtils.lerp(p.g.scale.x,selected?1.12:1,paused||reduced?1:.15));if(id==="hub"&&i===0)p.g.rotation.y=.25});o.accent.emissiveIntensity=id===active?.85:.35;function placeLabel(el,point){projected.copy(point).project(camera);const visible=projected.z>-1&&projected.z<1&&Math.abs(projected.x)<.96&&Math.abs(projected.y)<.90;el.hidden=!visible;if(visible){el.style.left=(projected.x*.5+.5)*viewport.clientWidth+"px";el.style.top=(-projected.y*.5+.5)*viewport.clientHeight+"px"}return visible}if(active==="hub"){placeLabel(o.label,new T.Vector3(o.root.position.x,id==="hub"?3.65:2.5,o.root.position.z))}else{o.label.hidden=true}o.partLabels.forEach((b,i)=>{b.hidden=true;if(id===active&&id!=="hub"&&opened&&o.parts[i]&&o.progress>.5){const q=o.parts[i].g.getWorldPosition(new T.Vector3());q.y+=id==="sheep"||id==="picnic"?(i===0?1.55:.55):.65;placeLabel(b,q);b.setAttribute("aria-pressed",String(i===part))}})}
+if(flight){const t=Math.min(1,(now-flight.start)/850),e=t*t*(3-2*t);camera.position.lerpVectors(flight.p,flight.end,e);controls.target.lerpVectors(flight.t,flight.target,e);if(t===1)flight=null}controls.update();camera.updateMatrixWorld();scene.updateMatrixWorld(true);
+for(const [id,o] of objects){const want=id===active&&opened?1:0;o.progress=paused||reduced?want:T.MathUtils.damp(o.progress,want,8,dt);o.parts.forEach((p,i)=>{if((id==="sheep"||id==="picnic")&&i>0)p.g.visible=id===active&&opened&&o.progress>.08;p.g.position.copy(p.base).addScaledVector(p.delta,o.progress);p.g.rotation.set(p.rotation.x*o.progress,p.rotation.y*o.progress,p.rotation.z*o.progress);const selected=id===active&&part===i&&opened;p.g.scale.setScalar(T.MathUtils.lerp(p.g.scale.x,selected?1.12:1,paused||reduced?1:.15));if(id==="hub"&&i===0){p.g.rotation.y=.12;p.g.scale.setScalar(1.14)}});o.accent.emissiveIntensity=id===active?.85:.35;function placeLabel(el,point){projected.copy(point).project(camera);const visible=projected.z>-1&&projected.z<1&&Math.abs(projected.x)<.96&&Math.abs(projected.y)<.90;el.hidden=!visible;if(visible){el.style.left=(projected.x*.5+.5)*viewport.clientWidth+"px";el.style.top=(-projected.y*.5+.5)*viewport.clientHeight+"px"}return visible}if(active==="hub"){placeLabel(o.label,new T.Vector3(o.root.position.x,id==="hub"?4.0:2.65,o.root.position.z))}else{o.label.hidden=true}o.partLabels.forEach((b,i)=>{b.hidden=true;if(id===active&&id!=="hub"&&opened&&o.parts[i]&&o.progress>.5){const q=o.parts[i].g.getWorldPosition(new T.Vector3());q.y+=id==="sheep"||id==="picnic"?(i===0?1.55:.55):.65;placeLabel(b,q);b.setAttribute("aria-pressed",String(i===part))}})}
 if(renderer.shadowMap.enabled&&frameCount%3===0)renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera)}
-ui.setEngine({select,setExpanded,highlight,setPanel});fly("hub");document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceLighting();
+ui.setEngine({select,setExpanded,highlight,setPanel});fly("hub");window.elasragPortfolioDiagnostics=()=>({version:"0.6",selected:active,quality,pixelRatio:renderer.getPixelRatio(),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,projectCount:objects.size-1,webgl:true});document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceLighting();
 }
 boot().catch(err=>{console.warn("Workspace rendering unavailable",err);document.getElementById("loadText").textContent="3D rendering is unavailable on this device or network.";renderStatus.textContent="Accessible project directory / fallback";document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true")});
 </script>
