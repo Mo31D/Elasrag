@@ -1,0 +1,54 @@
+name: Lakeland Rush facade preview
+on:
+  push:
+    branches: [lakeland-rush/procedural-facades]
+  workflow_dispatch:
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: lakeland-rush-facade-preview
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.5
+      - name: Verify and build isolated preview
+        working-directory: LakelandRush
+        run: |
+          bun install --frozen-lockfile
+          npm run lint
+          node --import tsx --test src/{geo,game}/*.test.ts
+          npm run build -- --base=/LakelandRush-preview/
+          grep -q '/LakelandRush-preview/assets/' dist/index.html
+          test -d dist/regions
+      - name: Publish only generated preview directory
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git worktree add --detach "$RUNNER_TEMP/preview-site" origin/main
+          dest="$RUNNER_TEMP/preview-site/LakelandRush-preview"
+          rm -rf "$dest"
+          mkdir -p "$dest"
+          cp -a LakelandRush/dist/. "$dest/"
+          printf '%s\n' "$GITHUB_SHA" > "$dest/preview-commit.txt"
+          cd "$RUNNER_TEMP/preview-site"
+          git add -A -- LakelandRush-preview
+          if ! git diff --cached --quiet; then
+            git diff --cached --name-only | awk '!/^LakelandRush-preview\// {exit 1}'
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'preview(lakeland-rush): publish isolated facade demo'
+            git push origin HEAD:main
+          fi
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds" --silent
