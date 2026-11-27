@@ -8,6 +8,7 @@ export function displayHalfWidth(r:RoadFeature):number{
 }
 export function roadSurface(r:RoadFeature):'marked'|'asphalt'|'paving'|'gravel'|'railway'{
  if(r.kind==='railway')return 'railway';
+ if(r.oneway&&r.name==='Kelsick Road')return 'asphalt';
  if(r.kind==='primary'||r.kind==='secondary')return r.oneway&&displayHalfWidth(r)<3.1?'asphalt':'marked';
  if(r.kind==='lane')return /gravel|ground|dirt|unpaved|compacted/i.test(r.surface??'')?'gravel':'asphalt';
  return r.sidewalk||/pav|sett|cobble|concrete|asphalt/i.test(r.surface??'')?'paving':'gravel';
