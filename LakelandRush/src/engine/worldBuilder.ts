@@ -17,6 +17,8 @@ import {roadSurface,junctionPoints,unmarkedNearJunction,convexFootprint} from '.
 import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
 import { buildCoffeeShop } from './coffeeShop';
+import {buildPetShop} from './petShop';
+import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
 import type {SolidCollider} from '../game/buildingCollision';
 import { WATERHEAD_COFFEE_ID } from '../geo/coffeeShopPlan';
@@ -698,7 +700,7 @@ export function buildChunkGroup(
     const asset = buildingAssets.get(b.id);
     const built = buildLakelandBuildingGeometries(b, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
     if (!built) continue;
-    const coffee=b.id===WATERHEAD_COFFEE_ID&&chunk.key==='0_-1'?buildCoffeeShop(b,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):null;
+    const coffee=chunk.key==='0_-1'?(b.id===WATERHEAD_COFFEE_ID?buildCoffeeShop(b,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):b.id===PET_SHOP_ID?buildPetShop(b,chunk,surfaceGround,materials.stoneWall,materials.slateRoof):null):null;
     let roofAt:SolidCollider['roofAt'];
     if(coffee){
       group.add(coffee.group);customBuildings.push(coffee);roofAt=roofFromModel(coffee.group);
@@ -735,7 +737,7 @@ export function buildChunkGroup(
       if(plan){facadePlans.set(b.id,plan);built.windowGeo.dispose();}
       else windows.push(built.windowGeo);
     }
-    if (b.id !== 658735202 || !asset) colliders.push({ ...built.bounds, roofAt, isRoof:true, outline: b.pts.map(([x, z]) => [x + b.cx, z + b.cz]) });
+    if (b.id !== 658735202 || !asset) colliders.push({ ...built.bounds, ...(coffee&&b.id===PET_SHOP_ID?{topY:new THREE.Box3().setFromObject(coffee.group).max.y}:{}), roofAt, isRoof:true, outline: b.pts.map(([x, z]) => [x + b.cx, z + b.cz]) });
   }
 
   if (chunk.key === '0_-4') {
@@ -1072,7 +1074,7 @@ export function buildChunkGroup(
   colliders.push(...siteDetails.colliders);
   const facades=buildFacadeBatch(facadePlans.values());
   group.add(facades.group);
-  const signage = buildSignage(chunk, terrain, lake, facadePlans,new Set(customBuildings.length?[WATERHEAD_COFFEE_ID]:[]));
+  const signage = buildSignage(chunk, terrain, lake, facadePlans,new Set(customBuildings.length?[WATERHEAD_COFFEE_ID,PET_SHOP_ID]:[]));
   group.add(signage.group);
   return {
     key: chunk.key,

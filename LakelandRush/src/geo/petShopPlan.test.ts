@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {petShopPlan,PET_SHOP_ID} from './petShopPlan';import type {BuildingFeature} from '../types/game';
+test('pet shop model preserves its mapped building footprint',()=>{const b={id:PET_SHOP_ID,cx:123.9,cz:-242.9,pts:[[6.2,5.4],[3.1,-7.9],[-6.4,-5.4],[-3.1,7.9]]} as BuildingFeature;const p=petShopPlan(b)!;assert.ok(p);for(let i=0;i<b.pts.length;i++){const q=p.world(...p.outline[i]);assert.ok(Math.hypot(q[0]-b.cx-b.pts[i][0],q[1]-b.cz-b.pts[i][1])<1e-8);}assert.equal(petShopPlan({...b,id:1}),null);});

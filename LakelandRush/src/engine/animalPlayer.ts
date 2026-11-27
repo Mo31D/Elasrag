@@ -42,7 +42,7 @@ export class AnimalPlayer{
   // Ascend before horizontal sweep so changing water/ground elevation cannot
   // deadlock the launch. Solid walls and roofs still block the physical hull.
   if(this.air){
-   const desired=this.landing?-p.climb*.85:vertical<-.05?vertical*p.climb:Math.max(vertical*p.climb,this.y-floorHere<1.35&&demand>.08?p.climb*.72:0);
+   const ahead=floor(this.x-Math.sin(this.yaw)*Math.max(.5,this.speed*.35),this.z-Math.cos(this.yaw)*Math.max(.5,this.speed*.35));const needLift=this.y<Math.max(floorHere+1.35,ahead+.30);const desired=this.landing?-p.climb*.85:vertical<-.05?vertical*p.climb:Math.max(vertical*p.climb,needLift&&demand>.08?p.climb*.72:0);
    this.climbVelocity+=(desired-this.climbVelocity)*(1-Math.exp(-dt*5.5));
    this.y=Math.min(floorHere+p.height,Math.max(floorHere+.07,this.y+this.climbVelocity*dt));
   }else this.y=floorHere;
