@@ -44,27 +44,16 @@ test('fixed joystick stays centred and rejects touches outside the visible disc'
 });
 
 import {floatingStickOrigin} from './exploreControls';
-test('lower-left floating zone accepts arbitrary touches on tablet and phone, starts neutral and keeps disc visible',()=>{
- for(const [w,h] of [[1024,768],[768,1024],[390,650]]){
-  const rect={left:0,top:h/2,width:w/2,height:h/2};
-  for(const point of [{x:2,y:h/2+2},{x:w/4,y:h*.76},{x:w/2-2,y:h-2}]){
-   const origin=floatingStickOrigin(rect,point)!;assert.ok(origin);assert.deepEqual(floatingInput(origin.input,point,32),{x:0,y:0});
-   assert.ok(origin.visual.x>=55&&origin.visual.x<=rect.width-55);assert.ok(origin.visual.y>=55&&origin.visual.y<=rect.height-55);
+test('bottom-left floating zone starts neutral and fits its disc on tablet and phone',()=>{
+ for(const [w,h] of [[1024,768],[768,1024],[390,650],[844,390],[320,180]]){
+  const rect={left:0,top:h*.75,width:w/2,height:h*.25};
+  const disc=Math.min(55,rect.width/2,rect.height/2);
+  for(const point of [{x:2,y:h*.75+2},{x:w/4,y:h*.875},{x:w/2-2,y:h-2}]){
+   const origin=floatingStickOrigin(rect,point,disc)!;assert.ok(origin);assert.deepEqual(floatingInput(origin.input,point,32),{x:0,y:0});
+   assert.ok(origin.visual.x>=disc&&origin.visual.x<=rect.width-disc);assert.ok(origin.visual.y>=disc&&origin.visual.y<=rect.height-disc);
    const v=floatingInput(origin.input,{x:point.x,y:point.y-35},32);near(v.y,1);near(v.x,0);
   }
-  assert.equal(floatingStickOrigin(rect,{x:w/2+1,y:h*.75}),null);assert.equal(floatingStickOrigin(rect,{x:w/4,y:h/2-1}),null);
- }
-});
-
-test('floating joystick activation is limited to 25 percent of screen in either orientation',()=>{
- for(const [w,h] of [[390,844],[844,390],[1024,768],[768,1024],[320,180]]){
-  const rect={left:0,top:h/2,width:w/2,height:h/2};
-  const disc=Math.min(55,rect.width/2,rect.height/2);
-  near(rect.width*rect.height/(w*h),.25);
-  assert.equal(floatingStickOrigin(rect,{x:w/2,y:h*.75},disc),null);
-  assert.equal(floatingStickOrigin(rect,{x:w*.25,y:h/2-1},disc),null);
-  assert.equal(floatingStickOrigin(rect,{x:w*.25,y:h},disc),null);
-  const hit=floatingStickOrigin(rect,{x:1,y:h-1},disc)!;
-  assert.ok(hit);assert.ok(hit.visual.x>=disc&&hit.visual.y<=rect.height-disc);
+  near(rect.width*rect.height/(w*h),.125);
+  for(const point of [{x:w/4,y:h*.5},{x:w/4,y:h*.74},{x:w/2,y:h*.875},{x:w/4,y:h}])assert.equal(floatingStickOrigin(rect,point,disc),null);
  }
 });
