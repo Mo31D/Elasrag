@@ -37,6 +37,7 @@ try{
  for(const pace of ['Walk','Jog','Run']){const b=page.getByRole('button',{name:pace,exact:true});await b.click();assert.equal(await b.getAttribute('aria-pressed'),'true');}
  await bird.click();await page.waitForFunction(()=>document.querySelector('[aria-label="Toggle free flight"]')?.getAttribute('aria-pressed')==='true');
  await page.getByRole('button',{name:'Fly up',exact:true}).waitFor();await page.getByRole('button',{name:'Fly down',exact:true}).waitFor();
+ const flightBox=await bird.boundingBox(),upBox=await page.getByRole('button',{name:'Fly up',exact:true}).boundingBox();assert.ok(flightBox&&upBox);assert.ok(Math.abs(flightBox.x-upBox.x)<3,'flight toggle aligned with ascend control');assert.ok(flightBox.y+flightBox.height<=upBox.y&&upBox.y-flightBox.y-flightBox.height<20,'flight toggle immediately above flight controls');
  await page.waitForTimeout(1200);await page.screenshot({path:dir+'/flight.png'});
  await bird.click();await page.getByRole('button',{name:'Jump (tap twice for double jump)',exact:true}).waitFor();
  assert.equal(await bird.getAttribute('aria-pressed'),'false');
