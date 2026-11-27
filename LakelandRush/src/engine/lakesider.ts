@@ -72,7 +72,7 @@ export class LakesiderService{
  get canDrive(){return this.mode==='passenger'&&Math.abs(this.speed)<.5;}
  blocks(x:number,z:number,y:number){return this.buses.some(b=>{const p=b.model.root.position;if(!b.model.root.visible||y>p.y+4.3)return false;const a=b.model.root.rotation.y,dx=x-p.x,dz=z-p.z;return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<1.58&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<5.45;});}
  private forecast(b:Bus,seconds=3):VehicleForecast[]{
-  const state=b.state,velocity=state.speed;const out:VehicleForecast[]=[];
+  const state=b.state,velocity=Math.abs(state.speed)>.15?state.speed:b.wait<=0&&!(b===this.active&&this.mode==='driver')?2:0;const out:VehicleForecast[]=[];
   for(let t=0;t<=seconds+.001;t+=.5){if(t>0&&Math.abs(velocity)<.15)break;
    const distance=Math.max(7,Math.min(b.route.totalLength-7,state.distance+velocity*state.dir*t));
    const p=busPose(b.route,{...state,distance});out.push({...p,halfWidth:BUS_HALF_WIDTH,halfLength:BUS_HALF_LENGTH,eta:t});}

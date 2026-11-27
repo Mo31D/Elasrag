@@ -65,7 +65,7 @@ export class PedestrianWorld{
    if(!p.yieldTime){p.offset*=Math.exp(-dt*2);}
    q.x+=q.rx*p.offset;q.z+=q.rz*p.offset;
    const crowded=this.people.some(a=>a!==p&&a.root.visible&&Math.hypot(q.x-a.x,q.z-a.z)<.62&&Math.hypot(q.x-a.x,q.z-a.z)<Math.hypot(p.x-a.x,p.z-a.z));
-   let moving=!p.yieldTime&&!close&&!crowded&&this.attendant.distance(q.x,q.z)>.65&&(!p.dog||p.dog.root.userData.animalControlled||Math.hypot(p.x-p.dog.x,p.z-p.dog.z)<2.2)&&p.pause===0&&this.clear(q.x,q.z)&&!busBlocked(q.x,q.z);
+   let moving=!p.yieldTime&&!close&&!crowded&&this.attendant.distance(q.x,q.z)>.65&&(!p.dog||p.dog.root.userData.animalControlled||Math.hypot(p.x-p.dog.x,p.z-p.dog.z)<2.2)&&p.pause===0&&this.clear(q.x,q.z)&&!busBlocked(q.x,q.z)&&forecastRisk(q.x,q.z,forecast)<.25;
    if(moving){p.distance=n.distance;p.dir=n.dir;p.x=q.x;p.z=q.z;p.phase+=dt*p.speed*7;if(n.distance===0||n.distance===p.route.totalLength)p.pause=1.2+p.kind*.5;}
    else if(!p.yieldTime&&!close&&!crowded&&p.pause===0){p.dir=p.dir===1?-1:1;p.pause=.8;}
    const desired=escaping?escapeYaw:p.yieldTime>0?p.yaw:close?Math.atan2(p.x-playerX,p.z-playerZ):Math.atan2(-q.tx*p.dir,-q.tz*p.dir);

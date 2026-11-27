@@ -6,7 +6,8 @@ import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from '.
 import {WaterRipples} from './waterRipples';
 import {WaterheadLife} from './waterheadLife';
 import {AnimalPlayer,sheepActor,type AnimalActor} from './animalPlayer';
-import {ANIMALS} from '../game/animalMotion';
+import {ANIMALS,turnTowards} from '../game/animalMotion';
+import {fleeDirection} from '../game/crowdMotion';
 import {LakesiderService,makeBus} from './lakesider';
 import {raceWidth,raceTrafficPose} from '../game/raceGeometry';
 import {PedestrianWorld} from './pedestrians';
@@ -173,7 +174,7 @@ export class LakelandEngine {
   private runner!: RunnerRig;
   private originalRunner!:RunnerRig;
   private attendantSelected=false;
-  private animal:AnimalPlayer|null=null;private animalTarget:AnimalActor|null=null;private animalSheep:AnimalActor[]=[];private humanReturn:{x:number;y:number;z:number;yaw:number;water:'land'|'swimming'|'rowing'}|null=null;
+  private animal:AnimalPlayer|null=null;private animalTarget:AnimalActor|null=null;private animalSheep:AnimalActor[]=[];private sheepHomes=new Map<AnimalActor,{x:number;z:number;phase:number}>();private humanReturn:{x:number;y:number;z:number;yaw:number;water:'land'|'swimming'|'rowing'}|null=null;
 
   private terrainMesh: THREE.Group | null = null;
   private terrainSurface:(x:number,z:number)=>number=(x,z)=>this.region.getTerrainHeight(x,z);
@@ -915,7 +916,7 @@ export class LakelandEngine {
   private createExploreSheep(){
    // Gameplay flock placements beside existing local mapped approaches; not real livestock locations.
    const path=compileRoutePolyline(navigation.approaches.find(a=>a.id==='west')!.points.map(q=>[q[0],q[1]]));
-   for(let i=0;i<12;i++){const s=sampleCompiledRoute(path,Math.min(path.totalLength-10,90+i*39));for(const side of [1,-1]){const x=s.x+s.rx*side*(18+i%3*4),z=s.z+s.rz*side*(18+i%3*4);if(this.region.isInWater(x,z)||Number.isFinite(this.solidTop(x,z,.7)))continue;const a=sheepActor();a.root.position.set(x,Math.max(.45,this.walkSurface(x,z)),z);a.root.rotation.y=i*2.4;a.root.visible=false;this.scene.add(a.root);this.animalSheep.push(a);break;}}
+   for(let i=0;i<12;i++){const s=sampleCompiledRoute(path,Math.min(path.totalLength-10,90+i*39));for(const side of [1,-1]){const x=s.x+s.rx*side*(18+i%3*4),z=s.z+s.rz*side*(18+i%3*4);if(this.region.isInWater(x,z)||Number.isFinite(this.solidTop(x,z,.7)))continue;const a=sheepActor();a.root.position.set(x,Math.max(.45,this.walkSurface(x,z)),z);a.root.rotation.y=i*2.4;a.root.visible=false;this.scene.add(a.root);this.animalSheep.push(a);this.sheepHomes.set(a,{x,z,phase:i*2.399});break;}}
   }
   private enterAnimal(){
    const a=this.animalTarget;if(!a||this.animal||!a.root.visible||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.flying||this.occupiedBoat||this.busService?.mode||Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)>14){this.animalTarget=null;return false;}
@@ -1448,7 +1449,19 @@ export class LakelandEngine {
 
     for(const b of this.rowBoats)if(b!==this.occupiedBoat)animateBoat(b,this.elapsedTime,dt,false);
     this.updateAmbientActors(dt);
-    for(const a of this.animalSheep){if(a.root.userData.animalControlled)continue;a.root.visible=this.activeRoute.mode==='freeroam'&&Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)<150;if(a.root.visible){const {x,z}=a.root.position;if(Number.isFinite(this.solidTop(x,z,.65))||this.region.isInWater(x,z)){a.root.visible=false;continue;}a.root.position.y=Math.max(.45,this.walkSurface(x,z));a.pose(this.elapsedTime,0,false,false,true);}}
+    const animalThreats=[...(this.pedestrians?.threats()??[]),...(!this.animal&&!this.flying&&!this.busService?.mode&&this.playerY<4?[{x:this.playerX,z:this.playerZ,radius:3.5}]:[])];
+    for(const a of this.animalSheep){
+      if(a.root.userData.animalControlled)continue;const pos=a.root.position,home=this.sheepHomes.get(a)!;
+      a.root.visible=this.activeRoute.mode==='freeroam'&&Math.hypot(pos.x-this.playerX,pos.z-this.playerZ)<150;if(!a.root.visible)continue;
+      const valid=(x:number,z:number)=>!this.region.isInWater(x,z)&&!Number.isFinite(this.solidTop(x,z,.65))&&!this.busService?.blocks(x,z,0);
+      if(!valid(pos.x,pos.z)){a.root.visible=false;continue;}
+      const alarm=fleeDirection(pos.x,pos.z,animalThreats),distance=Math.hypot(pos.x-home.x,pos.z-home.z),graze=!alarm&&distance<7&&Math.sin(this.elapsedTime*.16+home.phase)<.55;
+      const yaw=alarm?alarm.yaw:distance>7?Math.atan2(pos.x-home.x,pos.z-home.z):home.phase+Math.sin(this.elapsedTime*.12+home.phase)*1.7;
+      a.root.rotation.y=turnTowards(a.root.rotation.y,yaw,alarm?3:1.1,dt);
+      const speed=alarm?1.1+alarm.alarm*1.8:graze?0:.52,nx=pos.x-Math.sin(a.root.rotation.y)*speed*dt,nz=pos.z-Math.cos(a.root.rotation.y)*speed*dt;
+      const moved=speed>0&&valid(nx,nz)&&!this.animalSheep.some(o=>o!==a&&o.root.visible&&Math.hypot(nx-o.root.position.x,nz-o.root.position.z)<.8);
+      if(moved){pos.x=nx;pos.z=nz;}pos.y=Math.max(.45,this.walkSurface(pos.x,pos.z));a.pose(this.elapsedTime,moved?speed:0,false,false,graze);
+    }
     if(this.activeRoute.mode==='freeroam'){
       if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
       this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0),this.busService?.forecasts()??[]);

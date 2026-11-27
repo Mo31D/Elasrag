@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {batchAnimalDetail} from './animalDetail';
 
 export interface RunnerRig {
   root: THREE.Group;
@@ -435,7 +436,7 @@ export function createHerdwickSheepModel(): THREE.Group {
  const head=new THREE.Group();head.position.set(0,.76,-.52);g.add(head);oval(head,face,0,0,0,.15,.205,.19);oval(head,face,0,-.095,-.133,.115,.105,.15);oval(head,hoof,0,-.09,-.259,.078,.038,.037);
  for(const side of [-1,1]){const ear=oval(head,face,side*.17,.08,-.018,.14,.047,.068);ear.rotation.z=side*.25;oval(head,hoof,side*.22,.079,-.03,.062,.028,.045);oval(head,eye,side*.124,.034,-.112,.024,.017,.021);oval(head,hoof,side*.03,-.133,-.24,.017,.007,.018);}
  for(const [x,z] of [[-.2,-.28],[.2,-.28],[-.2,.28],[.2,.28]]){const leg=new THREE.Group();leg.position.set(x,.22,z);g.add(leg);oval(leg,face,0,.035,0,.052,.21,.06);oval(leg,hoof,0,-.18,-.012,.057,.045,.075);}
- return g;
+ batchAnimalDetail(g);return g;
 }
 
 /**

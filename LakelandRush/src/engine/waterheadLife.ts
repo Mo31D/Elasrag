@@ -1,5 +1,6 @@
 import {fleeDirection,rememberedAlarm,type Threat} from '../game/crowdMotion';
 import * as THREE from 'three';
+import {batchAnimalDetail} from './animalDetail';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import {cruisePose,CRUISE_SPEED,CRUISE_LENGTH,cruiseHullWet,shorePoint} from '../game/waterheadLife';
 type Wet=(x:number,z:number)=>boolean;
@@ -66,7 +67,7 @@ function birdModel(swan:boolean,variant:number){
  if(swan)oval(neck,dark,0,neckHeight-.005,-.215,.085,.055,.04);
  for(const side of [-1,1]){oval(neck,dark,side*.09,neckHeight+.025,-.16,.018,.018,.018);oval(neck,material(0xece5d9),side*.102,neckHeight+.030,-.167,.006,.006,.005);}
  const feet:THREE.Group[]=[];for(const side of [-1,1]){const f=new THREE.Group();f.position.set(side*.12,.11,.04);body.add(f);oval(f,feetMat,0,-.11,0,.035,.13,.035);oval(f,feetMat,0,-.22,-.05,.083,.025,.12);for(let toe=-1;toe<=1;toe++){const t=oval(f,feetMat,toe*.043,-.223,-.145,.031,.017,.065);t.rotation.y=toe*.22;}feet.push(f);}
- return {root,body,neck,feet,wings,flightWings};
+ batchAnimalDetail(root);return {root,body,neck,feet,wings,flightWings};
 }
 export class WaterheadLife{
  private cruiser=makeCruiser();private birds:Bird[]=[];private travelled=0;private t=0;private rippleClock=0;private routeValid=false;
