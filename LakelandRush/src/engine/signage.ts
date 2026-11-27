@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import type { LakeData, TerrainGridData, WorldChunkData } from '../types/game';
 import { isPointInLake, sampleTerrainHeight } from '../geo/projection';
-import { planRoadSigns,frontageAnchor,approachAnchor } from '../geo/signagePlan';
+import { planRoadSigns,frontageAnchor,approachAnchor,transitAnchor,boardWidth } from '../geo/signagePlan';
 import { classifyBuilding } from '../geo/placeIdentity';
 import type { FacadePlan } from '../geo/facadePlan';
 import buildingAssets from '../data/building-assets.json';
@@ -41,7 +41,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   }
   function board(x:number,z:number,yaw:number,lines:string[],style:'road'|'street'|'bus'|'rail'|'welcome'|'direction',id:string,oneSided=false) {
     const {texture,ratio}=artwork(lines,style);
-    const w=style==='bus'?1.05:style==='street'?1.45:style==='direction'?2.8:style==='welcome'?2.4:2.05,h=w*ratio;
+    const w=boardWidth(style),h=w*ratio;
     const postH=style==='street'?1.15:2.05;
     const root=new THREE.Group();root.position.set(x,ground(x,z),z);root.rotation.y=yaw;root.name=id;
     const pole=new THREE.CylinderGeometry(.045,.055,postH,8);geometries.push(pole);
@@ -58,14 +58,13 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   const roadSigns=planRoadSigns(chunk,(x,z)=>isPointInLake(lake,x,z));
   for(const s of roadSigns) {
     const ref=s.ref&&s.ref!==s.name?s.ref:undefined;
-    const welcome=chunk.key==='0_-1'&&s.ref==='A591'?'Ambleside':chunk.key==='7_8'&&(s.name==='A591'||s.ref==='A591')?'Windermere':null;
-    // Illustrative welcome plates, not surveyed boundary signs. Preserve road identity on second line.
-    if(welcome)board(s.x,s.z,s.yaw,['Welcome to '+welcome,ref||s.name],'welcome',s.id+'-welcome');
-    else board(s.x,s.z,s.yaw,ref?[s.name,ref]:[s.name],s.ref?'road':'street',s.id);
+    // Do not fabricate welcome/boundary boards from ordinary road IDs.
+    board(s.x,s.z,s.yaw,ref?[s.name,ref]:[s.name],s.ref?'road':'street',s.id,Boolean(s.ref));
   }
   const inChunk=(x:number,z:number)=>Math.floor(x/500)===chunk.cx&&Math.floor(z/500)===chunk.cz;
   for(const t of TRANSIT)if(inChunk(t.x,t.z)&&!isPointInLake(lake,t.x,t.z)){
-    board(t.x,t.z,t.bearing*Math.PI/180,[t.mode==='bus'?'BUS STOP':'RAILWAY',t.name],t.mode,t.id);
+    const a=transitAnchor(chunk,t,(x,z)=>isPointInLake(lake,x,z));
+    if(a&&!roadSigns.some(s=>Math.hypot(s.x-a.x,s.z-a.z)<2))board(a.x,a.z,a.yaw,[t.mode==='bus'?'BUS STOP':'RAILWAY',t.name],t.mode,t.id);
   }
   if(chunk.key==='0_-1'){
     const approach=navigation.arcade;

@@ -10,6 +10,7 @@ import { isPointInLake, pointInRing, sampleTerrainHeight } from '../geo/projecti
 import { buildWaterheadShoreDistance, WATERHEAD_WATER_BOUNDS } from './waterhead-water';
 import { buildWaterfrontDetails, groundSurface, WATERHEAD_SIDEWALKS } from './waterfront';
 import { buildSignage } from './signage';
+import { halfWidth as mappedRoadHalfWidth } from '../geo/signagePlan';
 import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
 import { buildSiteDetails } from './siteDetails';
@@ -755,8 +756,7 @@ export function buildChunkGroup(
     const arterial = r.kind === 'primary' || r.kind === 'secondary';
     const lane = r.kind === 'lane';
     const rail = r.kind === 'railway';
-    const halfWidth = r.widthM ? r.widthM / 2
-      : r.kind === 'primary' ? 4.4 : arterial ? 3.4 : lane ? 2.6 : rail ? 1.5 : r.sidewalk ? .85 : 1.35;
+    const halfWidth = mappedRoadHalfWidth(r);
     const offset = arterial ? .12 : lane ? .09 : rail ? .14 : r.sidewalk ? .145 : .06;
     const start = r.pts[0];
     const end = r.pts.at(-1);

@@ -33,3 +33,29 @@ test('directory selects only intersecting chunks and approach anchors exclude wa
   assert.deepEqual(areaChunkKeys(AREAS[0],['0_-1','7_8'],500),['0_-1']);
   assert.equal(approachAnchor(chunk,[50,200],[50,100],()=>true),null);
 });
+
+import {safeBoard,transitAnchor,boardWidth,halfWidth} from './signagePlan';
+import {readFileSync} from 'node:fs';
+test('road and bus boards clear carriageway by their entire width, not only pole',()=>{
+ const water=()=>false;
+ assert.equal(safeBoard(chunk,54.6,100,boardWidth('road'),water),false);
+ const north=transitAnchor(chunk,{x:50,z:120,bearing:0,mode:'bus'},water)!;
+ const south=transitAnchor(chunk,{x:50,z:120,bearing:180,mode:'bus'},water)!;
+ assert.ok(north&&south);assert.ok(north.x<50&&south.x>50);
+ assert.ok(Math.abs(north.x-50)>=halfWidth(chunk.roads[0])+boardWidth('bus')/2+.55);
+ assert.ok(safeBoard(chunk,north.x,north.z,boardWidth('bus'),water));
+ assert.equal(transitAnchor(chunk,{x:50,z:120,bearing:0,mode:'bus'},()=>true),null);
+});
+test('actual Climbing Wall source point is no longer used directly as a pole',()=>{
+ const c:WorldChunkData=JSON.parse(readFileSync(new URL('../../public/regions/windermere/chunks/0_-3.json',import.meta.url),'utf8'));
+ const stop=TRANSIT.find(t=>t.id==='090079414625')!;
+ const a=transitAnchor(c,stop,()=>false);
+ assert.ok(a,'a safe southbound roadside candidate should exist');
+ assert.ok(a.offsetM>1&&a.offsetM<=18);
+ assert.ok(safeBoard(c,a.x,a.z,boardWidth('bus'),()=>false));
+ assert.equal(c.roads.find(r=>r.id===a.roadId)?.name,'Lake Road');
+ assert.ok(a.x>stop.x);
+});
+test('unsafe board positions at tile boundaries are suppressed',()=>{
+ assert.equal(safeBoard(chunk,2,100,1,()=>false),false);
+});
