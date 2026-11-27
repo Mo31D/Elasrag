@@ -40,3 +40,30 @@ test('non-flying animals cannot launch',()=>{
   bird.toggleFlight();assert.equal(bird.air,false);assert.equal(bird.launch,false);
  }
 });
+
+import {animalSteering,animalCameraFollow,ANIMAL_ORBIT_HOLD} from './animalMotion';
+test('ground animals pivot before moving and reach a stable world direction',()=>{
+ for(const kind of ['dog','sheep','mallard','swan'] as const){
+  let yaw=0;
+  const start=animalSteering(kind,yaw,0,-1,0,false,false,1/60);assert.equal(start.drive,0);
+  for(let i=0;i<120;i++)yaw=animalSteering(kind,yaw,0,-1,0,false,false,1/60).yaw;
+  assert.ok(Math.abs(Math.cos(yaw)+1)<1e-6);
+  const forward=animalSteering(kind,yaw,0,-1,0,false,false,1/60);assert.ok(forward.drive>.99);
+ }
+});
+test('flight lateral input continuously turns independently of camera heading',()=>{
+ for(const kind of ['mallard','swan'] as const){
+  let yaw=0;
+  for(let i=0;i<120;i++)yaw=animalSteering(kind,yaw,1,1,i*.03,true,false,1/60).yaw;
+  assert.ok(yaw< -2);
+  assert.equal(animalSteering(kind,0,0,-1,0,true,false,1/60).drive,.42);
+ }
+});
+test('animal camera waits while manually held then returns via shortest arc',()=>{
+ let view=animalCameraFollow(3.1,.5,-3.1,0,true,.3);
+ assert.equal(view.yaw,3.1);assert.equal(view.hold,ANIMAL_ORBIT_HOLD);
+ view=animalCameraFollow(view.yaw,view.pitch,-3.1,view.hold,false,1);
+ assert.equal(view.yaw,3.1);assert.equal(view.pitch,.5);
+ view=animalCameraFollow(view.yaw,view.pitch,-3.1,view.hold,false,1.5);
+ assert.ok(view.yaw>3.1&&view.yaw<3.2);assert.ok(view.pitch<.01);
+});
