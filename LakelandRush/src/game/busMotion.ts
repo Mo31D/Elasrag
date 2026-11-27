@@ -1,3 +1,4 @@
+import {propulsionSpeed} from './propulsion';
 import {compileRoutePolyline,sampleCompiledRoute,type CompiledRoute} from '../geo/projection';
 export type BusState={distance:number;lane:number;speed:number;dir:1|-1};
 export const BUS_HALF_LENGTH=5.1,BUS_HALF_WIDTH=1.26;
@@ -12,9 +13,8 @@ export function busFits(p:ReturnType<typeof busPose>,clear:(x:number,z:number)=>
   if(!clear(p.x+u*Math.cos(p.yaw)+v*Math.sin(p.yaw),p.z-u*Math.sin(p.yaw)+v*Math.cos(p.yaw)))return false;
  }return true;
 }
-export function stepBus(route:CompiledRoute,s:BusState,throttle:number,steer:number,dt:number,clear:(x:number,z:number)=>boolean){
- const target=throttle>=0?Math.min(1,throttle)*10:Math.max(-1,throttle)*3;
- const speed=s.speed+(target-s.speed)*(1-Math.exp(-dt*2.4));
+export function stepBus(route:CompiledRoute,s:BusState,throttle:number,steer:number,dt:number,clear:(x:number,z:number)=>boolean,boost=false){
+ const speed=propulsionSpeed('bus',s.speed,throttle,boost,dt);
  const distance=Math.max(7,Math.min(route.totalLength-7,s.distance+speed*dt*s.dir));
  const lane=Math.max(1.55,Math.min(2.45,s.lane-steer*dt*.8));
  const n={...s,distance,lane,speed:distance===s.distance?0:speed};

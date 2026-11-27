@@ -70,10 +70,10 @@ export class LakesiderService{
  get seat(){const b=this.active;if(!b)return null;b.model.root.updateMatrixWorld(true);const p=b.model.root.localToWorld(this.mode==='driver'?new THREE.Vector3(.65,.64,-4):new THREE.Vector3(.65,2.99,-.65));return {x:p.x,y:p.y,z:p.z,yaw:b.model.root.rotation.y};}
  get canDrive(){return this.mode==='passenger'&&Math.abs(this.speed)<.5;}
  blocks(x:number,z:number,y:number){return this.buses.some(b=>{const p=b.model.root.position;if(!b.model.root.visible||y>p.y+4.3)return false;const a=b.model.root.rotation.y,dx=x-p.x,dz=z-p.z;return Math.abs(dx*Math.cos(a)-dz*Math.sin(a))<1.58&&Math.abs(dx*Math.sin(a)+dz*Math.cos(a))<5.45;});}
- update(dt:number,x:number,z:number,throttle=0,steer=0){
+ update(dt:number,x:number,z:number,throttle=0,steer=0,boost=false){
   for(const b of this.buses){const p=b.model.root.position,near=Math.hypot(x-p.x,z-p.z)<230,active=b===this.active;b.model.root.visible=near||active;if(!near&&!active)continue;
    const clear=(px:number,pz:number)=>this.clear(px,pz)&&!this.buses.some(o=>o!==b&&Math.hypot(o.model.root.position.x-px,o.model.root.position.z-pz)<4);
-   if(active&&this.mode==='driver'){b.state=stepBus(b.route,b.state,throttle,steer,dt,clear);}
+   if(active&&this.mode==='driver'){b.state=stepBus(b.route,b.state,throttle,steer,dt,clear,boost);}
    else{const stop=b.stops.find(d=>Math.abs(d-b.state.distance)<3&&d!==b.lastStop);if(stop!==undefined){b.wait=6;b.lastStop=stop;}
     if(b.wait>0){b.wait-=dt;b.state.speed=0;}
     else if((b.state.dir===1&&b.state.distance>=b.route.totalLength-7.01)||(b.state.dir===-1&&b.state.distance<=7.01)){const reverse={...b.state,dir:(-b.state.dir) as 1|-1,speed:0};if(busFits(busPose(b.route,reverse),clear))b.state=reverse;b.wait=3;}

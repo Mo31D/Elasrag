@@ -417,6 +417,8 @@ export default function App() {
           onWaterInteract={()=>engineRef.current?.interactWater()}
           onBusInteract={()=>engineRef.current?.interactBus()}
           onBusDrive={()=>engineRef.current?.takeBusWheel()}
+          onAccelerator={pressed=>engineRef.current?.setAccelerator(pressed)}
+          onSetSwimFast={fast=>engineRef.current?.setSwimFast(fast)}
           onFlightVertical={value=>engineRef.current?.setFlightVertical(value)}
           onTouchSlide={() => engineRef.current?.triggerTouchSlide()}
           onOpenMap={openTravelMap}

@@ -265,6 +265,8 @@ export interface HudSnapshot {
   flying?: boolean;
   waterMode?:'land'|'swimming'|'rowing';
   canBoardBoat?:boolean;
+  fastSwim?:boolean;
+  accelerating?:boolean;
   busMode?:'passenger'|'driver';
   canBoardBus?:boolean;
   canDriveBus?:boolean;

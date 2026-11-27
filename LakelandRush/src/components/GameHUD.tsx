@@ -28,6 +28,8 @@ export interface GameHUDProps {
   onWaterInteract:()=>void;
   onBusInteract:()=>void;
   onBusDrive:()=>void;
+  onAccelerator:(pressed:boolean)=>void;
+  onSetSwimFast:(fast:boolean)=>void;
   onFlightVertical:(value:number)=>void;
   onTouchSlide: () => void;
   onOpenMap: () => void;

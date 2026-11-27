@@ -26,3 +26,10 @@ test('motor launch has larger collision envelope and different acceleration',()=
  let row={x:0,z:0,yaw:0,speed:0},motor={...row};for(let i=0;i<100;i++){row=stepBoat(row,0,1,.04,()=>true);motor=stepBoat(motor,0,1,.04,()=>true,'motorboat');}
  assert.ok(motor.speed>row.speed);
 });
+
+import {boatFloatOffset,boatSeatHeight} from './waterNavigation';
+import {driveThrottle,swimSpeed,propulsionSpeed} from './propulsion';
+test('timber bilge remains wet and interior floor remains above the waterline at idle',()=>{const offset=boatFloatOffset('rowboat');assert.ok(offset-.27<0);assert.ok(offset+.025-.035>0);assert.ok(boatSeatHeight('rowboat')+offset>.45);});
+test('two swimming speeds and shared pedal input',()=>{assert.ok(swimSpeed(true)>swimSpeed(false));assert.equal(driveThrottle(0,true),1);assert.equal(driveThrottle(-.5,true),-.5);assert.equal(driveThrottle(.3,false),.3);});
+test('boost accelerates gradually and releases for each vehicle',()=>{for(const kind of ['rowboat','motorboat','bus'] as const){let normal=0,fast=0;for(let i=0;i<200;i++){normal=propulsionSpeed(kind,normal,1,false,.04);fast=propulsionSpeed(kind,fast,1,true,.04);}assert.ok(fast>normal);assert.ok(propulsionSpeed(kind,fast,0,false,.04)<fast);assert.ok(propulsionSpeed(kind,0,1,true,.04)<fast);}});
+test('boosted boat still stops at shoreline',()=>{const wet=(x:number,z:number)=>Math.abs(x)<10&&z>-8&&z<10;let b={x:0,z:0,yaw:0,speed:0};for(let i=0;i<200;i++){b=stepBoat(b,0,1,.04,wet,'motorboat',true);assert.ok(boatFits(b.x,b.z,b.yaw,wet,'motorboat'));}assert.equal(b.speed,0);});

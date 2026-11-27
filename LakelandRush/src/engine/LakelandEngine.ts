@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { cameraRelative, smoothAngle, slideMove, sweepMove, paceSpeed, EXPLORE_JUMP_VELOCITY, secondJumpVelocity, advanceExploreJump, flightHeight, type ExplorePace } from '../game/exploreControls';
-import {SWIM_SPEED,surfaceMode,stepBoat,boatExit,boatContains,type WaterMode} from '../game/waterNavigation';
+import {surfaceMode,stepBoat,boatExit,boatContains,boatSeatHeight,type WaterMode} from '../game/waterNavigation';
+import {driveThrottle,swimSpeed} from '../game/propulsion';
 import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from './rowBoats';
 import {WaterRipples} from './waterRipples';
 import {WaterheadLife} from './waterheadLife';
@@ -216,6 +217,8 @@ export class LakelandEngine {
   private exploreLabels = true;
   private exploreSpeed = 0;
   private touchAdvance = 0;
+  private touchAccelerator=false;
+  private fastSwim=false;
   private shop?: ReturnType<typeof createBlackSheepInterior>;
   private shopPosition = new THREE.Vector3(0, 1.64, 4.10);
   private inShop = false;
@@ -746,7 +749,7 @@ export class LakelandEngine {
     if (next !== 'playing') {
       this.keysHeld.clear();
       this.virtualSteer = 0;
-      this.touchAdvance = 0;
+      this.touchAdvance=0;this.touchAccelerator=false;
       this.exploreJumpPresses=0;this.jumpBufferTimer=0;this.flightVertical=0;
       this.sound.setGameplayState(false, 0, false);
     } else {
@@ -779,7 +782,7 @@ export class LakelandEngine {
 
   public toggleFreeFlight():void {
     if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.occupiedBoat||this.busService?.mode)return;
-    this.waterMode='land';this.flying=!this.flying;this.flightVertical=0;this.playerVy=0;this.exploreJumpPresses=0;this.exploreJumpCount=0;this.coyoteTimer=0;this.isGrounded=false;
+    this.waterMode='land';this.touchAccelerator=false;this.flying=!this.flying;this.flightVertical=0;this.playerVy=0;this.exploreJumpPresses=0;this.exploreJumpCount=0;this.coyoteTimer=0;this.isGrounded=false;
     if(this.flying){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.playerHeading;this.playerY=Math.max(this.playerY+2,this.walkSurface(this.playerX,this.playerZ)+3,this.solidTop(this.playerX,this.playerZ,FLIGHT_RADIUS)+1.25);}
     this.setCallout(this.flying?'Free flight':'Landing');this.pushHudSnapshot();
   }
@@ -814,6 +817,11 @@ export class LakelandEngine {
     this.touchAdvance = THREE.MathUtils.clamp(value, -1, 1);
   }
 
+  public setAccelerator(pressed:boolean){this.touchAccelerator=pressed&&this.gameState==='playing'&&!!(this.occupiedBoat||this.busService?.mode==='driver');}
+  public setSwimFast(fast:boolean){this.fastSwim=fast;this.pushHudSnapshot();}
+  private shiftHeld(){return this.keysHeld.has('ShiftLeft')||this.keysHeld.has('ShiftRight');}
+  private accelerating(){return this.touchAccelerator||this.shiftHeld();}
+  private vehicleThrottle(){return driveThrottle(this.exploreThrottle(),this.touchAccelerator);}
   public rotateExploreView(dx: number, dy: number): void {
     if (this.activeRoute.mode !== 'freeroam' || this.gameState !== 'playing') return;
     const scale = .0038 * this.settings.sensitivity;
@@ -862,7 +870,7 @@ export class LakelandEngine {
     if(this.flying||this.inShop||this.occupiedBoat||this.busService?.mode||this.activeRoute.mode!=='freeroam'||this.playerY>1.8)return null;
     return this.rowBoats.filter(b=>Math.hypot(b.x-this.playerX,b.z-this.playerZ)<3.4).sort((a,b)=>Math.hypot(a.x-this.playerX,a.z-this.playerZ)-Math.hypot(b.x-this.playerX,b.z-this.playerZ))[0]??null;
   }
-  private releaseBoat():void{if(this.occupiedBoat)this.occupiedBoat.speed=0;this.occupiedBoat=null;this.waterMode='land';this.waterEffectTimer=0;}
+  private releaseBoat():void{this.touchAccelerator=false;if(this.occupiedBoat)this.occupiedBoat.speed=0;this.occupiedBoat=null;this.waterMode='land';this.waterEffectTimer=0;}
   public interactWater():boolean{
     if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.flying)return false;
     if(this.occupiedBoat){
@@ -870,17 +878,17 @@ export class LakelandEngine {
       this.releaseBoat();this.playerX=exit.x;this.playerZ=exit.z;this.playerY=-.72;this.waterMode='swimming';this.setCallout('Swimming');
     }else{
       const b=this.nearbyBoat();if(!b)return false;
-      this.occupiedBoat=b;this.waterMode='rowing';this.playerX=b.x;this.playerZ=b.z;this.playerY=b.kind==='motorboat'?.40:.34;this.playerHeading=b.yaw+(b.kind==='motorboat'?0:Math.PI);this.exploreYaw=b.yaw;this.explorePitch=0;this.exploreFirst=false;this.setCallout(b.kind==='motorboat'?'Motorboat · throttle and steer':'Rowboat · steer and row');
+      this.occupiedBoat=b;this.waterMode='rowing';this.playerX=b.x;this.playerZ=b.z;this.playerY=boatSeatHeight(b.kind)+b.root.position.y;this.playerHeading=b.yaw+(b.kind==='motorboat'?0:Math.PI);this.exploreYaw=b.yaw;this.explorePitch=0;this.exploreFirst=false;this.setCallout(b.kind==='motorboat'?'Motorboat · throttle and steer':'Rowboat · steer and row');
     }
-    this.playerVy=0;this.exploreJumpCount=0;this.exploreJumpPresses=0;this.coyoteTimer=0;this.isGrounded=false;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.exploreSpeed=0;this.pushHudSnapshot();return true;
+    this.playerVy=0;this.exploreJumpCount=0;this.exploreJumpPresses=0;this.coyoteTimer=0;this.isGrounded=false;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.touchAccelerator=false;this.exploreSpeed=0;this.pushHudSnapshot();return true;
   }
   private updateRowing(dt:number,steer:number):void{
     const b=this.occupiedBoat;if(!b)return;const x=b.x,z=b.z,yaw=b.yaw;
-    Object.assign(b,stepBoat(b,steer,this.exploreThrottle(),dt,(px,pz)=>this.boatWaterAt(px,pz),b.kind));
+    Object.assign(b,stepBoat(b,steer,this.vehicleThrottle(),dt,(px,pz)=>this.boatWaterAt(px,pz),b.kind,this.accelerating()));
     this.exploreYaw+=b.yaw-yaw;
-    this.playerX=b.x;this.playerZ=b.z;this.playerY=(b.kind==='motorboat'?.40:.34)+b.root.position.y;this.playerHeading=b.yaw+(b.kind==='motorboat'?0:Math.PI);this.exploreSpeed=Math.abs(b.speed);this.totalDistanceM+=Math.hypot(b.x-x,b.z-z);
+    this.playerX=b.x;this.playerZ=b.z;this.playerY=boatSeatHeight(b.kind)+b.root.position.y;this.playerHeading=b.yaw+(b.kind==='motorboat'?0:Math.PI);this.exploreSpeed=Math.abs(b.speed);this.totalDistanceM+=Math.hypot(b.x-x,b.z-z);
     animateBoat(b,this.elapsedTime,dt,true,steer);
-    animateRunnerRig(this.runner,{stridePhase:b.kind==='motorboat'?0:b.phase,speedMps:this.exploreSpeed,isAirborne:false,isSliding:false,isGrinding:false,steerTilt:steer,squashY:1,time:this.elapsedTime,dt,waterMode:'rowing'});seatAvatar(this.runner,b);
+    animateRunnerRig(this.runner,{stridePhase:b.kind==='motorboat'?0:b.phase,speedMps:this.exploreSpeed,isAirborne:false,isSliding:false,isGrinding:false,steerTilt:steer,squashY:1,time:this.elapsedTime,dt,waterMode:'rowing'});seatAvatar(this.runner,b);this.playerY=this.runner.root.position.y;
     this.waterEffectTimer-=dt;if(Math.abs(b.speed)>.15&&this.waterEffectTimer<=0){this.waterEffectTimer=.18;const motor=b.kind==='motorboat',stern=motor?2.8:1.7;const wx=b.x+Math.sin(b.yaw)*stern,wz=b.z+Math.cos(b.yaw)*stern;this.waterRipples?.emit(wx,wz,motor?2.0:1.35,.48,b.yaw);if(motor&&this.region.isInWater(wx,wz))this.emitParticles(wx,.05,wz,2,0xe1edf0,.55);for(const oar of b.oars){const tip=oar.localToWorld(new THREE.Vector3(Math.sign(oar.position.x)*1.5,0,0));if(tip.y<.25&&this.region.isInWater(tip.x,tip.z))this.waterRipples?.emit(tip.x,tip.z,.48);}}
     this.sound.setShoreFactor(1);this.sound.setGameplayState(true,0,false);this.updateChaseCamera(dt,this.exploreSpeed);void this.updateChunkStreaming(b.x,b.z,false);this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
   }
@@ -889,11 +897,11 @@ export class LakelandEngine {
     const bus=this.busService;if(!bus||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam')return false;
     if(bus.mode){const q=bus.leave();if(!q){this.setCallout('Stop the bus before leaving');return true;}this.playerX=q.x;this.playerZ=q.z;this.playerY=Math.max(.45,this.walkSurface(q.x,q.z))+.04;this.setCallout('Left bus');}
     else{if(!this.canBoardBus()||!bus.board(this.playerX,this.playerZ,this.playerY))return false;this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=bus.seat!.yaw;this.setCallout('599 · Upper deck passenger');}
-    this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.playerVy=0;this.exploreSpeed=0;this.pushHudSnapshot();return true;
+    this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.touchAccelerator=false;this.playerVy=0;this.exploreSpeed=0;this.pushHudSnapshot();return true;
   }
-  public takeBusWheel(){if(this.busService?.takeWheel()){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.busService.seat!.yaw;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.setCallout('Driver · throttle and steer');this.pushHudSnapshot();}else this.setCallout('Take the wheel when stopped');}
+  public takeBusWheel(){if(this.busService?.takeWheel()){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.busService.seat!.yaw;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.touchAccelerator=false;this.setCallout('Driver · throttle and steer');this.pushHudSnapshot();}else this.setCallout('Take the wheel when stopped');}
   private updateBus(dt:number,steer:number){
-    const bus=this.busService!;const old=bus.seat!;bus.update(dt,this.playerX,this.playerZ,this.exploreThrottle(),steer);const p=bus.seat!;
+    const bus=this.busService!;const old=bus.seat!;bus.update(dt,this.playerX,this.playerZ,this.vehicleThrottle(),steer,this.accelerating());const p=bus.seat!;
     this.exploreYaw+=Math.atan2(Math.sin(p.yaw-old.yaw),Math.cos(p.yaw-old.yaw));
     this.playerX=p.x;this.playerY=p.y;this.playerZ=p.z;this.playerHeading=p.yaw;this.exploreSpeed=Math.abs(bus.speed);this.totalDistanceM+=Math.hypot(p.x-old.x,p.z-old.z);
     this.runner.root.position.set(p.x,p.y,p.z);this.runner.root.rotation.y=p.yaw;animateRunnerRig(this.runner,{stridePhase:0,speedMps:0,isAirborne:false,isSliding:false,isGrinding:false,steerTilt:0,squashY:1,time:this.elapsedTime,dt,waterMode:'rowing'});
@@ -921,7 +929,7 @@ export class LakelandEngine {
     }
     this.keysHeld.clear();
     this.exploreJumpPresses=0;this.exploreJumpCount=0;this.jumpBufferTimer=0;this.coyoteTimer=0;
-    this.touchAdvance = 0;
+    this.touchAdvance=0;this.touchAccelerator=false;
     this.virtualSteer = 0;
     this.explorePitch = 0;
     this.exploreYaw = this.playerHeading;
@@ -955,7 +963,7 @@ export class LakelandEngine {
     this.exploreYaw = 0;
     this.explorePitch = 0;
     this.exploreSpeed = 0;
-    this.touchAdvance = 0;
+    this.touchAdvance=0;this.touchAccelerator=false;
     this.virtualSteer = 0;
     this.routePropsGroup.visible = route.mode === 'sprint';
     this.scoring = createInitialScoringState();
@@ -1574,7 +1582,7 @@ export class LakelandEngine {
     } else {
       // Full two-axis, camera-relative movement. Camera yaw stays independent of body yaw.
       const move=cameraRelative(steer,throttle,this.exploreYaw);
-      const maxSpeed=this.waterMode==='swimming'?SWIM_SPEED:maxExploreSpeed;
+      const maxSpeed=this.waterMode==='swimming'?swimSpeed(this.fastSwim||this.shiftHeld()):maxExploreSpeed;
       const oldX=this.playerX,oldZ=this.playerZ,oldCrowdDistance=this.pedestrians?.distanceToNearest(oldX,oldZ)??Infinity;
       const blocked=(x:number,z:number)=>{
         if(this.waterMode==='swimming'&&this.region.isInWater(x,z)&&this.deckHeightAt(x,z)>-Infinity)return true;
@@ -1638,7 +1646,7 @@ export class LakelandEngine {
 
     if(roaming&&this.waterMode==='swimming'){
       this.playerY=-.72+Math.sin(this.elapsedTime*3.6)*.035;this.playerVy=0;this.isGrounded=false;
-      this.waterEffectTimer-=dt;if(speed>.1&&this.waterEffectTimer<=0){this.waterEffectTimer=.24;this.waterRipples?.emit(this.playerX,this.playerZ,.65,.78,this.playerHeading);this.sound.playFootstep('water');}
+      this.waterEffectTimer-=dt;if(speed>.1&&this.waterEffectTimer<=0){this.waterEffectTimer=(this.fastSwim||this.shiftHeld())?.15:.24;this.waterRipples?.emit(this.playerX,this.playerZ,(this.fastSwim||this.shiftHeld())?.90:.65,.78,this.playerHeading);this.sound.playFootstep('water');}
     }else if(this.flying&&roaming){
       const vertical=this.flightVertical+(this.keysHeld.has('Space')?1:0)-(this.keysHeld.has('KeyQ')?1:0);
       this.playerY=flightHeight(this.playerY,vertical,dt,Math.max(floorY,overLake?0:-Infinity));this.playerVy=0;this.isGrounded=false;
@@ -2007,7 +2015,7 @@ export class LakelandEngine {
       exploreWalkPace: this.explorePace==='walk',
       explorePace: this.explorePace,
       flying:this.flying,
-      waterMode:this.waterMode,canBoardBoat:!!this.nearbyBoat(),boatKind:(this.occupiedBoat??this.nearbyBoat())?.kind,busMode:this.busService?.mode??undefined,canBoardBus:this.canBoardBus(),canDriveBus:this.busService?.canDrive,
+      waterMode:this.waterMode,fastSwim:this.fastSwim,accelerating:!!(this.occupiedBoat||this.busService?.mode==='driver')&&this.accelerating(),canBoardBoat:!!this.nearbyBoat(),boatKind:(this.occupiedBoat??this.nearbyBoat())?.kind,busMode:this.busService?.mode??undefined,canBoardBus:this.canBoardBus(),canDriveBus:this.busService?.canDrive,
       cleanExploreMode: !this.exploreLabels,
       insideShop: this.inShop,
       canEnterShop: this.nearShopDoor(),
@@ -2077,7 +2085,7 @@ export class LakelandEngine {
     this.exploreJumpPresses=0;this.jumpBufferTimer=0;
     this.keysHeld.clear();
     this.virtualSteer = 0;
-    this.touchAdvance = 0;
+    this.touchAdvance=0;this.touchAccelerator=false;
   };
 
   private onResize = () => {

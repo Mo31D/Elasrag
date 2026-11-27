@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {ROW_BOAT_SPAWNS,MOTOR_BOAT_SPAWNS,boatFits,type BoatMotion,type BoatKind} from '../game/waterNavigation';
+import {ROW_BOAT_SPAWNS,MOTOR_BOAT_SPAWNS,boatFits,boatFloatOffset,boatSeatHeight,type BoatMotion,type BoatKind} from '../game/waterNavigation';
 import type {RunnerRig} from './models';
 export interface RowBoat extends BoatMotion{kind:BoatKind;root:THREE.Group;hull:THREE.Group;oars:THREE.Group[];phase:number;wheel:THREE.Group|null}
 const plan=[[0,-2.35],[.46,-2.0],[.72,-1.42],[.85,-.3],[.76,1.70],[.55,1.94],[-.55,1.94],[-.76,1.70],[-.85,-.3],[-.72,-1.42],[-.46,-2.0]];
@@ -25,8 +25,8 @@ export function createRowBoats(scene:THREE.Scene,wet:(x:number,z:number)=>boolea
    band(hull,plan,-.27,-.08,.39,.61,dark);
    const widths=[.61,.73,.84,.93,1],heights=[-.08,.035,.16,.30,.46];
    for(let i=0;i<4;i++){band(hull,plan,heights[i],heights[i+1],widths[i],widths[i+1],i%2?varnish:wood);ringAt(hull,plan,heights[i+1]-.008,widths[i+1],seam,.014);}
-   ringAt(hull,plan,.46,1.0,wood,.049);floor(hull,plan,-.08,.61,dark);
-   for(let i=0;i<7;i++)box(hull,.125,.045,3.15,(i-3)*.13,-.045,-.06,wood);
+   ringAt(hull,plan,.46,1.0,wood,.049);floor(hull,plan,-.27,.39,dark);floor(hull,plan,.025,.68,dark);
+   for(let i=0;i<7;i++)box(hull,.125,.035,2.70-Math.abs(i-3)*.15,(i-3)*.13,.048,.02,wood);
    for(const s of [-.95,.38,1.31]){box(hull,1.24,.07,.29,0,.34,s,wood);for(const side of [-1,1])box(hull,.055,.25,.05,side*.49,.18,s,dark);}
    for(const side of [-1,1]){
     for(let i=0;i<5;i++){const zz=-1.25+i*.59;bar(hull,new THREE.Vector3(side*.55,-.03,zz),new THREE.Vector3(side*.77,.42,zz),.025,varnish);}
@@ -64,19 +64,19 @@ export function createRowBoats(scene:THREE.Scene,wet:(x:number,z:number)=>boolea
    for(let i=0;i<3;i++){const a=i*Math.PI*2/3;bar(wheel,new THREE.Vector3(0,0,0),new THREE.Vector3(Math.cos(a)*.18,Math.sin(a)*.18,0),.013,metal);}
    for(const side of [-1,1]){bar(hull,new THREE.Vector3(side*.46,.63,-2.2),new THREE.Vector3(side*.85,.63,-1.63),.026,metal);}
   }
-  root.position.set(x,0,z);root.rotation.y=yaw;scene.add(root);boats.push({kind,root,hull,oars,wheel,x,z,yaw,speed:0,phase:0});
+  root.position.set(x,boatFloatOffset(kind),z);root.rotation.y=yaw;scene.add(root);boats.push({kind,root,hull,oars,wheel,x,z,yaw,speed:0,phase:0});
  }
  return boats;
 }
 export function animateBoat(b:RowBoat,t:number,dt:number,occupied:boolean,steer=0){
  const moving=occupied&&Math.abs(b.speed)>.08;if(moving)b.phase+=dt*(1.7+Math.abs(b.speed)*.55);
- b.root.position.set(b.x,Math.sin(t*1.4+b.x)*.045,b.z);b.root.rotation.y=b.yaw;b.hull.rotation.set(Math.sin(t*1.1+b.z)*.025,0,Math.sin(t*1.6+b.x)*.035-steer*Math.min(.055,Math.abs(b.speed)*.012));
+ b.root.position.set(b.x,boatFloatOffset(b.kind)+Math.sin(t*1.4+b.x)*.035,b.z);b.root.rotation.y=b.yaw;b.hull.rotation.set(Math.sin(t*1.1+b.z)*.025,0,Math.sin(t*1.6+b.x)*.035-steer*Math.min(.055,Math.abs(b.speed)*.012));
  if(b.wheel)b.wheel.rotation.z=steer*.65;
  for(let i=0;i<b.oars.length;i++){const side=i===0?-1:1;b.oars[i].rotation.set(0,side*(moving?Math.sin(b.phase)*.56:.22),side*(moving?-.22-Math.cos(b.phase)*.20:.06));}
 }
 export function seatAvatar(rig:RunnerRig,b:RowBoat){
  const motor=b.kind==='motorboat';b.hull.updateWorldMatrix(true,true);
- rig.root.position.copy(b.hull.localToWorld(motor?new THREE.Vector3(.35,.40,.20):new THREE.Vector3(0,.34,.38)));rig.root.rotation.set(0,b.yaw+(motor?0:Math.PI),0);
+ rig.root.position.copy(b.hull.localToWorld(motor?new THREE.Vector3(.35,boatSeatHeight(b.kind),.20):new THREE.Vector3(0,boatSeatHeight(b.kind),.38)));rig.root.rotation.set(0,b.yaw+(motor?0:Math.PI),0);
  rig.root.updateMatrixWorld(true);
  for(let i=0;i<2;i++){
   const side=i===0?-1:1,arm=i===0?rig.rightArm:rig.leftArm;
