@@ -25,3 +25,12 @@ test('dense parking surface conforms to supplied ground and has world-scale UVs'
 
 import {plantFamily,GRASS_RADIUS} from './grassPlan';
 test('vegetation has bounded sparse grass, rough stems, bracken and occasional flowers',()=>{const counts:Record<string,number>={};for(let i=0;i<100;i++)for(let j=0;j<100;j++){const k=plantFamily(i*.6,j*.6,((i*13+j*17)%101)/101);counts[k]=(counts[k]??0)+1;}assert.equal(Object.keys(counts).length,4);assert.ok(counts.flower<counts.short*.15);assert.ok(GRASS_MAX<=600&&GRASS_RADIUS<=16);});
+
+import {animalRoadExclusion,grazingExclusion} from './grassPlan';
+test('livestock avoids carriageways, paths, woods, walls, paved areas and water',()=>{
+ const c:WorldChunkData={key:'0_0',cx:0,cz:0,roads:[{id:1,kind:'primary',widthM:8,pts:[[50,0],[50,100]]},{id:2,kind:'footpath',pts:[[80,0],[80,100]]}],buildings:[{id:1,kind:'cottage',cx:65,cz:60,h:6,pts:[[-4,-4],[4,-4],[4,4],[-4,4]]}],walls:[{id:2,pts:[[20,40],[20,60]]}],piers:[],woodlands:[{id:3,cx:30,cz:30,pts:[[-5,-5],[5,-5],[5,5],[-5,5]]}],parks:[{id:4,kind:'car_park',cx:100,cz:60,pts:[[-5,-5],[5,-5],[5,5],[-5,5]]}]};
+ const road=animalRoadExclusion(c),graze=grazingExclusion(c,(x)=>x<10);
+ assert.equal(road(54.4,50),true);assert.equal(road(55,50),false);assert.equal(road(80,50),false);
+ for(const [x,z] of [[50,50],[56,50],[80,50],[65,60],[30,30],[20,50],[100,60],[5,40]])assert.equal(graze(x,z),true);
+ assert.equal(graze(35,65),false);
+});
