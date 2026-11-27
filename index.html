@@ -224,10 +224,9 @@ function screen(g,x,y,z,title,bg="#203c50"){const body=add(g,box(1.68,1.08,.10,g
 
 for(const p of ui.projects){const o=setup(p),g=o.group,a=o.accent;
 if(p.id==="hub"){
- // Mo v4: cohesive tailored silhouette, continuous fabric surfaces and reference-textured head.
- const coat=mat(0x232936,0,.94),lapel=mat(0x2a303c,0,.91),shirtMat=mat(0x8faed0,0,.91),denim=mat(0x252a35,0,.95),skin=mat(0xb07455,0,.82),shoe=mat(0x202329,.03,.72),hair=mat(0x24201f,0,.86),hairLight=mat(0x34302e,0,.88);
+ // Mo v5: original stylised character, not a photorealistic or photo-textured likeness.
+ const coat=mat(0x202a36,0,.94),trim=mat(0x344251,0,.91),shirt=mat(0xe0e2de,0,.94),pants=mat(0x2c3c50,0,.96),skin=mat(0xc58b63,0,.88),shoe=mat(0x333b43,0,.9),sole=mat(0xd0d4d4,0,.94),hair=mat(0x292524,0,.86),hairLight=mat(0x403630,0,.89);
  const body=g(0,.38,0,0,0,0);
- // Closed smooth ring surfaces, not stacked primitives or ball-and-socket limbs.
  function tailoredSurface(target,profile,material,segments=48){
   const v=[],ind=[];
   for(let k=0;k<profile.length-1;k++){
@@ -244,85 +243,90 @@ if(p.id==="hub"){
   for(let k=0;k<rows-1;k++)for(let j=0;j<segments;j++){const n=k*(segments+1)+j;ind.push(n,n+1,n+segments+1,n+1,n+segments+2,n+segments+1)}
   const geo=new T.BufferGeometry();geo.setAttribute("position",new T.Float32BufferAttribute(v,3));geo.setIndex(ind);geo.computeVertexNormals();return add(target,new T.Mesh(geo,material));
  }
- const jacketProfile=[[1.18,0,0,.01,.01],[1.20,0,0,.295,.16],[1.29,0,0,.314,.195],[1.43,0,0,.305,.199],[1.60,0,0,.313,.208],[1.78,0,-.005,.352,.207],[1.91,0,-.018,.391,.19],[1.99,0,-.026,.354,.167],[2.05,0,-.025,.245,.133],[2.10,0,-.01,.118,.107],[2.11,0,0,.005,.005]];
- tailoredSurface(body,jacketProfile,coat);
- function torsoFront(x,y){let i=0;while(i<jacketProfile.length-2&&y>jacketProfile[i+1][0])i++;const p=jacketProfile[i],q=jacketProfile[i+1],t=T.MathUtils.clamp((y-p[0])/(q[0]-p[0]),0,1),w=T.MathUtils.lerp(p[3],q[3],t),dep=T.MathUtils.lerp(p[4],q[4],t),z=T.MathUtils.lerp(p[2],q[2],t);return z+dep*Math.sqrt(Math.max(.01,1-(x/w)**2))}
- function fabricPanel(rows,material,offset=.009){const v=[],idx=[],cols=12;for(const [y,left,right] of rows)for(let j=0;j<=cols;j++){const x=T.MathUtils.lerp(left,right,j/cols);v.push(x,y,torsoFront(x,y)+offset)}for(let i=0;i<rows.length-1;i++)for(let j=0;j<cols;j++){const n=i*(cols+1)+j;idx.push(n,n+1,n+cols+1,n+1,n+cols+2,n+cols+1)}const geo=new T.BufferGeometry();geo.setAttribute("position",new T.Float32BufferAttribute(v,3));geo.setIndex(idx);geo.computeVertexNormals();const m=material.clone();m.side=T.DoubleSide;return add(body,new T.Mesh(geo,m))}
- fabricPanel([[1.43,-.012,.012],[1.53,-.031,.031],[1.64,-.054,.054],[1.75,-.077,.077],[1.86,-.098,.098],[1.97,-.118,.118],[2.04,-.105,.105],[2.085,-.084,.084]],shirtMat,.018);
- // Open collar, narrower notch lapels and subtle stitching conform to the jacket.
+
+ // Long legs, V-shaped athletic torso, relaxed standing pose, continuous sculpted surfaces.
+ const jacketProfile=[[1.40,0,0,.005,.005],[1.43,0,0,.247,.158],[1.54,0,0,.252,.181],[1.66,0,0,.266,.183],[1.81,0,-.003,.308,.199],[1.97,0,-.012,.359,.211],[2.075,0,-.025,.391,.199],[2.13,0,-.028,.335,.162],[2.18,0,-.012,.215,.122],[2.21,0,0,.106,.093],[2.22,0,0,.005,.005]];
+ tailoredSurface(body,jacketProfile,coat,56);
+ // Fitted, open lightweight jacket over a simple white crew-neck shirt.
+ function torsoFront(x,y){let i=0;while(i<jacketProfile.length-2&&y>jacketProfile[i+1][0])i++;const p=jacketProfile[i],q=jacketProfile[i+1],t=T.MathUtils.clamp((y-p[0])/(q[0]-p[0]),0,1),w=T.MathUtils.lerp(p[3],q[3],t),dep=T.MathUtils.lerp(p[4],q[4],t),z=T.MathUtils.lerp(p[2],q[2],t);return z+dep*Math.sqrt(Math.max(.01,1-(x/Math.max(w,.001))**2))}
+ function panel(rows,material,offset=.008){const v=[],idx=[],cols=18;for(const [y,left,right] of rows)for(let j=0;j<=cols;j++){const x=T.MathUtils.lerp(left,right,j/cols);v.push(x,y,torsoFront(x,y)+offset)}for(let i=0;i<rows.length-1;i++)for(let j=0;j<cols;j++){const n=i*(cols+1)+j;idx.push(n,n+1,n+cols+1,n+1,n+cols+2,n+cols+1)}const geo=new T.BufferGeometry();geo.setAttribute("position",new T.Float32BufferAttribute(v,3));geo.setIndex(idx);geo.computeVertexNormals();const m=material.clone();m.side=T.DoubleSide;return add(body,new T.Mesh(geo,m))}
+ function sculptLine(target,points,r,m,segments=20){const curve=new T.CatmullRomCurve3(points.map(v=>new T.Vector3(...v)));return add(target,new T.Mesh(new T.TubeGeometry(curve,segments,r,8,false),m))}
+ const opening=[[1.445,.080],[1.55,.087],[1.70,.095],[1.85,.102],[2.00,.111],[2.10,.109],[2.15,.087],[2.174,.048],[2.179,.001]];
+ panel(opening.map(([y,w])=>[y,-w,w]),shirt,.016);
  for(const side of [-1,1]){
-  const rows=[[1.43,.008,.013],[1.55,.025,.066],[1.70,.048,.13],[1.83,.075,.21],[1.90,.102,.197],[1.94,.09,.155],[1.99,.11,.195],[2.045,.09,.145]];
-  fabricPanel(rows.map(([y,l,h])=>[y,Math.min(side*l,side*h),Math.max(side*l,side*h)]),lapel,.019);
-  const collarRows=[[1.93,.026,.075],[1.985,.028,.105],[2.055,.059,.122],[2.083,.069,.105]];
-  fabricPanel(collarRows.map(([y,l,h])=>[y,Math.min(side*l,side*h),Math.max(side*l,side*h)]),shirtMat,.026);
-  tailoredSurface(body,[[.12,side*.153,.016,.083,.082],[.18,side*.15,.01,.087,.093],[.40,side*.15,0,.092,.10],[.60,side*.143,0,.096,.105],[.80,side*.135,0,.110,.118],[1.01,side*.128,0,.135,.134],[1.22,side*.12,0,.145,.145]],denim,36);
-  oval(body,side*.153,.093,.079,.091,.071,.169,shoe,24);
-  // Sleeve follows shoulder, elbow and wrist without detached joints.
-  tailoredSurface(body,[[1.075,side*.426,.024,.067,.074],[1.14,side*.432,.018,.075,.083],[1.29,side*.443,.005,.083,.092],[1.48,side*.443,-.008,.091,.10],[1.66,side*.431,-.019,.108,.111],[1.82,side*.401,-.023,.125,.125],[1.92,side*.365,-.024,.127,.124],[1.975,side*.321,-.023,.085,.089],[1.99,side*.29,-.023,.005,.005]],coat,40);
-  tailoredSurface(body,[[.96,side*.424,.034,.012,.02],[.99,side*.427,.032,.046,.033],[1.045,side*.429,.027,.059,.045],[1.10,side*.426,.023,.056,.045],[1.13,side*.425,.021,.049,.043]],skin,28);
-  oval(body,side*.376,1.049,.061,.021,.045,.025,skin,18);
-  for(let j=0;j<3;j++)oval(body,side*.48,1.14+j*.034,.068,.008,.008,.004,shoe,12);
+  sculptLine(body,opening.slice(0,-2).map(([y,w])=>[side*w,y,torsoFront(side*w,y)+.024]),.008,trim);
+  tailoredSurface(body,[[.12,side*.158,.018,.076,.077],[.19,side*.158,.012,.083,.088],[.43,side*.156,0,.086,.092],[.68,side*.151,-.012,.093,.102],[.90,side*.140,-.008,.106,.111],[1.13,side*.126,0,.132,.129],[1.36,side*.119,0,.132,.135],[1.46,side*.112,0,.12,.119]],pants,40);
+  // Rounded sneakers, slim light-coloured sole and simple lace detailing.
+  oval(body,side*.158,.073,.092,.095,.052,.169,sole,28);
+  oval(body,side*.158,.113,.080,.087,.060,.156,shoe,28);
+  for(let k=0;k<3;k++)sculptLine(body,[[side*.158-.034,.156,.095+k*.025],[side*.158,.170,.095+k*.025],[side*.158+.034,.156,.095+k*.025]],.004,sole,8);
+  // Long tapered sleeves, natural elbows, wrists and mitten-style stylised hands.
+  tailoredSurface(body,[[1.18,side*.433,.040,.057,.060],[1.25,side*.44,.027,.065,.069],[1.42,side*.46,.010,.078,.082],[1.60,side*.464,-.008,.085,.094],[1.79,side*.448,-.025,.103,.108],[1.96,side*.411,-.027,.123,.126],[2.075,side*.369,-.024,.115,.117],[2.13,side*.326,-.020,.078,.082],[2.14,side*.29,-.015,.005,.005]],coat,44);
+  tailoredSurface(body,[[1.055,side*.428,.055,.008,.011],[1.085,side*.432,.051,.036,.028],[1.14,side*.435,.046,.052,.042],[1.20,side*.431,.041,.052,.043],[1.235,side*.430,.037,.041,.037]],skin,32);
+  oval(body,side*.391,1.155,.076,.018,.036,.019,skin,20);
+  sculptLine(body,[[side*.414,1.228,.095],[side*.444,1.23,.092],[side*.472,1.24,.073]],.005,trim,10);
  }
- for(const y of [1.50,1.36])oval(body,.022,y,torsoFront(.022,y)+.023,.013,.013,.005,shoe,16);
- for(const y of [1.67,1.80,1.92])oval(body,0,y,torsoFront(0,y)+.025,.007,.007,.003,mat(0xc0c9ce,0,.85),12);
- const breast=add(body,box(.11,.012,.008,lapel),-.235,1.79,torsoFront(-.235,1.79)+.016);breast.rotation.z=-.06;breast.rotation.y=-.35;
- tapered(body,[0,2.045,0],[0,2.25,0],.105,.104,skin,36);
+ // A connected pelvis and rounded neck avoid visible mechanical joints.
+ oval(body,0,1.403,-.004,.24,.15,.154,pants,36);
+ tapered(body,[0,2.15,-.006],[0,2.34,0],.092,.088,skin,36);
  const head=new T.Group();body.add(head);
- // Cross-sections capture the broader forehead, cheekbones, defined jaw and rounded chin.
- const profile=[[2.155,.018,.079,.025],[2.175,.078,.062,.080],[2.215,.134,.044,.130],[2.275,.177,.021,.174],[2.345,.196,.009,.190],[2.415,.217,.002,.195],[2.480,.210,-.005,.187],[2.550,.207,-.008,.186],[2.625,.188,-.012,.172],[2.695,.132,-.012,.123],[2.735,.004,-.012,.004]];
- const rings=72,steps=96,verts=[],colors=[],uvs=[],indices=[];
- const baseColor=new T.Color(0xbb825e),beardColor=new T.Color(0x77655b),cheekColor=new T.Color(0xc98b6b);
+ // Sculpted cartoon head: deliberately original simplified features, no photograph.
+ const profile=[[2.155,.008,.070,.009],[2.178,.082,.049,.080],[2.225,.143,.032,.130],[2.278,.180,.014,.162],[2.35,.198,.005,.185],[2.42,.212,0,.192],[2.49,.209,-.006,.181],[2.56,.200,-.008,.174],[2.63,.170,-.012,.153],[2.69,.115,-.015,.105],[2.728,.004,-.015,.004]];
+ const rings=64,steps=80,verts=[],colors=[],indices=[];
+ const baseColor=new T.Color(0xc58b63),beardColor=new T.Color(0x896951),cheekColor=new T.Color(0xce9272);
  function gauss(v,c,w){return Math.exp(-Math.pow((v-c)/w,2))}
  function smoothProfile(y){let k=0;while(k<profile.length-2&&y>profile[k+1][0])k++;const p=profile[k],q=profile[k+1],a=profile[Math.max(0,k-1)],b=profile[Math.min(profile.length-1,k+2)],t=(y-p[0])/(q[0]-p[0]),t2=t*t,t3=t2*t;return [1,2,3].map(j=>{const m0=(q[j]-a[j])/(q[0]-a[0])*(q[0]-p[0]),m1=(b[j]-p[j])/(b[0]-p[0])*(q[0]-p[0]);return (2*t3-3*t2+1)*p[j]+(t3-2*t2+t)*m0+(-2*t3+3*t2)*q[j]+(t3-t2)*m1})}
- for(let i=0;i<=rings;i++){const y=2.155+.58*i/rings,[w,c,d]=smoothProfile(y);
+ for(let i=0;i<=rings;i++){const y=2.155+.573*i/rings,[w,c,d]=smoothProfile(y);
   for(let j=0;j<=steps;j++){const t=j/steps*Math.PI*2-Math.PI,x=Math.sin(t)*w,front=Math.max(0,Math.cos(t)),ax=Math.abs(x);
-   const socket=-.021*gauss(ax,.084,.061)*gauss(y,2.457,.027)*front;
-   const cheeks=.015*gauss(ax,.128,.065)*gauss(y,2.399,.049)*front;
-   const brow=.009*gauss(ax,.087,.068)*gauss(y,2.492,.023)*front;
-   const nose=(.026*gauss(x,0,.031)*gauss(y,2.416,.071)+.052*gauss(x,0,.038)*gauss(y,2.368,.030)+.015*gauss(ax,.031,.022)*gauss(y,2.356,.023))*front;
-   const lips=.014*gauss(x,0,.058)*gauss(y,2.315,.024)*front;
-   const z=c+Math.cos(t)*d+socket+cheeks+brow+nose+lips;
-   verts.push(x,y,z);uvs.push(j/steps,i/rings);
-   const stubble=front*(.40*gauss(y,2.255,.072)+.23*gauss(y,2.327,.055)*gauss(ax,.155,.062)+.22*gauss(y,2.331,.025)*gauss(ax,.045,.045));
-   const grain=.5+.5*Math.sin(i*31.27+j*17.83)*Math.sin(j*7.91-i*4.37);
-   const color=baseColor.clone().lerp(cheekColor,.22*gauss(y,2.40,.055)*gauss(ax,.13,.06)*front).lerp(beardColor,Math.min(.56,stubble*(.65+.55*grain)));
+   const socket=-.016*gauss(ax,.085,.06)*gauss(y,2.451,.030)*front;
+   const cheeks=.010*gauss(ax,.135,.06)*gauss(y,2.385,.053)*front;
+   const nose=(.020*gauss(x,0,.032)*gauss(y,2.42,.058)+.043*gauss(x,0,.037)*gauss(y,2.367,.028))*front;
+   const z=c+Math.cos(t)*d+socket+cheeks+nose;
+   verts.push(x,y,z);
+   const stubble=front*(.20*gauss(y,2.245,.058)+.12*gauss(y,2.315,.05)*gauss(ax,.15,.06));
+   const color=baseColor.clone().lerp(cheekColor,.19*gauss(y,2.38,.052)*gauss(ax,.13,.07)*front).lerp(beardColor,stubble);
    colors.push(color.r,color.g,color.b);
    if(i<rings&&j<steps){const n=i*(steps+1)+j;indices.push(n,n+1,n+steps+1,n+1,n+steps+2,n+steps+1)}
   }
  }
- const faceGeo=new T.BufferGeometry();faceGeo.setAttribute("position",new T.Float32BufferAttribute(verts,3));faceGeo.setAttribute("color",new T.Float32BufferAttribute(colors,3));faceGeo.setAttribute("uv",new T.Float32BufferAttribute(uvs,2));faceGeo.setIndex(indices);faceGeo.computeVertexNormals();
- const photoTexture=new T.TextureLoader().load("data:image/jpeg;base64,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",()=>{renderer.shadowMap.needsUpdate=true;});
- photoTexture.colorSpace=T.SRGBColorSpace;photoTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
- const faceMaterial=new T.MeshStandardMaterial({map:photoTexture,color:0xbfbfbf,roughness:.86,metalness:0});
- add(head,new T.Mesh(faceGeo,faceMaterial));
- const earInner=mat(0x965c48,0,.86);
- function curveTube(g,points,r,m){const curve=new T.CatmullRomCurve3(points.map(v=>new T.Vector3(...v)));return add(g,new T.Mesh(new T.TubeGeometry(curve,16,r,6,false),m))}
- for(const s of [-1,1]){
-  const ear=oval(head,s*.208,2.415,.007,.032,.061,.028,skin);ear.rotation.z=-s*.13;
-  oval(head,s*.219,2.418,.030,.013,.032,.008,earInner);
+ const faceGeo=new T.BufferGeometry();faceGeo.setAttribute("position",new T.Float32BufferAttribute(verts,3));faceGeo.setAttribute("color",new T.Float32BufferAttribute(colors,3));faceGeo.setIndex(indices);faceGeo.computeVertexNormals();
+ add(head,new T.Mesh(faceGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:.91,metalness:0})));
+ const earInner=mat(0xa96951,0,.92),eyeWhite=mat(0xe9ded0,0,.82),iris=mat(0x5c3927,0,.68),pupil=mat(0x241c19,0,.78),lid=mat(0xb17a56,0,.9),lip=mat(0xa45e4d,0,.91),mouth=mat(0x754739,0,.96);
+ for(const side of [-1,1]){
+  oval(head,side*.202,2.411,.005,.038,.064,.032,skin,28);
+  oval(head,side*.222,2.414,.030,.016,.031,.009,earInner,20);
+  // Clean expressive almond eyes; no enlarged glossy doll eyes.
+  const eye=oval(head,side*.083,2.452,.169,.047,.025,.021,eyeWhite,32);eye.rotation.y=side*.15;
+  oval(head,side*.080,2.452,.188,.017,.021,.007,iris,28);
+  oval(head,side*.080,2.452,.195,.009,.013,.003,pupil,24);
+  oval(head,side*.080-.005,2.461,.198,.004,.004,.002,eyeWhite,12);
+  sculptLine(head,[[side*.038,2.452,.180],[side*.060,2.474,.186],[side*.094,2.477,.181],[side*.128,2.453,.156]],.006,lid,16);
+  sculptLine(head,[[side*.040,2.451,.179],[side*.070,2.432,.185],[side*.105,2.435,.172],[side*.128,2.453,.156]],.004,skin,16);
+  sculptLine(head,[[side*.034,2.494,.185],[side*.064,2.508,.183],[side*.096,2.508,.169],[side*.135,2.493,.147]],.011,hair,18);
  }
- // Continuous cropped hairstyle: a single curved scalp shell with fine irregular wave relief.
- const hv=[],hc=[],hi=[],hr=48,hs=112;
- const darkHair=new T.Color(0x241f1e),fadeHair=new T.Color(0x51423a);
- for(let i=0;i<=hr;i++){const f=i/hr;
-  for(let j=0;j<=hs;j++){const theta=j/hs*Math.PI*2,frontness=Math.max(0,Math.cos(theta)),backness=Math.max(0,-Math.cos(theta));
-   const boundary=1.55-.37*Math.pow(frontness,2)+.43*Math.pow(backness,1.5);
-   const polar=.001+f*(boundary+.022*Math.sin(theta*7)*frontness);
-   const wave=(.0022*Math.sin(theta*28+polar*19)+.0017*Math.sin(theta*45-polar*14))*Math.sin(polar)*Math.pow(1-f,.35);
-   const x=(.224+wave)*Math.sin(polar)*Math.sin(theta),y=2.495+(.270+wave)*Math.cos(polar),z=-.013+(.214+wave)*Math.sin(polar)*Math.cos(theta);
-   hv.push(x,y,z);
-   const fade=T.MathUtils.smoothstep(f,.78,1)*(1-.88*frontness),tone=darkHair.clone().lerp(fadeHair,fade*.60).multiplyScalar(.92+.11*Math.sin(theta*31+polar*16)**2);hc.push(tone.r,tone.g,tone.b);
-   if(i<hr&&j<hs){const n=i*(hs+1)+j;hi.push(n,n+hs+1,n+1,n+1,n+hs+1,n+hs+2)}
-  }
- }
+ oval(head,0,2.365,.222,.033,.022,.018,skin,28);
+ for(const side of [-1,1])oval(head,side*.025,2.352,.214,.011,.005,.008,earInner,16);
+ oval(head,0,2.307,.184,.041,.009,.009,lip,24);
+ sculptLine(head,[[-.057,2.324,.167],[-.032,2.314,.185],[0,2.311,.190],[.032,2.314,.185],[.057,2.324,.167]],.0045,mouth,24);
+ // Continuous swept hair with sculptural wave pattern, not separate balls.
+ const hv=[],hc=[],hi=[],hr=42,hs=96,darkHair=new T.Color(0x262221),fadeHair=new T.Color(0x57443a);
+ for(let i=0;i<=hr;i++){const f=i/hr;for(let j=0;j<=hs;j++){
+  const theta=j/hs*Math.PI*2,frontness=Math.max(0,Math.cos(theta)),backness=Math.max(0,-Math.cos(theta));
+  const boundary=1.52-.33*frontness**2+.42*backness**1.5;
+  const polar=.001+f*(boundary+.035*Math.sin(theta*5+.4)*frontness);
+  const wave=(.0045*Math.sin(theta*12+polar*10)+.002*Math.sin(theta*25-polar*13))*Math.sin(polar)*Math.pow(1-f,.3);
+  const x=(.218+wave)*Math.sin(polar)*Math.sin(theta),y=2.489+(.278+wave)*Math.cos(polar),z=-.015+(.209+wave)*Math.sin(polar)*Math.cos(theta);
+  hv.push(x,y,z);const fade=T.MathUtils.smoothstep(f,.80,1)*(1-.95*frontness),tone=darkHair.clone().lerp(fadeHair,fade*.47).multiplyScalar(.94+.10*Math.sin(theta*12+polar*10)**2);hc.push(tone.r,tone.g,tone.b);
+  if(i<hr&&j<hs){const n=i*(hs+1)+j;hi.push(n,n+hs+1,n+1,n+1,n+hs+1,n+hs+2)}
+ }}
  const hairGeo=new T.BufferGeometry();hairGeo.setAttribute("position",new T.Float32BufferAttribute(hv,3));hairGeo.setAttribute("color",new T.Float32BufferAttribute(hc,3));hairGeo.setIndex(hi);hairGeo.computeVertexNormals();
- add(head,new T.Mesh(hairGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:.83,metalness:0,side:T.DoubleSide})));
- // Scale the oversized head down toward adult proportions, then keep the chin seated above the collar.
- head.scale.setScalar(.89);head.rotation.x=-.065;
- const neckAnchor=new T.Vector3(0,2.17,0),rotatedAnchor=neckAnchor.clone().multiplyScalar(.89).applyEuler(head.rotation);
- head.position.copy(neckAnchor).sub(rotatedAnchor);
+ add(head,new T.Mesh(hairGeo,new T.MeshStandardMaterial({vertexColors:true,roughness:.86,metalness:0,side:T.DoubleSide})));
+ // Adult athletic silhouette: roughly 7 heads high; shoulders substantially wider than hips.
+ head.scale.setScalar(.76);head.rotation.x=-.045;head.rotation.z=-.025;
+ const chin=new T.Vector3(0,2.155,.02),seat=new T.Vector3(0,2.255,.02);
+ head.position.copy(seat).sub(chin.clone().multiplyScalar(.76).applyEuler(head.rotation));
  body.scale.setScalar(1.14);
- moAvatarJob={group:body,url:"/creation-engine/assets/mo-avatar.glb",height:2.76};
+ moAvatarJob={group:body,url:"/creation-engine/assets/mo-avatar-stylized.glb",height:2.72};
  const ring=g(0,.42,0,0,0,0);for(const [radius,width,material] of [[1.43,.022,mat(0xc5a77e,.72,.4)],[1.57,.009,a]]){const r=add(ring,torus(radius,width,material));r.rotation.x=Math.PI/2}
  const plate=g(0,.44,0,0,0,0);add(plate,box(1.40,.075,.27,graphite),0,0,1.32);const plaque=add(plate,sign("ELASRAG","#222d35","#e7d3ad",1.28,.20),0,.048,1.32);plaque.rotation.x=-Math.PI/2;
  signatureJob={group:plate};
@@ -646,7 +650,7 @@ for(const [id,o] of objects){const want=id===active&&opened?1:0;o.progress=pause
  }
  const guideLayer=document.getElementById("labelGuides");if(phone){guideLayer.setAttribute("viewBox","0 0 "+canvasRect.width+" "+canvasRect.height);guideLayer.innerHTML=guides.join("")}else if(guideLayer.childNodes.length)guideLayer.replaceChildren();
  if(renderer.shadowMap.enabled&&frameCount%3===0)renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera)}
-ui.setEngine({select,setExpanded,highlight,setPanel});mobileReady=true;fly("hub",phoneLayout());refreshQuality(true);camera.updateMatrixWorld();orientExhibits(camera,objects.values());window.elasragPortfolioDiagnostics=()=>({version:"1.5",models:{...modelStatus},selected:active,quality,pixelRatio:renderer.getPixelRatio(),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,projectCount:objects.size-1,zoomLimits:{minDistance:controls.minDistance,maxDistance:controls.maxDistance,minZoom:controls.minZoom,maxZoom:controls.maxZoom},detailLevels:Object.fromEntries([...objects].map(([id,o])=>[id,o.detailLevel])),shadowSize:key.shadow.mapSize.x,facing:"camera-facing yaw / stationary pedestals",webgl:true});renderer.render(scene,camera);document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();rendering=false;for(const b of document.querySelectorAll("[data-view]"))b.disabled=true;labels.hidden=true;document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceMoAvatar();void enhanceLighting();
+ui.setEngine({select,setExpanded,highlight,setPanel});mobileReady=true;fly("hub",phoneLayout());refreshQuality(true);camera.updateMatrixWorld();orientExhibits(camera,objects.values());window.elasragPortfolioDiagnostics=()=>({version:"1.6",models:{...modelStatus},selected:active,quality,pixelRatio:renderer.getPixelRatio(),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,projectCount:objects.size-1,zoomLimits:{minDistance:controls.minDistance,maxDistance:controls.maxDistance,minZoom:controls.minZoom,maxZoom:controls.maxZoom},detailLevels:Object.fromEntries([...objects].map(([id,o])=>[id,o.detailLevel])),shadowSize:key.shadow.mapSize.x,facing:"camera-facing yaw / stationary pedestals",webgl:true});renderer.render(scene,camera);document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();rendering=false;for(const b of document.querySelectorAll("[data-view]"))b.disabled=true;labels.hidden=true;document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceMoAvatar();void enhanceLighting();
 }
 boot().catch(err=>{console.warn("Workspace rendering unavailable",err);document.getElementById("loadText").textContent="3D rendering is unavailable on this device or network.";renderStatus.textContent="Accessible project directory / fallback";document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true")});
 </script>
