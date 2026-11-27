@@ -102,6 +102,20 @@ header{background:#10151b;box-shadow:0 1px 18px #0003}.brand{letter-spacing:.23e
 .sidebar .close-panel{min-width:32px;min-height:32px}.scene-list button{line-height:1.3}.scene-list .num{display:none}.scene-list .dot{border-radius:50%}
 .workspace.show-inspector .inspector{scrollbar-width:thin}.workspace.show-inspector .relationship-key{display:none}
 @media(max-width:600px){.object-label{min-height:25px}.toolbar{gap:2px}.toolbar button{min-width:29px;padding:5px 6px}.inspector .panel-head{font-size:9px}.inspector .close-panel{min-width:30px;min-height:30px}}
+
+/* V.12 — narrow-screen layout: independent safe areas, fitted 3D scene and touch labels. */
+.label-guides{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;display:none}
+@media(max-width:600px){
+ .intro{top:16px;left:15px;right:15px;max-width:none}.intro h1{font-size:clamp(24px,7.2vw,29px);line-height:1.08;margin:7px 0}.intro p{font-size:11px;line-height:1.45;max-width:none}.intro .explore-hint{display:none}
+ .relationship-key{top:var(--phone-key-top,126px);left:15px;right:15px;justify-content:flex-start;gap:6px 12px;font-size:10px;line-height:1.25}.relationship-key span{white-space:nowrap}
+ .axis{display:none}.label-guides{display:block}.object-label:not(.part-label){font-size:10px;min-height:34px;max-width:105px;padding:5px 7px;line-height:1.15;display:grid;place-items:center;white-space:normal}.object-label[data-project="hub"]{min-width:38px;background:#252421ed}
+ .part-label{font-size:10px;min-height:32px;max-width:105px}
+ .workspace.show-inspector .inspector{top:auto;left:50%;right:auto;bottom:calc(64px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(340px,calc(100% - 24px));max-height:min(37%,275px);padding:12px 13px;overflow:auto}
+ .inspector .panel-head{position:absolute;top:6px;right:7px;margin:0}.inspector .panel-head>span{display:none}.inspector .close-panel{min-height:32px;min-width:32px}.inspector .status{max-width:calc(100% - 30px);font-size:9px}.inspector h2{font-size:18px;padding-right:25px;margin:5px 0}.inspector #relationship{margin:4px 0 5px}.inspector p{font-size:12px;line-height:1.4}.inspector .actions{margin:7px 0 4px}.inspector .actions button{min-height:36px}.inspector .project-links a{min-height:36px}.inspector #overview{display:none}
+ .toolbar{bottom:calc(10px + env(safe-area-inset-bottom));max-width:calc(100% - 16px)}.toolbar button{min-height:39px;padding:6px 7px}.sidebar .scene-list button{min-height:44px}
+ .workspace.show-inspector .intro,.workspace.show-inspector .relationship-key{visibility:hidden}
+}
+@media(max-width:360px){.relationship-key{gap:5px 9px;font-size:9px}.toolbar button{padding:5px 5px;font-size:10px}.object-label:not(.part-label){max-width:90px;font-size:9px}}
 </style>
 <script type="importmap">{"imports":{"three":"/creation-engine/vendor/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
@@ -117,9 +131,9 @@ header{background:#10151b;box-shadow:0 1px 18px #0003}.brand{letter-spacing:.23e
 </aside>
 <section class="viewport" id="viewport" aria-label="Interactive 3D portfolio">
 <canvas id="scene" aria-label="Three-dimensional project objects. Use the project list for accessible selection."></canvas>
-<div class="intro" id="intro"><div class="mono">Interactive portfolio</div><h1 id="sceneTitle">Mohamed El-Asrag</h1><p>Entrepreneurship · Technology · Innovation<br>Select a project to explore.</p></div>
+<div class="intro" id="intro"><div class="mono">Interactive portfolio</div><h1 id="sceneTitle">Mohamed El-Asrag</h1><p>Entrepreneurship · Technology · Innovation<span class="explore-hint"><br>Select a project to explore.</span></p></div>
 <div class="viewport-meta mono" id="viewMode">Perspective<br>Real-time scene</div>
-<div class="relationship-key" aria-label="Project relationship key"><span style="--relation:#d5b47e"><i></i>Owned businesses</span><span style="--relation:#78b8e2"><i></i>Original innovations</span><span style="--relation:#85bea2"><i></i>Client &amp; collaborative work</span></div><div class="labels" id="labels"></div><button type="button" id="sceneInfo" hidden aria-controls="inspector" aria-expanded="false" aria-label="Show selected project information" style="position:absolute;z-index:5;top:68px;left:16px;padding:7px 11px;font-size:11px;background:#14232e;border-color:#608b9b">Project info +</button>
+<div class="relationship-key" id="relationshipKey" aria-label="Project relationship key"><span style="--relation:#d5b47e"><i></i>Owned businesses</span><span style="--relation:#78b8e2"><i></i>Original innovations</span><span style="--relation:#85bea2"><i></i>Client &amp; collaborative work</span></div><svg id="labelGuides" class="label-guides" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"></svg><div class="labels" id="labels"></div><button type="button" id="sceneInfo" hidden aria-controls="inspector" aria-expanded="false" aria-label="Show selected project information" style="position:absolute;z-index:5;top:68px;left:16px;padding:7px 11px;font-size:11px;background:#14232e;border-color:#608b9b">Project info +</button>
 <div class="fallback" id="fallback"><div class="fallback-inner"><div class="fallback-mark">◇</div><div id="loadText">Preparing the portfolio experience…</div><p>Choose Projects above to browse the portfolio.<br><a href="https://lakesidepicnic.co.uk/">Lakeside Picnic</a> <a href="https://theblacksheepshop.co.uk/">Black Sheep</a></p></div></div>
 <svg class="axis" viewBox="0 0 65 58" width="65" aria-hidden="true"><path d="M27 35V9" stroke="#7cb79d"/><path d="M27 35L52 45" stroke="#d28f8f"/><path d="M27 35L8 48" stroke="#82b0db"/><g font-size="9" font-family="monospace"><text x="25" y="8" fill="#7cb79d">Y</text><text x="53" y="48" fill="#d28f8f">X</text><text x="1" y="55" fill="#82b0db">Z</text></g><circle cx="27" cy="35" r="3" fill="#b6c8d7"/></svg>
 <div class="toolbar" aria-label="3D view controls"><button data-view="home" disabled title="Reset view">Overview</button><button data-view="projection" disabled aria-pressed="false" title="Toggle orthographic view">Ortho</button><button data-view="zoomIn" disabled aria-label="Zoom in">+</button><button data-view="zoomOut" disabled aria-label="Zoom out">−</button><button data-view="wire" disabled aria-pressed="false">Wire</button><button data-view="motion" disabled aria-pressed="false">Pause</button><button data-view="quality" disabled aria-label="Change rendering quality">Auto</button><button data-view="full" disabled aria-label="Fullscreen">⛶</button></div>
@@ -135,7 +149,7 @@ header{background:#10151b;box-shadow:0 1px 18px #0003}.brand{letter-spacing:.23e
 <p class="mobile-hint">Choose a project above to inspect its components.</p>
 </aside>
 </main>
-<footer class="footer"><span>ELASRAG / PORTFOLIO V.11</span><span id="renderStatus" role="status">Initialising</span><a href="https://github.com/Mo31D">GitHub</a><a href="mailto:mo@elasrag.com">mo@elasrag.com</a></footer>
+<footer class="footer"><span>ELASRAG / PORTFOLIO V.12</span><span id="renderStatus" role="status">Initialising</span><a href="https://github.com/Mo31D">GitHub</a><a href="mailto:mo@elasrag.com">mo@elasrag.com</a></footer>
 <script>
 const projects=[
 {id:"hub",name:"Mohamed El-Asrag",short:"Mo",color:"#8cc8d5",status:"Portfolio overview",desc:"I build businesses, develop original ideas and design practical digital solutions that connect technology with real-world needs.",parts:[["Technology","Digital platforms, interactive environments and practical software."],["Creativity","Visual design, product concepts and experimental experiences."],["Solutions","Connecting business needs with useful technology."]],links:[["GitHub","https://github.com/Mo31D"],["Get in touch","mailto:mo@elasrag.com"]]},
@@ -307,15 +321,67 @@ if(p.id==="hub"){
 }
 }
 for(const [id,o] of objects){o.root.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});if(id!=="hub"){const x=o.root.position.x,z=o.root.position.z;const length=Math.hypot(x,z),start=2.1,end=length-1.92;const connection=new T.Mesh(new T.PlaneGeometry(.035,end-start),new T.MeshBasicMaterial({color:o.relation.color,transparent:true,opacity:.48,depthWrite:false,side:T.DoubleSide}));connection.rotation.x=-Math.PI/2;connection.rotation.z=Math.atan2(x,z);connection.position.set(x/length*(start+end)/2,.124,z/length*(start+end)/2);stage.add(connection);o.connection=connection}}
-function portraitLayout(){return viewport.clientWidth<=1100&&viewport.clientHeight>viewport.clientWidth}function homePos(){const aspect=viewport.clientWidth/Math.max(1,viewport.clientHeight);const scale=Math.max(.92,.82/aspect);return new T.Vector3(4.0,20.0,27.5).multiplyScalar(Math.min(2.1,scale))}
-function applyFraming(){const w=viewport.clientWidth,h=viewport.clientHeight;if(!w||!h)return;const portrait=portraitLayout(),focus=active!=="hub",phone=w<=600;const x=focus&&panel&&!phone?Math.min(135,w*(portrait?.10:.15)):0;const y=focus&&panel?(phone?-h*.21:portrait?-h*.12:-h*.035):portrait&&!focus?h*.065:0;for(const cam of [perspective,ortho])cam.setViewOffset(w,h,x,y,w,h)}
-function size(){const w=viewport.clientWidth,h=viewport.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);perspective.aspect=w/h;perspective.fov=w/h<.8?55:42;perspective.updateProjectionMatrix();const v=Math.max(11.5,11.5/(w/h));ortho.left=-v*w/h;ortho.right=v*w/h;ortho.top=v;ortho.bottom=-v;ortho.updateProjectionMatrix();applyFraming()}
+function portraitLayout(){return viewport.clientWidth<=1100&&viewport.clientHeight>viewport.clientWidth}
+function phoneLayout(){return viewport.clientWidth<=600}
+function homePos(){const aspect=viewport.clientWidth/Math.max(1,viewport.clientHeight);const scale=Math.max(.92,.82/aspect);return new T.Vector3(4.0,20.0,27.5).multiplyScalar(Math.min(2.1,scale))}
+let mobileReady=false,previousSize=null,mobileArea=null;
+const phoneNames={sheep:"Black Sheep",picnic:"Lakeside Picnic",land:"Lakeland World",ai:"Mo Thinking",design:"Product Design",education:"Learning",iwa:"IWA Academy",caline:"Caline",hair:"BM HAIR",hub:"Mo"};
+function phoneArea(){
+ const w=viewport.clientWidth,h=viewport.clientHeight;
+ const intro=document.getElementById("intro"),legend=document.getElementById("relationshipKey"),toolbar=viewport.querySelector(".toolbar"),card=document.getElementById("inspector");
+ const keyTop=intro.offsetTop+intro.offsetHeight+12;viewport.style.setProperty("--phone-key-top",keyTop+"px");
+ const rect=viewport.getBoundingClientRect(),top=panel?12:Math.max(112,legend.offsetTop+legend.offsetHeight+14);
+ const toolbarTop=toolbar.getBoundingClientRect().top-rect.top;
+ const bottom=panel?Math.min(toolbarTop-8,card.getBoundingClientRect().top-rect.top-12):toolbarTop-10;
+ const safeBottom=Math.min(h-45,Math.max(top+110,bottom));
+ return {w,h,top,bottom:safeBottom,cx:w/2,cy:(top+safeBottom)/2};
+}
+function applyFraming(){const w=viewport.clientWidth,h=viewport.clientHeight;if(!w||!h)return;
+ if(phoneLayout()){mobileArea=phoneArea();for(const cam of [perspective,ortho])cam.setViewOffset(w,h,0,h/2-mobileArea.cy,w,h);return}
+ mobileArea=null;const portrait=portraitLayout(),focus=active!=="hub";const x=focus&&panel&&!portrait?Math.min(135,w*(portrait?.10:.15)):0;const y=focus&&panel?(portrait?-h*.12:-h*.035):portrait&&!focus?h*.065:0;for(const cam of [perspective,ortho])cam.setViewOffset(w,h,x,y,w,h)
+}
+// Fit projected scene bounds inside the usable screen, independently of browser aspect ratio.
+function mobilePose(id){
+ const area=mobileArea||phoneArea(),overview=id==="hub",root=objects.get(id).root;
+ const t=overview?new T.Vector3(0,.72,0):root.position.clone().add(new T.Vector3(0,opened?1.65:1.16,0));
+ const radial=overview?null:new T.Vector3(root.position.x,0,root.position.z).normalize();
+ const direction=overview?new T.Vector3(2.7,26,18).normalize():radial.clone().multiplyScalar(9).addScaledVector(new T.Vector3(-radial.z,0,radial.x),2.2).add(new T.Vector3(0,8.2,0)).normalize();
+ const points=[];
+ if(overview){
+  for(let i=0;i<48;i++){const a=i*Math.PI*2/48;points.push(new T.Vector3(11.38*Math.cos(a),.11,11.38*Math.sin(a)))}
+  for(const [key,o] of objects){const p=o.root.position;points.push(new T.Vector3(p.x,key==="hub"?4.15:3.35,p.z))}
+ }else{
+  const r=opened?3.4:2.18,ymax=opened?4.65:3.25;
+  for(const x of [-r,r])for(const z of [-r,r])for(const y of [0,ymax])points.push(new T.Vector3(root.position.x+x,y,root.position.z+z));
+ }
+ const cam=perspective.clone(),probe=new T.Vector3(),mx=overview?9:area.w*.075,mt=overview?34:12,mb=overview?14:12;
+ // The available height varies with the card's real rendered height.
+ const top=area.top+Math.min(mt,(area.bottom-area.top)*.18),bottom=area.bottom-Math.min(mb,(area.bottom-area.top)*.10);
+ function fits(c){c.updateMatrixWorld(true);for(const p of points){probe.copy(p).project(c);const x=(probe.x*.5+.5)*area.w,y=(.5-probe.y*.5)*area.h;if(probe.z<=-1||probe.z>=1||x<mx||x>area.w-mx||y<top||y>bottom)return false}return true}
+ function position(d){cam.position.copy(t).addScaledVector(direction,d);cam.lookAt(t);return fits(cam)}
+ let lo=overview?18:5,hi=65;for(let i=0;i<22;i++){const mid=(lo+hi)/2;if(position(mid))hi=mid;else lo=mid}
+ const pos=t.clone().addScaledVector(direction,hi);
+ const oc=ortho.clone();oc.position.copy(pos);oc.lookAt(t);let zl=.4,zh=4;
+ for(let i=0;i<18;i++){const z=(zl+zh)/2;oc.zoom=z;oc.updateProjectionMatrix();if(fits(oc))zl=z;else zh=z}
+ return {t,pos,zoom:zl};
+}
+function size(){const w=viewport.clientWidth,h=viewport.clientHeight;if(!w||!h)return;const phone=phoneLayout(),changed=!previousSize||Math.abs(w-previousSize.w)>2||Math.abs(h-previousSize.h)>20;
+ const wasPhone=previousSize?.phone;renderer.setSize(w,h,false);perspective.aspect=w/h;perspective.fov=phone?T.MathUtils.clamp(T.MathUtils.radToDeg(2*Math.atan(Math.tan(T.MathUtils.degToRad(25))/(w/h))),55,108):w/h<.8?55:42;perspective.updateProjectionMatrix();
+ const v=Math.max(11.5,11.5/(w/h));ortho.left=-v*w/h;ortho.right=v*w/h;ortho.top=v;ortho.bottom=-v;ortho.updateProjectionMatrix();applyFraming();
+ if(changed){previousSize={w,h,phone};for(const [id,o] of objects)o.label.textContent=phone?phoneNames[id]||o.p.short:o.p.short;if(mobileReady&&(phone||wasPhone))fly(active,true)}
+}
 new ResizeObserver(size).observe(viewport);size();
-function fly(id){const root=objects.get(id).root;const portrait=portraitLayout();const t=new T.Vector3(0,.48,0);let pos;if(id==="hub"){pos=homePos()}else{const radial=new T.Vector3(root.position.x,0,root.position.z).normalize(),tangent=new T.Vector3(-radial.z,0,radial.x);t.copy(root.position).add(new T.Vector3(0,1.1,0)).addScaledVector(radial,-1.25);pos=t.clone().addScaledVector(radial,portrait?11.6:10.8).addScaledVector(tangent,3.0).add(new T.Vector3(0,6.2,0))}if(paused||reduced){camera.position.copy(pos);controls.target.copy(t);controls.update();flight=null}else flight={start:performance.now(),p:camera.position.clone(),t:controls.target.clone(),end:pos,target:t};if(orthographic){ortho.zoom=id==="hub"?1:1.65;ortho.updateProjectionMatrix()}}
-function setExpanded(v){opened=v}
+function fly(id,immediate=false){
+ const root=objects.get(id).root,portrait=portraitLayout();let t=new T.Vector3(0,.48,0),pos,oz=id==="hub"?1:1.65;
+ if(phoneLayout()){applyFraming();const fit=mobilePose(id);t=fit.t;pos=fit.pos;oz=fit.zoom}
+ else if(id==="hub"){pos=homePos()}else{const radial=new T.Vector3(root.position.x,0,root.position.z).normalize(),tangent=new T.Vector3(-radial.z,0,radial.x);t.copy(root.position).add(new T.Vector3(0,1.1,0)).addScaledVector(radial,-1.25);pos=t.clone().addScaledVector(radial,portrait?11.6:10.8).addScaledVector(tangent,3.0).add(new T.Vector3(0,6.2,0))}
+ if(immediate||paused||reduced){camera.position.copy(pos);controls.target.copy(t);controls.update();flight=null}else flight={start:performance.now(),p:camera.position.clone(),t:controls.target.clone(),end:pos,target:t};
+ if(orthographic){ortho.zoom=oz;ortho.updateProjectionMatrix()}
+}
+function setExpanded(v){opened=v;if(phoneLayout()&&active!=="hub")fly(active)}
 function select(id,exp,focus){active=id;opened=exp;part=-1;stage.visible=true;grid.visible=true;for(const o of objects.values()){o.root.visible=true;updateProjectTone(o)}applyFraming();renderer.shadowMap.needsUpdate=true;if(focus)fly(id)}
-function highlight(i){part=i}function setPanel(v){panel=v;applyFraming()}
-function switchProjection(){flight=null;target.copy(controls.target);const old=camera;orthographic=!orthographic;camera=orthographic?ortho:perspective;camera.position.copy(old.position);if(orthographic){ortho.zoom=active==="hub"?1:1.65;ortho.updateProjectionMatrix()}bindControls();document.getElementById("viewMode").innerHTML=(orthographic?"Orthographic":"Perspective")+"<br>Real-time scene";document.querySelector('[data-view="projection"]').setAttribute("aria-pressed",String(orthographic))}
+function highlight(i){part=i}function setPanel(v){const changed=panel!==v;panel=v;applyFraming();if(changed&&mobileReady&&phoneLayout()&&v)fly(active)}
+function switchProjection(){flight=null;target.copy(controls.target);const old=camera;orthographic=!orthographic;camera=orthographic?ortho:perspective;camera.position.copy(old.position);if(orthographic){ortho.zoom=active==="hub"?1:1.65;ortho.updateProjectionMatrix()}bindControls();if(phoneLayout())fly(active,true);document.getElementById("viewMode").innerHTML=(orthographic?"Orthographic":"Perspective")+"<br>Real-time scene";document.querySelector('[data-view="projection"]').setAttribute("aria-pressed",String(orthographic))}
 function zoom(f){flight=null;if(orthographic){camera.zoom=T.MathUtils.clamp(camera.zoom*f,.4,4);camera.updateProjectionMatrix()}else{const offset=camera.position.clone().sub(controls.target);offset.setLength(T.MathUtils.clamp(offset.length()/f,5,65));camera.position.copy(controls.target).add(offset)}controls.update()}
 const wireMaterials=new Set();
 function registerMaterials(root){root.traverse(o=>{if(o.isMesh&&o!==ground){for(const m of (Array.isArray(o.material)?o.material:[o.material])){if(!m)continue;wireMaterials.add(m);m.wireframe=wire}}})}
@@ -359,17 +425,22 @@ const ray=new T.Raycaster(),pointer=new T.Vector2();let down=null;canvas.addEven
 let last=performance.now(),elapsed=0,frameCount=0,sampleTime=0,sampleCount=0;const projected=new T.Vector3(),labelQueue=[];let cardRect=null,canvasRect=null;
 let rendering=true;function frame(now){if(!rendering)return;requestAnimationFrame(frame);if(document.hidden){last=now;return;}const raw=(now-last)/1000,dt=Math.min(.06,raw);last=now;frameCount++;if(raw>0&&raw<.2){sampleTime+=raw;sampleCount++}if(sampleTime>=3){const fps=sampleCount/sampleTime;if(quality==="auto"){slowWindows=fps<33?slowWindows+1:0;fastWindows=fps>54?fastWindows+1:0;if(slowWindows>=2&&pixelRatio>1){pixelRatio=Math.max(1,pixelRatio-.25);renderer.setPixelRatio(pixelRatio);size();slowWindows=0}else if(fastWindows>=4&&pixelRatio<initialRatio){pixelRatio=Math.min(initialRatio,pixelRatio+.15);renderer.setPixelRatio(pixelRatio);size();fastWindows=0}}sampleTime=0;sampleCount=0}if(!paused){elapsed+=dt;for(const animate of animated)animate(elapsed)}
 if(flight){const t=Math.min(1,(now-flight.start)/850),e=t*t*(3-2*t);camera.position.lerpVectors(flight.p,flight.end,e);controls.target.lerpVectors(flight.t,flight.target,e);if(t===1)flight=null}controls.update();camera.updateMatrixWorld();labelQueue.length=0;canvasRect=viewport.getBoundingClientRect();cardRect=panel?document.getElementById("inspector").getBoundingClientRect():null;
-for(const [id,o] of objects){const want=id===active&&opened?1:0;o.progress=paused||reduced?want:T.MathUtils.damp(o.progress,want,8,dt);o.parts.forEach((p,i)=>{if((id==="sheep"||id==="picnic")&&i>0)p.g.visible=id===active&&opened&&o.progress>.08;p.g.position.copy(p.base).addScaledVector(p.delta,o.progress);p.g.rotation.set(p.rotation.x*o.progress,p.rotation.y*o.progress,p.rotation.z*o.progress);const selected=id===active&&part===i&&opened;p.g.scale.setScalar(T.MathUtils.lerp(p.g.scale.x,selected?1.12:1,paused||reduced?1:.15));if(id==="hub"&&i===0){p.g.rotation.y=.12;p.g.scale.setScalar(1.14)}});o.accent.emissiveIntensity=id===active?.85:active==="hub"?.35:.19;if(o.connection){o.connection.material.opacity=o.hover||id===active?.95:active==="hub"?.48:.22;o.rimMaterial.emissiveIntensity=o.hover||id===active?.42:active==="hub"?.12:.05}function placeLabel(el,point){projected.copy(point).project(camera);const visible=projected.z>-1&&projected.z<1&&Math.abs(projected.x)<.96&&Math.abs(projected.y)<.90;if(!visible){el.hidden=true;return false}labelQueue.push({el,x:(projected.x*.5+.5)*canvasRect.width,y:(-.5*projected.y+.5)*canvasRect.height,priority:el.classList.contains("part-label")?3:id==="hub"?2:id===active?1:0});return true}if(active==="hub"||id==="hub"||id!==active||!panel){placeLabel(o.label,new T.Vector3(o.root.position.x,id==="hub"?4.0:2.65,o.root.position.z))}else{o.label.hidden=true}o.partLabels.forEach((b,i)=>{b.hidden=true;if(id===active&&id!=="hub"&&opened&&o.parts[i]&&o.progress>.5){const q=o.parts[i].g.getWorldPosition(new T.Vector3());q.y+=id==="sheep"||id==="picnic"?(i===0?1.55:.55):.65;placeLabel(b,q);b.setAttribute("aria-pressed",String(i===part))}})}
+for(const [id,o] of objects){const want=id===active&&opened?1:0;o.progress=paused||reduced?want:T.MathUtils.damp(o.progress,want,8,dt);o.parts.forEach((p,i)=>{if((id==="sheep"||id==="picnic")&&i>0)p.g.visible=id===active&&opened&&o.progress>.08;p.g.position.copy(p.base).addScaledVector(p.delta,o.progress);p.g.rotation.set(p.rotation.x*o.progress,p.rotation.y*o.progress,p.rotation.z*o.progress);const selected=id===active&&part===i&&opened;p.g.scale.setScalar(T.MathUtils.lerp(p.g.scale.x,selected?1.12:1,paused||reduced?1:.15));if(id==="hub"&&i===0){p.g.rotation.y=.12;p.g.scale.setScalar(1.14)}});o.accent.emissiveIntensity=id===active?.85:active==="hub"?.35:.19;if(o.connection){o.connection.material.opacity=o.hover||id===active?.95:active==="hub"?.48:.22;o.rimMaterial.emissiveIntensity=o.hover||id===active?.42:active==="hub"?.12:.05}function placeLabel(el,point){projected.copy(point).project(camera);const visible=projected.z>-1&&projected.z<1&&Math.abs(projected.x)<.96&&Math.abs(projected.y)<.90;if(!visible){el.hidden=true;return false}labelQueue.push({el,x:(projected.x*.5+.5)*canvasRect.width,y:(-.5*projected.y+.5)*canvasRect.height,priority:el.classList.contains("part-label")?3:id==="hub"?2:id===active?1:0});return true}if(phoneLayout()&&panel){o.label.hidden=true}else if(active==="hub"||id==="hub"||id!==active||!panel){placeLabel(o.label,new T.Vector3(o.root.position.x,id==="hub"?4.0:phoneLayout()?2.35:2.65,o.root.position.z))}else{o.label.hidden=true}o.partLabels.forEach((b,i)=>{b.hidden=true;if(id===active&&id!=="hub"&&opened&&o.parts[i]&&o.progress>.5){const q=o.parts[i].g.getWorldPosition(new T.Vector3());q.y+=id==="sheep"||id==="picnic"?(i===0?1.55:.55):.65;placeLabel(b,q);b.setAttribute("aria-pressed",String(i===part))}})}
 // Place labels in screen space without overlapping the inspector or each other.
- const placed=[];labelQueue.sort((a,b)=>b.priority-a.priority);
+ const placed=[],phone=phoneLayout(),guides=[];labelQueue.sort((a,b)=>b.priority-a.priority);
  const blocked=cardRect?{l:cardRect.left-canvasRect.left-5,r:cardRect.right-canvasRect.left+5,t:cardRect.top-canvasRect.top-5,b:cardRect.bottom-canvasRect.top+5}:null;
  const overlap=(a,b)=>a.l<b.r&&a.r>b.l&&a.t<b.b&&a.b>b.t;
  for(const q of labelQueue){const el=q.el;el.hidden=false;const w=el.offsetWidth||80,h=el.offsetHeight||28;let fit=null;
-  for(const dy of [0,-h-5,h+5,-2*h-9]){const x=Math.max(w/2+5,Math.min(canvasRect.width-w/2-5,q.x)),y=q.y+dy;const b={l:x-w/2-3,r:x+w/2+3,t:y-h-3,b:y+3};if(b.t<5||b.b>canvasRect.height-65||blocked&&overlap(b,blocked)||placed.some(a=>overlap(a,b)))continue;fit={x,y,b};break}
-  if(fit){el.style.left=fit.x+"px";el.style.top=fit.y+"px";placed.push(fit.b)}else el.hidden=true
+  const candidates=phone?[-2,-1,0,1,2].flatMap(v=>[-2,-1,0,1,2].map(u=>({dx:u*(w*.40+6),dy:v*(h+7)}))).sort((a,b)=>Math.hypot(a.dx,a.dy)-Math.hypot(b.dx,b.dy)):[0,-h-5,h+5,-2*h-9].map(dy=>({dx:0,dy}));
+  const minY=phone&&mobileArea?mobileArea.top:5,maxY=phone&&mobileArea?mobileArea.bottom:canvasRect.height-65;
+  for(const c of candidates){const x=Math.max(w/2+6,Math.min(canvasRect.width-w/2-6,q.x+c.dx)),y=q.y+c.dy;const pad=phone?4:3,b={l:x-w/2-pad,r:x+w/2+pad,t:y-h-pad,b:y+pad};if(b.t<minY||b.b>maxY||blocked&&overlap(b,blocked)||placed.some(a=>overlap(a,b)))continue;fit={x,y,b};break}
+  if(fit){el.style.left=fit.x+"px";el.style.top=fit.y+"px";placed.push(fit.b);
+   if(phone&&!panel&&Math.hypot(fit.x-q.x,fit.y-q.y)>9){const ey=fit.y<q.y?fit.y:fit.y-h;guides.push('<path d="M'+q.x.toFixed(1)+' '+q.y.toFixed(1)+' L'+fit.x.toFixed(1)+' '+ey.toFixed(1)+'" fill="none" stroke="#91acba" stroke-width="0.8" opacity="0.55"/>')}
+  }else el.hidden=true
  }
+ const guideLayer=document.getElementById("labelGuides");if(phone){guideLayer.setAttribute("viewBox","0 0 "+canvasRect.width+" "+canvasRect.height);guideLayer.innerHTML=guides.join("")}else if(guideLayer.childNodes.length)guideLayer.replaceChildren();
  if(renderer.shadowMap.enabled&&frameCount%3===0)renderer.shadowMap.needsUpdate=true;renderer.render(scene,camera)}
-ui.setEngine({select,setExpanded,highlight,setPanel});fly("hub");window.elasragPortfolioDiagnostics=()=>({version:"1.1",models:{...modelStatus},selected:active,quality,pixelRatio:renderer.getPixelRatio(),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,projectCount:objects.size-1,webgl:true});renderer.render(scene,camera);document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();rendering=false;for(const b of document.querySelectorAll("[data-view]"))b.disabled=true;labels.hidden=true;document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceLighting();
+ui.setEngine({select,setExpanded,highlight,setPanel});mobileReady=true;fly("hub",phoneLayout());window.elasragPortfolioDiagnostics=()=>({version:"1.2",models:{...modelStatus},selected:active,quality,pixelRatio:renderer.getPixelRatio(),drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,projectCount:objects.size-1,webgl:true});renderer.render(scene,camera);document.getElementById("fallback").hidden=true;renderStatus.textContent="WebGL / scene ready";canvas.addEventListener("webglcontextlost",e=>{e.preventDefault();rendering=false;for(const b of document.querySelectorAll("[data-view]"))b.disabled=true;labels.hidden=true;document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true");document.getElementById("fallback").hidden=false;document.getElementById("loadText").textContent="3D rendering was interrupted. Reload to restore the scene.";renderStatus.textContent="Project directory available"});requestAnimationFrame(frame);void enhanceModels();void enhanceLighting();
 }
 boot().catch(err=>{console.warn("Workspace rendering unavailable",err);document.getElementById("loadText").textContent="3D rendering is unavailable on this device or network.";renderStatus.textContent="Accessible project directory / fallback";document.querySelector(".workspace").classList.add("show-directory");document.getElementById("projectsLink").setAttribute("aria-expanded","true")});
 </script>
