@@ -42,7 +42,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({
   const rec = saveData.records[selectedRoute.id];
 
   return (
-    <div className="fixed inset-0 z-20 flex flex-col gap-5 overflow-y-auto overscroll-contain touch-pan-y p-4 sm:p-6 md:p-8 pointer-events-auto bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-950/20">
+    <div data-testid="title-scroll" className="fixed inset-0 z-20 flex flex-col gap-5 overflow-y-auto overscroll-contain touch-pan-y p-4 sm:p-6 md:p-8 pointer-events-auto bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-950/20">
       {/* Top Header Row: Bespoke SVG Crest + Utility Buttons */}
       <div className="flex flex-wrap shrink-0 items-start justify-between gap-4 pointer-events-auto">
         <div className="flex items-center gap-3.5">

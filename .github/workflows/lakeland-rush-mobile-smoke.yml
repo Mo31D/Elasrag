@@ -1,0 +1,41 @@
+name: Lakeland Rush mobile smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'LakelandRush/src/**'
+      - 'LakelandRush/scripts/mobile-smoke.mjs'
+      - '.github/workflows/lakeland-rush-mobile-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.5
+      - name: Build and run browser checks
+        working-directory: LakelandRush
+        run: |
+          bun install --frozen-lockfile
+          npm run lint
+          node --import tsx --test src/{geo,game}/*.test.ts
+          npm run build -- --base=/LakelandRush/
+          npm install --prefix "$RUNNER_TEMP/lakeland-playwright" --no-save playwright@1.56.1
+          "$RUNNER_TEMP/lakeland-playwright/node_modules/.bin/playwright" install --with-deps chromium
+          npm run preview -- --host 127.0.0.1 --port 4173 --strictPort > "$RUNNER_TEMP/lakeland-vite.log" 2>&1 &
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:4173/LakelandRush/ >/dev/null && break; sleep 1; done
+          PLAYWRIGHT_MODULE="$RUNNER_TEMP/lakeland-playwright/node_modules/playwright" node scripts/mobile-smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lakeland-mobile-smoke-evidence
+          path: LakelandRush/smoke-evidence/
+          if-no-files-found: ignore

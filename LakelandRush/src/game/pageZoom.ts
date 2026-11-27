@@ -3,12 +3,12 @@ export function suppressPageZoom(doc:Document=document){
  let last:{time:number;x:number;y:number}|null=null;
  const playing=(event:Event)=>doc.body?.dataset.state==='playing'&&!(event.target instanceof Element&&event.target.closest('[role="dialog"],input,textarea,select'));
  const cancel=(event:Event)=>{if(playing(event)&&event.cancelable)event.preventDefault();};
- const touchStart=(event:TouchEvent)=>{if(!playing(event)){last=null;return;}if(event.touches.length>1){last=null;cancel(event);}};
+ const touchStart=(event:TouchEvent)=>{if(!playing(event)){last=null;return;}if(event.touches.length>1){last=null;}};
  const touchMove=(event:TouchEvent)=>{if(event.touches.length>1)cancel(event);};
  const touchEnd=(event:TouchEvent)=>{
   if(!playing(event)||event.touches.length||event.changedTouches.length!==1){last=null;return;}
   const t=event.changedTouches[0],now=event.timeStamp;
-  if(last&&now-last.time>=0&&now-last.time<350&&Math.hypot(t.clientX-last.x,t.clientY-last.y)<35)cancel(event);
+  if(last&&now-last.time>=0&&now-last.time<350&&Math.hypot(t.clientX-last.x,t.clientY-last.y)<35&&!(event.target instanceof Element&&event.target.closest('button')))cancel(event);
   last={time:now,x:t.clientX,y:t.clientY};
  };
  const options={passive:false,capture:true};

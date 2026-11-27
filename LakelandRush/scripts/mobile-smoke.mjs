@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { mkdir } from 'node:fs/promises';
+const require=createRequire(import.meta.url);
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE);
+const browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader','--disable-dev-shm-usage']});
+const dir=process.env.SMOKE_OUTPUT||'smoke-evidence';
+await mkdir(dir,{recursive:true});
+try{
+ const page=await browser.newPage({viewport:{width:390,height:650},deviceScaleFactor:1,isMobile:true,hasTouch:true});
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:4173/LakelandRush/',{waitUntil:'domcontentloaded',timeout:60000});
+ await page.getByRole('button',{name:'Explore freely',exact:true}).waitFor({timeout:150000});
+ const title=page.getByTestId('title-scroll');
+ const layout=await title.evaluate(e=>({h:e.clientHeight,scroll:e.scrollHeight,touch:getComputedStyle(e).touchAction}));
+ assert.ok(layout.scroll>layout.h,'title must overflow vertically on small screens');
+ assert.equal(layout.touch,'pan-y');
+ await title.evaluate(e=>e.scrollTop=e.scrollHeight);
+ assert.ok(await title.evaluate(e=>e.scrollTop)>0,'title scroll must move');
+ await page.screenshot({path:dir+'/title.png'});
+ await page.getByRole('button',{name:'Explore freely',exact:true}).click({timeout:60000});
+ const stick=page.getByTestId('fixed-joystick');
+ await stick.waitFor({timeout:120000});const before=await stick.boundingBox();
+ const bird=page.getByRole('button',{name:'Toggle free flight'});
+ assert.equal(await bird.getAttribute('aria-pressed'),'false');
+ const canvas=page.getByTestId('game-canvas-mount');
+ await page.mouse.move(200,240);await page.mouse.down();await page.mouse.move(260,250,{steps:3});await page.mouse.up();
+ const after=await stick.boundingBox();assert.deepEqual(before,after,'camera drag must not move joystick');
+ for(const pace of ['Walk','Jog','Run']){const b=page.getByRole('button',{name:pace,exact:true});await b.click();assert.equal(await b.getAttribute('aria-pressed'),'true');}
+ await bird.click();await page.waitForFunction(()=>document.querySelector('[aria-label="Toggle free flight"]')?.getAttribute('aria-pressed')==='true');
+ await page.getByRole('button',{name:'Fly up',exact:true}).waitFor();await page.getByRole('button',{name:'Fly down',exact:true}).waitFor();
+ await page.waitForTimeout(1200);await page.screenshot({path:dir+'/flight.png'});
+ await bird.click();await page.getByRole('button',{name:'Jump (tap twice for double jump)',exact:true}).waitFor();
+ assert.equal(await bird.getAttribute('aria-pressed'),'false');
+ assert.equal(await canvas.evaluate(e=>getComputedStyle(e).touchAction),'none');
+ await page.screenshot({path:dir+'/ground.png'});
+ assert.deepEqual(errors,[],'uncaught browser errors');console.log('PASS: title scroll, fixed joystick, pace labels, camera gesture, flight toggle, altitude buttons, landing control, gameplay gesture CSS');
+}finally{await browser.close();}

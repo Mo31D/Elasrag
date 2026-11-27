@@ -747,7 +747,7 @@ export class LakelandEngine {
   public toggleFreeFlight():void {
     if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop)return;
     this.flying=!this.flying;this.flightVertical=0;this.playerVy=0;this.exploreJumpPresses=0;this.exploreJumpCount=0;this.coyoteTimer=0;this.isGrounded=false;
-    if(this.flying)this.playerY=Math.max(this.playerY+2,this.walkSurface(this.playerX,this.playerZ)+3);
+    if(this.flying){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.playerHeading;this.playerY=Math.max(this.playerY+2,this.walkSurface(this.playerX,this.playerZ)+3);}
     this.setCallout(this.flying?'Free flight':'Landing');this.pushHudSnapshot();
   }
   public setFlightVertical(value:number):void {this.flightVertical=this.flying?THREE.MathUtils.clamp(value,-1,1):0;}
@@ -1784,7 +1784,7 @@ export class LakelandEngine {
         this.playerZ - Math.cos(lookHeading));
       return;
     }
-    const backDist = roaming ? 5.4 : 5.2 + (speedMps / 32) * 1.4;
+    const backDist = roaming ? (this.flying?7.2:5.4) : 5.2 + (speedMps / 32) * 1.4;
     const dropFactor = this.skyDropTimer > 0 ? this.skyDropTimer / 0.85 : 0;
     const height = 2.45 + dropFactor * dropFactor * 14.0;
 
@@ -1798,7 +1798,7 @@ export class LakelandEngine {
       const pitch=THREE.MathUtils.clamp(this.explorePitch,-.65,.65);
       desiredX=this.playerX-fx*backDist*Math.cos(pitch);
       desiredZ=this.playerZ-fz*backDist*Math.cos(pitch);
-      desiredY=this.playerY+2.0-backDist*Math.sin(pitch);
+      desiredY=this.playerY+(this.flying?3.1:2.0)-backDist*Math.sin(pitch);
       // Pull the camera in before it passes through nearby mapped building footprints.
       for(let f=.15;f<=1;f+=.15){
         const x=this.playerX+(desiredX-this.playerX)*f,z=this.playerZ+(desiredZ-this.playerZ)*f,y=this.playerY+1.5+(desiredY-this.playerY-1.5)*f;
@@ -1807,6 +1807,8 @@ export class LakelandEngine {
         }
       }
     }
+    // Avoid a giant close-up of the avatar when a wall forces the camera inward.
+    if(roaming&&Math.hypot(desiredX-this.playerX,desiredZ-this.playerZ)<1.9){this.runner.root.visible=false;}
     const terrainAtCam=Math.max(.5,this.walkSurface(desiredX,desiredZ));
     desiredY=Math.max(terrainAtCam+(roaming?.65:1.4),desiredY);
 

@@ -206,11 +206,11 @@ export function animateRunnerRig(
     rig.bodyPivot.rotation.x=THREE.MathUtils.lerp(rig.bodyPivot.rotation.x,-1.35+vertical*.18,damp);
     rig.bodyPivot.rotation.z=THREE.MathUtils.lerp(rig.bodyPivot.rotation.z,-steerTilt*.35,damp);
     rig.bodyPivot.scale.set(1,1,1);
-    rig.headGroup.rotation.x=THREE.MathUtils.lerp(rig.headGroup.rotation.x,1.04,damp);
+    rig.headGroup.rotation.x=THREE.MathUtils.lerp(rig.headGroup.rotation.x,1.18,damp);
     rig.leftArm.rotation.set(0,0,THREE.MathUtils.lerp(rig.leftArm.rotation.z,-1.32,damp));
     rig.rightArm.rotation.set(0,0,THREE.MathUtils.lerp(rig.rightArm.rotation.z,1.32,damp));
-    rig.leftLeg.rotation.set(0,0,THREE.MathUtils.lerp(rig.leftLeg.rotation.z,-.14,damp));
-    rig.rightLeg.rotation.set(0,0,THREE.MathUtils.lerp(rig.rightLeg.rotation.z,.14,damp));
+    rig.leftLeg.rotation.set(0,0,THREE.MathUtils.lerp(rig.leftLeg.rotation.z,-.22,damp));
+    rig.rightLeg.rotation.set(0,0,THREE.MathUtils.lerp(rig.rightLeg.rotation.z,.22,damp));
     rig.scarfTail.rotation.x=.25+Math.sin(time*14)*.10;
     const pos=rig.flightSuit.geometry.attributes.position;
     let i=0;
@@ -218,7 +218,7 @@ export function animateRunnerRig(
     const limb=(part:THREE.Group,y:number)=>new THREE.Vector3(0,y,.015).applyQuaternion(part.quaternion).add(part.position);
     for(const [side,arm,leg] of [[-1,rig.leftArm,rig.leftLeg],[1,rig.rightArm,rig.rightLeg]] as const){
       const shoulder=limb(arm,0),wrist=limb(arm,-.40),hip=new THREE.Vector3(side*.21,-.10,.02),thigh=limb(leg,-.30);
-      const seam=wrist.clone().lerp(thigh,.36);seam.z+=.025;
+      const seam=wrist.clone().lerp(thigh,.36);seam.x+=side*.13;seam.z+=.025;
       tri(shoulder,wrist,hip);tri(wrist,seam,hip);tri(seam,thigh,hip);
     }
     const lh=limb(rig.leftLeg,0),rh=limb(rig.rightLeg,0),la=limb(rig.leftLeg,-.56),ra=limb(rig.rightLeg,-.56);
