@@ -10,3 +10,6 @@ export function turnTowards(yaw:number,target:number,rate:number,dt:number){cons
 export function flightEnergy(energy:number,dt:number,airborne:boolean,max:number){return Math.max(0,Math.min(max,energy+dt*(airborne?-1:2.5)));}
 export function canTakeOff(kind:Species,runway:number,energy:number){const p=ANIMALS[kind];return p.fly>0&&runway>=p.runway&&energy>=p.energy*.25;}
 export function feedAllowed(kind:Species,wet:boolean,airborne:boolean,speed:number){return !airborne&&speed<.35&&(kind==='mallard'||kind==='swan'||!wet);}
+
+// Input is the sole powered-flight demand; vertical controls also permit lift.
+export function flightDemand(strength:number,vertical:number){return Math.max(0,Math.min(1,Math.max(strength,Math.abs(vertical)*.55)));}

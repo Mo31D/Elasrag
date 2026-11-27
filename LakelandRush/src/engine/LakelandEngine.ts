@@ -795,7 +795,7 @@ export class LakelandEngine {
     if(this.flying){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.playerHeading;this.playerY=Math.max(this.playerY+2,this.walkSurface(this.playerX,this.playerZ)+3,this.solidTop(this.playerX,this.playerZ,FLIGHT_RADIUS)+1.25);}
     this.setCallout(this.flying?'Free flight':'Landing');this.pushHudSnapshot();
   }
-  public setFlightVertical(value:number):void {this.flightVertical=(this.flying||this.animal?.air)?THREE.MathUtils.clamp(value,-1,1):0;}
+  public setFlightVertical(value:number):void {this.flightVertical=(this.flying||this.animal?.air||this.animal?.launch)?THREE.MathUtils.clamp(value,-1,1):0;}
   public triggerTouchJump(): void {
     if(this.animal)return;
     if(this.gameState!=='playing'||this.inShop||this.flying||this.waterMode!=='land'||this.busService?.mode)return;

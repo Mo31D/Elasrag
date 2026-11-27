@@ -1,2 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {ANIMALS,canTakeOff,flightEnergy,feedAllowed,turnTowards} from './animalMotion';
 test('species takeoff and feeding rules',()=>{assert.equal(canTakeOff('sheep',100,100),false);assert.equal(canTakeOff('dog',100,100),false);assert.equal(canTakeOff('swan',2,65),false);assert.equal(canTakeOff('swan',24,65),true);assert.equal(canTakeOff('mallard',2,42),true);assert.equal(canTakeOff('mallard',2,0),false);assert.equal(flightEnergy(1,2,true,42),0);assert.equal(flightEnergy(40,3,false,42),42);assert.equal(feedAllowed('sheep',true,false,0),false);assert.equal(feedAllowed('mallard',true,false,0),true);assert.equal(feedAllowed('swan',false,true,0),false);assert.ok(turnTowards(0,Math.PI,1,.1)<=.1);assert.ok(ANIMALS.swan.mass>ANIMALS.mallard.mass);});
+
+import {flightDemand} from './animalMotion';
+test('flight power follows deliberate input and is zero when controls are released',()=>{assert.equal(flightDemand(0,0),0);assert.equal(flightDemand(.25,0),.25);assert.ok(flightDemand(0,1)>0);assert.equal(flightDemand(3,0),1);});
