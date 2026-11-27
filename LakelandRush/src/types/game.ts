@@ -265,6 +265,7 @@ export interface HudSnapshot {
   flying?: boolean;
   waterMode?:'land'|'swimming'|'rowing';
   canBoardBoat?:boolean;
+  boatKind?:'rowboat'|'motorboat';
   canEnterShop?: boolean;
 }
 

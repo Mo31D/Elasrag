@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { cameraRelative, smoothAngle, slideMove, sweepMove, paceSpeed, EXPLORE_JUMP_VELOCITY, secondJumpVelocity, advanceExploreJump, flightHeight, type ExplorePace } from '../game/exploreControls';
-import {SWIM_SPEED,surfaceMode,stepBoat,boatExit,type WaterMode} from '../game/waterNavigation';
+import {SWIM_SPEED,surfaceMode,stepBoat,boatExit,boatContains,type WaterMode} from '../game/waterNavigation';
 import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from './rowBoats';
 import {WaterRipples} from './waterRipples';
 import {WaterheadLife} from './waterheadLife';
@@ -392,7 +392,7 @@ export class LakelandEngine {
       this.initParticlePool();
       this.initRainSystem();
       this.spawnLakeSteamers();
-      this.rowBoats=createRowBoats(this.scene,(x,z)=>this.region.isInWater(x,z));
+
       this.waterRipples=new WaterRipples(this.scene);
 
       this.applyWeatherPreset(this.settings.weather);
@@ -449,6 +449,7 @@ export class LakelandEngine {
         for(const chunk of this.loadedChunks.values())for(const c of chunk.colliders)if(x>=c.minX-.35&&x<=c.maxX+.35&&z>=c.minZ-.35&&z<=c.maxZ+.35&&pointInRing(x,z,c.outline))return false;
         return true;
       };
+      this.rowBoats=createRowBoats(this.scene,(x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z));
       this.waterheadLife=new WaterheadLife(this.scene,(x,z)=>this.region.isInWater(x,z),
         (x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z),
         (x,z)=>!this.region.isInWater(x,z)&&unobstructed(x,z),
@@ -844,7 +845,7 @@ export class LakelandEngine {
   private boatWaterAt(x:number,z:number):boolean{
     if(!this.region.isInWater(x,z)||this.deckHeightAt(x,z)>-Infinity||this.waterheadLife?.contains(x,z))return false;
     for(const chunk of this.loadedChunks.values())for(const c of chunk.colliders)if(x>=c.minX&&x<=c.maxX&&z>=c.minZ&&z<=c.maxZ&&pointInRing(x,z,c.outline))return false;
-    return !this.rowBoats.some(b=>b!==this.occupiedBoat&&Math.hypot(x-b.x,z-b.z)<1.35);
+    return !this.rowBoats.some(b=>b!==this.occupiedBoat&&boatContains(b,b.kind,x,z));
   }
   private nearbyBoat():RowBoat|null{
     if(this.flying||this.inShop||this.occupiedBoat||this.activeRoute.mode!=='freeroam'||this.playerY>1.8)return null;
@@ -854,22 +855,22 @@ export class LakelandEngine {
   public interactWater():boolean{
     if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.flying)return false;
     if(this.occupiedBoat){
-      const exit=boatExit(this.occupiedBoat,(x,z)=>this.boatWaterAt(x,z));if(!exit){this.setCallout('Move away from the pier to leave the boat');return true;}
+      const exit=boatExit(this.occupiedBoat,(x,z)=>this.boatWaterAt(x,z),this.occupiedBoat.kind);if(!exit){this.setCallout('Move away from the pier to leave the boat');return true;}
       this.releaseBoat();this.playerX=exit.x;this.playerZ=exit.z;this.playerY=-.72;this.waterMode='swimming';this.setCallout('Swimming');
     }else{
       const b=this.nearbyBoat();if(!b)return false;
-      this.occupiedBoat=b;this.waterMode='rowing';this.playerX=b.x;this.playerZ=b.z;this.playerY=.34;this.playerHeading=b.yaw+Math.PI;this.exploreYaw=b.yaw;this.explorePitch=0;this.exploreFirst=false;this.setCallout('Rowboat · steer and row');
+      this.occupiedBoat=b;this.waterMode='rowing';this.playerX=b.x;this.playerZ=b.z;this.playerY=b.kind==='motorboat'?.40:.34;this.playerHeading=b.yaw+(b.kind==='motorboat'?0:Math.PI);this.exploreYaw=b.yaw;this.explorePitch=0;this.exploreFirst=false;this.setCallout(b.kind==='motorboat'?'Motorboat · throttle and steer':'Rowboat · steer and row');
     }
     this.playerVy=0;this.exploreJumpCount=0;this.exploreJumpPresses=0;this.coyoteTimer=0;this.isGrounded=false;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.exploreSpeed=0;this.pushHudSnapshot();return true;
   }
   private updateRowing(dt:number,steer:number):void{
     const b=this.occupiedBoat;if(!b)return;const x=b.x,z=b.z,yaw=b.yaw;
-    Object.assign(b,stepBoat(b,steer,this.exploreThrottle(),dt,(px,pz)=>this.boatWaterAt(px,pz)));
+    Object.assign(b,stepBoat(b,steer,this.exploreThrottle(),dt,(px,pz)=>this.boatWaterAt(px,pz),b.kind));
     this.exploreYaw+=b.yaw-yaw;
-    this.playerX=b.x;this.playerZ=b.z;this.playerY=.34+b.root.position.y;this.playerHeading=b.yaw+Math.PI;this.exploreSpeed=Math.abs(b.speed);this.totalDistanceM+=Math.hypot(b.x-x,b.z-z);
-    animateBoat(b,this.elapsedTime,dt,true);
-    animateRunnerRig(this.runner,{stridePhase:b.phase,speedMps:this.exploreSpeed,isAirborne:false,isSliding:false,isGrinding:false,steerTilt:steer,squashY:1,time:this.elapsedTime,dt,waterMode:'rowing'});seatAvatar(this.runner,b);
-    this.waterEffectTimer-=dt;if(Math.abs(b.speed)>.15&&this.waterEffectTimer<=0){this.waterEffectTimer=.18;const wx=b.x+Math.sin(b.yaw)*1.7,wz=b.z+Math.cos(b.yaw)*1.7;this.waterRipples?.emit(wx,wz,1.35,.48,b.yaw);for(const oar of b.oars){const tip=oar.localToWorld(new THREE.Vector3(Math.sign(oar.position.x)*1.5,0,0));if(tip.y<.25&&this.region.isInWater(tip.x,tip.z))this.waterRipples?.emit(tip.x,tip.z,.48);}}
+    this.playerX=b.x;this.playerZ=b.z;this.playerY=(b.kind==='motorboat'?.40:.34)+b.root.position.y;this.playerHeading=b.yaw+(b.kind==='motorboat'?0:Math.PI);this.exploreSpeed=Math.abs(b.speed);this.totalDistanceM+=Math.hypot(b.x-x,b.z-z);
+    animateBoat(b,this.elapsedTime,dt,true,steer);
+    animateRunnerRig(this.runner,{stridePhase:b.kind==='motorboat'?0:b.phase,speedMps:this.exploreSpeed,isAirborne:false,isSliding:false,isGrinding:false,steerTilt:steer,squashY:1,time:this.elapsedTime,dt,waterMode:'rowing'});seatAvatar(this.runner,b);
+    this.waterEffectTimer-=dt;if(Math.abs(b.speed)>.15&&this.waterEffectTimer<=0){this.waterEffectTimer=.18;const motor=b.kind==='motorboat',stern=motor?2.8:1.7;const wx=b.x+Math.sin(b.yaw)*stern,wz=b.z+Math.cos(b.yaw)*stern;this.waterRipples?.emit(wx,wz,motor?2.0:1.35,.48,b.yaw);if(motor&&this.region.isInWater(wx,wz))this.emitParticles(wx,.05,wz,2,0xe1edf0,.55);for(const oar of b.oars){const tip=oar.localToWorld(new THREE.Vector3(Math.sign(oar.position.x)*1.5,0,0));if(tip.y<.25&&this.region.isInWater(tip.x,tip.z))this.waterRipples?.emit(tip.x,tip.z,.48);}}
     this.sound.setShoreFactor(1);this.sound.setGameplayState(true,0,false);this.updateChaseCamera(dt,this.exploreSpeed);void this.updateChunkStreaming(b.x,b.z,false);this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
   }
   private nearShopDoor(): boolean {
@@ -1980,7 +1981,7 @@ export class LakelandEngine {
       exploreWalkPace: this.explorePace==='walk',
       explorePace: this.explorePace,
       flying:this.flying,
-      waterMode:this.waterMode,canBoardBoat:!!this.nearbyBoat(),
+      waterMode:this.waterMode,canBoardBoat:!!this.nearbyBoat(),boatKind:(this.occupiedBoat??this.nearbyBoat())?.kind,
       cleanExploreMode: !this.exploreLabels,
       insideShop: this.inShop,
       canEnterShop: this.nearShopDoor(),

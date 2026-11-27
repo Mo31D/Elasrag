@@ -19,3 +19,10 @@ test('steering and coasting',()=>{
  const wet=()=>true,b=stepBoat({x:0,z:0,yaw:0,speed:0},1,1,.04,wet);
  assert.ok(b.yaw<0&&b.speed>0);assert.ok(stepBoat(b,0,0,.04,wet).speed<b.speed);
 });
+
+test('motor launch has larger collision envelope and different acceleration',()=>{
+ const wet=(x:number,z:number)=>Math.abs(x)<1.05&&Math.abs(z)<3.1;
+ assert.ok(boatFits(0,0,0,wet,'rowboat'));assert.ok(!boatFits(0,0,0,wet,'motorboat'));
+ let row={x:0,z:0,yaw:0,speed:0},motor={...row};for(let i=0;i<100;i++){row=stepBoat(row,0,1,.04,()=>true);motor=stepBoat(motor,0,1,.04,()=>true,'motorboat');}
+ assert.ok(motor.speed>row.speed);
+});

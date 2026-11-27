@@ -61,8 +61,8 @@ export function ExploreHUD(p:GameHUDProps){
   {!touch&&<div className="absolute bottom-4 left-4 rounded-lg bg-slate-950/60 p-2 text-xs text-white">WASD · drag to look · 1 / 2 / 3 pace · Space jump/up · Q down · F fly · E interact</div>}
   <div className="absolute flex flex-col items-end gap-2" style={{right:'max(14px, env(safe-area-inset-right))',bottom:'calc(max(16px, env(safe-area-inset-bottom)) + 4px)'}}>
    {(hud.canEnterShop||hud.insideShop)&&<button type="button" className="pointer-events-auto rounded-xl bg-teal-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={p.onShopDoor}>{hud.insideShop?'Leave shop':'Enter shop'}</button>}
-   {(hud.canBoardBoat||hud.waterMode==='rowing')&&<button type="button" className="pointer-events-auto rounded-xl bg-teal-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={()=>{clear();p.onWaterInteract()}}>{hud.waterMode==='rowing'?'Leave boat':'Board rowboat'}</button>}
-   {(hud.waterMode==='swimming'||hud.waterMode==='rowing')&&<span className="rounded-lg bg-slate-950/70 px-3 py-2 text-xs text-teal-100">{hud.waterMode==='swimming'?'Swimming':'Rowing · forward / steer'}</span>}
+   {(hud.canBoardBoat||hud.waterMode==='rowing')&&<button type="button" className="pointer-events-auto rounded-xl bg-teal-200 px-4 py-3 text-sm font-semibold text-slate-950" onClick={()=>{clear();p.onWaterInteract()}}>{hud.waterMode==='rowing'?'Leave boat':hud.boatKind==='motorboat'?'Board motorboat':'Board rowboat'}</button>}
+   {(hud.waterMode==='swimming'||hud.waterMode==='rowing')&&<span className="rounded-lg bg-slate-950/70 px-3 py-2 text-xs text-teal-100">{hud.waterMode==='swimming'?'Swimming':hud.boatKind==='motorboat'?'Motorboat · throttle / steer':'Rowing · forward / steer'}</span>}
    {!hud.insideShop&&hud.waterMode!=='swimming'&&hud.waterMode!=='rowing'&&<div className="pointer-events-auto flex rounded-xl border border-white/20 bg-slate-950/65 p-1 text-xs text-white" role="group" aria-label="Movement speed">{paceOrder.map(mode=><button key={mode} type="button" aria-pressed={pace===mode} className={'min-h-9 rounded-lg px-2.5 touch-none '+(pace===mode?'bg-white/90 font-bold text-slate-900':'text-white/85')} onClick={()=>p.onSetExplorePace(mode)}><span className="block whitespace-nowrap">{EXPLORE_PACE_LABEL[mode]}</span></button>)}</div>}
    <div className="flex items-end gap-3">
     <button type="button" aria-label="Recenter camera behind player" onClick={p.onRecenterExploreCamera} className={control+' h-11 w-11'}><RotateCcw size={19}/></button>
@@ -71,6 +71,6 @@ export function ExploreHUD(p:GameHUDProps){
     {touch&&!hud.insideShop&&!hud.flying&&hud.waterMode!=='swimming'&&hud.waterMode!=='rowing'&&<button type="button" aria-label="Jump (tap twice for double jump)" className={control+' h-16 w-16'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
    </div>
   </div>
-  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V20</div>
+  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V21</div>
  </div>;
 }

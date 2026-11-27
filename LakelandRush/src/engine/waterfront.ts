@@ -59,7 +59,14 @@ export function buildWaterfrontDetails(ground: Ground, inLake: (x: number, z: nu
   const iron = new THREE.MeshStandardMaterial({ color: 0x242f31, roughness: 0.62, metalness: 0.2 });
   const enamel = new THREE.MeshStandardMaterial({ color: 0xc6c4b4, roughness: 0.56, metalness: 0.1 });
   const wood = new THREE.MeshStandardMaterial({ color: 0x554034, roughness: 0.86 });
-  const sand = new THREE.MeshStandardMaterial({ color: 0x71634c, roughness: 1 });
+  const gravelCanvas=document.createElement('canvas');gravelCanvas.width=gravelCanvas.height=256;
+  const gc=gravelCanvas.getContext('2d')!;gc.fillStyle='#77736a';gc.fillRect(0,0,256,256);
+  let seed=691;const rnd=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+  for(let i=0;i<5400;i++){const x=rnd()*256,y=rnd()*256,r=.6+rnd()*2.5,g=100+Math.floor(rnd()*80);
+   gc.fillStyle='rgba(28,27,24,.25)';gc.beginPath();gc.ellipse(x+.5,y+.6,r*1.4,r*.8,rnd()*Math.PI,0,Math.PI*2);gc.fill();
+   gc.fillStyle='rgb('+ (g+6)+','+(g+3)+','+g+')';gc.beginPath();gc.ellipse(x,y,r*1.3,r*.7,rnd()*Math.PI,0,Math.PI*2);gc.fill();}
+  const gravelMap=new THREE.CanvasTexture(gravelCanvas);gravelMap.wrapS=gravelMap.wrapT=THREE.RepeatWrapping;gravelMap.colorSpace=THREE.SRGBColorSpace;
+  const sand = new THREE.MeshStandardMaterial({ color: 0xe0dcd1,map:gravelMap,roughness: .98 });
   const bark = new THREE.MeshStandardMaterial({ color: 0x4c4537, roughness: 0.95 });
   const canopy = new THREE.MeshStandardMaterial({ color: 0x426137, roughness: 0.93 });
   const localMaterials = [paving, asphalt, apron, granite, iron, enamel, wood, sand, bark, canopy];
@@ -86,7 +93,7 @@ export function buildWaterfrontDetails(ground: Ground, inLake: (x: number, z: nu
   // Approximate forecourt extents from the frontage and its mapped entrance.
   batch(groundSurface([[66.1,-373.2],[75.6,-367.7],[79.8,-371.1],[68.3,-377.8]],ground,.075), apron);
   batch(groundSurface([[85.3,-361],[91.1,-364.0],[101,-342.6],[97.0,-338.9]],ground,.09), apron);
-  for (const area of publicRealm.shore) batch(groundSurface(area.points, ground, 0.035), sand);
+  for (const area of publicRealm.shore) {const geo=groundSurface(area.points,ground,.035,true),pos=geo.attributes.position,uv=geo.attributes.uv;for(let i=0;i<pos.count;i++)uv.setXY(i,pos.getX(i)/1.25,pos.getZ(i)/1.25);batch(geo,sand);}
 
   // The centre lines are mapped. Widths and kerb section are representative.
   for (const path of publicRealm.sidewalk) {
@@ -202,7 +209,7 @@ export function buildWaterfrontDetails(ground: Ground, inLake: (x: number, z: nu
     dispose() {
       group.traverse(object => { if (object instanceof THREE.Mesh) object.geometry.dispose(); });
       for (const mat of localMaterials) mat.dispose();
-      pavingMap.dispose();
+      pavingMap.dispose();gravelMap.dispose();
     },
   };
 }
