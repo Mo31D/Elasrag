@@ -332,7 +332,7 @@ export default function App() {
   ]);
 
   useEffect(()=>{
-    const clearLook=()=>{const pointer=lookPointer.current;lookPointer.current=null;const mount=mountRef.current;if(pointer&&mount?.hasPointerCapture(pointer.id))mount.releasePointerCapture(pointer.id);};
+    const clearLook=()=>{const pointer=lookPointer.current;lookPointer.current=null;engineRef.current?.setAnimalLookHeld(false);const mount=mountRef.current;if(pointer&&mount?.hasPointerCapture(pointer.id))mount.releasePointerCapture(pointer.id);};
     if(gameState!=='playing'||showMapModal||showSettingsModal||showTutorialModal)clearLook();
     window.addEventListener('blur',clearLook);document.addEventListener('visibilitychange',clearLook);
     return()=>{window.removeEventListener('blur',clearLook);document.removeEventListener('visibilitychange',clearLook);};
@@ -347,6 +347,7 @@ export default function App() {
         onPointerDown={event => {
           if (gameState !== 'playing' || showMapModal || showSettingsModal || showTutorialModal || selectedRoute.mode !== 'freeroam' || lookPointer.current || (event.pointerType==='mouse'&&event.button!==0)) return;
           event.currentTarget.setPointerCapture(event.pointerId);
+          engineRef.current?.setAnimalLookHeld(true);
           lookPointer.current = { id: event.pointerId, x: event.clientX, y: event.clientY,startX:event.clientX,startY:event.clientY,moved:false };
         }}
         onPointerMove={event => {
@@ -357,9 +358,9 @@ export default function App() {
           pointer.x = event.clientX;
           pointer.y = event.clientY;
         }}
-        onPointerUp={event=>{const p=lookPointer.current;if(p?.id===event.pointerId){lookPointer.current=null;if(!p.moved&&Math.hypot(event.clientX-p.startX,event.clientY-p.startY)<=9)engineRef.current?.selectAnimalAt(event.clientX,event.clientY);}}}
-        onPointerCancel={event=>{if(lookPointer.current?.id===event.pointerId)lookPointer.current=null;}}
-        onLostPointerCapture={event=>{if(lookPointer.current?.id===event.pointerId)lookPointer.current=null;}}
+        onPointerUp={event=>{const p=lookPointer.current;if(p?.id===event.pointerId){lookPointer.current=null;engineRef.current?.setAnimalLookHeld(false);if(!p.moved&&Math.hypot(event.clientX-p.startX,event.clientY-p.startY)<=9)engineRef.current?.selectAnimalAt(event.clientX,event.clientY);}}}
+        onPointerCancel={event=>{if(lookPointer.current?.id===event.pointerId){lookPointer.current=null;engineRef.current?.setAnimalLookHeld(false);}}}
+        onLostPointerCapture={event=>{if(lookPointer.current?.id===event.pointerId){lookPointer.current=null;engineRef.current?.setAnimalLookHeld(false);}}}
       />
 
       {/* Initial Terrain Loading Curtain */}
