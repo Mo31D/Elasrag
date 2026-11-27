@@ -3,3 +3,21 @@ test('species takeoff and feeding rules',()=>{assert.equal(canTakeOff('sheep',10
 
 import {flightDemand} from './animalMotion';
 test('flight power follows deliberate input and is zero when controls are released',()=>{assert.equal(flightDemand(0,0),0);assert.equal(flightDemand(.25,0),.25);assert.ok(flightDemand(0,1)>0);assert.equal(flightDemand(3,0),1);});
+
+import * as THREE from 'three';
+import {AnimalPlayer,type BirdFlightPose} from '../engine/animalPlayer';
+test('single button launches both playable bird species from land or water with no directional input',()=>{
+ for(const kind of ['mallard','swan'] as const)for(const wet of [false,true]){
+  const root=new THREE.Group();root.position.y=wet?-.08:0;
+  const poses:(BirdFlightPose|undefined)[]=[];
+  const bird=new AnimalPlayer({root,kind,pose:(_t,_s,_w,_a,_f,pose)=>poses.push(pose)},{wet:()=>wet,floor:()=>0,solid:()=>-Infinity,blocked:()=>false,ripple:()=>{}});
+  const start=bird.y;bird.toggleFlight();
+  assert.equal(bird.air,true);assert.ok(bird.y>start);assert.equal(poses.at(-1),'takeoff');
+  for(let i=0;i<30;i++)bird.update(1/60,0,0,0,false,0);
+  assert.ok(bird.y>start+.8);assert.ok(bird.speed>0);assert.equal(bird.air,true);
+  for(let i=0;i<120;i++)bird.update(1/60,0,0,0,false,0);
+  assert.equal(poses.at(-1),'glide');assert.ok(bird.air);
+  bird.toggleFlight();bird.update(1/60,0,0,0,false,0);
+  assert.equal(poses.at(-1),'landing');
+ }
+});
