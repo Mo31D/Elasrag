@@ -12,7 +12,7 @@ export function sheepActor():AnimalActor{
 }
 type World={wet:(x:number,z:number)=>boolean;floor:(x:number,z:number)=>number;solid:(x:number,z:number,r:number)=>number;blocked:(x:number,z:number,y:number,r:number)=>boolean;ripple:(x:number,z:number,r:number)=>void};
 export class AnimalPlayer{
- readonly p; x:number;z:number;y:number;yaw:number;speed=0;energy:number;runway=0;air=false;launch=false;landing=false;feeding=false;wet=false;private t=0;private rippleTime=0;private climbVelocity=0;private launchTime=0;private flightPhase=0;private bank=0;private pitch=0;private manualLanding=false;private rest:THREE.Vector3;private restYaw:number;
+ readonly p; x:number;z:number;y:number;yaw:number;speed=0;actualSpeed=0;energy:number;runway=0;air=false;launch=false;landing=false;feeding=false;wet=false;private t=0;private rippleTime=0;private climbVelocity=0;private launchTime=0;private flightPhase=0;private bank=0;private pitch=0;private manualLanding=false;private rest:THREE.Vector3;private restYaw:number;
  constructor(readonly actor:AnimalActor,private world:World){this.p=ANIMALS[actor.kind];const r=actor.root;this.rest=r.position.clone();this.restYaw=r.rotation.y;this.x=r.position.x;this.y=r.position.y;this.z=r.position.z;this.yaw=r.rotation.y;this.energy=this.p.energy;this.wet=world.wet(this.x,this.z);r.userData.animalControlled=true;}
  toggleFlight(){
   if(!this.p.fly)return;
@@ -75,6 +75,7 @@ export class AnimalPlayer{
    return Math.max(floor(x,z),w.solid(x,z,p.radius))>this.y-.04;
   });
   this.x=next.x;this.z=next.z;const moved=Math.hypot(this.x-ox,this.z-oz);
+  this.actualSpeed=dt>0?moved/dt:0;
   if(dt>0&&moved<delta*.12)this.speed*=Math.exp(-dt*8);
   // Gliding and flaring consume less stamina than repeated powered wingbeats.
   this.energy=flightEnergy(this.energy,dt*(this.air?(gliding?.35:this.landing?.6:1):1),this.air,p.energy);
