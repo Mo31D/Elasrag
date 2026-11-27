@@ -40,7 +40,7 @@ export class AnimalPlayer{
   const oldYaw=this.yaw;
   if(strength>.08){this.feeding=false;this.yaw=turnTowards(this.yaw,Math.atan2(-input.x,-input.z),p.turn,dt);}
   const turnRate=dt>0?(this.yaw-oldYaw)/dt:0;
-  this.bank+=(THREE.MathUtils.clamp(-turnRate*.32,-.48,.48)-this.bank)*(1-Math.exp(-dt*5));
+  this.bank+=(THREE.MathUtils.clamp(turnRate*.32,-.48,.48)-this.bank)*(1-Math.exp(-dt*5));
   const floor=(x:number,z:number)=>w.wet(x,z)?-.08:w.floor(x,z);
   this.wet=!this.air&&w.wet(this.x,this.z);
   // Launch has its own power; afterwards steering/vertical input powers
