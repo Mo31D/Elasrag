@@ -4,10 +4,12 @@ import navigation from '../data/ambleside-navigation.json';
 import inventory from '../data/ambleside-business-inventory.json';
 import { TRANSIT } from '../data/transit';
 import { AREAS,areaChunkKeys,inside,indexPlaces,CATEGORY_NAMES,type PlaceCategory,type PlaceEntry } from '../geo/placeIdentity';
-import type { ExploreStop } from './AmblesideMap';
+import {MapViewport,MapMarker,DestinationActions,type MapActionsProps} from './MapTools';
+import type {MapTarget} from '../geo/mapTravel';
 const palette:Record<PlaceCategory,string>={shop:'#a78bfa',hotel:'#f9a8d4',food:'#fbbf24',fuel:'#fb923c',supermarket:'#86efac',attraction:'#67e8f9',service:'#cbd5e1',rail:'#60a5fa',bus:'#60a5fa'};
 const localCategory:Record<string,PlaceCategory>={shop:'shop',food:'supermarket',fuel:'fuel',parking:'service',park:'attraction',attraction:'attraction',landmark:'attraction'};
-export function PlacesMap({manifest,lake,player,onTravel}:{manifest:RegionManifest|null;lake:LakeData|null;player?:{x:number;z:number};onTravel:(stop:ExploreStop)=>void}){
+export function PlacesMap({manifest,lake,...actions}:MapActionsProps&{manifest:RegionManifest|null;lake:LakeData|null}){
+  const {player,waypoint}=actions;
   const [areaId,setArea]=useState('ambleside');
   const [category,setCategory]=useState('all');
   const [query,setQuery]=useState('');
@@ -59,9 +61,9 @@ export function PlacesMap({manifest,lake,player,onTravel}:{manifest:RegionManife
   const visible=places.filter(p=>(category==='all'||category===p.category)&&(!q||p.name.toLowerCase().includes(q)));
   const pending=area.id==='ambleside'?inventory.records.filter(r=>(!r.position||!inside(area,r.position.x,r.position.z))&&(category==='all'||category===r.mapCategory)&&(!q||[r.name,r.address,r.postcode].some(v=>v.toLowerCase().includes(q)))):[];
   const active:PlaceEntry|undefined=visible.find(p=>p.id===selected);
-  const travel=active?.travelId?navigation.stops.find(s=>s.id===active.travelId):undefined;
+  const target:MapTarget|null=active?{id:active.id,name:active.name,x:active.x,z:active.z,kind:active.category,curatedId:active.travelId}:null;
   const roads=useMemo(()=>chunks.flatMap(c=>c.roads).filter(r=>['primary','secondary','lane','railway'].includes(r.kind)),[chunks]);
-  const box=[area.minX,area.minZ,area.maxX-area.minX,area.maxZ-area.minZ].join(' ');
+  const box:[number,number,number,number]=[area.minX,area.minZ,area.maxX-area.minX,area.maxZ-area.minZ];
   const path=(pts:number[][])=>pts.map(p=>p.join(',')).join(' ');
   return <div className="min-h-0 flex-1 overflow-y-auto p-3">
     <div className="mb-3 flex flex-wrap gap-2">
@@ -70,19 +72,20 @@ export function PlacesMap({manifest,lake,player,onTravel}:{manifest:RegionManife
       <input aria-label="Search real places" placeholder="Search places…" value={query} onChange={e=>{setQuery(e.currentTarget.value);setSelected('')}} className="min-w-32 flex-1 rounded bg-slate-800 p-2 text-sm text-white"/>
     </div>
     <div className="grid gap-3 md:grid-cols-2">
-      <svg aria-label="Road and places map" viewBox={box} className="mx-auto block w-full max-h-[50dvh] rounded-lg bg-slate-950">
+      <MapViewport label="Road and places map" box={box}>
         {lake?.outerRings.map((ring,i)=><polygon key={i} fill="#123c50" points={path(ring)}/>)}
         {roads.map((r,i)=><polyline key={i} points={path(r.pts)} fill="none" stroke={r.kind==='railway'?'#cbd5e1':r.kind==='primary'?'#d9ab61':r.kind==='secondary'?'#8299ac':'#334155'} strokeWidth={r.kind==='primary'?9:r.kind==='railway'?5:4} strokeDasharray={r.kind==='railway'?'12 8':undefined}><title>{[r.name,r.ref].filter(Boolean).join(' · ')||r.kind}</title></polyline>)}
-        {visible.map(p=><circle key={p.id} cx={p.x} cy={p.z} r={active?.id===p.id?13:6} fill={palette[p.category]} stroke="#0f172a" strokeWidth="2" onClick={()=>setSelected(p.id)} className="cursor-pointer"><title>{p.name}</title></circle>)}
+        {visible.map(p=><MapMarker key={p.id} x={p.x} y={p.z} name={p.name} color={palette[p.category]} r={active?.id===p.id?13:8} selected={active?.id===p.id} onSelect={()=>setSelected(p.id)}/>)}
         {player&&<circle cx={player.x} cy={player.z} r="11" fill="#f472b6" stroke="#fff" strokeWidth="3" pointerEvents="none"/>}
         {active&&<g pointerEvents="none"><circle cx={active.x} cy={active.z} r="16" fill="none" stroke="#fff" strokeWidth="3"/><text x={active.x} y={active.z-25} textAnchor="middle" fontSize="22" fill="#fff" paintOrder="stroke" stroke="#0f172a" strokeWidth="5">{active.name}</text></g>}
-      </svg>
+        {waypoint&&<circle cx={waypoint.x} cy={waypoint.z} r="19" stroke="#22d3ee" strokeWidth="4" fill="none" pointerEvents="none"/>}
+      </MapViewport>
       <div>
         <p className="mb-2 text-xs text-slate-300">{loaded?.key!==key?'Loading mapped streets…':visible.length+' mapped places'} · Gold: main roads · Dashed: railway {loaded?.key===key&&loaded.missing>0?' · Some map tiles unavailable':''}</p>
-        {active&&<div className="mb-2 rounded-lg border border-white/20 bg-slate-800 p-3"><strong className="text-white">{active.name}</strong><p className="text-xs text-slate-300">{CATEGORY_NAMES[active.category]} · {active.source.startsWith('http')?'Published transport record':'Mapped identity; appearance not surveyed'}</p>{travel&&<button type="button" className="mt-2 rounded bg-amber-400 p-2 text-slate-950" onClick={()=>onTravel(travel)}>Go to {travel.name}</button>}</div>}
+        <DestinationActions {...actions} target={target}/>
         {area.id==='ambleside'&&<p className="mb-2 text-xs text-slate-300">Business inventory: {inventory.counts.total} records · {inventory.counts.mapped} matched to existing geographic features · {inventory.counts.unlocated} awaiting location verification. Not a live trading register.</p>}
-        <div className="max-h-[38dvh] overflow-y-auto space-y-1">{visible.map(p=><button key={p.id} type="button" aria-pressed={active?.id===p.id} onClick={()=>setSelected(p.id)} className="flex w-full items-center gap-2 rounded border border-white/10 p-2 text-left text-sm text-slate-100 aria-pressed:border-amber-400"><span className="h-2 w-2 shrink-0 rounded-full" style={{background:palette[p.category]}}/>{p.name}<span className="ml-auto text-xs text-slate-400">{CATEGORY_NAMES[p.category]}</span></button>)}{!visible.length&&loaded?.key===key&&<p className="p-3 text-sm text-slate-300">No matching mapped places.</p>}{pending.length>0&&<div className="pt-3"><h3 className="mb-2 text-xs font-bold text-amber-300">Awaiting verified location ({pending.length})</h3>{pending.map(r=><div key={r.id} className="mb-1 rounded border border-white/10 p-2 text-sm text-slate-200"><div>{r.name}</div><div className="text-xs text-slate-400">{[r.address,r.postcode].filter(Boolean).join(', ')||'Address pending'} · Not placed on map</div></div>)}</div>}</div>
+        <div className="space-y-1">{visible.map(p=><button key={p.id} type="button" aria-pressed={active?.id===p.id} onClick={()=>setSelected(p.id)} className="flex w-full items-center gap-2 rounded border border-white/10 p-2 text-left text-sm text-slate-100 aria-pressed:border-amber-400"><span className="h-2 w-2 shrink-0 rounded-full" style={{background:palette[p.category]}}/>{p.name}<span className="ml-auto text-xs text-slate-400">{CATEGORY_NAMES[p.category]}</span></button>)}{!visible.length&&loaded?.key===key&&<p className="p-3 text-sm text-slate-300">No matching mapped places.</p>}{pending.length>0&&<div className="pt-3"><h3 className="mb-2 text-xs font-bold text-amber-300">Awaiting verified location ({pending.length})</h3>{pending.map(r=><div key={r.id} className="mb-1 rounded border border-white/10 p-2 text-sm text-slate-200"><div>{r.name}</div><div className="text-xs text-slate-400">{[r.address,r.postcode].filter(Boolean).join(', ')||'Address pending'} · Not placed on map</div></div>)}</div>}</div>
       </div>
-    </div><p className="mt-2 text-xs text-slate-400">Map data © OpenStreetMap contributors. Existing geographic snapshot, not a live business or transport directory. No unsurveyed fast travel.</p>
+    </div><p className="mt-2 text-xs text-slate-400">Map data © OpenStreetMap contributors. Existing geographic snapshot, not a live business or transport directory. Unlocated directory entries cannot be used for fast travel.</p>
   </div>;
 }

@@ -2,16 +2,14 @@ import { useState } from 'react';
 import type { LakeData } from '../types/game';
 import navigation from '../data/ambleside-navigation.json';
 import { TRANSIT } from '../data/transit';
+import {fromStop,type MapTarget} from '../geo/mapTravel';
+import {MapViewport,MapMarker,DestinationActions,type MapActionsProps} from './MapTools';
 
 export type ExploreStop = (typeof navigation.stops)[number];
 
-export function AmblesideMap({ lake, player, onTravel, onStartShopRoute }: {
-  lake: LakeData | null;
-  player?: { x: number; z: number };
-  onTravel: (stop: ExploreStop) => void;
-  onStartShopRoute: () => void;
-}) {
-  const [selected, select] = useState(navigation.stops[0]);
+export function AmblesideMap({ lake,onStartShopRoute,...actions }: MapActionsProps&{lake:LakeData|null;onStartShopRoute:()=>void}) {
+  const {player,waypoint}=actions;
+  const [selected, select] = useState<MapTarget>(fromStop(navigation.stops[0]));
   const [showLabels, setShowLabels] = useState(true);
   const [approach, setApproach] = useState('all');
   return (
@@ -28,8 +26,7 @@ export function AmblesideMap({ lake, player, onTravel, onStartShopRoute }: {
             {navigation.approaches.map(route => <option key={route.id} value={route.id}>{route.name}</option>)}
           </select>
         </div>
-        <svg viewBox="-510 -1880 910 1740" className="mx-auto block max-h-[57dvh] w-full rounded-lg bg-slate-950"
-          aria-label="Ambleside and Waterhead approaches">
+        <MapViewport box={[-600,-2000,1250,2100]} label="Ambleside and Waterhead approaches">
           {lake?.outerRings.map((ring, index) => <polygon key={index} fill="#0c3545"
             points={ring.map(point => point.join(',')).join(' ')} />)}
           {navigation.approaches.filter(route => approach === 'all' || approach === route.id).map(route => (
@@ -43,26 +40,24 @@ export function AmblesideMap({ lake, player, onTravel, onStartShopRoute }: {
               <text x={stop.point[0] + 20} y={stop.point[1] + 8} fill="#e2e8f0" fontSize="25">{stop.name}</text>
             )}
             <circle aria-label={stop.name} tabIndex={0} role="button" className="cursor-pointer" fill="transparent"
-              r="27" cx={stop.point[0]} cy={stop.point[1]} onClick={() => select(stop)}
-              onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') select(stop); }} />
+              r="27" cx={stop.point[0]} cy={stop.point[1]} onClick={() => select(fromStop(stop))}
+              onKeyDown={event => { if (event.key === 'Enter' || event.key === ' ') select(fromStop(stop)); }} />
           </g>)}
           {TRANSIT.filter(t => t.mode === 'bus' && t.x>=-510 && t.x<=400 && t.z>=-1880 && t.z<=-140).map(t => <g key={t.id}>
-            <title>{t.name}</title><rect x={t.x-8} y={t.z-8} width="16" height="16" rx="3" fill="#60a5fa" stroke="#0f172a" strokeWidth="3" />
+            <MapMarker x={t.x} y={t.z} name={t.name} color="#60a5fa" r={9} selected={selected.id===t.id} onSelect={()=>select({id:t.id,name:t.name,x:t.x,z:t.z,kind:t.mode})}/>
           </g>)}
           {player && <circle cx={player.x} cy={player.z} r="11" fill="#f472b6" stroke="#fff" strokeWidth="3"
             aria-label="Current position" pointerEvents="none" />}
-        </svg>
+          {waypoint&&<circle cx={waypoint.x} cy={waypoint.z} r="19" stroke="#22d3ee" strokeWidth="4" fill="none" pointerEvents="none"/>}
+        </MapViewport>
       </div>
       <div>
         {approach === 'shop-link' && (
           <button type="button" className="mb-2 w-full rounded-lg bg-pink-300 p-3 font-bold text-slate-950"
             onClick={onStartShopRoute}>Start Lakeside Picnic to Black Sheep Shop</button>
         )}
-        <button type="button" onClick={() => onTravel(selected)}
-          className="mb-2 w-full rounded-lg bg-amber-400 p-3 font-bold text-slate-950">
-          Go to {selected.name}
-        </button>
-        <details className="mb-2 rounded-lg border border-blue-400/30 p-2 text-xs text-slate-200"><summary className="cursor-pointer">Bus stops (blue squares)</summary><ul className="mt-2 space-y-1">{TRANSIT.filter(t=>t.mode==='bus'&&t.x>=-510&&t.x<=400&&t.z>=-1880&&t.z<=-140).map(t=><li key={t.id}>{t.name}</li>)}</ul></details>
+        <DestinationActions {...actions} target={selected}/>
+        <details className="mb-2 rounded-lg border border-blue-400/30 p-2 text-xs text-slate-200"><summary className="cursor-pointer">Bus stops (blue squares)</summary><ul className="mt-2 space-y-1">{TRANSIT.filter(t=>t.mode==='bus'&&t.x>=-510&&t.x<=400&&t.z>=-1880&&t.z<=-140).map(t=><li key={t.id}><button type="button" onClick={()=>select({id:t.id,name:t.name,x:t.x,z:t.z,kind:t.mode})}>{t.name}</button></li>)}</ul></details>
         <div className="grid grid-cols-2 gap-1.5">
           {navigation.stops.map(stop => <button key={stop.id} type="button" aria-pressed={selected.id === stop.id}
             onClick={() => select(stop)} className="rounded-lg border border-white/15 bg-slate-900 p-2 text-left text-sm text-slate-100 aria-pressed:border-amber-400">

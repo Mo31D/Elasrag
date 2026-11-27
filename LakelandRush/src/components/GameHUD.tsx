@@ -9,7 +9,10 @@ import type {
   TouchControlMode,
 } from '../types/game';
 
+import type {MapTarget} from '../geo/mapTravel';
 export interface GameHUDProps {
+  waypoint?:MapTarget|null;
+  onClearWaypoint?:()=>void;
   hud: HudSnapshot;
   route: RouteDefinition;
   lakeData: LakeData | null;

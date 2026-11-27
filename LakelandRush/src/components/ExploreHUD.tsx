@@ -3,6 +3,7 @@ import {Map,Menu,ArrowUp,ArrowDown,RotateCcw,Compass,Bird} from 'lucide-react';
 import type {GameHUDProps} from './GameHUD';
 import {floatingInput,fixedStickHit,EXPLORE_PACE_LABEL,type ExplorePace} from '../game/exploreControls';
 import navigation from '../data/ambleside-navigation.json';
+import {mapDistance} from '../geo/mapTravel';
 const control='pointer-events-auto flex items-center justify-center rounded-full border border-white/35 bg-slate-950/55 text-white active:bg-white/30 touch-none';
 const paceOrder:ExplorePace[]=['walk','run','sprint'];
 const paths=navigation.approaches.map(a=>a.points);
@@ -30,9 +31,10 @@ export function ExploreHUD(p:GameHUDProps){
    ctx.fillStyle='#21596f';for(const ring of p.lakeData?.outerRings??[]){draw(ring,true);ctx.fill();}
    ctx.fillStyle='#12252e';for(const ring of p.lakeData?.innerRings??[]){draw(ring,true);ctx.fill();}
    ctx.strokeStyle='#d0b88b';ctx.lineWidth=2.5;for(const path of paths){draw(path);ctx.stroke();}
+   if(p.waypoint){const dx=(p.waypoint.x-hud.playerX)*scale,dz=(p.waypoint.z-hud.playerZ)*scale,k=Math.min(1,(w/2-12)/Math.max(1,Math.hypot(dx,dz)));ctx.strokeStyle='#22d3ee';ctx.setLineDash([3,4]);ctx.beginPath();ctx.moveTo(w/2,h/2);ctx.lineTo(w/2+dx*k,h/2+dz*k);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#22d3ee';ctx.beginPath();ctx.arc(w/2+dx*k,h/2+dz*k,4,0,Math.PI*2);ctx.fill();}
    ctx.save();ctx.translate(w/2,h/2);ctx.rotate(-hud.playerHeading);ctx.fillStyle='#f5e7aa';ctx.beginPath();ctx.moveTo(0,-8);ctx.lineTo(5,6);ctx.lineTo(0,3);ctx.lineTo(-5,6);ctx.closePath();ctx.fill();ctx.restore();
    ctx.fillStyle='#fff';ctx.font='10px Arial';ctx.fillText('N',w/2-3,11);
- },[hud.playerX,hud.playerZ,hud.playerHeading,p.lakeData]);
+ },[hud.playerX,hud.playerZ,hud.playerHeading,p.lakeData,p.waypoint]);
  function move(e:PointerEvent<HTMLDivElement>){
   const a=active.current;if(!a||a.id!==e.pointerId)return;
   const v=floatingInput(a,{x:e.clientX,y:e.clientY},radius);
@@ -48,6 +50,7 @@ export function ExploreHUD(p:GameHUDProps){
    <div className="flex items-center gap-2 pointer-events-auto">{!hud.insideShop&&<button type="button" aria-label="Toggle free flight" aria-pressed={!!hud.flying} onClick={()=>{p.onFlightVertical(0);p.onToggleFlight()}} className={control+' h-10 w-10 '+(hud.flying?'!bg-teal-500 !text-slate-950':'')}><Bird size={21}/></button>}
    <button type="button" aria-label="Pause and settings menu" onClick={p.onPause} className={control+' h-12 w-12 rounded-xl'}><Menu size={23}/></button></div>
   </div>
+  {p.waypoint&&!hud.insideShop&&<button type="button" aria-label="Clear waypoint" onClick={p.onClearWaypoint} className="absolute top-[112px] left-3 pointer-events-auto max-w-[65vw] rounded-lg bg-slate-950/75 px-2.5 py-1.5 text-left text-xs text-cyan-200"><span className="block truncate">◆ {p.waypoint.name} · {mapDistance({x:hud.playerX,z:hud.playerZ},p.waypoint)}</span><span className="text-[9px] opacity-70">Direct distance · tap to clear</span></button>}
   {hud.actionCallout&&<div className="absolute left-1/2 top-28 max-w-[70%] -translate-x-1/2 rounded-lg bg-slate-950/75 px-3 py-2 text-xs text-white">{hud.actionCallout}</div>}
   {touch&&<div role="group" aria-label="Fixed movement joystick" data-testid="fixed-joystick" className="pointer-events-auto absolute flex h-[110px] w-[110px] items-center justify-center rounded-full border-2 border-white/30 bg-slate-950/25 touch-none"
    style={{left:'max(22px, env(safe-area-inset-left))',bottom:'calc(max(18px, env(safe-area-inset-bottom)) + 6px)'}}
@@ -66,6 +69,6 @@ export function ExploreHUD(p:GameHUDProps){
     {touch&&!hud.insideShop&&!hud.flying&&<button type="button" aria-label="Jump (tap twice for double jump)" className={control+' h-16 w-16'} onPointerDown={e=>{if(e.button!==0)return;e.preventDefault();p.onTouchJump()}} onClick={e=>{if(e.detail===0)p.onTouchJump()}}><ArrowUp size={26}/></button>}
    </div>
   </div>
-  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V17</div>
+  <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] text-white/50">V18</div>
  </div>;
 }

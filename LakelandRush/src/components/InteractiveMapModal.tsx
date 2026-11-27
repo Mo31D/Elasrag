@@ -2,7 +2,9 @@ import { LAKELAND_ROUTES } from '../data/routes';
 import React from 'react';
 import { TRANSIT } from '../data/transit';
 import { PlacesMap } from './PlacesMap';
-import { AmblesideMap, type ExploreStop } from './AmblesideMap';
+import { AmblesideMap } from './AmblesideMap';
+import {MapViewport,MapMarker,DestinationActions,type MapActionsProps} from './MapTools';
+import type {MapTarget} from '../geo/mapTravel';
 import { Play, X } from 'lucide-react';
 import type { LakeData, RegionManifest, RouteDefinition } from '../types/game';
 
@@ -15,7 +17,11 @@ interface InteractiveMapModalProps {
   onSelectRoute: (route: RouteDefinition) => void;
   onClose: () => void;
   player?: { x: number; z: number };
-  onTravel: (stop: ExploreStop) => void;
+  onTravel: (target:MapTarget)=>void;
+  onWaypoint:MapActionsProps['onWaypoint'];
+  waypoint:MapTarget|null;
+  busy:boolean;
+  travelError:string;
 }
 
 export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
@@ -27,8 +33,10 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
   onSelectRoute,
   onClose,
   player,
-  onTravel,
+  onTravel,onWaypoint,waypoint,busy,travelError,
 }) => {
+  const [regionTarget,setRegionTarget]=React.useState<MapTarget|null>(null);
+  const actions={onTravel,onWaypoint,waypoint,player,busy};
   const [tab, setTab] = React.useState<'local'|'regional'|'places'>('local');
   // Windermere bounding box in world meters: X [-3200..4600], Z [-2200..17000]
   const minX = -3200;
@@ -64,7 +72,7 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="map-modal-title"
-        className="w-full max-w-4xl max-h-[90vh] rounded-2xl bg-slate-950 border border-white/15 flex flex-col overflow-hidden shadow-2xl"
+        className="w-full max-w-4xl max-h-[94dvh] rounded-2xl bg-slate-950 border border-white/15 flex flex-col overflow-hidden shadow-2xl"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
           <div>
@@ -72,7 +80,7 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
               Windermere Geographic Map
             </h2>
             <p className="text-xs text-slate-400">
-              18 km Lake District National Park basin · Click any route to preview or launch
+              Explore the lake basin · Select a destination or set a waypoint
             </p>
           </div>
           <button
@@ -85,25 +93,23 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
           </button>
         </div>
 
-        <div className="flex gap-2 border-b border-white/10 p-2">
+        <div className="grid grid-cols-3 shrink-0 gap-1 border-b border-white/10 p-2 text-xs sm:text-sm">
           <button type="button" aria-pressed={tab==='local'} onClick={() => setTab('local')}
             className="rounded-lg px-3 py-1 text-white aria-pressed:bg-slate-800">Ambleside & Waterhead</button>
           <button type="button" aria-pressed={tab==='regional'} onClick={() => setTab('regional')}
             className="rounded-lg px-3 py-1 text-white aria-pressed:bg-slate-800">Windermere basin</button>
           <button type="button" aria-pressed={tab==='places'} onClick={()=>setTab('places')} className="rounded-lg px-3 py-1 text-white aria-pressed:bg-slate-800">Places &amp; roads</button>
         </div>
-        {tab==='places' ? <PlacesMap manifest={manifest} lake={lakeData} player={player} onTravel={onTravel}/> : tab==='local' ? <AmblesideMap lake={lakeData} player={player} onTravel={onTravel}
+        {travelError&&<p role="alert" className="shrink-0 p-2 text-xs bg-red-950 text-red-200">{travelError}</p>}
+        {tab==='places' ? <PlacesMap manifest={manifest} lake={lakeData} {...actions}/> : tab==='local' ? <AmblesideMap lake={lakeData} {...actions}
           onStartShopRoute={() => {
             const route = LAKELAND_ROUTES.find(candidate => candidate.id === 'picnic_black_sheep');
             if (route) onSelectAndStart(route);
           }} /> : (
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 overflow-y-auto">
+        <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-2 overflow-y-auto">
           {/* Geographic SVG Lake & Settlement Map */}
-          <div className="bg-slate-900/70 flex items-center justify-center p-4 border-b md:border-b-0 md:border-r border-white/10">
-            <svg
-              viewBox={`0 0 ${vw} ${vh}`}
-              className="w-full max-w-[360px] h-auto max-h-[60vh] rounded-xl bg-slate-950 border border-white/10"
-            >
+          <div className="bg-slate-900/70 min-w-0 p-3 border-b md:border-b-0 md:border-r border-white/10">
+            <MapViewport box={[0,0,vw,vh]} metersPerUnit={1/scale} label="Windermere basin destinations">
               {/* Windermere Lake Shoreline */}
               {lakeData?.outerRings.map((ring, idx) => (
                 <path key={`lake-${idx}`} d={ringToPath(ring)} fill="#0e7490" fillOpacity={0.75} stroke="#38bdf8" strokeWidth={1.2} />
@@ -142,7 +148,7 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
 
               {TRANSIT.filter(t=>t.mode==='rail').map(t=>{
                 const [x,y]=toSvg(t.x,t.z);
-                return <g key={t.id}><title>{t.name}</title><rect x={x-4} y={y-4} width="8" height="8" rx="2" fill="#60a5fa" stroke="#0f172a" /><text x={x-6} y={y+13} textAnchor="end" fontSize="9" fill="#93c5fd">Windermere Railway Station</text></g>;
+                return <g key={t.id}><title>{t.name}</title><MapMarker x={x} y={y} r={4} color="#60a5fa" name={t.name} selected={regionTarget?.id===t.id} onSelect={()=>setRegionTarget({id:t.id,name:t.name,x:t.x,z:t.z,kind:t.mode,regional:true})}/><text x={x-6} y={y+13} textAnchor="end" fontSize="9" fill="#93c5fd">Windermere Railway Station</text></g>;
               })}
               {/* Real Settlements */}
               {manifest?.settlements.map((s) => {
@@ -158,7 +164,7 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
                 const dy = s.id === 'belle_isle' ? -4 : s.id === 'waterhead' ? 9 : 3;
                 return (
                   <g key={s.id}>
-                    <circle cx={sx} cy={sy} r={s.kind === 'town' ? 4 : 2.8} fill="#f8fafc" stroke="#0f172a" strokeWidth={1} />
+                    <MapMarker x={sx} y={sy} r={s.kind==='town'?4:3} name={s.name} selected={regionTarget?.id===s.id} onSelect={()=>setRegionTarget({id:s.id,name:s.name,x:s.x,z:s.z,kind:s.kind,regional:true,curatedId:s.id==='waterhead'?'waterhead':undefined})}/>
                     <text
                       x={sx + (placeLeft ? -6 : 6)}
                       y={sy + dy}
@@ -172,7 +178,11 @@ export const InteractiveMapModal: React.FC<InteractiveMapModalProps> = ({
                   </g>
                 );
               })}
-            </svg>
+              {player&&<circle cx={toSvg(player.x,player.z)[0]} cy={toSvg(player.x,player.z)[1]} r="4" fill="#f472b6" stroke="white" pointerEvents="none"/>}
+              {waypoint&&<circle cx={toSvg(waypoint.x,waypoint.z)[0]} cy={toSvg(waypoint.x,waypoint.z)[1]} r="6" fill="none" stroke="#22d3ee" strokeWidth="2" pointerEvents="none"/>}
+            </MapViewport>
+            <div className="mt-2"><DestinationActions {...actions} target={regionTarget}/></div>
+            <div className="mt-2 grid grid-cols-2 gap-1">{manifest?.settlements.map(s=><button key={s.id} type="button" className="rounded border border-white/10 p-2 text-xs text-white text-left" onClick={()=>setRegionTarget({id:s.id,name:s.name,x:s.x,z:s.z,kind:s.kind,regional:true,curatedId:s.id==='waterhead'?'waterhead':undefined})}>{s.name}</button>)}</div>
           </div>
 
           {/* Route List & Selected Details */}

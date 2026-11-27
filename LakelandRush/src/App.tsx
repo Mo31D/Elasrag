@@ -4,7 +4,8 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { ExploreStop } from './components/AmblesideMap';
+import {findArrival,travelKeys,type MapTarget} from './geo/mapTravel';
+import type {WorldChunkData} from './types/game';
 import { GameHUD } from './components/GameHUD';
 import { InteractiveMapModal } from './components/InteractiveMapModal';
 import { PauseAndPhotoModal } from './components/PauseAndPhotoModal';
@@ -76,6 +77,10 @@ const INITIAL_HUD: HudSnapshot = {
 
 export default function App() {
   const mapResume = useRef(false);
+  const travelRequest=useRef(0);
+  const [waypoint,setWaypoint]=useState<MapTarget|null>(null);
+  const [travelBusy,setTravelBusy]=useState(false);
+  const [travelError,setTravelError]=useState('');
   const lookPointer = useRef<{ id: number; x: number; y: number } | null>(null);
   const mountRef = useRef<HTMLDivElement | null>(null);
   const engineRef = useRef<LakelandEngine | null>(null);
@@ -219,16 +224,26 @@ export default function App() {
     engineRef.current?.setGameState('playing');
   }, []);
 
-  const travelToStop = useCallback((stop: ExploreStop) => {
-    const explorer = LAKELAND_ROUTES.find(route => route.mode === 'freeroam');
-    if (!explorer) return;
-    const [x, z] = stop.spawn;
-    const [targetX, targetZ] = stop.heading ?? stop.point;
-    const heading: [number, number] = Math.hypot(targetX - x, targetZ - z) < .1
-      ? [x, z - 8] : [targetX, targetZ];
-    mapResume.current = false;
-    startRouteRun({ ...explorer, startName: stop.name, waypoints: [[x, z], heading] });
-  }, [startRouteRun]);
+  const travelToStop=useCallback(async(target:MapTarget)=>{
+    const engine=engineRef.current,manifest=engine?.getRegionManifest(),lake=engine?.getLakeData(),explorer=LAKELAND_ROUTES.find(r=>r.mode==='freeroam');
+    if(!engine||!manifest||!lake||!explorer||!isReady)return;
+    const request=++travelRequest.current;setTravelBusy(true);setTravelError('');
+    try{
+      const keys=travelKeys(target,manifest);
+      if(!keys.length)throw Error('No mapped terrain near this destination.');
+      const chunks:WorldChunkData[]=[];
+      for(let i=0;i<keys.length;i+=5){
+        const batch=await Promise.all(keys.slice(i,i+5).map(async key=>{const res=await fetch(import.meta.env.BASE_URL+'regions/'+manifest.id+'/chunks/'+key+'.json');if(!res.ok)throw Error('Destination data unavailable. Please try again.');return await res.json() as WorldChunkData;}));
+        if(request!==travelRequest.current)return;chunks.push(...batch);
+      }
+      const arrival=findArrival(target,chunks,lake);
+      if(!arrival)throw Error('No clear mapped arrival found nearby. Choose another point or use a waypoint.');
+      if(request!==travelRequest.current)return;
+      mapResume.current=false;setWaypoint(target);
+      startRouteRun({...explorer,startName:target.name,waypoints:[arrival.point,arrival.heading]});
+    }catch(e){if(request===travelRequest.current)setTravelError(e instanceof Error?e.message:'Fast travel unavailable.');}
+    finally{if(request===travelRequest.current)setTravelBusy(false);}
+  },[startRouteRun,isReady]);
 
   const openTravelMap = () => {
     mapResume.current = gameState === 'playing';
@@ -237,6 +252,7 @@ export default function App() {
   };
 
   const closeTravelMap = useCallback(() => {
+    travelRequest.current++;setTravelBusy(false);setTravelError('');
     setShowMapModal(false);
     if (mapResume.current) handleResume();
     mapResume.current = false;
@@ -386,6 +402,7 @@ export default function App() {
       {gameState === 'playing' && (
         <GameHUD
           hud={hud}
+          waypoint={waypoint} onClearWaypoint={()=>setWaypoint(null)}
           route={selectedRoute}
           lakeData={engineRef.current?.getLakeData() ?? null}
           muted={settings.muted}
@@ -465,6 +482,7 @@ export default function App() {
           onSelectAndStart={route => { mapResume.current = false; startRouteRun(route); }}
           player={gameState === 'title' ? undefined : { x: hud.playerX, z: hud.playerZ }}
           onTravel={travelToStop}
+          waypoint={waypoint} onWaypoint={setWaypoint} busy={travelBusy} travelError={travelError}
           onClose={closeTravelMap}
         />
       )}
