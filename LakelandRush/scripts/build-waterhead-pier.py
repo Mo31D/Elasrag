@@ -32,22 +32,26 @@ slate = material("Blue grey slate", (0.063, 0.078, 0.084), 0.89)
 glass = material("Deep window glass", (0.087, 0.13, 0.145), 0.23)
 stone = material("Dark plinth", (0.14, 0.14, 0.12), 0.93)
 
-# Local u follows the lakeside footprint edge southward. Depth points inland.
-a, b = [Vector(footprint[i]) for i in (3, 5)]
+# Owner correction: green frontage faces the Esplanade (east), not the lake.
+# Keep longitudinal north/south layout and the exact original wall/plinth footprint.
+a, b = [Vector(footprint[i]) for i in (2, 0)]
+old_a, old_b = [Vector(footprint[i]) for i in (3, 5)]
+frontage_scale = (b - a).length / (old_b - old_a).length
 u_axis = (b - a).normalized()
-depth_axis = Vector((u_axis.y, -u_axis.x))
+depth_axis = Vector((-u_axis.y, u_axis.x))
 origin = (a + b) * 0.5
+mirror_facade = False
 
 
 def local(u, depth, h):
-    point = origin + u_axis * u + depth_axis * depth
+    point = origin + u_axis * (u * frontage_scale) + depth_axis * depth
     return (point.x, -point.y, h)
 
 
 def face(vertices, surface):
     indices = list(range(len(positions), len(positions) + len(vertices)))
     positions.extend(vertices)
-    faces.append(indices)
+    faces.append(indices[::-1] if mirror_facade else indices)
     slots.append(surface)
 
 
@@ -97,6 +101,7 @@ def window(u0, u1, h0, h1):
 
 polygon_prism(footprint, -1.15, 0.28, stone)
 polygon_prism(footprint, 0.23, 3.28, cream)
+mirror_facade = True
 panel(-9.55, 9.55, 0.28, 3.26, -0.31, cream)
 for height in range(4, 32):
     if height % 2 == 0:
@@ -119,7 +124,7 @@ for center in (-8.55, -6.65, -1.28, 0.91, 3.13, 4.49, 5.85, 7.21, 8.57):
     window(center - 0.51, center + 0.51, 0.76, 2.47)
 panel(-5.3, -3.24, 0.31, 2.55, -0.39, green)
 window(-5.05, -3.49, 0.98, 2.41)
-# Tall pointed window and painted framing beneath the lake-facing gable.
+# Tall pointed window and painted framing beneath the street-facing gable.
 arch = [(-5.05, 3.57), (-5.05, 4.42), (-4.79, 4.95), (-3.69, 5.63),
         (-2.64, 4.95), (-2.34, 4.42), (-2.34, 3.57)]
 face([local(u, -0.42, h) for u, h in arch], glass)
