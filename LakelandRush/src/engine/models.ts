@@ -15,133 +15,141 @@ export interface RunnerRig {
 }
 
 /**
- * Builds "Rowan", our original 11-part articulated Lakeland Fell Runner:
- * high-visibility saffron technical shell, Cumbria slate rucksack, wool beanie,
- * articulated limbs, trail shoes, and grounded contact shadow.
+ * Lakeland fell walker: weatherproof shell, technical hiking trousers,
+ * expedition rucksack and walking boots. Retains the original animated rig,
+ * forward direction (-Z), joint anchors and gameplay scale.
  */
 export function createRunnerModel(contactShadowMap: THREE.Texture): RunnerRig {
   const root = new THREE.Group();
+  root.name = 'Lakeland fell walker';
   const bodyPivot = new THREE.Group();
   bodyPivot.position.y = 0.88;
   root.add(bodyPivot);
+  const mat = (color:number,roughness=.88) => new THREE.MeshStandardMaterial({color,roughness,metalness:0});
+  const shell=mat(0x344354,.79), shellDark=mat(0x263342), shellLight=mat(0x48596a);
+  const trousers=mat(0x59616b), knee=mat(0x424b54), seam=mat(0x353e49);
+  const packRed=mat(0xb82b23,.86), packLight=mat(0xda4435), packDark=mat(0x8a2523);
+  const packBase=mat(0x303b3e), webbing=mat(0x858d90), buckles=mat(0x282d30);
+  const skin=mat(0xc99c7b,.82), skinShade=mat(0x9b6e57), cap=mat(0x795a3d), capBand=mat(0x59452f);
+  const hair=mat(0x49382d), eyes=mat(0x353331), zip=mat(0x161e26), silver=mat(0xa6b1b5,.52);
+  const boot=mat(0x48413a), rubber=mat(0x24282a), bootTrim=mat(0x70604c), laces=mat(0x9b8c72);
+  const add=(g:THREE.Group,geo:THREE.BufferGeometry,m:THREE.Material,x=0,y=0,z=0,shadow=true)=>{
+    const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);o.castShadow=shadow;o.receiveShadow=true;g.add(o);return o;
+  };
+  const ell=(g:THREE.Group,m:THREE.Material,x:number,y:number,z:number,rx:number,ry:number,rz:number)=>{
+    const o=add(g,new THREE.SphereGeometry(1,18,12),m,x,y,z);o.scale.set(rx,ry,rz);return o;
+  };
+  const box=(g:THREE.Group,m:THREE.Material,x:number,y:number,z:number,w:number,h:number,d:number)=>
+    add(g,new THREE.BoxGeometry(w,h,d),m,x,y,z);
+  // Continuous tapered, rounded cross-sections instead of rectangular body blocks.
+  const form=(g:THREE.Group,m:THREE.Material,profile:number[][],sx:number,sz:number,x=0,y=0,z=0)=>{
+    const o=add(g,new THREE.LatheGeometry(profile.map(p=>new THREE.Vector2(p[1],p[0])),24),m,x,y,z);
+    o.scale.set(sx,1,sz);return o;
+  };
+  const line=(g:THREE.Group,m:THREE.Material,pts:number[][],radius=.005)=>{
+    const curve=new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(p[0],p[1],p[2])));
+    return add(g,new THREE.TubeGeometry(curve,Math.max(6,pts.length*3),radius,5,false),m,0,0,0,false);
+  };
+  const fixed=new THREE.Group();bodyPivot.add(fixed);
+  // Tailored waterproof jacket: curved shoulders, waist, hip and collar.
+  form(fixed,shell,[[-.115,0],[-.105,.185],[-.045,.203],[.10,.183],[.25,.205],[.37,.222],[.435,.198],[.47,.133],[.48,0]],1,.67);
+  ell(fixed,trousers,0,-.085,0,.206,.115,.132);
+  form(fixed,shellDark,[[.395,0],[.405,.127],[.49,.123],[.52,.105],[.52,0]],1,.89);
+  // Folded rain hood rests behind the collar, below the pack lid.
+  ell(fixed,shellLight,0,.465,.097,.147,.076,.096);
+  line(fixed,zip,[[0,-.085,-.131],[0,.11,-.127],[0,.29,-.141],[0,.45,-.109]],.007);
+  box(fixed,silver,.009,.405,-.127,.014,.024,.01);
+  for(const s of [-1,1]){
+    line(fixed,shellDark,[[s*.16,-.058,-.086],[s*.12,.025,-.126],[s*.135,.145,-.135]],.005);
+    line(fixed,zip,[[s*.132,.025,-.12],[s*.145,.135,-.131]],.006);
+    line(fixed,shellLight,[[s*.19,.24,-.09],[s*.175,.35,-.105],[s*.12,.424,-.09]],.005);
+  }
+  // Full-size technical red rucksack: curved load, floating lid, side gussets,
+  // dark reinforced base, stitched outer pocket and compression webbing.
+  form(fixed,packRed,[[-.104,0],[-.091,.128],[-.035,.181],[.10,.192],[.28,.194],[.40,.176],[.46,.124],[.465,0]],1,.83,0,.025,.235);
+  ell(fixed,packDark,0,.045,.24,.182,.145,.145);
+  ell(fixed,packBase,0,-.026,.246,.181,.082,.151);
+  ell(fixed,packLight,0,.454,.239,.19,.083,.15);
+  ell(fixed,packRed,0,.218,.356,.137,.177,.055);
+  line(fixed,packDark,[[-.13,.35,.373],[-.146,.22,.388],[-.108,.07,.373],[0,.041,.389],[.108,.07,.373],[.146,.22,.388],[.13,.35,.373]],.005);
+  line(fixed,zip,[[0,.354,.402],[.006,.245,.414],[.008,.12,.405]],.005);
+  box(fixed,silver,.013,.28,.419,.012,.026,.009);
+  for(const s of [-1,1]){
+    // Shoulder harness wraps over jacket to the front, hip belt and chest strap.
+    line(fixed,packBase,[[s*.132,.31,.155],[s*.136,.465,.078],[s*.143,.437,-.083],[s*.13,.27,-.147],[s*.123,.087,-.135],[s*.168,-.01,-.077]],.023);
+    line(fixed,webbing,[[s*.132,.31,.175],[s*.138,.465,.088],[s*.15,.435,-.101],[s*.139,.25,-.164],[s*.13,.08,-.149]],.012);
+    ell(fixed,packBase,s*.172,.02,.225,.043,.122,.112);
+    line(fixed,webbing,[[s*.175,.395,.245],[s*.135,.32,.375],[s*.11,.17,.411],[s*.14,.03,.367]],.011);
+    line(fixed,webbing,[[s*.195,.24,.25],[s*.184,.23,.333],[s*.14,.2,.389]],.009);
+    line(fixed,webbing,[[s*.192,.105,.24],[s*.181,.09,.33],[s*.145,.07,.377]],.009);
+    box(fixed,buckles,s*.12,.173,.416,.039,.034,.018);
+    box(fixed,buckles,s*.139,.19,-.17,.036,.043,.018);
+    line(fixed,packBase,[[s*.14,-.055,.236],[s*.2,-.045,.105],[s*.19,-.046,-.052],[s*.10,-.045,-.126],[0,-.046,-.145]],.027);
+  }
+  line(fixed,webbing,[[-.14,.18,-.164],[0,.17,-.154],[.14,.18,-.164]],.009);
+  box(fixed,buckles,0,.17,-.165,.039,.027,.021);
+  box(fixed,buckles,0,-.045,-.155,.061,.039,.029);
+  line(fixed,webbing,[[-.05,.515,.226],[-.047,.558,.225],[.047,.558,.225],[.05,.515,.226]],.008);
+  // Small loose adjustment strap replaces the old exaggerated flying scarf.
+  // Keep its own mesh because the existing animation drives it independently.
+  const scarfTail=add(bodyPivot,new THREE.BoxGeometry(.027,.13,.009),webbing,.155,.035,.345,false);
+  scarfTail.name='Loose rucksack adjustment strap';
 
-  const jacketMat = new THREE.MeshStandardMaterial({
-    color: 0xf59e0b, // High-vis Lakeland saffron gold
-    roughness: 0.42,
-    metalness: 0.05,
-  });
-  const slatePantsMat = new THREE.MeshStandardMaterial({
-    color: 0x1e293b, // Dark slate technical trousers
-    roughness: 0.78,
-    metalness: 0.04,
-  });
-  const packMat = new THREE.MeshStandardMaterial({
-    color: 0x0f766e, // Cumbria teal waterproof pack
-    roughness: 0.65,
-    metalness: 0.08,
-  });
-  const skinMat = new THREE.MeshStandardMaterial({
-    color: 0xf1c29d,
-    roughness: 0.62,
-    metalness: 0.02,
-  });
-  const beanieMat = new THREE.MeshStandardMaterial({
-    color: 0xd97706,
-    roughness: 0.88,
-    metalness: 0.0,
-  });
-  const shoeMat = new THREE.MeshStandardMaterial({
-    color: 0xe2e8f0,
-    roughness: 0.48,
-    metalness: 0.12,
-  });
-  const visorMat = new THREE.MeshStandardMaterial({
-    color: 0x0f172a,
-    roughness: 0.14,
-    metalness: 0.45,
-  });
+  const headGroup=new THREE.Group();headGroup.position.set(0,.58,0);bodyPivot.add(headGroup);
+  ell(headGroup,skin,0,.021,-.006,.112,.151,.108);
+  ell(headGroup,skin,0,-.051,-.028,.09,.085,.085);
+  ell(headGroup,skin,0,-.015,-.105,.025,.042,.03);
+  ell(headGroup,skinShade,0,-.075,-.102,.035,.009,.007);
+  for(const s of [-1,1]){
+    ell(headGroup,skin,s*.112,-.01,0,.023,.043,.022);
+    ell(headGroup,eyes,s*.045,.024,-.103,.018,.008,.006);
+    line(headGroup,hair,[[s*.024,.043,-.102],[s*.048,.046,-.108],[s*.066,.043,-.097]],.004);
+    ell(headGroup,hair,s*.091,.036,.018,.024,.061,.065);
+  }
+  // Wool walking beanie with rolled rim and subtle knitted ribs.
+  ell(headGroup,cap,0,.098,.005,.124,.121,.117);
+  form(headGroup,capBand,[[.048,.116],[.051,.123],[.085,.125],[.091,.118]],1,.96,0,0,.005);
+  for(let i=0;i<16;i++){
+    const a=i*Math.PI/8,c=Math.cos(a),s=Math.sin(a);
+    line(headGroup,cap,[[c*.124,.054,.005+s*.119],[c*.125,.07,.005+s*.12],[c*.123,.085,.005+s*.118]],.002);
+  }
+  ell(fixed,skin,0,.506,0,.067,.076,.064);
 
-  // 1. Torso jacket
-  const torso = new THREE.Mesh(new THREE.BoxGeometry(0.46, 0.56, 0.28), jacketMat);
-  torso.position.y = 0.18;
-  torso.castShadow = true;
-  bodyPivot.add(torso);
-
-  // 2. Collar / reflective chest trim
-  const chestStripe = new THREE.Mesh(
-    new THREE.BoxGeometry(0.47, 0.08, 0.295),
-    new THREE.MeshStandardMaterial({ color: 0xfef3c7, roughness: 0.25, metalness: 0.3 }),
-  );
-  chestStripe.position.y = 0.24;
-  bodyPivot.add(chestStripe);
-
-  // 3. Technical trail rucksack (back is +Z when facing -Z)
-  const backpack = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.44, 0.18), packMat);
-  backpack.position.set(0, 0.2, 0.21);
-  backpack.castShadow = true;
-  bodyPivot.add(backpack);
-
-  // 4. Trail scarf / wind tail
-  const scarfTail = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.06, 0.36), beanieMat);
-  scarfTail.position.set(0.06, 0.44, 0.2);
-  bodyPivot.add(scarfTail);
-
-  // 5. Head + Sunglasses + Beanie
-  const headGroup = new THREE.Group();
-  headGroup.position.set(0, 0.58, 0);
-  bodyPivot.add(headGroup);
-
-  const headMesh = new THREE.Mesh(new THREE.SphereGeometry(0.16, 16, 14), skinMat);
-  headMesh.castShadow = true;
-  headGroup.add(headMesh);
-
-  const glasses = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.065, 0.12), visorMat);
-  glasses.position.set(0, 0.02, -0.11);
-  headGroup.add(glasses);
-
-  const beanie = new THREE.Mesh(
-    new THREE.SphereGeometry(0.17, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.58),
-    beanieMat,
-  );
-  beanie.position.y = 0.03;
-  headGroup.add(beanie);
-
-  // 6 & 7. Articulated Arms
-  const makeArm = (side: -1 | 1) => {
-    const pivot = new THREE.Group();
-    pivot.position.set(side * 0.31, 0.4, 0);
-    const sleeve = new THREE.Mesh(new THREE.CapsuleGeometry(0.068, 0.32, 4, 8), jacketMat);
-    sleeve.position.y = -0.2;
-    sleeve.castShadow = true;
-    pivot.add(sleeve);
-
-    const glove = new THREE.Mesh(new THREE.SphereGeometry(0.065, 10, 8), slatePantsMat);
-    glove.position.y = -0.4;
-    pivot.add(glove);
-    bodyPivot.add(pivot);
+  const makeArm=(side:-1|1)=>{
+    const pivot=new THREE.Group();pivot.position.set(side*.267,.365,0);bodyPivot.add(pivot);
+    form(pivot,shell,[[-.405,0],[-.392,.045],[-.32,.055],[-.22,.063],[-.13,.076],[-.025,.08],[.04,.065],[.055,0]],1,.91);
+    ell(pivot,shellLight,0,-.024,.006,.077,.07,.072);
+    ell(pivot,shellDark,0,-.207,.026,.057,.075,.039);
+    form(pivot,shellDark,[[-.406,.048],[-.404,.053],[-.365,.054],[-.362,.049]],1,.9);
+    ell(pivot,skin,0,-.443,-.002,.049,.066,.031);
+    ell(pivot,skin,-side*.036,-.435,-.018,.022,.039,.023);
+    line(pivot,seam,[[side*.062,-.05,.013],[side*.065,-.16,.015],[side*.051,-.31,.008]],.004);
     return pivot;
   };
-  const leftArm = makeArm(-1);
-  const rightArm = makeArm(1);
-
-  // 8 & 9. Articulated Legs + Trail Shoes
-  const makeLeg = (side: -1 | 1) => {
-    const pivot = new THREE.Group();
-    pivot.position.set(side * 0.13, -0.08, 0);
-    const leg = new THREE.Mesh(new THREE.CapsuleGeometry(0.082, 0.44, 4, 8), slatePantsMat);
-    leg.position.y = -0.28;
-    leg.castShadow = true;
-    pivot.add(leg);
-
-    const shoe = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.11, 0.25), shoeMat);
-    shoe.position.set(0, -0.62, -0.04);
-    shoe.castShadow = true;
-    pivot.add(shoe);
-    bodyPivot.add(pivot);
+  const leftArm=makeArm(-1),rightArm=makeArm(1);
+  const makeLeg=(side:-1|1)=>{
+    const pivot=new THREE.Group();pivot.position.set(side*.115,-.08,0);bodyPivot.add(pivot);
+    form(pivot,trousers,[[-.59,0],[-.575,.052],[-.46,.064],[-.33,.072],[-.24,.082],[-.10,.101],[.025,.105],[.065,.073],[.07,0]],1,.9);
+    ell(pivot,knee,0,-.288,-.044,.075,.11,.038);
+    line(pivot,seam,[[side*.086,-.08,0],[side*.073,-.27,.014],[side*.058,-.45,.007],[side*.052,-.56,.005]],.004);
+    line(pivot,seam,[[side*.057,-.13,-.067],[side*.042,-.18,-.076]],.006);
+    // Mid-height hiking boot, shaped toe box, protective rand, heel and tread.
+    ell(pivot,boot,0,-.557,.013,.072,.119,.076);
+    ell(pivot,boot,0,-.625,-.054,.079,.066,.149);
+    ell(pivot,bootTrim,0,-.598,-.084,.063,.036,.098);
+    ell(pivot,rubber,0,-.662,-.06,.081,.032,.151);
+    ell(pivot,rubber,0,-.635,-.166,.075,.039,.044);
+    for(let i=0;i<4;i++){
+      const z=-.159+i*.058;
+      for(const s of [-1,1])box(pivot,rubber,s*.043,-.69,z,.06,.014,.033);
+      const y=-.577+i*.018;
+      line(pivot,laces,[[-.039,y,-.111+i*.022],[0,y-.006,-.121+i*.022],[.039,y,-.111+i*.022]],.004);
+    }
     return pivot;
   };
-  const leftLeg = makeLeg(-1);
-  const rightLeg = makeLeg(1);
+  const leftLeg=makeLeg(-1),rightLeg=makeLeg(1);
+  // Merge same-material decorations per joint to keep rendering lightweight.
+  for(const g of [fixed,headGroup,leftArm,rightArm,leftLeg,rightLeg])batchAnimalDetail(g);
 
   // Lightweight wingsuit membranes: two arm wings and one leg wing, attached to the existing rig.
   const flightGeo=new THREE.BufferGeometry();
