@@ -414,6 +414,7 @@ export default function App() {
           onTouchSteer={(val) => engineRef.current?.setTouchSteer(val)}
           onTouchJump={() => engineRef.current?.triggerTouchJump()}
           onToggleFlight={()=>engineRef.current?.toggleFreeFlight()}
+          onWaterInteract={()=>engineRef.current?.interactWater()}
           onFlightVertical={value=>engineRef.current?.setFlightVertical(value)}
           onTouchSlide={() => engineRef.current?.triggerTouchSlide()}
           onOpenMap={openTravelMap}

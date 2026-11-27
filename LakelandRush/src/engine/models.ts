@@ -192,6 +192,7 @@ export function animateRunnerRig(
     dt: number;
     flying?:boolean;
     flightVertical?:number;
+    waterMode?:'land'|'swimming'|'rowing';
   },
 ): void {
   const { stridePhase, speedMps, isAirborne, isSliding, isGrinding, steerTilt, squashY, time, dt } =
@@ -199,6 +200,18 @@ export function animateRunnerRig(
 
   const damp = 1 - Math.exp(-14 * dt);
 
+  if(params.waterMode==='swimming'||params.waterMode==='rowing'){
+    const swimming=params.waterMode==='swimming',moving=speedMps>.06,phase=swimming?stridePhase*2:stridePhase;
+    rig.flightSuit.visible=false;rig.contactShadow.visible=false;rig.bodyPivot.scale.set(1,1,1);
+    rig.bodyPivot.position.y=THREE.MathUtils.lerp(rig.bodyPivot.position.y,swimming?.86:.12,damp);
+    rig.bodyPivot.rotation.set(swimming?-1.30:Math.sin(phase)*.15,0,swimming&&moving?Math.sin(phase)*.08:0);
+    rig.headGroup.rotation.x=swimming?1.10:0;
+    rig.leftArm.rotation.set(swimming?(moving?-.9+Math.sin(phase)*1.7:-.4):-.9,0,swimming?-.25:-.25);
+    rig.rightArm.rotation.set(swimming?(moving?-.9-Math.sin(phase)*1.7:-.4):-.9,0,.25);
+    rig.leftLeg.rotation.set(swimming?(moving?Math.sin(phase*2)*.28:0):-1.4,0,0);
+    rig.rightLeg.rotation.set(swimming?(moving?-Math.sin(phase*2)*.28:0):-1.4,0,0);
+    rig.scarfTail.rotation.x=.1;return;
+  }
   if(params.flying){
     rig.flightSuit.visible=true;rig.contactShadow.visible=false;
     const vertical=THREE.MathUtils.clamp(params.flightVertical??0,-1,1);
@@ -229,6 +242,7 @@ export function animateRunnerRig(
   if(rig.flightSuit.visible){
     rig.flightSuit.visible=false;rig.contactShadow.visible=true;rig.leftLeg.rotation.z=0;rig.rightLeg.rotation.z=0;
   }
+  rig.contactShadow.visible=true;
   rig.headGroup.rotation.x=THREE.MathUtils.lerp(rig.headGroup.rotation.x,0,damp);
   if (isSliding) {
     rig.bodyPivot.position.y = THREE.MathUtils.lerp(rig.bodyPivot.position.y, 0.42, damp);

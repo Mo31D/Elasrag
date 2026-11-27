@@ -263,6 +263,8 @@ export interface HudSnapshot {
   cleanExploreMode?: boolean;
   insideShop?: boolean;
   flying?: boolean;
+  waterMode?:'land'|'swimming'|'rowing';
+  canBoardBoat?:boolean;
   canEnterShop?: boolean;
 }
 

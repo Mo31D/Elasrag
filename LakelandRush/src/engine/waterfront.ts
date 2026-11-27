@@ -187,38 +187,6 @@ export function buildWaterfrontDetails(ground: Ground, inLake: (x: number, z: nu
     }
   }
 
-  // Representative dinghies in the documented mooring area, independent of moving ferries.
-  const hull = new THREE.MeshStandardMaterial({ color: 0xc0c0b5, metalness: .06, roughness: .49 });
-  const blueTrim = new THREE.MeshStandardMaterial({ color: 0x244854, metalness: .05, roughness: .66 });
-  localMaterials.push(hull, blueTrim);
-  for (const [cx, cz, yaw] of [[39, -283, .88], [49, -315, 1.21], [60, -320, .78]]) {
-    if (!inLake(cx, cz)) continue;
-    const plan = [[0,-2.35],[.64,-1.42],[.85,-.3],[.76,1.70],[.55,1.94],
-      [-.55,1.94],[-.76,1.70],[-.85,-.3],[-.64,-1.42]];
-    const transform = (x: number, z: number, y: number) => new THREE.Vector3(
-      cx + x*Math.cos(yaw) + z*Math.sin(yaw), y, cz - x*Math.sin(yaw) + z*Math.cos(yaw),
-    );
-    const hullPoints: number[] = [];
-    for (let i = 0; i < plan.length; i++) {
-      const [x0, z0] = plan[i], [x1, z1] = plan[(i + 1) % plan.length];
-      const a = transform(x0,z0,.46), b = transform(x1,z1,.46);
-      const c = transform(x0*.55,z0*.83,-.23), d = transform(x1*.55,z1*.83,-.23);
-      for (const p of [a,c,b,b,c,d]) hullPoints.push(p.x,p.y,p.z);
-      bar(a,b,.042,blueTrim);
-      bar(transform(x0*.75,z0*.92,.17),transform(x1*.75,z1*.92,.17),.043,wood);
-    }
-    const boat = new THREE.BufferGeometry();
-    boat.setAttribute('position',new THREE.Float32BufferAttribute(hullPoints,3));
-    boat.setAttribute('uv',new THREE.Float32BufferAttribute(new Float32Array(hullPoints.length/3*2),2));
-    boat.computeVertexNormals();
-    hull.side = THREE.DoubleSide;
-    batch(boat,hull);
-    for (const z of [-.77,.38,1.31]) {
-      const p = transform(0,z,.34);
-      box(p.x,p.y,p.z,1.22,.065,.25,yaw,wood);
-    }
-  }
-
   for (const [mat, geometries] of batches) {
     const expanded = geometries.map(geometry => geometry.index ? geometry.toNonIndexed() : geometry);
     const geometry = mergeGeometries(expanded);
