@@ -7,10 +7,22 @@ type Ground = (x: number, z: number) => number;
 
 export const WATERHEAD_SIDEWALKS = new Set(publicRealm.sidewalk.map(feature => feature.id));
 
-export function groundSurface(points: Point[], ground: Ground, offset: number) {
+export function groundSurface(points: Point[], ground: Ground, offset: number, dense=false) {
   const shape = new THREE.Shape(points.map(([x, z]) => new THREE.Vector2(x, -z)));
-  const geo = new THREE.ShapeGeometry(shape);
+  let geo:THREE.BufferGeometry = new THREE.ShapeGeometry(shape);
   geo.rotateX(-Math.PI / 2);
+  if(dense){
+    const p=geo.attributes.position,idx=geo.index,vertices:number[]=[],uv:number[]=[];
+    type P=[number,number];
+    const get=(i:number):P=>{const j=idx?idx.getX(i):i;return [p.getX(j),p.getZ(j)];};
+    const split=(a:P,b:P,c:P,depth:number)=>{
+      const edges=[[a,b,c],[b,c,a],[c,a,b]].sort((u,v)=>Math.hypot(v[0][0]-v[1][0],v[0][1]-v[1][1])-Math.hypot(u[0][0]-u[1][0],u[0][1]-u[1][1]));
+      const [u,v,w]=edges[0];if(depth<10&&Math.hypot(u[0]-v[0],u[1]-v[1])>2.5){const m:P=[(u[0]+v[0])/2,(u[1]+v[1])/2];split(u,m,w,depth+1);split(m,v,w,depth+1);return;}
+      for(const [x,z] of [a,b,c]){vertices.push(x,0,z);uv.push(x/3,z/3);}
+    };
+    for(let i=0;i<(idx?.count??p.count);i+=3)split(get(i),get(i+1),get(i+2),0);
+    geo.dispose();geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));
+  }
   const pos = geo.attributes.position;
   for (let i = 0; i < pos.count; i++) pos.setY(i, ground(pos.getX(i), pos.getZ(i)) + offset);
   geo.computeVertexNormals();
@@ -36,12 +48,12 @@ function makePavingTexture() {
   return result;
 }
 
-export function buildWaterfrontDetails(ground: Ground, inLake: (x: number, z: number) => boolean) {
+export function buildWaterfrontDetails(ground: Ground, inLake: (x: number, z: number) => boolean, asphaltMap:THREE.Texture|null=null) {
   const group = new THREE.Group();
   const batches = new Map<THREE.Material, THREE.BufferGeometry[]>();
   const pavingMap = makePavingTexture();
   const paving = new THREE.MeshStandardMaterial({ color: 0xadab9e, map: pavingMap, roughness: 0.94 });
-  const asphalt = new THREE.MeshStandardMaterial({ color: 0x4e5150, roughness: .97 });
+  const asphalt = new THREE.MeshStandardMaterial({ color:0xffffff,map:asphaltMap,roughness:.97,polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-1 });
   const apron = new THREE.MeshStandardMaterial({ color: 0x86847c, roughness: .9 });
   const granite = new THREE.MeshStandardMaterial({ color: 0x78736a, roughness: 0.91 });
   const iron = new THREE.MeshStandardMaterial({ color: 0x242f31, roughness: 0.62, metalness: 0.2 });
@@ -70,7 +82,7 @@ export function buildWaterfrontDetails(ground: Ground, inLake: (x: number, z: nu
     geo.translate((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2);
     batch(geo, mat);
   }
-  for (const area of publicRealm.parking) batch(groundSurface(area.points, ground, 0.045), asphalt);
+  for (const area of publicRealm.parking) batch(groundSurface(area.points, ground, 0.065,true), asphalt);
   // Approximate forecourt extents from the frontage and its mapped entrance.
   batch(groundSurface([[66.1,-373.2],[75.6,-367.7],[79.8,-371.1],[68.3,-377.8]],ground,.075), apron);
   batch(groundSurface([[85.3,-361],[91.1,-364.0],[101,-342.6],[97.0,-338.9]],ground,.09), apron);

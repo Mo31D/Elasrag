@@ -10,6 +10,7 @@ export interface ProceduralTextureSet {
   pavingPathMap:THREE.CanvasTexture;
   gravelPathMap:THREE.CanvasTexture;
   grassTerrainMap: THREE.CanvasTexture;
+  grassTerrainBump:THREE.CanvasTexture;
   timberPlankMap: THREE.CanvasTexture;
   contactShadowMap: THREE.CanvasTexture;
   dispose: () => void;
@@ -150,20 +151,25 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
   roadCtx.fillRect(125, 144, 6, 86);
   const roadTarmacMap = configureColorTexture(roadC, 1, 1, maxAnisotropy);
 
-  // 4. Lakeland Grass & Fell Heather Texture
-  const [grassC, grassCtx] = makeCanvas(256, 256);
-  grassCtx.fillStyle = '#4b6b3a';
-  grassCtx.fillRect(0, 0, 256, 256);
-  for (let i = 0; i < 3200; i++) {
-    const gx = rand() * 256;
-    const gy = rand() * 256;
-    const r = 56 + Math.floor(rand() * 34);
-    const g = 86 + Math.floor(rand() * 44);
-    const b = 38 + Math.floor(rand() * 26);
-    grassCtx.fillStyle = `rgb(${r},${g},${b})`;
-    grassCtx.fillRect(gx, gy, 3, 3);
+  // 4. Meadow texture: fine overlapping grass strokes, dry thatch and soil variations.
+  const [grassC, grassCtx] = makeCanvas(512,512);
+  const [grassB, grassBctx] = makeCanvas(512,512);
+  grassCtx.fillStyle='#6d7050';grassCtx.fillRect(0,0,512,512);grassBctx.fillStyle='#696969';grassBctx.fillRect(0,0,512,512);
+  for(let i=0;i<180;i++){
+    const x=rand()*512,y=rand()*512,r=8+rand()*30;
+    const g=grassCtx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,i%3===0?'rgba(115,99,66,.55)':'rgba(64,80,46,.46)');g.addColorStop(1,'rgba(88,91,61,0)');
+    grassCtx.fillStyle=g;grassCtx.fillRect(x-r,y-r,r*2,r*2);
   }
-  const grassTerrainMap = configureColorTexture(grassC, 24, 24, maxAnisotropy);
+  for(let i=0;i<24000;i++){
+    const x=rand()*512,y=rand()*512,len=2+rand()*9,a=rand()*Math.PI*2,k=rand();
+    const r=70+Math.floor(k*57),g=82+Math.floor(k*61),b=42+Math.floor(k*34);
+    grassCtx.strokeStyle='rgb('+r+','+g+','+b+')';grassCtx.lineWidth=.65+rand()*1.1;
+    grassBctx.strokeStyle='rgb('+Math.floor(70+k*130)+','+Math.floor(70+k*130)+','+Math.floor(70+k*130)+')';grassBctx.lineWidth=grassCtx.lineWidth;
+    for(const ctx of [grassCtx,grassBctx]){ctx.beginPath();ctx.moveTo(x,y);ctx.quadraticCurveTo(x+Math.cos(a)*len*.4,y+Math.sin(a)*len*.65,x+Math.cos(a)*len,y+Math.sin(a)*len);ctx.stroke();}
+  }
+  const grassTerrainMap=configureColorTexture(grassC,1,1,maxAnisotropy);
+  const grassTerrainBump=configureDataTexture(grassB,1,1,maxAnisotropy);
 
   // 5. Timber Pier Planks
   const [woodC, woodCtx] = makeCanvas(128, 128);
@@ -195,7 +201,7 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
     roughcastBump,
     slateRoofMap,
     roadTarmacMap,plainAsphaltMap,pavingPathMap,gravelPathMap,
-    grassTerrainMap,
+    grassTerrainMap,grassTerrainBump,
     timberPlankMap,
     contactShadowMap,
     dispose: () => {
@@ -204,7 +210,7 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
       roughcastBump.dispose();
       slateRoofMap.dispose();
       roadTarmacMap.dispose();plainAsphaltMap.dispose();pavingPathMap.dispose();gravelPathMap.dispose();
-      grassTerrainMap.dispose();
+      grassTerrainMap.dispose();grassTerrainBump.dispose();
       timberPlankMap.dispose();
       contactShadowMap.dispose();
     },

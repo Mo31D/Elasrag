@@ -10,6 +10,7 @@ import { isPointInLake, pointInRing, sampleTerrainHeight } from '../geo/projecti
 import { buildWaterheadShoreDistance, WATERHEAD_WATER_BOUNDS } from './waterhead-water';
 import { buildWaterfrontDetails, groundSurface, WATERHEAD_SIDEWALKS } from './waterfront';
 import { buildSignage } from './signage';
+import {buildGrass} from './grass';
 import {triangleGround,buildingGrades,type Ground} from '../geo/surfaceGround';
 import { halfWidth as mappedRoadHalfWidth } from '../geo/signagePlan';
 import {roadSurface,junctionPoints,unmarkedNearJunction,convexFootprint} from '../geo/roadPresentation';
@@ -175,6 +176,7 @@ export function createWorldMaterials(
   const terrainMat = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     map: textures.grassTerrainMap,
+    bumpMap:textures.grassTerrainBump,bumpScale:.055,
     vertexColors: true,
     roughness: 0.9,
     metalness: 0.02,
@@ -289,8 +291,7 @@ function terrainGeometry(terrain: TerrainGridData | null): THREE.BufferGeometry 
     const axis = detail && z >= detail.minZ && z <= detail.maxZ ? fineX : coarseX;
     for (const x of axis) {
       positions.push(x, 0, z);
-      uv.push((x - coarseX[0]) / (coarseX.at(-1)! - coarseX[0]),
-        (coarseZ.at(-1)! - z) / (coarseZ.at(-1)! - coarseZ[0]));
+      uv.push(x/3,z/3);
     }
     // Stitch adjacent rows by advancing whichever side has the next vertex.
     // The detail boundary shares vertices with the coarse mesh, avoiding cracks.
@@ -335,8 +336,8 @@ export function buildTerrainAndWaterMeshes(
   const geo = terrainGeometry(terrain);
   const pos = geo.attributes.position;
   const colors = new Float32Array(pos.count * 3);
-  const cShore = new THREE.Color(0x8c8470);
-  const cValley = new THREE.Color(0x567a42);
+  const cShore = new THREE.Color(0xb9ae93);
+  const cValley = new THREE.Color(0xd5d4b5);
   const cHeather = new THREE.Color(0x6e5f3e);
   const cCrag = new THREE.Color(0x666e75);
   const cBed = new THREE.Color(0x1f3640);
@@ -672,9 +673,10 @@ export function buildChunkGroup(
   const group = new THREE.Group();
   const isWaterhead = chunk.key === '0_-1' && Boolean(terrain?.detail);
   const waterfront = isWaterhead ? buildWaterfrontDetails(
-    (x, z) => Math.max(.45, sampleTerrainHeight(terrain, x, z)), (x, z) => isPointInLake(lake, x, z),
+    (x, z) => Math.max(.45, surfaceGround(x,z)), (x, z) => isPointInLake(lake, x, z),materials.countryLane.map,
   ) : null;
   if (waterfront) group.add(waterfront.group);
+  const grass=buildGrass(chunk,surfaceGround,(x,z)=>isPointInLake(lake,x,z));group.add(grass.group);
   const disposables: THREE.BufferGeometry[] = [];
   const colliders: BuiltChunkResult['colliders'] = [];
   const grindSegments: BuiltChunkResult['grindSegments'] = [];
@@ -822,7 +824,7 @@ export function buildChunkGroup(
 
   const siteSurfaces = amblesideSurfaces[chunk.key as keyof typeof amblesideSurfaces] ?? [];
   for (const site of siteSurfaces) {
-    laneGeos.push(groundSurface(site.points, surfaceGround, .045));
+    laneGeos.push(groundSurface(site.points, surfaceGround, .065, true));
   }
 
   addBatch(primaryGeos, materials.primaryRoad, false,true);
@@ -1053,7 +1055,7 @@ export function buildChunkGroup(
     group.add(trunks, crowns);
   }
 
-  const siteDetails=buildSiteDetails(chunk,terrain,lake);
+  const siteDetails=buildSiteDetails(chunk,terrain,lake,surfaceGround);
   group.add(siteDetails.group);
   colliders.push(...siteDetails.colliders);
   const facades=buildFacadeBatch(facadePlans.values());
@@ -1063,7 +1065,7 @@ export function buildChunkGroup(
   return {
     key: chunk.key,
     group,
-    updateSignage: signage.update,
+    updateSignage:(x,z,labels)=>{signage.update(x,z,labels);grass.update(x,z);},
     surfaceAt:(x,z)=>{let y=-Infinity;for(const sample of surfaceSamplers)y=Math.max(y,sample(x,z)??-Infinity);return Number.isFinite(y)?y:undefined;},
     colliders,
     roadDecks,
@@ -1071,7 +1073,7 @@ export function buildChunkGroup(
     grindSegments,
     dispose: () => {
       disposables.forEach((g) => g.dispose());
-      waterfront?.dispose();
+      waterfront?.dispose();grass.dispose();
       signage.dispose();
       facades.dispose();
       siteDetails.dispose();
