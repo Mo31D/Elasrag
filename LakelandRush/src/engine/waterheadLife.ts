@@ -107,7 +107,25 @@ export class WaterheadLife{
    if(emit&&moving&&b.swimming&&i%3===Math.floor(this.t)%3)this.ripple(b.x,b.z,b.scale*.55);
   }
  }
- selectableAnimals(){return this.birds.map(b=>({root:b.root,kind:b.kind,pose:(t:number,s:number,wet:boolean,air:boolean,feed:boolean)=>{b.body.rotation.z=air?Math.sin(t*5)*.035:Math.sin(t*2)*.025;b.body.rotation.x=feed&&wet?.24:0;b.neck.rotation.x=feed?-.85:air?-1.05:0;for(let j=0;j<2;j++){b.feet[j].visible=!wet&&!air;b.feet[j].rotation.x=s>.05?Math.sin(t*9+j*Math.PI)*.55:0;b.wings[j].visible=!air;b.flightWings[j].visible=air;b.flightWings[j].rotation.z=air?(j===0?-1:1)*(Math.sin(t*(b.kind==='swan'?10:16))*.9):0;b.wings[j].rotation.z=0;}}}));}
+ selectableAnimals(){return this.birds.map(b=>({root:b.root,kind:b.kind,pose:(t:number,s:number,wet:boolean,air:boolean,feed:boolean,flight?:'takeoff'|'powered'|'glide'|'landing')=>{
+  const swan=b.kind==='swan',launch=flight==='takeoff',glide=flight==='glide',landing=flight==='landing';
+  const hz=swan?3.2:5.4,cycle=t*Math.PI*2*hz;
+  const beat=Math.cos(cycle),stroke=beat>=0?beat:beat*.68;
+  const lift=launch?1.08:landing?.55:.77;
+  const wingAngle=glide?.14:lift*stroke+.13;
+  b.body.rotation.z=air?(glide?Math.sin(t*1.8)*.025:Math.sin(cycle)*.035):Math.sin(t*2)*.025;
+  b.body.rotation.x=feed&&wet?.24:air?(launch?-.22-Math.sin(cycle)*.055:landing?-.17:glide?.025:Math.sin(cycle)*.035):0;
+  b.neck.rotation.x=feed?-.85:air?(launch?-.65:landing?-.42:-1.05):0;
+  for(let j=0;j<2;j++){
+   const side=j===0?-1:1;
+   // Visible leg push on the first wingbeat; feet trail briefly at landing.
+   b.feet[j].visible=(!wet&&!air)||(launch&&t<.26)||landing;
+   b.feet[j].rotation.x=air?(launch?-.65*Math.min(1,t/.26):.5):s>.05?Math.sin(t*9+j*Math.PI)*.55:0;
+   b.wings[j].visible=!air;b.flightWings[j].visible=air;
+   b.flightWings[j].rotation.set(air?(glide?.05:Math.sin(cycle-.65)*.20):0,air?side*(glide?.10:.08+Math.sin(cycle-.45)*.14):0,air?side*wingAngle:0);
+   b.wings[j].rotation.z=0;
+  }
+ }}));}
  dispose(){
   const mats=new Set<THREE.Material>(),geos=new Set<THREE.BufferGeometry>();
   for(const root of [this.cruiser.root,this.cruiser.wake,...this.birds.map(b=>b.root)]){root.removeFromParent();root.traverse(o=>{if(o instanceof THREE.Mesh){geos.add(o.geometry);for(const m of Array.isArray(o.material)?o.material:[o.material])mats.add(m);}});}
