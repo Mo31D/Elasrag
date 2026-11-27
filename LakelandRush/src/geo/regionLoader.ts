@@ -5,6 +5,7 @@ import type {
   WorldChunkData,
 } from '../types/game';
 import { isPointInLake, sampleTerrainHeight } from './projection';
+import { animalRoadExclusion,grazingExclusion } from './grassPlan';
 
 /**
  * Modular Region & Chunk Streaming Manager.
@@ -20,6 +21,7 @@ export class RegionManager {
   private chunkCache = new Map<string, WorldChunkData>();
   private loadingChunks = new Map<string, Promise<WorldChunkData | null>>();
   private availableChunkSet = new Set<string>();
+  private animalMasks = new WeakMap<WorldChunkData,{road:(x:number,z:number)=>boolean;grazing:(x:number,z:number)=>boolean}>();
 
   constructor(regionId = 'windermere') {
     this.regionId = regionId;
@@ -70,6 +72,42 @@ export class RegionManager {
     const cx = Math.floor(x / size);
     const cz = Math.floor(z / size);
     return [cx, cz, `${cx}_${cz}`];
+  }
+
+  private habitatBlocked(x:number,z:number,grazing:boolean):boolean {
+    const [cx,cz,key]=this.getChunkKeyForWorld(x,z);
+    // Never infer safe ground in a tile that has not been loaded.
+    if(!this.chunkCache.has(key)||!this.availableChunkSet.has(key))return true;
+    const size=this.getChunkSize(),margin=12;
+    const xs=[cx],zs=[cz];
+    if(x-cx*size<margin)xs.push(cx-1);
+    if((cx+1)*size-x<margin)xs.push(cx+1);
+    if(z-cz*size<margin)zs.push(cz-1);
+    if((cz+1)*size-z<margin)zs.push(cz+1);
+    for(const a of xs)for(const b of zs){
+      const k=a+'_'+b,chunk=this.chunkCache.get(k);
+      if(!chunk){if(this.availableChunkSet.has(k))return true;continue;}
+      let masks=this.animalMasks.get(chunk);
+      if(!masks){masks={road:animalRoadExclusion(chunk),grazing:grazingExclusion(chunk,(px,pz)=>this.isInWater(px,pz))};this.animalMasks.set(chunk,masks);}
+      if((grazing?masks.grazing:masks.road)(x,z))return true;
+    }
+    return false;
+  }
+  public isAnimalRoadFree(x:number,z:number):boolean {
+    return !this.habitatBlocked(x,z,false);
+  }
+  public isGrazingGround(x:number,z:number,clearance=0):boolean {
+    if(this.habitatBlocked(x,z,true)||this.isInWater(x,z))return false;
+    const y=this.getTerrainHeight(x,z);
+    if(!Number.isFinite(y)||y<.5)return false;
+    for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1]]){
+      if(Math.abs(this.getTerrainHeight(x+dx,z+dz)-y)>.65)return false;
+    }
+    if(clearance>0)for(let i=0;i<8;i++){
+      const a=i*Math.PI/4,px=x+Math.cos(a)*clearance,pz=z+Math.sin(a)*clearance;
+      if(this.habitatBlocked(px,pz,true)||this.isInWater(px,pz)||Math.abs(this.getTerrainHeight(px,pz)-y)>clearance*.65)return false;
+    }
+    return true;
   }
 
   public getNearestSettlement(x: number, z: number): string {
