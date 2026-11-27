@@ -6,7 +6,7 @@ import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from '.
 import {WaterRipples} from './waterRipples';
 import {WaterheadLife} from './waterheadLife';
 import {AnimalPlayer,sheepActor,type AnimalActor} from './animalPlayer';
-import {ANIMALS,turnTowards} from '../game/animalMotion';
+import {animalCameraFollow,ANIMAL_ORBIT_HOLD,ANIMALS,turnTowards} from '../game/animalMotion';
 import {fleeDirection} from '../game/crowdMotion';
 import {LakesiderService,makeBus} from './lakesider';
 import {raceWidth,raceTrafficPose} from '../game/raceGeometry';
@@ -218,6 +218,10 @@ export class LakelandEngine {
 
   // Player Physics State
   private exploreYaw = 0;
+  private animalLookHeld=false;
+  private animalLookHold=0;
+  private animalInputBearing:number|null=null;
+  private animalCameraDistance=3.2;
   private explorePitch = 0;
   private explorePace: ExplorePace = 'run';
   private exploreFirst = false;
@@ -832,8 +836,14 @@ export class LakelandEngine {
   private shiftHeld(){return this.keysHeld.has('ShiftLeft')||this.keysHeld.has('ShiftRight');}
   private accelerating(){return this.touchAccelerator||this.shiftHeld();}
   private vehicleThrottle(){return driveThrottle(this.exploreThrottle(),this.touchAccelerator);}
+  public setAnimalLookHeld(held:boolean):void {
+    if(!this.animal){this.animalLookHeld=false;return;}
+    this.animalLookHeld=held;
+    if(held)this.animalLookHold=ANIMAL_ORBIT_HOLD;
+  }
   public rotateExploreView(dx: number, dy: number): void {
     if (this.activeRoute.mode !== 'freeroam' || this.gameState !== 'playing') return;
+    if(this.animal)this.animalLookHold=ANIMAL_ORBIT_HOLD;
     const scale = .0038 * this.settings.sensitivity;
     this.exploreYaw = Math.atan2(Math.sin(this.exploreYaw-dx*scale),Math.cos(this.exploreYaw-dx*scale));
     this.explorePitch = THREE.MathUtils.clamp(this.explorePitch - dy * scale, -.88, .88);
@@ -849,6 +859,7 @@ export class LakelandEngine {
   public recenterExploreCamera():void {
     if(this.inShop)return;
     this.exploreYaw=this.playerHeading;this.explorePitch=0;
+    if(this.animal){this.animalLookHold=0;this.animalLookHeld=false;this.animalInputBearing=null;}
   }
 
   public toggleExploreView(): void {
@@ -936,19 +947,32 @@ export class LakelandEngine {
    const a=this.animalTarget;if(!a||this.animal||!a.root.visible||this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.flying||this.occupiedBoat||this.busService?.mode||Math.hypot(a.root.position.x-this.playerX,a.root.position.z-this.playerZ)>14){this.animalTarget=null;return false;}
    this.humanReturn={x:this.playerX,y:this.playerY,z:this.playerZ,yaw:this.playerHeading,water:this.waterMode};
    this.animal=new AnimalPlayer(a,{wet:(x,z)=>this.region.isInWater(x,z)&&this.deckHeightAt(x,z)===-Infinity,floor:(x,z)=>Math.max(.45,this.walkSurface(x,z),this.deckHeightAt(x,z)),solid:(x,z,r)=>this.solidTop(x,z,r),blocked:(x,z,y,r)=>Number.isFinite(this.solidTop(x,z,r))&&this.solidTop(x,z,r)>y+.05||!!this.busService?.blocks(x,z,y)||!!this.waterheadLife?.contains(x,z)&&y<11,ripple:(x,z,r)=>this.waterRipples?.emit(x,z,r)});
-   this.animalTarget=null;this.runner.root.visible=false;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.flightVertical=0;this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.animal.yaw;this.updateAnimal(0);this.setCallout('Playing as '+this.animal.p.label);this.pushHudSnapshot();return true;
+   this.animalTarget=null;this.runner.root.visible=false;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.flightVertical=0;this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.animal.yaw;this.animalLookHeld=false;this.animalLookHold=0;this.animalInputBearing=null;this.animalCameraDistance=3.2;this.updateAnimal(0);this.setCallout('Playing as '+this.animal.p.label);this.pushHudSnapshot();return true;
   }
-  public exitAnimal(notify=true){if(!this.animal)return;this.animal.release();this.animal=null;this.animalTarget=null;const p=this.humanReturn;this.humanReturn=null;if(p){this.playerX=p.x;this.playerY=p.y;this.playerZ=p.z;this.playerHeading=this.exploreYaw=p.yaw;this.runner.root.position.set(p.x,p.y,p.z);this.runner.root.rotation.y=p.yaw;}
+  public exitAnimal(notify=true){if(!this.animal)return;this.animal.release();this.animal=null;this.animalTarget=null;this.animalLookHeld=false;this.animalLookHold=0;this.animalInputBearing=null;const p=this.humanReturn;this.humanReturn=null;if(p){this.playerX=p.x;this.playerY=p.y;this.playerZ=p.z;this.playerHeading=this.exploreYaw=p.yaw;this.runner.root.position.set(p.x,p.y,p.z);this.runner.root.rotation.y=p.yaw;}
    this.runner.root.visible=true;this.keysHeld.clear();this.virtualSteer=0;this.touchAdvance=0;this.flightVertical=0;this.exploreSpeed=0;this.playerVy=0;this.flying=false;this.waterMode=p?.water??'land';this.isGrounded=this.waterMode==='land';this.exploreFirst=false;
    if(notify){this.setCallout('Returned to your character');this.updateChaseCamera(.04,0);this.pushHudSnapshot();}}
   public feedAnimal(){this.animal?.toggleFeed();this.pushHudSnapshot();}
   private updateAnimal(dt:number){
    if(this.calloutTimer>0){this.calloutTimer-=dt;if(this.calloutTimer<=0)this.actionCallout='';}
    const a=this.animal!;let steer=this.virtualSteer;if(this.keysHeld.has('KeyA')||this.keysHeld.has('ArrowLeft'))steer--;if(this.keysHeld.has('KeyD')||this.keysHeld.has('ArrowRight'))steer++;
-   a.update(dt,THREE.MathUtils.clamp(steer,-1,1),this.exploreThrottle(),this.exploreYaw,this.explorePace!=='walk'||this.shiftHeld(),THREE.MathUtils.clamp(this.flightVertical+(this.keysHeld.has('Space')?1:0)-(this.keysHeld.has('KeyQ')?1:0),-1,1));
+   steer=THREE.MathUtils.clamp(steer,-1,1);
+   const throttle=this.exploreThrottle(),strength=Math.hypot(steer,throttle);
+   if(strength<.08)this.animalInputBearing=null;
+   else if(this.animalInputBearing===null)this.animalInputBearing=this.exploreYaw;
+   a.update(dt,steer,throttle,this.animalInputBearing??this.exploreYaw,this.explorePace!=='walk'||this.shiftHeld(),THREE.MathUtils.clamp(this.flightVertical+(this.keysHeld.has('Space')?1:0)-(this.keysHeld.has('KeyQ')?1:0),-1,1));
    this.playerX=a.x;this.playerY=a.y;this.playerZ=a.z;this.playerHeading=a.yaw;this.exploreSpeed=a.speed;this.waterMode=a.wet?'swimming':'land';this.isGrounded=!a.air;this.runner.root.visible=false;
-   const back=a.air?5.5:3.2,eye=a.p.eye,fx=-Math.sin(this.exploreYaw),fz=-Math.cos(this.exploreYaw);const origin={x:a.x,y:a.y+eye,z:a.z},target={x:a.x-fx*back,y:a.y+eye+1.2-back*Math.sin(this.explorePitch),z:a.z-fz*back};const safe=cameraFraction(origin,target,(x,z)=>this.solidTop(x,z,CAMERA_RADIUS));
-   this.camera.position.set(origin.x+(target.x-origin.x)*safe,Math.max(.7,origin.y+(target.y-origin.y)*safe),origin.z+(target.z-origin.z)*safe);this.camera.lookAt(a.x+fx*1.4,a.y+eye*.65+Math.tan(this.explorePitch),a.z+fz*1.4);
+   const view=animalCameraFollow(this.exploreYaw,this.explorePitch,a.yaw,this.animalLookHold,this.animalLookHeld,dt);
+   this.exploreYaw=view.yaw;this.explorePitch=view.pitch;this.animalLookHold=view.hold;
+   const targetDistance=a.air?5.6+Math.min(1.1,a.actualSpeed*.06):3.2+Math.min(.6,a.actualSpeed*.08);
+   this.animalCameraDistance+=(targetDistance-this.animalCameraDistance)*(1-Math.exp(-dt*4));
+   const back=this.animalCameraDistance,eye=a.p.eye,fx=-Math.sin(this.exploreYaw),fz=-Math.cos(this.exploreYaw);
+   const pitch=THREE.MathUtils.clamp(this.explorePitch,-.60,.70),horizontal=back*Math.cos(pitch);
+   const origin={x:a.x,y:a.y+eye,z:a.z};
+   const target={x:a.x-fx*horizontal,y:origin.y+(a.air?1.0:1.05)-back*Math.sin(pitch),z:a.z-fz*horizontal};
+   const safe=cameraFraction(origin,target,(x,z)=>Math.max(this.solidTop(x,z,CAMERA_RADIUS),this.region.isInWater(x,z)?-.08:this.terrainSurface(x,z)));
+   this.camera.position.set(origin.x+(target.x-origin.x)*safe,Math.max(.35,origin.y+(target.y-origin.y)*safe),origin.z+(target.z-origin.z)*safe);
+   this.camera.lookAt(a.x+fx*(a.air?1.5:.55),a.y+eye*.75+Math.tan(pitch)*.7,a.z+fz*(a.air?1.5:.55));
    void this.updateChunkStreaming(a.x,a.z,false);this.hudThrottleTimer+=dt;if(this.hudThrottleTimer>=.08){this.hudThrottleTimer=0;this.pushHudSnapshot();}
   }
   private canSwitchCharacter(){return !this.animal&&this.gameState==='playing'&&this.activeRoute.mode==='freeroam'&&!this.flying&&!this.inShop&&!this.occupiedBoat&&!this.busService?.mode&&this.waterMode==='land'&&this.isGrounded&&!!this.pedestrians?.attendant.canSwitch(this.playerX,this.playerZ,this.playerY);}
