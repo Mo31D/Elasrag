@@ -72,3 +72,13 @@ export function lakeRoadPavingJoints():StreetPoint[][]{
 export function lakeRoadDrainCentres():StreetPoint[]{
  return [-1421,-1408.4,-1395.3].map(z=>[lakeRoadCentre(z)-LAKE_ROAD_HALF_WIDTH+.24,z]);
 }
+
+/** One authoritative body for this landmark. The old short GLB must never be loaded. */
+export function usesReferenceStreetBuilding(id:number){return id===BLACK_SHEEP_BUILDING||id===LAKE_ROAD_CORNER_BUILDING;}
+export const BLACK_SHEEP_EAVES_HEIGHT=8.2;
+export function referenceStreetBuilding(b:BuildingFeature):BuildingFeature{
+ return b.id===BLACK_SHEEP_BUILDING?{...b,h:Math.max(b.h,BLACK_SHEEP_EAVES_HEIGHT+1.6),levels:3}:b;
+}
+export function facadeWindowFits(wallTop:number,base:number,center:number,height:number){
+ return base+center+height/2+.15<=wallTop-.06;
+}
