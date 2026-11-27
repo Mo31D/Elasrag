@@ -13,3 +13,29 @@ export function feedAllowed(kind:Species,wet:boolean,airborne:boolean,speed:numb
 
 // Input is the sole powered-flight demand; vertical controls also permit lift.
 export function flightDemand(strength:number,vertical:number){return Math.max(0,Math.min(1,Math.max(strength,Math.abs(vertical)*.55)));}
+
+export const ANIMAL_ORBIT_HOLD=1.5;
+export function animalCameraFollow(yaw:number,pitch:number,heading:number,hold:number,dragging:boolean,dt:number){
+ if(dragging)return {yaw,pitch,hold:ANIMAL_ORBIT_HOLD};
+ const wait=Math.max(0,hold-dt),followDt=Math.max(0,dt-hold);
+ const delta=Math.atan2(Math.sin(heading-yaw),Math.cos(heading-yaw));
+ const blend=1-Math.exp(-followDt*5);
+ return {yaw:yaw+delta*blend,pitch:pitch*(1-blend),hold:wait};
+}
+// Ground movement uses a stable view bearing for each stick gesture. In the air
+// left/right are continuous yaw commands, not a moving camera-relative target.
+export function animalSteering(kind:Species,yaw:number,steer:number,forward:number,bearing:number,air:boolean,wet:boolean,dt:number){
+ const magnitude=Math.min(1,Math.hypot(steer,forward));
+ if(magnitude<=.08)return {yaw,strength:0,drive:0};
+ const p=ANIMALS[kind];
+ if(air){
+  const rate=Math.max(1.45,p.turn*1.45);
+  return {yaw:yaw-steer*rate*dt,strength:magnitude,drive:forward<-.08?.42:Math.max(.55,Math.min(1,Math.max(forward,Math.abs(steer)*.7)))};
+ }
+ const target=bearing-Math.atan2(steer,forward);
+ const error=Math.atan2(Math.sin(target-yaw),Math.cos(target-yaw));
+ const next=turnTowards(yaw,target,Math.max(wet?2.7:4.5,p.turn*(wet?1.5:1.8)),dt);
+ // Turn on the spot rather than lurching in the old direction.
+ const alignment=Math.max(0,Math.cos(error));
+ return {yaw:next,strength:magnitude,drive:magnitude*alignment};
+}
