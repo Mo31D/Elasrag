@@ -1,5 +1,6 @@
 import type {WorldChunkData,RoadFeature} from '../types/game';
 import {pointInRing} from './projection';
+import {displayHalfWidth} from './roadPresentation';
 
 type P=[number,number];
 export interface RoadSignAnchor {
@@ -8,7 +9,7 @@ export interface RoadSignAnchor {
 }
 export type SignAnchor={x:number;z:number;yaw:number;roadId:number;offsetM:number};
 export function halfWidth(r:RoadFeature):number{
- return r.widthM&&r.widthM>0?r.widthM/2:r.kind==='primary'?4.4:r.kind==='secondary'?3.4:r.kind==='lane'?2.6:r.kind==='railway'?1.5:r.sidewalk?.85:1.35;
+ return displayHalfWidth(r);
 }
 function project(x:number,z:number,a:P,b:P){
  const dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);

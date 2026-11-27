@@ -6,6 +6,9 @@ export interface ProceduralTextureSet {
   roughcastBump: THREE.CanvasTexture;
   slateRoofMap: THREE.CanvasTexture;
   roadTarmacMap: THREE.CanvasTexture;
+  plainAsphaltMap:THREE.CanvasTexture;
+  pavingPathMap:THREE.CanvasTexture;
+  gravelPathMap:THREE.CanvasTexture;
   grassTerrainMap: THREE.CanvasTexture;
   timberPlankMap: THREE.CanvasTexture;
   contactShadowMap: THREE.CanvasTexture;
@@ -122,6 +125,19 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
     roadCtx.fillStyle = `rgb(${g},${g + 2},${g + 6})`;
     roadCtx.fillRect(rx, ry, 2, 2);
   }
+  const [asphaltC,asphaltCtx]=makeCanvas(256,256);asphaltCtx.drawImage(roadC,0,0);
+  const plainAsphaltMap=configureColorTexture(asphaltC,1,1,maxAnisotropy);
+  const [pavingC,pavingCtx]=makeCanvas(256,256);
+  pavingCtx.fillStyle='#77766e';pavingCtx.fillRect(0,0,256,256);
+  for(let row=0;row<8;row++)for(let col=-1;col<4;col++){
+    const g=125+Math.floor(rand()*25);pavingCtx.fillStyle='rgb('+g+','+(g-3)+','+(g-10)+')';
+    pavingCtx.fillRect(col*64+(row%2)*32+1,row*32+1,62,30);
+  }
+  const pavingPathMap=configureColorTexture(pavingC,1,1,maxAnisotropy);
+  const [gravelC,gravelCtx]=makeCanvas(256,256);
+  gravelCtx.fillStyle='#918776';gravelCtx.fillRect(0,0,256,256);
+  for(let i=0;i<3600;i++){const g=105+Math.floor(rand()*72);gravelCtx.fillStyle='rgb('+g+','+(g-7)+','+(g-17)+')';gravelCtx.fillRect(rand()*256,rand()*256,1+rand()*2,1+rand()*2);}
+  const gravelPathMap=configureColorTexture(gravelC,1,1,maxAnisotropy);
   // British double-yellow lines at edges
   roadCtx.fillStyle = '#e5b82e';
   roadCtx.fillRect(10, 0, 4, 256);
@@ -178,7 +194,7 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
     slateStoneBump,
     roughcastBump,
     slateRoofMap,
-    roadTarmacMap,
+    roadTarmacMap,plainAsphaltMap,pavingPathMap,gravelPathMap,
     grassTerrainMap,
     timberPlankMap,
     contactShadowMap,
@@ -187,7 +203,7 @@ export function createProceduralTextureSet(maxAnisotropy: number): ProceduralTex
       slateStoneBump.dispose();
       roughcastBump.dispose();
       slateRoofMap.dispose();
-      roadTarmacMap.dispose();
+      roadTarmacMap.dispose();plainAsphaltMap.dispose();pavingPathMap.dispose();gravelPathMap.dispose();
       grassTerrainMap.dispose();
       timberPlankMap.dispose();
       contactShadowMap.dispose();

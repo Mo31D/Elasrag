@@ -3,6 +3,7 @@ import type { LakeData, TerrainGridData, WorldChunkData } from '../types/game';
 import { isPointInLake, sampleTerrainHeight } from '../geo/projection';
 import { planRoadSigns,frontageAnchor,approachAnchor,transitAnchor,boardWidth } from '../geo/signagePlan';
 import { classifyBuilding } from '../geo/placeIdentity';
+import {boardFaces} from '../geo/roadPresentation';
 import type { FacadePlan } from '../geo/facadePlan';
 import buildingAssets from '../data/building-assets.json';
 import { TRANSIT } from '../data/transit';
@@ -39,7 +40,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
     const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.anisotropy=4;textures.push(texture);
     return {texture,ratio:canvas.height/canvas.width};
   }
-  function board(x:number,z:number,yaw:number,lines:string[],style:'road'|'street'|'bus'|'rail'|'welcome'|'direction',id:string,oneSided=false) {
+  function board(x:number,z:number,yaw:number,lines:string[],style:'road'|'street'|'bus'|'rail'|'welcome'|'direction',id:string,directional=false) {
     const {texture,ratio}=artwork(lines,style);
     const w=boardWidth(style),h=w*ratio;
     const postH=style==='street'?1.15:2.05;
@@ -48,8 +49,13 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
     const p=new THREE.Mesh(pole,postMat);p.position.y=postH/2;root.add(p);
     const geom=new THREE.PlaneGeometry(w,h);geometries.push(geom);
     const mat=new THREE.MeshBasicMaterial({map:texture,toneMapped:false});materials.push(mat);
-    for(const side of oneSided?[1]:[-1,1]) {
-      const face=new THREE.Mesh(geom,mat);face.position.set(0,postH,side*.035);face.rotation.y=side===1?0:Math.PI;root.add(face);
+    for(const side of boardFaces(directional)) {
+      // A separate front-facing plane per side avoids mirrored lettering.
+      // Reverse of a directional board carries route names, not incorrect mirrored arrows.
+      const reverse=side.reverse?artwork(lines.map(l=>l.replace(/^[↑←→↓]\s*/,'')),style).texture:null;
+      const faceMat=reverse?new THREE.MeshBasicMaterial({map:reverse,toneMapped:false}):mat;
+      if(reverse)materials.push(faceMat);
+      const face=new THREE.Mesh(geom,faceMat);face.position.set(0,postH,side.side*.035);face.rotation.y=side.yaw;root.add(face);
     }
     const backing=new THREE.BoxGeometry(w,h,.055);geometries.push(backing);
     const back=new THREE.Mesh(backing,postMat);back.position.y=postH;root.add(back);
@@ -59,7 +65,7 @@ export function buildSignage(chunk:WorldChunkData,terrain:TerrainGridData|null,l
   for(const s of roadSigns) {
     const ref=s.ref&&s.ref!==s.name?s.ref:undefined;
     // Do not fabricate welcome/boundary boards from ordinary road IDs.
-    board(s.x,s.z,s.yaw,ref?[s.name,ref]:[s.name],s.ref?'road':'street',s.id,Boolean(s.ref));
+    board(s.x,s.z,s.yaw,ref?[s.name,ref]:[s.name],s.ref?'road':'street',s.id);
   }
   const inChunk=(x:number,z:number)=>Math.floor(x/500)===chunk.cx&&Math.floor(z/500)===chunk.cz;
   for(const t of TRANSIT)if(inChunk(t.x,t.z)&&!isPointInLake(lake,t.x,t.z)){

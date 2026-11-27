@@ -12,6 +12,7 @@ import { buildWaterfrontDetails, groundSurface, WATERHEAD_SIDEWALKS } from './wa
 import { buildSignage } from './signage';
 import {triangleGround,buildingGrades,type Ground} from '../geo/surfaceGround';
 import { halfWidth as mappedRoadHalfWidth } from '../geo/signagePlan';
+import {roadSurface,junctionPoints,unmarkedNearJunction,convexFootprint} from '../geo/roadPresentation';
 import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
 import { buildSiteDetails } from './siteDetails';
@@ -29,6 +30,7 @@ export interface WorldMaterials {
   primaryRoad: THREE.MeshStandardMaterial;
   countryLane: THREE.MeshStandardMaterial;
   footpath: THREE.MeshStandardMaterial;
+  gravelPath:THREE.MeshStandardMaterial;
   pierTimber: THREE.MeshStandardMaterial;
   weatheredDeck: THREE.MeshStandardMaterial;
   dryStoneWall: THREE.MeshStandardMaterial;
@@ -111,7 +113,8 @@ export function createWorldMaterials(
   });
 
   const countryLane = new THREE.MeshStandardMaterial({
-    color: 0x4b5563,
+    color: 0xffffff,
+    map:textures.plainAsphaltMap,
     roughness: 0.88,
     metalness: 0.02,
     polygonOffset: true,
@@ -120,7 +123,8 @@ export function createWorldMaterials(
   });
 
   const footpath = new THREE.MeshStandardMaterial({
-    color: 0xa89476,
+    color: 0xffffff,
+    map:textures.pavingPathMap,
     roughness: 0.94,
     metalness: 0.0,
     polygonOffset: true,
@@ -128,6 +132,7 @@ export function createWorldMaterials(
     polygonOffsetUnits: -1,
   });
 
+  const gravelPath=footpath.clone();gravelPath.map=textures.gravelPathMap;
   const pierTimber = new THREE.MeshStandardMaterial({
     color: 0xffffff,
     map: textures.timberPlankMap,
@@ -239,7 +244,7 @@ export function createWorldMaterials(
     windowGlow,
     primaryRoad,
     countryLane,
-    footpath,
+    footpath,gravelPath,
     pierTimber,
     weatheredDeck,
     dryStoneWall,
@@ -454,6 +459,7 @@ function buildRoadRibbonGeometry(
   yOffset: number,
   followDetail = true,
   deck?: { from: number; to: number; halfWidth: number; segments: BuiltChunkResult['roadDecks'] },
+  surfaceGround:Ground=(x,z)=>sampleTerrainHeight(terrain,x,z),
 ): THREE.BufferGeometry | null {
   if (pts.length < 2) return null;
   if (followDetail) pts = resampleRoad(pts, terrain?.detail, halfWidth);
@@ -484,8 +490,8 @@ function buildRoadRibbonGeometry(
     const rxp = x + rx * halfWidth;
     const rzp = z + rz * halfWidth;
 
-    let ly = Math.max(0.42, sampleTerrainHeight(terrain, lx, lz)) + yOffset;
-    let ry = Math.max(0.42, sampleTerrainHeight(terrain, rxp, rzp)) + yOffset;
+    let ly = Math.max(0.42, surfaceGround(lx,lz)) + yOffset;
+    let ry = Math.max(0.42, surfaceGround(rxp,rzp)) + yOffset;
     if (deck && deckLength > 0) {
       const height = THREE.MathUtils.lerp(deck.from, deck.to, totalLen / deckLength);
       if (i > 0) deck.segments.push({
@@ -598,16 +604,21 @@ function buildLakelandBuildingGeometries(
   const roofH = b.kind === 'historic' ? 3.2 : 1.95;
 
   let roofPrism: THREE.BufferGeometry;
-  if (b.pts.length > 24) {
-    // Approximate the cap of complex footprints without overhanging adjacent streets.
+  if (!convexFootprint(b.pts)) {
+    // Complex/concave footprints: flat cap inside the exact polygon, never span a street.
     roofPrism = new THREE.ExtrudeGeometry(shape, { depth: 0.2, bevelEnabled: false });
     roofPrism.rotateX(-Math.PI / 2);
     roofPrism.translate(b.cx, baseTerrainY + wallH, b.cz);
   } else {
-    roofPrism = new THREE.ConeGeometry(Math.max(spanX, spanZ) * 0.68, roofH, 4);
-    roofPrism.rotateY(Math.PI / 4 + yaw);
-    roofPrism.scale(spanX / Math.max(spanX, spanZ), 1, spanZ / Math.max(spanX, spanZ));
-    roofPrism.translate(b.cx, baseTerrainY + wallH + roofH * 0.5 - 0.05, b.cz);
+    // A footprint-bounded hip roof: every eave follows the real footprint.
+    const cx=b.pts.reduce((a,p)=>a+p[0],0)/b.pts.length,cz=b.pts.reduce((a,p)=>a+p[1],0)/b.pts.length;
+    const y=baseTerrainY+wallH,positions:number[]=[],uvs:number[]=[];
+    for(let i=0;i<b.pts.length;i++){
+      let a=b.pts[i],c=b.pts[(i+1)%b.pts.length];
+      if((c[1]-a[1])*(cx-a[0])-(c[0]-a[0])*(cz-a[1])<0)[a,c]=[c,a];
+      for(const [x,z,h] of [[a[0],a[1],y],[c[0],c[1],y],[cx,cz,y+roofH]]){positions.push(b.cx+x,h,b.cz+z);uvs.push(x/3,z/3);}
+    }
+    roofPrism=new THREE.BufferGeometry();roofPrism.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));roofPrism.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));roofPrism.computeVertexNormals();
   }
 
   const chimney = new THREE.BoxGeometry(0.68, 1.35, 0.68);
@@ -756,6 +767,7 @@ export function buildChunkGroup(
   const primaryGeos: THREE.BufferGeometry[] = [];
   const laneGeos: THREE.BufferGeometry[] = [];
   const pathGeos: THREE.BufferGeometry[] = [];
+  const gravelGeos:THREE.BufferGeometry[]=[];
   const railGeos: THREE.BufferGeometry[] = [];
 
   const roadDecks: BuiltChunkResult['roadDecks'] = [];
@@ -774,8 +786,30 @@ export function buildChunkGroup(
       halfWidth,
       segments: roadDecks,
     } : undefined;
-    const geometry = buildRoadRibbonGeometry(r.pts, halfWidth, terrain, offset, true, deck);
-    if (geometry) (arterial ? primaryGeos : lane ? laneGeos : rail ? railGeos : pathGeos).push(geometry);
+    // Densify to keep road meshes close to rendered terrain and stop paint near junctions.
+    const pts:Array<[number,number]>=[];
+    for(let i=0;i<r.pts.length;i++){
+      const b=r.pts[i],a=r.pts[i-1];if(!a){pts.push(b);continue;}
+      const count=Math.max(1,Math.ceil(Math.hypot(b[0]-a[0],b[1]-a[1])/2));
+      for(let j=1;j<=count;j++)pts.push([a[0]+(b[0]-a[0])*j/count,a[1]+(b[1]-a[1])*j/count]);
+    }
+    const geometry=buildRoadRibbonGeometry(pts,halfWidth,terrain,offset,false,deck,surfaceGround);
+    if(geometry){
+      const style=roadSurface(r);
+      if(style==='marked'){
+        const junctions=junctionPoints(r,chunk.roads),paint:number[]=[],plain:number[]=[];
+        const index=geometry.index!;
+        for(let i=0;i+1<pts.length;i++){
+          const target=unmarkedNearJunction(pts[i],pts[i+1],junctions,halfWidth+2.5)?plain:paint;
+          for(let j=0;j<6;j++)target.push(index.getX(i*6+j));
+        }
+        for(const [indices,batch] of [[paint,primaryGeos],[plain,laneGeos]] as const){
+          if(!indices.length)continue;
+          const g=geometry.clone();g.setIndex(indices);batch.push(g);
+        }
+        geometry.dispose();
+      }else (style==='asphalt'?laneGeos:style==='paving'?pathGeos:style==='gravel'?gravelGeos:railGeos).push(geometry);
+    }
     if (rail) {
       for (let i = 0; i < r.pts.length - 1; i++) {
         const [ax, az] = r.pts[i];
@@ -788,12 +822,13 @@ export function buildChunkGroup(
 
   const siteSurfaces = amblesideSurfaces[chunk.key as keyof typeof amblesideSurfaces] ?? [];
   for (const site of siteSurfaces) {
-    laneGeos.push(groundSurface(site.points, (x, z) => sampleTerrainHeight(terrain, x, z), .045));
+    laneGeos.push(groundSurface(site.points, surfaceGround, .045));
   }
 
   addBatch(primaryGeos, materials.primaryRoad, false,true);
   addBatch(laneGeos, materials.countryLane, false,true);
   addBatch(pathGeos, materials.footpath, false,true);
+  addBatch(gravelGeos,materials.gravelPath,false,true);
   addBatch(railGeos, materials.railSteel, false);
 
   // Dry-stone walls (also grindable!)
