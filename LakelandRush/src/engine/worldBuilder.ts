@@ -17,6 +17,8 @@ import {roadSurface,junctionPoints,unmarkedNearJunction,convexFootprint} from '.
 import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
 import { buildCoffeeShop } from './coffeeShop';
+import {buildBlackSheepStreetFacade} from './blackSheepStreet';
+import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments} from '../geo/blackSheepStreet';
 import {buildPetShop} from './petShop';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
@@ -693,17 +695,24 @@ export function buildChunkGroup(
   const roofs: THREE.BufferGeometry[] = [];
   const windows: THREE.BufferGeometry[] = [];
   const facadePlans = new Map<number,FacadePlan>();
-  const customBuildings:Array<NonNullable<ReturnType<typeof buildCoffeeShop>>>=[];
+  const customBuildings:Array<{group:THREE.Group;dispose:()=>void}>=[];
+  const customIds=new Set<number>();
+  const streetWalls:THREE.BufferGeometry[]=[];
+  const streetMaterials:THREE.Material[]=[];
   const surfaceSamplers:Array<(x:number,z:number)=>number|undefined>=[];
 
   for (const b of chunk.buildings) {
     const asset = buildingAssets.get(b.id);
-    const built = buildLakelandBuildingGeometries(b, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
+    const street=chunk.key===BLACK_SHEEP_STREET_CHUNK&&(b.id===BLACK_SHEEP_BUILDING||b.id===LAKE_ROAD_CORNER_BUILDING);
+    const visualBuilding=street&&b.id===BLACK_SHEEP_BUILDING?{...b,h:Math.max(b.h,9.8),levels:3}:b;
+    const built = buildLakelandBuildingGeometries(visualBuilding, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
     if (!built) continue;
     const coffee=chunk.key==='0_-1'?(b.id===WATERHEAD_COFFEE_ID?buildCoffeeShop(b,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):b.id===PET_SHOP_ID?buildPetShop(b,chunk,surfaceGround,materials.stoneWall,materials.slateRoof):null):null;
+    const localFrontage=street?buildBlackSheepStreetFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):null;
+    if(localFrontage){group.add(localFrontage.group);customBuildings.push(localFrontage);customIds.add(b.id);}
     let roofAt:SolidCollider['roofAt'];
     if(coffee){
-      group.add(coffee.group);customBuildings.push(coffee);roofAt=roofFromModel(coffee.group);
+      group.add(coffee.group);customBuildings.push(coffee);customIds.add(b.id);roofAt=roofFromModel(coffee.group);
       built.wallGeo.dispose();built.roofGeo.dispose();built.windowGeo.dispose();
     } else if (asset) {
       const model = asset.clone();
@@ -722,6 +731,8 @@ export function buildChunkGroup(
       built.wallGeo.dispose();
       built.roofGeo.dispose();
       built.windowGeo.dispose();
+    } else if(localFrontage){
+      streetWalls.push(built.wallGeo);
     } else if (b.kind === 'shop' || b.kind === 'hotel') {
       hotelWalls.push(built.wallGeo);
     } else if (b.zone === 'hawkshead' || b.zone === 'far_sawrey' || b.zone === 'near_sawrey') {
@@ -733,8 +744,9 @@ export function buildChunkGroup(
       roofAt=roofFromGeometry(built.roofGeo);
       roofs.push(built.roofGeo);
       const ground=Math.max(.45,surfaceGround(b.cx,b.cz));
-      const plan=inFacadeArea(b)?planFacade(b,chunk.roads,ground,built.bounds.topY-ground,chunk.buildings,undefined,surfaceGround):null;
-      if(plan){facadePlans.set(b.id,plan);built.windowGeo.dispose();}
+      const plan=!localFrontage&&inFacadeArea(b)?planFacade(b,chunk.roads,ground,built.bounds.topY-ground,chunk.buildings,undefined,surfaceGround):null;
+      if(localFrontage)built.windowGeo.dispose();
+      else if(plan){facadePlans.set(b.id,plan);built.windowGeo.dispose();}
       else windows.push(built.windowGeo);
     }
     if (b.id !== 658735202 || !asset) colliders.push({ ...built.bounds, ...(coffee&&b.id===PET_SHOP_ID?{topY:new THREE.Box3().setFromObject(coffee.group).max.y}:{}), roofAt, isRoof:true, outline: b.pts.map(([x, z]) => [x + b.cx, z + b.cz]) });
@@ -774,6 +786,7 @@ export function buildChunkGroup(
   };
 
   addBatch(stoneWalls, materials.stoneWall, true);
+  if(streetWalls.length){const mat=materials.stoneWall.clone();mat.color.set(0x9a9183);streetMaterials.push(mat);addBatch(streetWalls,mat,true);}
   addBatch(whiteWalls, materials.whitewashWall, true);
   addBatch(hotelWalls, materials.hotelStone, true);
   addBatch(roofs, materials.slateRoof, true);
@@ -844,6 +857,12 @@ export function buildChunkGroup(
   addBatch(primaryGeos, materials.primaryRoad, false,true);
   addBatch(laneGeos, materials.countryLane, false,true);
   addBatch(pathGeos, materials.footpath, false,true);
+  if(chunk.key===BLACK_SHEEP_STREET_CHUNK){
+    const pavement=materials.footpath.clone();pavement.color.set(0x99958e);streetMaterials.push(pavement);
+    const yellow=new THREE.MeshStandardMaterial({color:0xd9b94c,roughness:.88,side:THREE.DoubleSide});streetMaterials.push(yellow);
+    addBatch(lakeRoadPavements().map(p=>groundSurface(p,surfaceGround,.205,true)),pavement,false,true);
+    addBatch(lakeRoadLineSegments().map(p=>groundSurface(p,surfaceGround,.139,true)),yellow,false);
+  }
   addBatch(gravelGeos,materials.gravelPath,false,true);
   addBatch(railGeos, materials.railSteel, false);
 
@@ -1074,7 +1093,7 @@ export function buildChunkGroup(
   colliders.push(...siteDetails.colliders);
   const facades=buildFacadeBatch(facadePlans.values());
   group.add(facades.group);
-  const signage = buildSignage(chunk, terrain, lake, facadePlans,new Set(customBuildings.length?[WATERHEAD_COFFEE_ID,PET_SHOP_ID]:[]));
+  const signage = buildSignage(chunk, terrain, lake, facadePlans,customIds);
   group.add(signage.group);
   return {
     key: chunk.key,
@@ -1089,7 +1108,7 @@ export function buildChunkGroup(
       disposables.forEach((g) => g.dispose());
       waterfront?.dispose();grass.dispose();
       signage.dispose();
-      facades.dispose();customBuildings.forEach(b=>b.dispose());
+      facades.dispose();customBuildings.forEach(b=>b.dispose());streetMaterials.forEach(m=>m.dispose());
       siteDetails.dispose();
     },
   };
