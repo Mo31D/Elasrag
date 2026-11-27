@@ -17,6 +17,8 @@ import {roadSurface,junctionPoints,unmarkedNearJunction,convexFootprint} from '.
 import { inFacadeArea,planFacade,type FacadePlan } from '../geo/facadePlan';
 import { buildFacadeBatch } from './facades';
 import { buildCoffeeShop } from './coffeeShop';
+import {roofFromGeometry,roofFromModel} from './roofCollision';
+import type {SolidCollider} from '../game/buildingCollision';
 import { WATERHEAD_COFFEE_ID } from '../geo/coffeeShopPlan';
 import { buildSiteDetails } from './siteDetails';
 import amblesideSurfaces from '../data/ambleside-surfaces.json';
@@ -48,7 +50,7 @@ export interface WorldMaterials {
 export interface BuiltChunkResult {
   key: string;
   group: THREE.Group;
-  colliders: Array<{ minX: number; maxX: number; minZ: number; maxZ: number; topY: number; isRoof: boolean; outline: Array<[number, number]> }>;
+  colliders: SolidCollider[];
   roadDecks: Array<{ ax: number; az: number; bx: number; bz: number; ay: number; by: number; halfWidth: number }>;
   pierDecks: Array<{ outline: Array<[number, number]>; y: number }>;
   grindSegments: Array<{ ax: number; az: number; bx: number; bz: number; y: number }>;
@@ -697,8 +699,9 @@ export function buildChunkGroup(
     const built = buildLakelandBuildingGeometries(b, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
     if (!built) continue;
     const coffee=b.id===WATERHEAD_COFFEE_ID&&chunk.key==='0_-1'?buildCoffeeShop(b,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):null;
+    let roofAt:SolidCollider['roofAt'];
     if(coffee){
-      group.add(coffee.group);customBuildings.push(coffee);
+      group.add(coffee.group);customBuildings.push(coffee);roofAt=roofFromModel(coffee.group);
       built.wallGeo.dispose();built.roofGeo.dispose();built.windowGeo.dispose();
     } else if (asset) {
       const model = asset.clone();
@@ -713,6 +716,7 @@ export function buildChunkGroup(
         }
       });
       group.add(model);
+      roofAt=roofFromModel(model);
       built.wallGeo.dispose();
       built.roofGeo.dispose();
       built.windowGeo.dispose();
@@ -724,13 +728,14 @@ export function buildChunkGroup(
       stoneWalls.push(built.wallGeo);
     }
     if (!asset && !coffee) {
+      roofAt=roofFromGeometry(built.roofGeo);
       roofs.push(built.roofGeo);
       const ground=Math.max(.45,surfaceGround(b.cx,b.cz));
       const plan=inFacadeArea(b)?planFacade(b,chunk.roads,ground,built.bounds.topY-ground,chunk.buildings,undefined,surfaceGround):null;
       if(plan){facadePlans.set(b.id,plan);built.windowGeo.dispose();}
       else windows.push(built.windowGeo);
     }
-    if (b.id !== 658735202 || !asset) colliders.push({ ...built.bounds, isRoof: b.h < 9.5, outline: b.pts.map(([x, z]) => [x + b.cx, z + b.cz]) });
+    if (b.id !== 658735202 || !asset) colliders.push({ ...built.bounds, roofAt, isRoof:true, outline: b.pts.map(([x, z]) => [x + b.cx, z + b.cz]) });
   }
 
   if (chunk.key === '0_-4') {

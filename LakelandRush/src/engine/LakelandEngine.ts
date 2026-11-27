@@ -4,6 +4,7 @@ import {SWIM_SPEED,surfaceMode,stepBoat,boatExit,boatContains,type WaterMode} fr
 import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from './rowBoats';
 import {WaterRipples} from './waterRipples';
 import {WaterheadLife} from './waterheadLife';
+import {highestSolid,blocksMove,cameraFraction,WALK_RADIUS,FLIGHT_RADIUS,CAMERA_RADIUS,ROOF_SKIN} from '../game/buildingCollision';
 import { createBlackSheepInterior } from './shopInterior';
 import navigation from '../data/ambleside-navigation.json';
 import { createAtmosphere } from './atmosphere';
@@ -167,6 +168,9 @@ export class LakelandEngine {
 
   private terrainMesh: THREE.Group | null = null;
   private terrainSurface:(x:number,z:number)=>number=(x,z)=>this.region.getTerrainHeight(x,z);
+  private solidTop(x:number,z:number,r:number):number{
+    let top=-Infinity;for(const chunk of this.loadedChunks.values())top=Math.max(top,highestSolid(chunk.colliders,x,z,r));return top;
+  }
   private walkSurface(x:number,z:number):number{
     let y=this.terrainSurface(x,z);
     for(const chunk of this.loadedChunks.values())y=Math.max(y,chunk.surfaceAt(x,z)??-Infinity);
@@ -769,7 +773,7 @@ export class LakelandEngine {
   public toggleFreeFlight():void {
     if(this.gameState!=='playing'||this.activeRoute.mode!=='freeroam'||this.inShop||this.occupiedBoat)return;
     this.waterMode='land';this.flying=!this.flying;this.flightVertical=0;this.playerVy=0;this.exploreJumpPresses=0;this.exploreJumpCount=0;this.coyoteTimer=0;this.isGrounded=false;
-    if(this.flying){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.playerHeading;this.playerY=Math.max(this.playerY+2,this.walkSurface(this.playerX,this.playerZ)+3);}
+    if(this.flying){this.exploreFirst=false;this.explorePitch=0;this.exploreYaw=this.playerHeading;this.playerY=Math.max(this.playerY+2,this.walkSurface(this.playerX,this.playerZ)+3,this.solidTop(this.playerX,this.playerZ,FLIGHT_RADIUS)+1.25);}
     this.setCallout(this.flying?'Free flight':'Landing');this.pushHudSnapshot();
   }
   public setFlightVertical(value:number):void {this.flightVertical=this.flying?THREE.MathUtils.clamp(value,-1,1):0;}
@@ -1502,8 +1506,13 @@ export class LakelandEngine {
       this.emitParticles(this.playerX, this.playerY, this.playerZ, 6, 0xe2e8f0, 3.2);
     }
 
+    // Shared building envelope: horizontal sweeps in both movement modes.
+    const radius=this.flying?FLIGHT_RADIUS:WALK_RADIUS;
+    const currentTop=this.solidTop(this.playerX,this.playerZ,radius);
+    const blockedBuilding=(x:number,z:number)=>blocksMove(this.solidTop(x,z,radius),this.playerY,currentTop,this.isGrounded&&!this.flying);
     // Advance position (Guided Sprint vs 360° Explorer)
     if (this.activeRoute.mode === 'sprint') {
+      const oldDist=this.routeDist,oldLane=this.laneOffset,oldX=this.playerX,oldZ=this.playerZ;
       this.routeDist += speed * dt;
       this.totalDistanceM = this.routeDist;
 
@@ -1520,8 +1529,14 @@ export class LakelandEngine {
       );
 
       const sample = sampleCompiledRoute(this.compiledRoute, this.routeDist);
-      this.playerX = sample.x + sample.rx * this.laneOffset;
-      this.playerZ = sample.z + sample.rz * this.laneOffset;
+      const targetX=sample.x+sample.rx*this.laneOffset,targetZ=sample.z+sample.rz*this.laneOffset;
+      const next=sweepMove(oldX,oldZ,targetX-oldX,targetZ-oldZ,blockedBuilding);
+      if(Math.hypot(next.x-targetX,next.z-targetZ)>.001){this.routeDist=oldDist;this.totalDistanceM=oldDist;this.laneOffset=oldLane;speed=0;
+        // Preserve progress while permitting a safe lateral escape from a blocked lane.
+        const back=sampleCompiledRoute(this.compiledRoute,oldDist),lane=THREE.MathUtils.clamp(oldLane+this.targetLaneVelocity*dt,-this.activeRoute.corridorHalfWidth,this.activeRoute.corridorHalfWidth);
+        const lx=back.x+back.rx*lane,lz=back.z+back.rz*lane,side=sweepMove(oldX,oldZ,lx-oldX,lz-oldZ,blockedBuilding);
+        if(Math.hypot(side.x-lx,side.z-lz)<.001){this.laneOffset=lane;this.playerX=side.x;this.playerZ=side.z;}
+      }else{this.playerX=next.x;this.playerZ=next.z;}
       this.playerHeading = Math.atan2(-sample.tx, -sample.tz) - steer * 0.16;
 
       if (this.routeDist >= this.compiledRoute.totalLength) {
@@ -1535,11 +1550,7 @@ export class LakelandEngine {
       const oldX=this.playerX,oldZ=this.playerZ;
       const blocked=(x:number,z:number)=>{
         if(this.waterMode==='swimming'&&this.region.isInWater(x,z)&&this.deckHeightAt(x,z)>-Infinity)return true;
-        for(const chunk of this.loadedChunks.values())for(const c of chunk.colliders){
-          if(x<c.minX-.32||x>c.maxX+.32||z<c.minZ-.32||z>c.maxZ+.32||this.playerY>=c.topY-.6)continue;
-          for(const [ox,oz] of [[0,0],[.27,0],[-.27,0],[0,.27],[0,-.27]])if(pointInRing(x+ox,z+oz,c.outline))return true;
-        }
-        return false;
+        return blockedBuilding(x,z);
       };
       const next=sweepMove(oldX,oldZ,move.x*maxSpeed*dt,move.z*maxSpeed*dt,blocked);
       this.playerX=next.x;this.playerZ=next.z;
@@ -1562,22 +1573,10 @@ export class LakelandEngine {
       else if(prev==='swimming')this.playerY=Math.max(.45,floorY)+.025;
     }
     floorY=Math.max(overLake?-.6:Math.max(.45,floorY)+.025,deckY);
-    // Check building roofs for landing
-    for (const chunk of this.loadedChunks.values()) {
-      for (const c of chunk.colliders) {
-        if (
-          c.isRoof &&
-          this.playerX >= c.minX &&
-          this.playerX <= c.maxX &&
-          this.playerZ >= c.minZ &&
-          this.playerZ <= c.maxZ &&
-          pointInRing(this.playerX,this.playerZ,c.outline) &&
-          (this.flying || this.playerY >= c.topY - 0.85)
-        ) {
-          floorY = Math.max(floorY, c.topY);
-        }
-      }
-    }
+    // The surface envelope is identical for wall clearance and rooftop landing.
+    // Includes tall buildings and the actual pitch of each rendered roof.
+    const roofY=this.solidTop(this.playerX,this.playerZ,radius);
+    if(Number.isFinite(roofY))floorY=Math.max(floorY,roofY+ROOF_SKIN);
 
     // Check grind rails
     this.isGrinding = false;
@@ -1847,13 +1846,11 @@ export class LakelandEngine {
       desiredX=this.playerX-fx*backDist*Math.cos(pitch);
       desiredZ=this.playerZ-fz*backDist*Math.cos(pitch);
       desiredY=this.playerY+(this.occupiedBoat?2.8:this.flying?3.1:2.0)-backDist*Math.sin(pitch);
-      // Pull the camera in before it passes through nearby mapped building footprints.
-      for(let f=.15;f<=1;f+=.15){
-        const x=this.playerX+(desiredX-this.playerX)*f,z=this.playerZ+(desiredZ-this.playerZ)*f,y=this.playerY+1.5+(desiredY-this.playerY-1.5)*f;
-        if([...this.loadedChunks.values()].some(chunk=>chunk.colliders.some(c=>y<c.topY&&x>=c.minX&&x<=c.maxX&&z>=c.minZ&&z<=c.maxZ&&pointInRing(x,z,c.outline)))){
-          const safe=Math.max(.12,f-.15);desiredX=this.playerX+(desiredX-this.playerX)*safe;desiredZ=this.playerZ+(desiredZ-this.playerZ)*safe;desiredY=this.playerY+1.5+(desiredY-this.playerY-1.5)*safe;break;
-        }
-      }
+      // Use the same real roof envelope for camera clearance. The sweep samples
+      // every 12cm instead of skipping large portions of the camera boom.
+      const origin={x:this.playerX,y:this.playerY+1.5,z:this.playerZ};
+      const safe=cameraFraction(origin,{x:desiredX,y:desiredY,z:desiredZ},(x,z)=>this.solidTop(x,z,CAMERA_RADIUS));
+      desiredX=origin.x+(desiredX-origin.x)*safe;desiredY=origin.y+(desiredY-origin.y)*safe;desiredZ=origin.z+(desiredZ-origin.z)*safe;
     }
     // Avoid a giant close-up of the avatar when a wall forces the camera inward.
     if(roaming&&Math.hypot(desiredX-this.playerX,desiredZ-this.playerZ)<1.9){this.runner.root.visible=false;}
