@@ -3,6 +3,7 @@ import { cameraRelative, smoothAngle, slideMove, sweepMove, paceSpeed, EXPLORE_J
 import {SWIM_SPEED,surfaceMode,stepBoat,boatExit,type WaterMode} from '../game/waterNavigation';
 import {createRowBoats,animateBoat,seatAvatar,disposeBoats,type RowBoat} from './rowBoats';
 import {WaterRipples} from './waterRipples';
+import {WaterheadLife} from './waterheadLife';
 import { createBlackSheepInterior } from './shopInterior';
 import navigation from '../data/ambleside-navigation.json';
 import { createAtmosphere } from './atmosphere';
@@ -236,6 +237,7 @@ export class LakelandEngine {
   private occupiedBoat:RowBoat|null=null;
   private waterEffectTimer=0;
   private waterRipples:WaterRipples|null=null;
+  private waterheadLife:WaterheadLife|null=null;
   private slideTimer = 0;
   private isGrinding = false;
   private grindHeight = 0;
@@ -441,6 +443,16 @@ export class LakelandEngine {
       // Stage initial Waterhead & Ambleside chunks before first paint
       this.prepareRoute(this.activeRoute, this.prevRecord);
       await this.updateChunkStreaming(this.playerX, this.playerZ, true);
+      if(this.disposed)return;
+      const unobstructed=(x:number,z:number)=>{
+        if(this.deckHeightAt(x,z)>-Infinity)return false;
+        for(const chunk of this.loadedChunks.values())for(const c of chunk.colliders)if(x>=c.minX-.35&&x<=c.maxX+.35&&z>=c.minZ-.35&&z<=c.maxZ+.35&&pointInRing(x,z,c.outline))return false;
+        return true;
+      };
+      this.waterheadLife=new WaterheadLife(this.scene,(x,z)=>this.region.isInWater(x,z),
+        (x,z)=>this.region.isInWater(x,z)&&unobstructed(x,z),
+        (x,z)=>!this.region.isInWater(x,z)&&unobstructed(x,z),
+        (x,z)=>this.walkSurface(x,z),(x,z,r)=>this.waterRipples?.emit(x,z,r));
 
       if (!this.isSoftwareGl) {
         this.renderer.compile(this.scene, this.camera);
@@ -536,7 +548,6 @@ export class LakelandEngine {
   private spawnLakeSteamers(): void {
     // Windermere Lake center-channel steamer cruises (North-South along Windermere)
     const steamerCoords: Array<[number, number, 1 | -1]> = [
-      [140, 260, -1], // Near Waterhead Pier
       [1950, 5600, 1], // Mid-lake off Bowness / Belle Isle
       [420, 14600, -1], // Lakeside South Basin
     ];
@@ -831,7 +842,7 @@ export class LakelandEngine {
     }return y;
   }
   private boatWaterAt(x:number,z:number):boolean{
-    if(!this.region.isInWater(x,z)||this.deckHeightAt(x,z)>-Infinity)return false;
+    if(!this.region.isInWater(x,z)||this.deckHeightAt(x,z)>-Infinity||this.waterheadLife?.contains(x,z))return false;
     for(const chunk of this.loadedChunks.values())for(const c of chunk.colliders)if(x>=c.minX&&x<=c.maxX&&z>=c.minZ&&z<=c.maxZ&&pointInRing(x,z,c.outline))return false;
     return !this.rowBoats.some(b=>b!==this.occupiedBoat&&Math.hypot(x-b.x,z-b.z)<1.35);
   }
@@ -1337,6 +1348,7 @@ export class LakelandEngine {
 
     for(const b of this.rowBoats)if(b!==this.occupiedBoat)animateBoat(b,this.elapsedTime,dt,false);
     this.updateAmbientActors(dt);
+    this.waterheadLife?.update(dt,this.playerX,this.playerZ);
     this.waterRipples?.update(dt);
     this.updateParticles(dt);
     this.updateRain(dt);
@@ -2108,7 +2120,7 @@ export class LakelandEngine {
     this.waterMesh?.geometry.dispose();
     this.materials?.waterUniforms.shoreMap.value?.dispose();
     this.materials?.weatheredDeck.dispose();
-    this.waterRipples?.dispose();disposeBoats(this.rowBoats);this.shop?.dispose();
+    this.waterheadLife?.dispose();this.waterRipples?.dispose();disposeBoats(this.rowBoats);this.shop?.dispose();
     this.textures?.dispose();
     this.sound.dispose();
     this.renderer?.dispose();
