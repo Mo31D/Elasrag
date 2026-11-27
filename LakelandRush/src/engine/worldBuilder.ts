@@ -702,8 +702,9 @@ export function buildChunkGroup(
   const surfaceSamplers:Array<(x:number,z:number)=>number|undefined>=[];
 
   for (const b of chunk.buildings) {
-    const asset = buildingAssets.get(b.id);
     const street=chunk.key===BLACK_SHEEP_STREET_CHUNK&&(b.id===BLACK_SHEEP_BUILDING||b.id===LAKE_ROAD_CORNER_BUILDING);
+    // Reference-authored streets replace legacy GLB assets instead of layering over them.
+    const asset = street?undefined:buildingAssets.get(b.id);
     const visualBuilding=street&&b.id===BLACK_SHEEP_BUILDING?{...b,h:Math.max(b.h,9.8),levels:3}:b;
     const built = buildLakelandBuildingGeometries(visualBuilding, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
     if (!built) continue;
