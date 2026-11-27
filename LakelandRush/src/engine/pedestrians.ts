@@ -55,7 +55,7 @@ export class PedestrianWorld{
    p.pause=Math.max(0,p.pause-dt);
    const n=nextWalkDistance(p.distance,p.dir,p.speed,dt,p.route.totalLength),q=sampleCompiledRoute(p.route,n.distance);
    const crowded=this.people.some(a=>a!==p&&a.root.visible&&Math.hypot(q.x-a.x,q.z-a.z)<.62&&Math.hypot(q.x-a.x,q.z-a.z)<Math.hypot(p.x-a.x,p.z-a.z));
-   let moving=!close&&!crowded&&p.pause===0&&this.clear(q.x,q.z)&&!busBlocked(q.x,q.z);
+   let moving=!close&&!crowded&&(!p.dog||Math.hypot(p.x-p.dog.x,p.z-p.dog.z)<2.2)&&p.pause===0&&this.clear(q.x,q.z)&&!busBlocked(q.x,q.z);
    if(moving){p.distance=n.distance;p.dir=n.dir;p.x=q.x;p.z=q.z;p.phase+=dt*p.speed*7;if(n.distance===0||n.distance===p.route.totalLength)p.pause=1.2+p.kind*.5;}
    else if(!close&&!crowded&&p.pause===0){p.dir=p.dir===1?-1:1;p.pause=.8;}
    const desired=close?Math.atan2(p.x-playerX,p.z-playerZ):Math.atan2(-q.tx*p.dir,-q.tz*p.dir);
@@ -73,7 +73,9 @@ export class PedestrianWorld{
    }
   }
  }
- near(x:number,z:number,r=.65){return this.people.some(p=>p.root.visible&&(Math.hypot(x-p.x,z-p.z)<r||(p.dog&&Math.hypot(x-p.dog.x,z-p.dog.z)<r)));}
+ distanceToNearest(x:number,z:number){let d=Infinity;for(const p of this.people){if(!p.root.visible)continue;d=Math.min(d,Math.hypot(x-p.x,z-p.z));if(p.dog)d=Math.min(d,Math.hypot(x-p.dog.x,z-p.dog.z));}return d;}
+ near(x:number,z:number,r=.65){return this.distanceToNearest(x,z)<r;}
+ hide(){for(const p of this.people){p.root.visible=false;if(p.dog)p.dog.root.visible=p.dog.lead.visible=false;}}
  threats():Threat[]{const out:Threat[]=[];for(const p of this.people){if(!p.root.visible)continue;out.push({x:p.x,z:p.z,radius:3.4});if(p.dog)out.push({x:p.dog.x,z:p.dog.z,radius:6});}return out;}
  dispose(){for(const p of this.people){p.root.removeFromParent();p.dog?.root.removeFromParent();p.dog?.lead.removeFromParent();}this.geos.forEach(g=>g.dispose());this.mats.forEach(m=>m.dispose());}
 }

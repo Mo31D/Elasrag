@@ -1376,8 +1376,10 @@ export class LakelandEngine {
 
     for(const b of this.rowBoats)if(b!==this.occupiedBoat)animateBoat(b,this.elapsedTime,dt,false);
     this.updateAmbientActors(dt);
-    if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
-    this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0));
+    if(this.activeRoute.mode==='freeroam'){
+      if(!this.busService?.mode)this.busService?.update(dt,this.playerX,this.playerZ);
+      this.pedestrians?.update(dt,this.playerX,this.playerZ,this.playerY,(x,z)=>!!this.busService?.blocks(x,z,0));
+    }else{this.busService?.hide();this.pedestrians?.hide();}
     this.waterheadLife?.update(dt,this.playerX,this.playerZ,[...(this.pedestrians?.threats()??[]),...(!this.flying&&!this.occupiedBoat&&!this.busService?.mode&&this.playerY<4?[{x:this.playerX,z:this.playerZ,radius:4.5}]:[])]);
     this.waterRipples?.update(dt);
     this.updateParticles(dt);
@@ -1573,10 +1575,11 @@ export class LakelandEngine {
       // Full two-axis, camera-relative movement. Camera yaw stays independent of body yaw.
       const move=cameraRelative(steer,throttle,this.exploreYaw);
       const maxSpeed=this.waterMode==='swimming'?SWIM_SPEED:maxExploreSpeed;
-      const oldX=this.playerX,oldZ=this.playerZ;
+      const oldX=this.playerX,oldZ=this.playerZ,oldCrowdDistance=this.pedestrians?.distanceToNearest(oldX,oldZ)??Infinity;
       const blocked=(x:number,z:number)=>{
         if(this.waterMode==='swimming'&&this.region.isInWater(x,z)&&this.deckHeightAt(x,z)>-Infinity)return true;
-        return blockedBuilding(x,z)||!!this.busService?.blocks(x,z,this.playerY);
+        const crowdDistance=this.pedestrians?.distanceToNearest(x,z)??Infinity;
+        return blockedBuilding(x,z)||!!this.busService?.blocks(x,z,this.playerY)||(!this.flying&&this.waterMode==='land'&&crowdDistance<.60&&crowdDistance<oldCrowdDistance-.001);
       };
       const next=sweepMove(oldX,oldZ,move.x*maxSpeed*dt,move.z*maxSpeed*dt,blocked);
       this.playerX=next.x;this.playerZ=next.z;
