@@ -21,3 +21,22 @@ test('single button launches both playable bird species from land or water with 
   assert.equal(poses.at(-1),'landing');
  }
 });
+
+test('water launch and touchdown create ripples, glide conserves stamina, and manual landing completes',()=>{
+ const root=new THREE.Group();root.position.y=-.08;let ripples=0;
+ const bird=new AnimalPlayer({root,kind:'mallard',pose:()=>{}},{wet:()=>true,floor:()=>0,solid:()=>-Infinity,blocked:()=>false,ripple:()=>{ripples++;}});
+ bird.toggleFlight();assert.equal(ripples,1);
+ for(let i=0;i<120;i++)bird.update(1/60,0,0,0,false,0);
+ const energy=bird.energy;
+ for(let i=0;i<60;i++)bird.update(1/60,0,0,0,false,0);
+ assert.ok(energy-bird.energy<.5);
+ bird.toggleFlight();
+ for(let i=0;i<1200&&bird.air;i++)bird.update(1/60,0,0,0,false,0);
+ assert.equal(bird.air,false);assert.equal(bird.wet,true);assert.ok(ripples>=2);
+});
+test('non-flying animals cannot launch',()=>{
+ for(const kind of ['sheep','dog'] as const){
+  const bird=new AnimalPlayer({root:new THREE.Group(),kind,pose:()=>{}},{wet:()=>false,floor:()=>0,solid:()=>-Infinity,blocked:()=>false,ripple:()=>{}});
+  bird.toggleFlight();assert.equal(bird.air,false);assert.equal(bird.launch,false);
+ }
+});
