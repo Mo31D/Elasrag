@@ -48,3 +48,27 @@ export function lakeRoadArrow():StreetPoint[]{
  // Forward follows the mapped one-way road's southbound direction.
  return shape.map(([u,v])=>[x+u*Math.cos(angle)+v*Math.sin(angle),z+u*Math.sin(angle)-v*Math.cos(angle)]);
 }
+
+export const BLACK_SHEEP_FRONT_EDGE=7;
+export const BLACK_SHEEP_DOOR={x:68.73,z:-1400.45};
+export function lakeRoadKerbs():StreetPoint[][]{
+ const out:StreetPoint[][]=[];
+ for(let i=1;i<sections.length;i++){
+  const a=sections[i-1],b=sections[i],ax=lakeRoadCentre(a)-LAKE_ROAD_HALF_WIDTH+.025,bx=lakeRoadCentre(b)-LAKE_ROAD_HALF_WIDTH+.025;
+  out.push([[ax-.14,a],[bx-.14,b],[bx,b],[ax,a]]);
+  const ex=lakeRoadCentre(a)+LAKE_ROAD_HALF_WIDTH-.025,fx=lakeRoadCentre(b)+LAKE_ROAD_HALF_WIDTH-.025;
+  if(ex+.17<79.1-(a+1432.4)/46.6&&fx+.17<79.1-(b+1432.4)/46.6)out.push([[ex,a],[fx,b],[fx+.14,b],[ex+.14,a]]);
+ }
+ return out;
+}
+export function lakeRoadPavingJoints():StreetPoint[][]{
+ const out:StreetPoint[][]=[];
+ for(let z=-1425.5;z<-1392.5;z+=.68){
+  const left=blackSheepWestWall(z)+.06,right=lakeRoadCentre(z)-LAKE_ROAD_HALF_WIDTH-.16;
+  if(right-left>.25)out.push([[left,z],[right,z],[right,z+.015],[left,z+.015]]);
+ }
+ return out;
+}
+export function lakeRoadDrainCentres():StreetPoint[]{
+ return [-1421,-1408.4,-1395.3].map(z=>[lakeRoadCentre(z)-LAKE_ROAD_HALF_WIDTH+.24,z]);
+}
