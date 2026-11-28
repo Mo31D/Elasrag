@@ -3,6 +3,7 @@ import {displayHalfWidth} from './roadPresentation';
 import {segmentDistance,type Point} from './parking';
 import {pointInRing} from './projection';
 import {petJunctionReserved} from './petJunction';
+import {corridorDetailedWall} from './waterheadCorridor';
 export const WALL_HEIGHT=1.0,WALL_WIDTH=.44;
 export type WallRun={a:Point;b:Point;kind:'parking'|'roadside'};
 // User-confirmed boundary along the A591-facing edge of Waterhead car park.
@@ -54,7 +55,7 @@ export function lakeRoadWallRuns(chunk:WorldChunkData,water:(x:number,z:number)=
  }
  // Provisional roadside infill only in the Waterhead–Ambleside corridor.
  // Preserve all known roads/paths and a conservative access envelope near homes.
- const safe=(x:number,z:number)=>tile(x,z)&&!(chunk.key==='0_-1'&&petJunctionReserved(x,z))&&z<-8&&z>-1180&&!water(x,z)&&buildingClear(x,z,9)&&existingClear(x,z)&&entrances.every(e=>segmentDistance(x,z,e.a,e.b)>e.clear)&&roads.every(r=>segmentDistance(x,z,r.a,r.b)>r.width+.65);
+ const safe=(x:number,z:number)=>tile(x,z)&&!(chunk.key==='0_-1'&&(petJunctionReserved(x,z)||corridorDetailedWall(x,z)))&&z<-8&&z>-1180&&!water(x,z)&&buildingClear(x,z,9)&&existingClear(x,z)&&entrances.every(e=>segmentDistance(x,z,e.a,e.b)>e.clear)&&roads.every(r=>segmentDistance(x,z,r.a,r.b)>r.width+.65);
  for(const r of roads){
   const dx=r.b[0]-r.a[0],dz=r.b[1]-r.a[1],len=Math.hypot(dx,dz);if(len<.1)continue;
   for(const side of [-1,1]){
