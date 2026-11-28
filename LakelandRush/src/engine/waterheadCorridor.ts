@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import type {WorldChunkData,BuildingFeature} from '../types/game';
 import type {Ground} from '../geo/surfaceGround';
-import type {SolidCollider,Point} from '../game/buildingCollision';
+import {wallCollider,type SolidCollider,type Point} from '../game/buildingCollision';
 import {corridorPlan,corridorPoint,corridorYaw,APARTMENTS_ID} from '../geo/waterheadCorridor';
 import {streetEdge} from '../geo/blackSheepStreet';
 import {groundSurface} from './waterfront';
@@ -31,7 +31,7 @@ export function buildWaterheadCorridor(chunk:WorldChunkData,ground:Ground,stone:
   }
   if(fence){const count=Math.max(1,Math.ceil(len/.14));for(let i=0;i<count;i++){const t=(i+.5)/count,x=a[0]+dx*t,z=a[1]+dz*t;box(.09,.94,len/count+.006,x,yAt(x,z)+h+.50,z,fenceWood[i%3],yaw);}}
   if(height!==undefined&&side<0){for(let i=0;i<n;i++){const t=(i+.5)/n,x=a[0]+dx*t,z=a[1]+dz*t;box(.29,.025,len/n*.65,x,yAt(x,z)+h+.075,z,moss,yaw);}}
-  solid(a,b,.44,h+.08+(fence?.94:0));
+  for(let i=0;i<n;i++){const t=i/n,u=(i+1)/n,A:Point=[a[0]+dx*t,a[1]+dz*t],B:Point=[a[0]+dx*u,a[1]+dz*u];const y=yAt((A[0]+B[0])/2,(A[1]+B[1])/2)+h+.06+(fence?.91:0);colliders.push(wallCollider(A,B,.47,y,y));}
  }
  for(const p of plan.shoulders)add(groundSurface(p,ground,.115,true),asphalt);
  for(const p of plan.kerbs)add(groundSurface(p,ground,.218,true),kerb);
