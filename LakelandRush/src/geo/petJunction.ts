@@ -14,13 +14,13 @@ export function petGardenRuns(){
  return cuts.slice(1).flatMap((z,i)=>{const a=cuts[i];if(Math.abs((a+z)/2-GATE_Z)<GATE_WIDTH/2)return [];return [{a:[gardenWallX(a),a] as Point,b:[gardenWallX(z),z] as Point}];});
 }
 export const PET_SIGNAL_POINTS=[
- {x:127.8,z:-251.1,yaw:0.24,main:true,sensor:true},
+ {x:126.5,z:-251.8,yaw:0.24,main:true,sensor:true},
  {x:139.1,z:-247.3,yaw:0.24,main:true,sensor:false},
  {x:125.0,z:-273.7,yaw:2.97,main:true,sensor:false},
- {x:118.9,z:-268.2,yaw:-.65,main:false,sensor:false}
+ {x:116,z:-265.5,yaw:-.65,main:false,sensor:false}
 ];
-export const PET_LAMP_POINTS:Point[]=[[142.5,-244.5],[126.2,-280.2],[135.1,-316.5]];
-export const PET_TREE_POINTS=[{x:145,z:-245,height:12,spread:6},{x:144.6,z:-264,height:10,spread:5.2},{x:104.3,z:-279.5,height:10.3,spread:5.8}];
+export const PET_LAMP_POINTS:Point[]=[[142.5,-244.5],[125.2,-280.2],[135.1,-316.5]];
+export const PET_TREE_POINTS=[{x:145,z:-245,height:12,spread:6},{x:144.6,z:-264,height:10,spread:5.2},{x:102,z:-282,height:10.3,spread:5.8}];
 export function petJunctionReserved(x:number,z:number){return x>119&&x<150&&z>-280&&z<-230;}
 export function petJunctionPavement():Point[][]{
  const zs=[-231.6,-239.3,-241,-242.7,-259.4,-275.5];
