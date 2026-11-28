@@ -23,6 +23,8 @@ import {LIBRARY_ID,LIBRARY_NEIGHBOURS,KELSICK_CHUNK,KELSICK_CHUNKS,isShelterFoot
 import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow,lakeRoadKerbs,lakeRoadPavingJoints,lakeRoadDrainCentres,usesReferenceStreetBuilding,referenceStreetBuilding} from '../geo/blackSheepStreet';
 import {buildPetShop} from './petShop';
 import {buildPetJunction} from './petJunction';
+import {buildWaterheadCorridor,buildCorridorApartments} from './waterheadCorridor';
+import {APARTMENTS_ID,CORRIDOR_CHUNKS,corridorPlan} from '../geo/waterheadCorridor';
 import {PET_JUNCTION_CHUNK,PET_JUNCTION_WALL_ID,PET_TREE_POINTS,petJunctionPavement} from '../geo/petJunction';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
@@ -703,6 +705,8 @@ export function buildChunkGroup(
   const customBuildings:Array<{group:THREE.Group;dispose:()=>void}>=[];
   const customIds=new Set<number>();
   const streetWalls:THREE.BufferGeometry[]=[];
+  const corridorWhiteWalls:THREE.BufferGeometry[]=[];
+  const authoredCorridor=CORRIDOR_CHUNKS.includes(chunk.key)?corridorPlan(chunk):null;
   const streetMaterials:THREE.Material[]=[];
   const surfaceSamplers:Array<(x:number,z:number)=>number|undefined>=[];
 
@@ -711,12 +715,13 @@ export function buildChunkGroup(
     const street=chunk.key===BLACK_SHEEP_STREET_CHUNK&&usesReferenceStreetBuilding(b.id);
     // Reference-authored streets replace legacy GLB assets instead of layering over them.
     const library=chunk.key===KELSICK_CHUNK&&(b.id===LIBRARY_ID||LIBRARY_NEIGHBOURS.some(id=>id===b.id));
-    const asset = street||library?undefined:buildingAssets.get(b.id);
-    const visualBuilding=street?referenceStreetBuilding(b):b;
+    const apartments=chunk.key==='0_-1'&&b.id===APARTMENTS_ID;
+    const asset = street||library||apartments?undefined:buildingAssets.get(b.id);
+    const visualBuilding=street?referenceStreetBuilding(b):apartments?{...b,h:Math.max(b.h,10.0),levels:3}:b;
     const built = buildLakelandBuildingGeometries(visualBuilding, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
     if (!built) continue;
     const coffee=chunk.key==='0_-1'?(b.id===WATERHEAD_COFFEE_ID?buildCoffeeShop(b,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):b.id===PET_SHOP_ID?buildPetShop(b,chunk,surfaceGround,materials.stoneWall,materials.slateRoof):null):null;
-    const localFrontage=street?buildBlackSheepStreetFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):library?buildLibraryFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.slateRoof):null;
+    const localFrontage=street?buildBlackSheepStreetFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):library?buildLibraryFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.slateRoof):apartments?buildCorridorApartments(visualBuilding,surfaceGround,built.bounds.topY):null;
     if(localFrontage){group.add(localFrontage.group);customBuildings.push(localFrontage);customIds.add(b.id);}
     let roofAt:SolidCollider['roofAt'];
     if(coffee){
@@ -740,7 +745,7 @@ export function buildChunkGroup(
       built.roofGeo.dispose();
       built.windowGeo.dispose();
     } else if(localFrontage){
-      streetWalls.push(built.wallGeo);
+      (apartments?corridorWhiteWalls:streetWalls).push(built.wallGeo);
     } else if (b.kind === 'shop' || b.kind === 'hotel') {
       hotelWalls.push(built.wallGeo);
     } else if (b.zone === 'hawkshead' || b.zone === 'far_sawrey' || b.zone === 'near_sawrey') {
@@ -796,6 +801,7 @@ export function buildChunkGroup(
   addBatch(stoneWalls, materials.stoneWall, true);
   if(streetWalls.length){const mat=materials.stoneWall.clone();mat.color.set(0x9a9183);streetMaterials.push(mat);addBatch(streetWalls,mat,true);}
   addBatch(whiteWalls, materials.whitewashWall, true);
+  addBatch(corridorWhiteWalls, materials.whitewashWall, true);
   addBatch(hotelWalls, materials.hotelStone, true);
   addBatch(roofs, materials.slateRoof, true);
   addBatch(windows, materials.windowGlow, false);
@@ -1013,7 +1019,13 @@ export function buildChunkGroup(
     return (px - projX) * (px - projX) + (pz - projZ) * (pz - projZ);
   };
 
+  if(authoredCorridor){
+    const details=buildWaterheadCorridor(chunk,surfaceGround,materials.dryStoneWall);group.add(details.group);customBuildings.push(details);colliders.push(...details.colliders);
+    const pavement=materials.footpath.clone();pavement.color.set(0x95948a);streetMaterials.push(pavement);
+    addBatch(authoredCorridor.paving.map(p=>groundSurface(p,surfaceGround,.205,true)),pavement,false,true);
+  }
   const isBlockedForTree = (tx: number, tz: number): boolean => {
+    if(authoredCorridor?.plants.some(t=>Math.hypot(tx-t.x,tz-t.z)<t.size+1.1)||authoredCorridor?.shelters.some(s=>Math.hypot(tx-s.x,tz-s.z)<3.0))return true;
     if(chunk.key===PET_JUNCTION_CHUNK&&PET_TREE_POINTS.some(t=>Math.hypot(tx-t.x,tz-t.z)<t.spread+1.8))return true;
     for (const c of colliders) {
       if (tx >= c.minX - 2.6 && tx <= c.maxX + 2.6 && tz >= c.minZ - 2.6 && tz <= c.maxZ + 2.6) {
