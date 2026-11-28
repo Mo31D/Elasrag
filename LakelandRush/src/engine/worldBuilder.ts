@@ -28,7 +28,7 @@ import {APARTMENTS_ID,CORRIDOR_CHUNKS,corridorPlan} from '../geo/waterheadCorrid
 import {PET_JUNCTION_CHUNK,PET_JUNCTION_WALL_ID,PET_TREE_POINTS,petJunctionPavement} from '../geo/petJunction';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
-import type {SolidCollider} from '../game/buildingCollision';
+import {wallCollider,type SolidCollider} from '../game/buildingCollision';
 import {lakeRoadWallRuns,WALL_HEIGHT,WALL_WIDTH,waterheadCarParkPavement,waterheadCarParkKerb} from '../geo/lakeRoadWalls';
 import { WATERHEAD_COFFEE_ID } from '../geo/coffeeShopPlan';
 import { buildSiteDetails } from './siteDetails';
@@ -934,14 +934,19 @@ export function buildChunkGroup(
       const [ax, az] = w.pts[i];
       const [bx, bz] = w.pts[i + 1];
       const len = Math.hypot(bx - ax, bz - az);
-      if (len < 1.5 || len > 160) continue;
-      const mx = (ax + bx) * 0.5;
-      const mz = (az + bz) * 0.5;
-      if (isPointInLake(lake, mx, mz)) continue;
-      const my = Math.max(0.45, sampleTerrainHeight(terrain, mx, mz));
-      const yaw = Math.atan2(bx - ax, bz - az);
-      wallGeos.push(createOrientedBox(mx, my - 0.3, mz, 0.5, 1.25, len, yaw).toNonIndexed());
-      grindSegments.push({ ax, az, bx, bz, y: my + 0.95 });
+      if(len<.04)continue;
+      const count=Math.max(1,Math.ceil(len/.95)),yaw=Math.atan2(bx-ax,bz-az);
+      const low=chunk.key==='0_-2'&&(w.id===1395711510||w.id===1395711512);
+      const h=low?.48:.95,width=.48;
+      for(let k=0;k<count;k++){
+       const t=k/count,u=(k+1)/count,a:[number,number]=[ax+(bx-ax)*t,az+(bz-az)*t],b:[number,number]=[ax+(bx-ax)*u,az+(bz-az)*u];
+       const mx=(a[0]+b[0])/2,mz=(a[1]+b[1])/2;
+       if(isPointInLake(lake,mx,mz))continue;
+       const y=Math.max(.45,surfaceGround(mx,mz)),top=y+h;
+       wallGeos.push(createOrientedBox(mx,y+(h-.18)/2,mz,width,h+.18,len/count+.01,yaw).toNonIndexed());
+       colliders.push(wallCollider(a,b,width,top,top));
+       grindSegments.push({ax:a[0],az:a[1],bx:b[0],bz:b[1],y:top});
+      }
     }
   }
   // Low tapered Lakeland stone walls, terrain-following and solid to players.
