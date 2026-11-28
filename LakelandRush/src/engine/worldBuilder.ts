@@ -22,6 +22,8 @@ import {buildLibraryFacade,buildLibraryBusShelters} from './libraryBusStop';
 import {LIBRARY_ID,LIBRARY_NEIGHBOURS,KELSICK_CHUNK,KELSICK_CHUNKS,isShelterFootprint,busStopPavements,busStopBay,sheltersForChunk,kelsickZ,busStopKerbs} from '../geo/libraryBusStop';
 import {BLACK_SHEEP_BUILDING,LAKE_ROAD_CORNER_BUILDING,BLACK_SHEEP_STREET_CHUNK,lakeRoadPavements,lakeRoadLineSegments,lakeRoadArrow,lakeRoadKerbs,lakeRoadPavingJoints,lakeRoadDrainCentres,usesReferenceStreetBuilding,referenceStreetBuilding} from '../geo/blackSheepStreet';
 import {buildPetShop} from './petShop';
+import {buildPetJunction} from './petJunction';
+import {PET_JUNCTION_CHUNK,PET_JUNCTION_WALL_ID,PET_TREE_POINTS,petJunctionPavement} from '../geo/petJunction';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
 import type {SolidCollider} from '../game/buildingCollision';
@@ -921,6 +923,7 @@ export function buildChunkGroup(
   // Dry-stone walls (also grindable!)
   const wallGeos: THREE.BufferGeometry[] = [];
   for (const w of chunk.walls) {
+    if(chunk.key===PET_JUNCTION_CHUNK&&w.id===PET_JUNCTION_WALL_ID)continue;
     for (let i = 0; i < w.pts.length - 1; i++) {
       const [ax, az] = w.pts[i];
       const [bx, bz] = w.pts[i + 1];
@@ -955,6 +958,11 @@ export function buildChunkGroup(
   }
   if(newWallGeos.length){const stone=materials.dryStoneWall.clone();stone.side=THREE.DoubleSide;streetMaterials.push(stone);addBatch(newWallGeos,stone,true);}
   addBatch(wallGeos, materials.dryStoneWall, true);
+  if(chunk.key===PET_JUNCTION_CHUNK){
+    const junction=buildPetJunction(surfaceGround,materials.dryStoneWall);group.add(junction.group);customBuildings.push(junction);colliders.push(...junction.colliders);
+    const pavement=materials.footpath.clone();pavement.color.set(0x96958b);streetMaterials.push(pavement);
+    addBatch(petJunctionPavement().map(p=>groundSurface(p,surfaceGround,.206,true)),pavement,false,true);
+  }
 
   // Wooden Piers & Jetties (crisp 2.5m-wide jetties with timber support pilings)
   const pierGeos: THREE.BufferGeometry[] = [];
@@ -1006,6 +1014,7 @@ export function buildChunkGroup(
   };
 
   const isBlockedForTree = (tx: number, tz: number): boolean => {
+    if(chunk.key===PET_JUNCTION_CHUNK&&PET_TREE_POINTS.some(t=>Math.hypot(tx-t.x,tz-t.z)<t.spread+1.8))return true;
     for (const c of colliders) {
       if (tx >= c.minX - 2.6 && tx <= c.maxX + 2.6 && tz >= c.minZ - 2.6 && tz <= c.maxZ + 2.6) {
         return true;
