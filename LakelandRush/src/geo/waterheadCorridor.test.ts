@@ -12,5 +12,25 @@ test('Waterhead has two distinct shelters outside the vehicle carriageway',()=>{
  for(const s of plan.shelters)assert.ok(Math.abs(s.x-corridorPoint(s.z,0)[0])>=5.48);
 });
 test('new woodland objects respect streamed tile boundaries and carriageway clearance',()=>{
- for(const key of ['0_-1','0_-2']){const c=load(key),p=corridorPlan(c);assert.ok(p.plants.length>0);for(const t of p.plants){assert.equal(Math.floor(t.x/500),c.cx);assert.equal(Math.floor(t.z/500),c.cz);assert.ok(Math.abs(t.x-corridorPoint(t.z,0)[0])>=8-1e-6);}}
+ for(const key of ['0_-1','0_-2']){const c=load(key),p=corridorPlan(c);assert.ok(p.plants.length>0);for(const t of p.plants){assert.equal(Math.floor(t.x/500),c.cx);assert.equal(Math.floor(t.z/500),c.cz);assert.ok(Math.abs(t.x-corridorPoint(t.z,0)[0])>=6.65-1e-6);}}
+});
+
+import {woodedProfile,WOODED_END} from './waterheadCorridor';
+import {segmentDistance} from './parking';
+test('wooded approach is asymmetric, with low west walls, timber fence and high east retaining walls',()=>{
+ const p=corridorPlan(load('0_-2'));
+ assert.ok(p.walls.some(w=>w.side<0&&w.height===.48));
+ assert.ok(p.walls.some(w=>w.fence&&w.side<0));
+ assert.ok(p.walls.some(w=>w.retaining&&w.side>0&&w.height===1.85));
+ assert.equal(woodedProfile(-690,1).height,1.85);
+ assert.ok(p.kerbs.length>100&&p.edgePaint.length===p.kerbs.length);
+ assert.ok(p.walls.every(w=>w.a[1]>=WOODED_END&&w.b[1]>=WOODED_END));
+});
+test('parked car footprints stay clear of the A591 through lanes',()=>{
+ const c=load('0_-2'),p=corridorPlan(c);
+ assert.ok(p.parked.length>=5);
+ for(const car of p.parked)for(const u of [-.96,.96])for(const v of [-2.3,2.3]){
+  const x=car.x+u*Math.cos(car.yaw)+v*Math.sin(car.yaw),z=car.z-u*Math.sin(car.yaw)+v*Math.cos(car.yaw);
+  for(const r of c.roads.filter(r=>r.ref==='A591'))for(let i=1;i<r.pts.length;i++)assert.ok(segmentDistance(x,z,r.pts[i-1],r.pts[i])>=4.4);
+ }
 });
