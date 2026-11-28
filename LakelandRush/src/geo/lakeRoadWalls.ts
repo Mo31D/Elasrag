@@ -39,7 +39,7 @@ export function lakeRoadWallRuns(chunk:WorldChunkData,water:(x:number,z:number)=
    for(const s of pairs(pts)){
     const mx=(s.a[0]+s.b[0])/2,mz=(s.a[1]+s.b[1])/2;
     // The car park already has its own boundary; leave its access strip open.
-    if(mx<150&&mz>-482&&mz<-405&&mx<roads.reduce((best,e)=>Math.min(best,segmentDistance(mx,mz,e.a,e.b)),Infinity)+150&&nx<0)continue;
+    if(mz>-482&&mz<-405&&nx<0)continue;
     if([s.a,[mx,mz] as Point,s.b].every(([x,z])=>safe(x,z)))out.push({...s,kind:'roadside'});
    }
   }
