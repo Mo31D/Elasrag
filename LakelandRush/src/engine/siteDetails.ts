@@ -26,7 +26,16 @@ export function buildSiteDetails(chunk:WorldChunkData,terrain:TerrainGridData|nu
    for(const x of [-1.19,1.19])lines.push(groundSurface([transform(x-.045,-2.25),transform(x+.045,-2.25),transform(x+.045,2.25),transform(x-.045,2.25)],ground,.095,true));
    if(i%3===1)continue;
    const car=new THREE.Group();car.position.set(p.x,ground(p.x,p.z)+.08,p.z);car.rotation.y=p.yaw;
-   const m=paint[(site.id+i)%paint.length];box(car,1.8,.62,4.25,0,.65,0,m);box(car,1.68,.56,2.25,0,1.15,.05,glass);box(car,1.72,.11,2.05,0,1.46,.08,m);
+   const m=paint[(site.id+i)%paint.length];
+   if(site.id===698103920){
+    const body=paint[[1,4,1,0,1,2][i%6]],suv=i%3===0;
+    const shell=(profile:number[][],width:number,mat:THREE.Material)=>{const shape=new THREE.Shape();profile.forEach(([z,y],j)=>j?shape.lineTo(z,y):shape.moveTo(z,y));shape.closePath();const g=new THREE.ExtrudeGeometry(shape,{depth:width-.12,bevelEnabled:true,bevelSize:.06,bevelThickness:.06,bevelSegments:2,steps:1});g.translate(0,0,-(width-.12)/2);g.rotateY(-Math.PI/2);geometries.push(g);const mesh=new THREE.Mesh(g,mat);mesh.castShadow=true;car.add(mesh);};
+    shell([[-2.10,.36],[-2.03,.73],[-1.72,.84],[1.76,.84],[2.04,.67],[2.10,.36]],1.78,body);
+    shell([[-1.45,.84],[-.79,suv?1.56:1.40],[.76,suv?1.56:1.40],[1.45,.84]],1.55,glass);
+    box(car,1.51,.08,suv?1.7:1.55,0,suv?1.56:1.40,0,body);
+    for(const x of [-.80,.80]){box(car,.045,.50,.045,x,1.12,0,body);box(car,.13,.13,.25,x*1.15,1.05,-.76,body);}
+    box(car,.44,.11,.055,0,.47,2.14,silver);
+   }else{box(car,1.8,.62,4.25,0,.65,0,m);box(car,1.68,.56,2.25,0,1.15,.05,glass);box(car,1.72,.11,2.05,0,1.46,.08,m);}
    box(car,1.62,.13,.09,0,.68,-2.15,white);box(car,1.62,.13,.09,0,.68,2.15,red);
    for(const x of [-.88,.88])for(const z of [-1.35,1.35]){const g=new THREE.CylinderGeometry(.32,.32,.22,12);g.rotateZ(Math.PI/2);geometries.push(g);const wheel=new THREE.Mesh(g,rubber);wheel.position.set(x,.32,z);car.add(wheel);}
    const outline=([[-.95,-2.2],[.95,-2.2],[.95,2.2],[-.95,2.2]] as Point[]).map(([x,z])=>[p.x+x*Math.cos(p.yaw)+z*Math.sin(p.yaw),p.z-x*Math.sin(p.yaw)+z*Math.cos(p.yaw)] as Point);
