@@ -37,3 +37,10 @@ export function cameraFraction(from:{x:number;y:number;z:number},to:{x:number;y:
   if(y<height(x,z)+.12)return Math.max(0,(i-2)/count);
  }return 1;
 }
+
+/** Shared solid wall footprint with a terrain-following, walkable coping. */
+export function wallCollider(a:Point,b:Point,width:number,topA:number,topB:number):SolidCollider{
+ const dx=b[0]-a[0],dz=b[1]-a[1],length=Math.hypot(dx,dz)||.001,nx=-dz/length*width/2,nz=dx/length*width/2;
+ const outline:Point[]=[[a[0]+nx,a[1]+nz],[b[0]+nx,b[1]+nz],[b[0]-nx,b[1]-nz],[a[0]-nx,a[1]-nz]];
+ return {minX:Math.min(...outline.map(p=>p[0])),maxX:Math.max(...outline.map(p=>p[0])),minZ:Math.min(...outline.map(p=>p[1])),maxZ:Math.max(...outline.map(p=>p[1])),topY:Math.max(topA,topB),isRoof:true,outline,roofAt:(x,z)=>topA+(topB-topA)*Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(length*length)))};
+}
