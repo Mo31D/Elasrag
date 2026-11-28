@@ -25,6 +25,7 @@ import {buildPetShop} from './petShop';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
 import type {SolidCollider} from '../game/buildingCollision';
+import {lakeRoadWallRuns,WALL_HEIGHT,WALL_WIDTH} from '../geo/lakeRoadWalls';
 import { WATERHEAD_COFFEE_ID } from '../geo/coffeeShopPlan';
 import { buildSiteDetails } from './siteDetails';
 import amblesideSurfaces from '../data/ambleside-surfaces.json';
@@ -928,6 +929,25 @@ export function buildChunkGroup(
       grindSegments.push({ ax, az, bx, bz, y: my + 0.95 });
     }
   }
+  // Low tapered Lakeland stone walls, terrain-following and solid to players.
+  // Original mapped walls above are unchanged; these are user-requested infill.
+  const newWallGeos:THREE.BufferGeometry[]=[];
+  for(const {a,b} of lakeRoadWallRuns(chunk,(x,z)=>isPointInLake(lake,x,z))){
+    const [ax,az]=a,[bx,bz]=b,len=Math.hypot(bx-ax,bz-az);if(len<.05)continue;
+    const nx=-(bz-az)/len,nz=(bx-ax)/len;
+    const ay=Math.max(.45,surfaceGround(ax,az)),by=Math.max(.45,surfaceGround(bx,bz));
+    const top=WALL_HEIGHT;
+    const outline=([ [ax+nx*WALL_WIDTH/2,az+nz*WALL_WIDTH/2],[bx+nx*WALL_WIDTH/2,bz+nz*WALL_WIDTH/2],[bx-nx*WALL_WIDTH/2,bz-nz*WALL_WIDTH/2],[ax-nx*WALL_WIDTH/2,az-nz*WALL_WIDTH/2] ] as [number,number][]);
+    const positions:number[]=[],uv:number[]=[];
+    const ring=(w:number,h:number)=>[[ax+nx*w/2,ay+h,az+nz*w/2],[bx+nx*w/2,by+h,bz+nz*w/2],[bx-nx*w/2,by+h,bz-nz*w/2],[ax-nx*w/2,ay+h,az-nz*w/2]];
+    const quad=(a:number[],b:number[],c:number[],d:number[],u:number,v:number)=>{positions.push(...a,...b,...c,...a,...c,...d);uv.push(0,0,u,0,u,v,0,0,u,v,0,v);};
+    const levels=[ring(WALL_WIDTH,-.12),ring(WALL_WIDTH*.91,.47),ring(WALL_WIDTH*.70,.87),ring(WALL_WIDTH*.80,top)];
+    for(let j=1;j<levels.length;j++)for(let i=0;i<4;i++){const k=(i+1)%4;quad(levels[j-1][i],levels[j-1][k],levels[j][k],levels[j][i],(i%2===0?len:WALL_WIDTH)/1.2,.5);}
+    const cap=levels[levels.length-1];quad(cap[3],cap[2],cap[1],cap[0],len/1.2,WALL_WIDTH/1.2);
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.computeVertexNormals();newWallGeos.push(g);
+    colliders.push({minX:Math.min(...outline.map(p=>p[0])),maxX:Math.max(...outline.map(p=>p[0])),minZ:Math.min(...outline.map(p=>p[1])),maxZ:Math.max(...outline.map(p=>p[1])),topY:Math.max(ay,by)+top,isRoof:true,outline,roofAt:(x,z)=>{const t=THREE.MathUtils.clamp(((x-ax)*(bx-ax)+(z-az)*(bz-az))/(len*len),0,1);return ay+(by-ay)*t+top;}});
+  }
+  if(newWallGeos.length){const stone=materials.dryStoneWall.clone();stone.side=THREE.DoubleSide;streetMaterials.push(stone);addBatch(newWallGeos,stone,true);}
   addBatch(wallGeos, materials.dryStoneWall, true);
 
   // Wooden Piers & Jetties (crisp 2.5m-wide jetties with timber support pilings)
