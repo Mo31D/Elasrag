@@ -1025,7 +1025,7 @@ export function buildChunkGroup(
     addBatch(authoredCorridor.paving.map(p=>groundSurface(p,surfaceGround,.205,true)),pavement,false,true);
   }
   const isBlockedForTree = (tx: number, tz: number): boolean => {
-    if(authoredCorridor?.plants.some(t=>Math.hypot(tx-t.x,tz-t.z)<t.size+1.1)||authoredCorridor?.shelters.some(s=>Math.hypot(tx-s.x,tz-s.z)<3.0))return true;
+    if(authoredCorridor?.plants.some(t=>Math.hypot(tx-t.x,tz-t.z)<t.size+1.1)||authoredCorridor?.shelters.some(s=>Math.hypot(tx-s.x,tz-s.z)<3.0)||authoredCorridor?.parked.some(s=>Math.hypot(tx-s.x,tz-s.z)<3.8))return true;
     if(chunk.key===PET_JUNCTION_CHUNK&&PET_TREE_POINTS.some(t=>Math.hypot(tx-t.x,tz-t.z)<t.spread+1.8))return true;
     for (const c of colliders) {
       if (tx >= c.minX - 2.6 && tx <= c.maxX + 2.6 && tz >= c.minZ - 2.6 && tz <= c.maxZ + 2.6) {
