@@ -27,7 +27,7 @@ export function buildWaterheadInn(b:BuildingFeature,ground:Ground,stoneSource:TH
   const pos:number[]=[],uv:number[]=[];const a=[-w/2,y,z],b=[w/2,y,z],c=[w/2,y,z-d],d0=[-w/2,y,z-d],p=[0,y+h,z-(hip?d*.22:0)],q=[0,y+h,z-d+(hip?d*.22:0)];
   const tri=(a:number[],b:number[],c:number[])=>{pos.push(...a,...b,...c);uv.push(0,0,1,0,1,1);};
   tri(a,p,q);tri(a,q,d0);tri(b,c,q);tri(b,q,p);
-  if(hip){tri(a,b,p);tri(c,d0,q);}else{tri(a,b,p);tri(c,d0,q);}
+  if(hip){tri(a,b,p);tri(c,d0,q);}
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.computeVertexNormals();add(g,slate,root);
  };
  const rootFor=(i:number)=>{const e=streetEdge(b,i),root=new THREE.Group();root.position.set(e.x,base,e.z);root.rotation.y=e.yaw;group.add(root);return {root,e};};
@@ -52,12 +52,12 @@ export function buildWaterheadInn(b:BuildingFeature,ground:Ground,stoneSource:TH
    for(const x of xs){sash(root,x,5.05,i===12?1.15:1.05,1.75,i===12);if(i!==14)sash(root,x,1.77,i===12?1.28:1.08,2.05,i===12);}
    if(i===13)sign(root,.1,3.22,.27,4.7,.88);
    if(i===14){ // Glazed hipped-roof vestibule, three broad entrance steps and white rails.
-    const w=4.05,d=1.55;box(w,.23,d+.24,0,.16,d/2, sill,root);box(w,.25,.20,0,2.75,d,trim,root);
+    const w=4.05,d=1.55;box(w,.42,d+.24,0,.21,d/2, sill,root);box(w,.25,.20,0,2.75,d,trim,root);
     for(const x of [-w/2,-.79,0,.79,w/2])box(.11,2.55,.11,x,1.49,d,trim,root);
     for(const x of [-1.43,-.40,.40,1.43])box(x*x>1?1.02:.71,2.15,.045,x,1.55,d+.012,glass,root);
     for(const s of [-1,1]){box(.09,2.35,d,s*w/2,1.45,d/2,glass,root);box(.13,2.6,.13,s*w/2,1.48,0,trim,root);}
     roof(root,w+.34,d+.34,.94,2.80,d+.22,true);
-    for(let j=0;j<3;j++){const depth=.44+j*.34;box(w+.42+j*.32,.15,depth,0,.39-j*.14,d+depth/2-.02,sill,root);}
+    for(let j=0;j<3;j++){const depth=.44+j*.34,h=.42-j*.14;box(w+.42+j*.32,h,depth,0,h/2,d+depth/2-.02,sill,root);const p=(u:number,z:number):Point=>[e.x+u*Math.cos(e.yaw)+z*Math.sin(e.yaw),e.z-u*Math.sin(e.yaw)+z*Math.cos(e.yaw)];const A=p(-w/2-.21-j*.16,d+depth/2-.02),B=p(w/2+.21+j*.16,d+depth/2-.02);colliders.push(wallCollider(A,B,depth,base+h,base+h));}
     for(const s of [-1,1]){for(let j=0;j<5;j++){const z=d+.08+j*.24;rod(v(s*2.14,.47-j*.075,z),v(s*2.14,1.25-j*.075,z),.024,whiteRail,root);}rod(v(s*2.14,1.27,d),v(s*2.14,.96,d+1.1),.036,whiteRail,root);}
    }
    if(i===12){ // External black fire staircase, along the facade rather than in the carriageway.
@@ -73,7 +73,14 @@ export function buildWaterheadInn(b:BuildingFeature,ground:Ground,stoneSource:TH
   }
  }
  // Main ridge with connected roof planes; all visible gables have masonry beneath them.
- const r= rootFor(13);roof(r.root,7.8,6.5,1.80,eaves,.03,true);
+ // Continuous pitched main roof, clipped to the mapped upper-storey polygon.
+ const ridge=115.1,roofY=(x:number)=>base+eaves+2.05*Math.max(0,1-Math.abs(x-ridge)/6.5);
+ const clip=(side:number)=>{const out:Point[]=[];for(let i=0;i<main.length;i++){const a=main[i],b=main[(i+1)%main.length],inside=(p:Point)=>side*(p[0]-ridge)>=-1e-8;if(inside(a))out.push(a);if(inside(a)!==inside(b)){const t=(ridge-a[0])/(b[0]-a[0]);out.push([ridge,a[1]+t*(b[1]-a[1])]);}}return out;};
+ const roofPositions:number[]=[],roofUV:number[]=[];
+ for(const side of [-1,1]){const p=clip(side);for(const face of THREE.ShapeUtils.triangulateShape(p.map(([x,z])=>new THREE.Vector2(x,z)),[])){let [a,b,c]=face.map(i=>p[i]);if((b[1]-a[1])*(c[0]-a[0])-(b[0]-a[0])*(c[1]-a[1])<0)[b,c]=[c,b];for(const [x,z] of [a,b,c]){roofPositions.push(x,roofY(x),z);roofUV.push(x/2,z/2);}}}
+ const roofGeo=new THREE.BufferGeometry();roofGeo.setAttribute('position',new THREE.Float32BufferAttribute(roofPositions,3));roofGeo.setAttribute('uv',new THREE.Float32BufferAttribute(roofUV,2));roofGeo.computeVertexNormals();add(roofGeo,slate);
+ const fill:number[]=[],fillUV:number[]=[];for(let i=0;i<main.length;i++){const a=main[i],b=main[(i+1)%main.length],points:Point[]=[a];if((a[0]-ridge)*(b[0]-ridge)<0){const t=(ridge-a[0])/(b[0]-a[0]);points.push([ridge,a[1]+t*(b[1]-a[1])]);}points.push(b);for(let j=1;j<points.length;j++){const [x,z]=points[j-1],[xx,zz]=points[j];const A=[x,base+eaves,z],B=[xx,base+eaves,zz],C=[xx,roofY(xx),zz],D=[x,roofY(x),z];fill.push(...A,...B,...C,...A,...C,...D);fillUV.push(0,0,1,0,1,1,0,0,1,1,0,1);}}
+ const fillGeo=new THREE.BufferGeometry();fillGeo.setAttribute('position',new THREE.Float32BufferAttribute(fill,3));fillGeo.setAttribute('uv',new THREE.Float32BufferAttribute(fillUV,2));fillGeo.computeVertexNormals();const roofStone=stone.clone();roofStone.side=THREE.DoubleSide;materials.push(roofStone);add(fillGeo,roofStone);
  for(const [x,z,h] of [[114,-326,2.7],[114,-339,2.2],[115,-348,2.3],[128,-374,2.5],[134,-399,2.1]]){const y=base+(z>-354?eaves+1.15:low+.9);box(.95,h,1.04,x,y+h/2-.35,z,stone);box(1.14,.16,1.20,x,y+h-.30,z,sill);for(const dx of [-.27,.27])box(.24,.40,.25,x+dx,y+h-.10,z,pot);}
  // Group the many rigid parts by material to keep mobile draw calls low.
  group.updateMatrixWorld(true);const bins=new Map<THREE.Material,THREE.BufferGeometry[]>();
