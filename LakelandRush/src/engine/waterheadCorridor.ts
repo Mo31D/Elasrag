@@ -5,6 +5,7 @@ import type {Ground} from '../geo/surfaceGround';
 import {wallCollider,type SolidCollider,type Point} from '../game/buildingCollision';
 import {corridorPlan,corridorPoint,corridorYaw,APARTMENTS_ID} from '../geo/waterheadCorridor';
 import {streetEdge} from '../geo/blackSheepStreet';
+import {hayesPlan} from '../geo/hayesApproach';
 import {groundSurface} from './waterfront';
 export function buildWaterheadCorridor(chunk:WorldChunkData,ground:Ground,stone:THREE.MeshStandardMaterial){
  const group=new THREE.Group();group.name='A591 Waterhead Inn and garden corridor';
@@ -101,12 +102,17 @@ export function buildWaterheadCorridor(chunk:WorldChunkData,ground:Ground,stone:
   const a=local(0,0,-2.2),b=local(0,0,2.2);solid([a.x,a.z],[b.x,b.z],1.88,1.65);
  }
  if(chunk.key==='0_-2'){
-  // First Hayes approach signs only; the garden centre itself is outside this phase.
-  for(const z of [-715,-825]){const [x,zz]=corridorPoint(z,-7.2),y=yAt(x,zz);if(!plan.paving.some(p=>Math.min(...p.map(v=>Math.abs(v[1]-z)))<3))continue;
+  const hayes=hayesPlan(chunk);
+  for(const [x,zz] of hayes.signs){const y=yAt(x,zz);
    for(const u of [-.66,.66])rod(v(x+u,y,zz),v(x+u,y+2.55,zz),.045,green);
    box(1.64,1.02,.095,x,y+1.98,zz,green);label(x,y+1.98,zz+.055,1.48,.86,0,['Hayes'],'#8ba468','#f0efce');
-   box(1.48,.48,.085,x,y+1.12,zz,green);label(x,y+1.12,zz+.05,1.33,.37,0,['GARDEN WORLD'],'#345e46','#eeeede');
+   box(1.48,.31,.085,x,y+1.23,zz,green);label(x,y+1.23,zz+.05,1.33,.25,0,['GARDEN WORLD'],'#9eb17c','#f1efd9');
+   box(1.48,.48,.085,x,y+.82,zz,green);label(x,y+.82,zz+.05,1.33,.40,0,['Sale','NOW ON'],'#a44343','#f7e7d7');
+   label(x,y+1.98,zz-.055,1.48,.86,Math.PI,['Hayes'],'#8ba468','#f0efce');label(x,y+.82,zz-.055,1.33,.40,Math.PI,['Sale'],'#a44343','#f7e7d7');
   }
+  const grate=m(0x343b3a,.9);
+  for(const [x,z] of hayes.drains){box(.36,.025,.44,x,yAt(x,z)+.15,z,grate);for(let i=0;i<6;i++)box(.28,.028,.012,x,yAt(x,z)+.164,z-.16+i*.064,metal);}
+  for(const car of hayes.cars){for(const dx of [-1.23,1.23])add(groundSurface([[car.x+dx-.035,car.z-2.6],[car.x+dx+.035,car.z-2.6],[car.x+dx+.035,car.z+2.6],[car.x+dx-.035,car.z+2.6]],ground,.145,false),white);}
  }
  for(const [mat,ls] of bins){const norm=ls.map(g=>g.index?g.toNonIndexed():g),g=mergeGeometries(norm);norm.forEach((v,i)=>{if(v!==ls[i])v.dispose()});ls.forEach(v=>v.dispose());if(g){geos.push(g);const mesh=new THREE.Mesh(g,mat);mesh.castShadow=!mat.transparent;mesh.receiveShadow=true;group.add(mesh);}}
  return {group,colliders,plan,dispose(){geos.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
