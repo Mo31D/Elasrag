@@ -14,7 +14,7 @@ export function corridorPoint(z:number,offset:number):Point{
 export function corridorYaw(z:number){const a=corridorPoint(z+1,0),b=corridorPoint(z-1,0);return Math.atan2(b[0]-a[0],b[1]-a[1]);}
 export const WOODED_END=-850;
 export function woodedProfile(z:number,side:number){const retaining=side>0&&z<-635&&z>-777;return {height:side<0?.48:retaining?1.85:.72,offset:side<0?-6.65:retaining?4.95:6.0,fence:side<0&&z<-515&&z>-573,retaining};}
-export function corridorDetailedWall(x:number,z:number){const dx=x-corridorPoint(z,0)[0];return Math.abs(dx)<12&&((z<-278.1&&z>-408)||(z<=-408&&z>WOODED_END&&(dx>0||z<-490)));}
+export function corridorDetailedWall(x:number,z:number){const dx=x-corridorPoint(z,0)[0];return Math.abs(dx)<12&&((z<-278.1&&z>-408)||(z<=-408&&z>WOODED_END&&(dx>0||z<-481)));}
 export function corridorPlan(chunk:WorldChunkData){
  const empty={walls:[] as {a:Point;b:Point;side:number;height?:number;fence?:boolean;retaining?:boolean}[],paving:[] as Point[][],kerbs:[] as Point[][],edgePaint:[] as Point[][],shoulders:[] as Point[][],parked:[] as {x:number;z:number;yaw:number}[],lamps:[] as Point[],plants:[] as {x:number;z:number;size:number;tree:boolean;hedge?:boolean}[],shelters:[] as {x:number;z:number;side:number;yaw:number}[]};
  if(!CORRIDOR_CHUNKS.includes(chunk.key))return empty;
@@ -48,14 +48,14 @@ export function corridorPlan(chunk:WorldChunkData){
  const parkingBand=(z:number)=>z<-510&&z>-578;
  const main=road.slice(1).map((b,i)=>({a:road[i],b}));
  const roadClear=(p:Point,margin:number)=>main.every(s=>segmentDistance(...p,s.a,s.b)>=4.4+margin);
- const cuts=[-408,-490,-500,-510,-515,-573,-578,-635,-777,WOODED_END,...road.map(p=>p[1]).filter(z=>z<-408&&z>WOODED_END)];
+ const cuts=[-408,-481,-500,-510,-515,-573,-578,-635,-777,WOODED_END,...road.map(p=>p[1]).filter(z=>z<-408&&z>WOODED_END)];
  for(let z=-408;z>WOODED_END;z-=2)cuts.push(z);
  const zs=[...new Set(cuts)].sort((a,b)=>b-a);
  const strip=(a:number,b:number,lo:number,hi:number):Point[]=>[corridorPoint(a,lo),corridorPoint(b,lo),corridorPoint(b,hi),corridorPoint(a,hi)];
  for(let i=1;i<zs.length;i++){
   const a=zs[i-1],b=zs[i],z=(a+b)/2;if(!inTile(...corridorPoint(z,0)))continue;
   for(const side of [-1,1]){
-   if(side<0&&z>-490)continue;
+   if(side<0&&z>-481)continue;
    const p=woodedProfile(z,side),off=side>0&&parkingBand(z)?7.25:p.offset;
    const A=corridorPoint(a,off),B=corridorPoint(b,off),M=corridorPoint(z,off);
    const endpoints=[corridorPoint(a-.001,off),corridorPoint(b+.001,off),M];
@@ -77,7 +77,7 @@ export function corridorPlan(chunk:WorldChunkData){
  for(let z=-505;z>WOODED_END;z-=43){const p=corridorPoint(z,-6.08);if(clear(p,.22)&&roadClear(p,.2))empty.lamps.push(p);}
  // Continuous roadside foliage, with clearance for buildings, paths and driveways.
  for(let z=-291;z>WOODED_END;z-=4.4)for(const side of [-1,1]){
-  if(side<0&&z>-490)continue; // hotel and Waterhead parking stay open
+  if(side<0&&z>-481)continue; // hotel and Waterhead parking stay open
   const tree=Math.round(-z/4.4)%4===0;
   const wooded=z<-408,retaining=wooded&&woodedProfile(z,side).retaining;
   const off=side*(tree?11.8:wooded&&side>0&&!parkingBand(z)&&!retaining?6.65:8.0),p=corridorPoint(z,off),size=tree?(wooded?4.6:3.8):1.1+(Math.sin(z*2.3)+1)*.42;
@@ -85,7 +85,7 @@ export function corridorPlan(chunk:WorldChunkData){
  }
  // Staggered secondary growth avoids regularly spaced park-like trees.
  for(let z=-422;z>WOODED_END;z-=5.1)for(const side of [-1,1]){
-  if(side<0&&z>-490)continue;const p=corridorPoint(z,side*(side>0&&parkingBand(z)?11.5:10.0));
+  if(side<0&&z>-481)continue;const p=corridorPoint(z,side*(side>0&&parkingBand(z)?11.5:10.0));
   if(clear(p,1.5)&&roadClear(p,1.5))empty.plants.push({x:p[0],z:p[1],size:1.8+Math.sin(z)*.35,tree:false});
  }
  return empty;
