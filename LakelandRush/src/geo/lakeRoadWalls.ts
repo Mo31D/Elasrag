@@ -6,7 +6,30 @@ export const WALL_HEIGHT=1.0,WALL_WIDTH=.44;
 export type WallRun={a:Point;b:Point;kind:'parking'|'roadside'};
 // User-confirmed boundary along the A591-facing edge of Waterhead car park.
 // Ends are set back from mapped access points, including the path at z=-411.66.
-export const WATERHEAD_CAR_PARK_WALL:Point[]=[[129.40,-415.5],[129.38,-420.2],[127.99,-433.75],[135.45,-474.0]];
+// The parking polygon is the asphalt edge, NOT the property boundary.
+// Corrected sequence (west to east): asphalt, internal grass, wall, pavement, A591.
+const parkingRoad:Point[]=[[165.18,-472.885],[153.1,-438.922],[147.03,-411.314],[141.79,-385.633]];
+export const WATERHEAD_PAVEMENT_WIDTH=1.8;
+export const WATERHEAD_ROAD_HALF_WIDTH=4.4;
+function parkingRoadSection(z:number){
+ const i=parkingRoad.findIndex((p,i)=>i>0&&z<=p[1]),j=i<1?parkingRoad.length-1:i;
+ const a=parkingRoad[j-1],b=parkingRoad[j],slope=(b[0]-a[0])/(b[1]-a[1]);
+ return {x:a[0]+slope*(z-a[1]),scale:Math.hypot(1,slope)};
+}
+export function waterheadRoadEdge(z:number,offset:number):Point{
+ const s=parkingRoadSection(z);return [s.x-offset*s.scale,z];
+}
+const wallSections=[-474,-472.885,-438.922,-415.5];
+const pavementSections=[-481,-472.885,-438.922,-411.314,-407.5];
+export const WATERHEAD_CAR_PARK_WALL:Point[]=wallSections.map(z=>waterheadRoadEdge(z,WATERHEAD_ROAD_HALF_WIDTH+WATERHEAD_PAVEMENT_WIDTH+WALL_WIDTH/2+.12));
+export function waterheadCarParkPavement():Point[][]{
+ const outer=pavementSections.map(z=>waterheadRoadEdge(z,WATERHEAD_ROAD_HALF_WIDTH+WATERHEAD_PAVEMENT_WIDTH));
+ const inner=pavementSections.map(z=>waterheadRoadEdge(z,WATERHEAD_ROAD_HALF_WIDTH-.025));
+ return [[...outer,...inner.reverse()]];
+}
+export function waterheadCarParkKerb():Point[][]{
+ return pavementSections.slice(1).map((z,i)=>{const a=pavementSections[i];return [waterheadRoadEdge(a,WATERHEAD_ROAD_HALF_WIDTH-.025),waterheadRoadEdge(z,WATERHEAD_ROAD_HALF_WIDTH-.025),waterheadRoadEdge(z,WATERHEAD_ROAD_HALF_WIDTH+.13),waterheadRoadEdge(a,WATERHEAD_ROAD_HALF_WIDTH+.13)];});
+}
 // The long A591 way is stored in tile 0_-2 but crosses into both neighbouring tiles.
 const crossTileLakeRoad:Point[]=[[87.458,-1087.669],[96.792,-1027.924],[99.13,-1015.134],[108.153,-965.719],[108.872,-962.246],[109.779,-958.149],[110.187,-956.301],[113.704,-939.025],[115.991,-928.149],[119.709,-905.807],[123.505,-879.524],[125.707,-862.949],[131.88,-818.076],[132.968,-807.656],[134.283,-780.628],[135.028,-753.711],[134.95,-738.126],[132.618,-679.35],[133.642,-648.881],[139.18,-619.627],[146.253,-593.667],[166.476,-539.677],[170.297,-522.857],[169.41,-492.255],[165.18,-472.885],[153.1,-438.922],[147.03,-411.314],[141.79,-385.633],[137.891,-365.217],[135.157,-353.272],[129.678,-326.89]];
 const pairs=(p:Point[])=>p.slice(1).map((b,i)=>({a:p[i],b}));
