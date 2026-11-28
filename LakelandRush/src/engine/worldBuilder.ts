@@ -25,6 +25,7 @@ import {buildPetShop} from './petShop';
 import {buildPetJunction} from './petJunction';
 import {buildWaterheadCorridor,buildCorridorApartments} from './waterheadCorridor';
 import {buildHayesFacade} from './hayesApproach';
+import {buildWaterheadInn,WATERHEAD_INN_ID} from './waterheadInn';
 import {HAYES_CHUNK,HAYES_ID,HAYES_HOUSE_ID,HAYES_FRONTAGES,hayesReserved} from '../geo/hayesApproach';
 import {APARTMENTS_ID,CORRIDOR_CHUNKS,corridorPlan} from '../geo/waterheadCorridor';
 import {PET_JUNCTION_CHUNK,PET_JUNCTION_WALL_ID,PET_TREE_POINTS,petJunctionPavement} from '../geo/petJunction';
@@ -719,10 +720,13 @@ export function buildChunkGroup(
     const library=chunk.key===KELSICK_CHUNK&&(b.id===LIBRARY_ID||LIBRARY_NEIGHBOURS.some(id=>id===b.id));
     const apartments=chunk.key==='0_-1'&&b.id===APARTMENTS_ID;
     const hayes=chunk.key===HAYES_CHUNK&&(b.id===HAYES_ID||HAYES_FRONTAGES.includes(b.id));
-    const asset = street||library||apartments||hayes?undefined:buildingAssets.get(b.id);
+    const inn=chunk.key==='0_-1'&&b.id===WATERHEAD_INN_ID;
+    const asset = street||library||apartments||hayes||inn?undefined:buildingAssets.get(b.id);
     const visualBuilding=street?referenceStreetBuilding(b):apartments?{...b,h:Math.max(b.h,10.0),levels:3}:b;
     const built = buildLakelandBuildingGeometries(visualBuilding, terrain, asset ? ()=>sampleTerrainHeight(terrain,b.cx,b.cz) : surfaceGround);
     if (!built) continue;
+    const hotel=inn?buildWaterheadInn(b,surfaceGround,materials.stoneWall,materials.slateRoof):null;
+    if(hotel){group.add(hotel.group);customBuildings.push(hotel);customIds.add(b.id);colliders.push(...hotel.colliders);const roofAt=roofFromModel(hotel.group);colliders.push({...built.bounds,topY:new THREE.Box3().setFromObject(hotel.group).max.y,roofAt,isRoof:true,outline:b.pts.map(([x,z])=>[x+b.cx,z+b.cz])});built.wallGeo.dispose();built.roofGeo.dispose();built.windowGeo.dispose();continue;}
     const coffee=chunk.key==='0_-1'?(b.id===WATERHEAD_COFFEE_ID?buildCoffeeShop(b,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):b.id===PET_SHOP_ID?buildPetShop(b,chunk,surfaceGround,materials.stoneWall,materials.slateRoof):null):null;
     const localFrontage=street?buildBlackSheepStreetFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.stoneWall,materials.slateRoof):library?buildLibraryFacade(visualBuilding,surfaceGround,built.bounds.topY,materials.slateRoof):apartments?buildCorridorApartments(visualBuilding,surfaceGround,built.bounds.topY):hayes?buildHayesFacade(visualBuilding,surfaceGround,built.bounds.topY):null;
     if(localFrontage){group.add(localFrontage.group);customBuildings.push(localFrontage);customIds.add(b.id);}
