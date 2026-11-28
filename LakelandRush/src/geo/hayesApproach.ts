@@ -8,7 +8,7 @@ export const HAYES_FRONTAGES=[HAYES_HOUSE_ID,HAYES_GARAGE_ID,1473220610,42382433
 export const HAYES_ROOF_BAYS=[{x:97,z:-820,width:11,length:38},{x:49,z:-862,width:10,length:45,across:true}];
 export function hayesReserved(x:number,z:number){return x>24&&x<125&&z<-755&&z>-875;}
 export function hayesPlan(chunk:WorldChunkData){
- const out={paving:[] as Point[][],parking:[] as Point[][],cars:[] as {x:number;z:number;yaw:number}[],walls:[] as {a:Point;b:Point;height:number;fence:boolean}[],signs:[] as Point[],drains:[] as Point[]};
+ const out={paving:[] as Point[][],kerbs:[] as Point[][],edgePaint:[] as Point[][],parking:[] as Point[][],cars:[] as {x:number;z:number;yaw:number}[],walls:[] as {a:Point;b:Point;height:number;fence:boolean}[],signs:[] as Point[],drains:[] as Point[]};
  if(chunk.key!==HAYES_CHUNK)return out;
  const rings=chunk.buildings.map(b=>b.pts.map(([x,z])=>[x+b.cx,z+b.cz] as Point));
  const roads=chunk.roads.filter(r=>r.kind!=='ferry').flatMap(r=>r.pts.slice(1).map((b,i)=>({a:r.pts[i],b,w:displayHalfWidth(r),path:r.kind==='footpath'})));
@@ -21,9 +21,9 @@ export function hayesPlan(chunk:WorldChunkData){
  // Existing roads remain authoritative. West-side access points at -754 and -863.
  const centre=(z:number)=>{const p=[[135.028,-753.711],[134.283,-780.628],[132.968,-807.656],[131.88,-818.076],[125.707,-862.949],[123.505,-879.524],[119.709,-905.807]];let i=p.findIndex((a,i)=>i>0&&z>=a[1]);if(i<1)i=p.length-1;const a=p[i-1],b=p[i],s=(b[0]-a[0])/(b[1]-a[1]);return [a[0]+s*(z-a[1]),Math.hypot(1,s)];};
  const at=(z:number,offset:number):Point=>{const [x,s]=centre(z);return [x+offset*s,z];};
- for(let z=-850;z>-901;z-=1.5){const a=z,b=z-1.5;const p=[at(a,-6.15),at(b,-6.15),at(b,-4.46),at(a,-4.46)];if([...p,at((a+b)/2,-5.3)].every(q=>clear(q,.005)))out.paving.push(p);}
+ for(let z=-850;z>-901;z-=1.5){const a=z,b=z-1.5;const p=[at(a,-6.15),at(b,-6.15),at(b,-4.46),at(a,-4.46)];if([...p,at((a+b)/2,-5.3)].every(q=>clear(q,.005))){out.paving.push(p);out.kerbs.push([at(a,-4.62),at(b,-4.62),at(b,-4.46),at(a,-4.46)]);out.edgePaint.push([at(a,-4.27),at(b,-4.27),at(b,-4.18),at(a,-4.18)]);}}
  // The fork's fenced triangular garden sits between the main and Old Lake Road.
- for(let z=-810;z>-829;z-=1.3){const a=at(z,6.2),b=at(z-1.3,6.2),mid=at(z-.65,6.2);if([a,b,mid].every(q=>clear(q,.55)&&!walls.some(w=>segmentDistance(...q,w.a,w.b)<.7)))out.walls.push({a,b,height:.52,fence:true});}
+ for(let z=-810;z>-829;z-=1.3){const a=at(z,6.2),b=at(z-1.3,6.2),mid=at(z-.65,6.2);if([a,b,mid].every(q=>clear(q,.55)&&!walls.some(w=>segmentDistance(...q,w.a,w.b)<.7))){out.walls.push({a,b,height:.52,fence:true});const z2=z-1.3,p=[at(z,4.48),at(z2,4.48),at(z2,5.90),at(z,5.90)];if(p.every(q=>clear(q,.005))){out.paving.push(p);out.kerbs.push([at(z,4.48),at(z2,4.48),at(z2,4.63),at(z,4.63)]);out.edgePaint.push([at(z,4.18),at(z2,4.18),at(z2,4.27),at(z,4.27)]);}}}
  for(const z of [-764,-856]){let chosen=false;for(const dz of [0,2,-2,4,-4,6,-6]){for(const off of [-9.1,-10.2,-8.2,-11.1,-12]){const p=at(z+dz,off);if([p,[p[0]-.85,p[1]] as Point,[p[0]+.85,p[1]] as Point].every(q=>clear(q,.25)&&!walls.some(w=>segmentDistance(...q,w.a,w.b)<.25))){out.signs.push(p);chosen=true;break;}}if(chosen)break;}}
  for(const z of [-862,-883,-895]){const p=at(z,-4.2);if(out.paving.some(r=>Math.min(...r.map(q=>Math.abs(q[1]-z)))<2))out.drains.push(p);}
  return out;
