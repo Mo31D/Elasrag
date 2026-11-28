@@ -22,9 +22,10 @@ export function slideMove(x:number,z:number,dx:number,dz:number,blocked:(x:numbe
 
 export type ExplorePace='walk'|'run'|'sprint';
 // Gameplay tuning, not a claim about real human speeds.
-export const EXPLORE_MPH:Record<ExplorePace,number>={walk:10,run:25,sprint:50};
+const JOG_MPH=25;
+export const EXPLORE_MPH:Record<ExplorePace,number>={walk:10,run:JOG_MPH,sprint:JOG_MPH*2};
 export const EXPLORE_PACE_LABEL:Record<ExplorePace,string>={walk:'Walk',run:'Jog',sprint:'Run'};
-export const EXPLORE_SPEED:Record<ExplorePace,number>={walk:10*.44704,run:25*.44704,sprint:50*.44704};
+export const EXPLORE_SPEED:Record<ExplorePace,number>={walk:EXPLORE_MPH.walk*.44704,run:EXPLORE_MPH.run*.44704,sprint:EXPLORE_MPH.sprint*.44704};
 // Keep legacy internal pace keys for saved settings and HUD compatibility.
 export const EXPLORE_GRAVITY=28;
 export const EXPLORE_JUMP_VELOCITY=5.8*Math.SQRT2;
