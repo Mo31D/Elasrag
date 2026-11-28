@@ -57,3 +57,11 @@ test('bottom-left floating zone starts neutral and fits its disc on tablet and p
   for(const point of [{x:w/4,y:h*.5},{x:w/4,y:h*.74},{x:w/2,y:h*.875},{x:w/4,y:h}])assert.equal(floatingStickOrigin(rect,point,disc),null);
  }
 });
+
+test('Run covers exactly twice Jog distance at identical unobstructed joystick input',()=>{
+ for(const [x,y] of [[0,1],[.3,.6],[-1,1]]){
+  const v=cameraRelative(x,y,.4),dt=.1;
+  const distance=(pace:'run'|'sprint')=>{const p=sweepMove(0,0,v.x*paceSpeed(pace)*dt,v.z*paceSpeed(pace)*dt,()=>false);return Math.hypot(p.x,p.z);};
+  near(distance('sprint'),2*distance('run'));
+ }
+});
