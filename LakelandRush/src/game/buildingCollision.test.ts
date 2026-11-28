@@ -39,3 +39,27 @@ test('triangle surface follows actual slope, not a flat height',()=>{
 test('roof height uses only nearby surfaces, not a distant high edge',()=>{
  const distant={...c,roofAt:(x:number)=>x>2.9?20:5};assert.equal(solidHeight(distant,0,0,.38),5);
 });
+
+import {wallCollider,highestSolid} from './buildingCollision';
+import {advanceExploreJump,EXPLORE_JUMP_VELOCITY} from './exploreControls';
+test('solid stone wall blocks walking and sprinting but can be jumped onto and walked along',()=>{
+ const walls=[wallCollider([0,0],[0,4],.48,1,1),wallCollider([0,4],[0,8],.48,1,1)];
+ const top=(x:number,z:number)=>highestSolid(walls,x,z,WALK_RADIUS);
+ const blocked=(x:number,z:number)=>blocksMove(top(x,z),0,-Infinity,true);
+ const stop=sweepMove(-3,2,6,0,blocked);
+ assert.ok(stop.x<-.60);
+ let y=0,vy=EXPLORE_JUMP_VELOCITY;
+ for(let i=0;i<17;i++){const p=advanceExploreJump(y,vy,1/60);y=p.y;vy=p.vy;}
+ assert.ok(y>1+ROOF_SKIN);
+ const landed=sweepMove(-.75,2,.75,0,(x,z)=>blocksMove(top(x,z),y,-Infinity,false));
+ assert.ok(Math.abs(landed.x)<.001);
+ const floor=top(landed.x,landed.z)+ROOF_SKIN;
+ const walk=sweepMove(0,2,0,5,(x,z)=>blocksMove(top(x,z),floor,top(0,2),true));
+ assert.ok(walk.z>6.99);
+ assert.equal(top(2,7),-Infinity);
+});
+test('sloping stone wall returns locally supported top, not maximum height at distant end',()=>{
+ const w=wallCollider([0,0],[0,10],.48,1,2);
+ assert.ok(Math.abs(solidHeight(w,0,5,0)-1.5)<1e-6);
+ assert.ok(blocksMove(solidHeight(w,0,5,.38),.6,-Infinity,true));
+});
