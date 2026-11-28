@@ -27,7 +27,8 @@ export function corridorPlan(chunk:WorldChunkData){
   // Leave real hotel parking and both mapped driveways open.
   const parking=side<0&&z>-360&&z<-314;
   const driveway=side>0&&((z>-289&&z<-278)||(z>-374&&z<-360));
-  if(!parking&&!driveway&&[a,b,mid].every(p=>clear(p,.5)&&!existing.some(s=>segmentDistance(...p,s.a,s.b)<.65)))empty.walls.push({a,b,side});
+  const gardenSteps=side>0&&z>-313&&z<-309;
+  if(!parking&&!driveway&&!gardenSteps&&[a,b,mid].every(p=>clear(p,.5)&&!existing.some(s=>segmentDistance(...p,s.a,s.b)<.65)))empty.walls.push({a,b,side});
   if(side<0||z>-333){
    const p=[corridorPoint(z,side*4.42),corridorPoint(z2,side*4.42),corridorPoint(z2,side*6.03),corridorPoint(z,side*6.03)];
    if(!driveway&&!parking&&p.every(q=>clear(q,.10,false)))empty.paving.push(p);
