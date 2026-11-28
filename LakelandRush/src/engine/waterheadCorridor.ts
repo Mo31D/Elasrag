@@ -23,19 +23,26 @@ export function buildWaterheadCorridor(chunk:WorldChunkData,ground:Ground,stone:
  const rod=(a:THREE.Vector3,b:THREE.Vector3,r:number,mat:THREE.Material,r2=r)=>{const d=b.clone().sub(a);if(d.length()<.001)return;const g=new THREE.CylinderGeometry(r2,r,d.length(),8);g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize()));g.translate((a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2);add(g,mat);};
  const v=(x:number,y:number,z:number)=>new THREE.Vector3(x,y,z);
  const solid=(a:Point,b:Point,width:number,height:number)=>{const dx=b[0]-a[0],dz=b[1]-a[1],l=Math.hypot(dx,dz);if(l<.01)return;const nx=-dz/l*width/2,nz=dx/l*width/2;const outline:Point[]=[[a[0]+nx,a[1]+nz],[b[0]+nx,b[1]+nz],[b[0]-nx,b[1]-nz],[a[0]-nx,a[1]-nz]];colliders.push({minX:Math.min(...outline.map(p=>p[0])),maxX:Math.max(...outline.map(p=>p[0])),minZ:Math.min(...outline.map(p=>p[1])),maxZ:Math.max(...outline.map(p=>p[1])),topY:Math.max(yAt(...a),yAt(...b))+height,isRoof:false,outline});};
- for(const {a,b,side} of plan.walls){
-  const dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz),yaw=Math.atan2(dx,dz),n=Math.max(1,Math.ceil(len/.65)),h=side<0?.94:.72;
+ const fenceWood=[m(0x756c57),m(0x867c66),m(0x655e50)],moss=m(0x536344),asphalt=m(0x57595a),kerb=m(0x99978e);
+ for(const {a,b,side,height,fence,retaining} of plan.walls){
+  const dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz),yaw=Math.atan2(dx,dz),n=Math.max(1,Math.ceil(len/.65)),h=height??(side<0?.94:.72);
   for(let i=0;i<n;i++){const t=(i+.5)/n,x=a[0]+dx*t,z=a[1]+dz*t,y=yAt(x,z);box(.42,h+.1,len/n+.025,x,y+h/2-.04,z,stoneMat,yaw);
    for(let j=0;j<4;j++){const u=(i+(j+.5)/4)/n,xx=a[0]+dx*u,zz=a[1]+dz*u;box(.47,.12,len/n/4+.008,xx,yAt(xx,zz)+h,zz,coping[(i+j)%3],yaw,.12);}
   }
-  solid(a,b,.44,h+.08);
+  if(fence){const count=Math.max(1,Math.ceil(len/.14));for(let i=0;i<count;i++){const t=(i+.5)/count,x=a[0]+dx*t,z=a[1]+dz*t;box(.09,.94,len/count+.006,x,yAt(x,z)+h+.50,z,fenceWood[i%3],yaw);}}
+  if(height!==undefined&&side<0){for(let i=0;i<n;i++){const t=(i+.5)/n,x=a[0]+dx*t,z=a[1]+dz*t;box(.29,.025,len/n*.65,x,yAt(x,z)+h+.075,z,moss,yaw);}}
+  solid(a,b,.44,h+.08+(fence?.94:0));
  }
+ for(const p of plan.shoulders)add(groundSurface(p,ground,.115,true),asphalt);
+ for(const p of plan.kerbs)add(groundSurface(p,ground,.218,true),kerb);
+ for(const p of plan.edgePaint)add(groundSurface(p,ground,.142,true),yellow);
+ for(const [x,z] of plan.lamps){const y=yAt(x,z);rod(v(x,y,z),v(x,y+7.0,z),.064,metal,.041);rod(v(x,y+7,z),v(x+.92,y+7.12,z),.042,metal);box(.48,.11,.19,x+.98,y+7.1,z,black);}
  for(const p of plan.plants){const {x,z,size,tree}=p,y=yAt(x,z);
   if(tree){const h=7.5+rnd()*3.7;rod(v(x,y,z),v(x+.15,y+h*.8,z),.27,bark,.09);
    for(let i=0;i<7;i++){const a=i*2.399,xx=x+Math.cos(a)*size*.55,zz=z+Math.sin(a)*size*.55,yy=y+h*(.57+rnd()*.21);rod(v(x,y+h*.38,z),v(xx,yy,zz),.09,bark,.03);leaf(xx,yy+.65,zz,size*.55,size*.56,size*.53,leaves[i%5]);}
    for(let i=0;i<13;i++){const a=i*2.399,r=size*Math.sqrt(rnd())*.72;leaf(x+Math.cos(a)*r,y+h*.70+rnd()*h*.24,z+Math.sin(a)*r,size*.38,size*.36,size*.40,leaves[i%5]);}
    solid([x,z-.22],[x,z+.22],.46,h*.42);
-  }else{for(let i=0;i<5;i++){const a=i*2.4,r=size*.32;leaf(x+Math.cos(a)*r,y+size*.48+rnd()*.22,z+Math.sin(a)*r,size*.70,size*.60,size*.72,leaves[i%5]);}}
+  }else if(p.hedge){for(let i=0;i<8;i++){const a=i*2.4,r=size*.42;leaf(x+Math.cos(a)*r,y+size*.90+.55+rnd()*.30,z+Math.sin(a)*r,size*.66,size*.70,size*.78,leaves[(i+1)%5]);}}else{for(let i=0;i<7;i++){const a=i*2.4,r=size*.34;leaf(x+Math.cos(a)*r,y+size*.55+rnd()*.33,z+Math.sin(a)*r,size*.70,size*.69,size*.72,leaves[i%5]);}}
  }
  const label=(x:number,y:number,z:number,w:number,h:number,yaw:number,lines:string[],bg='#222928',fg='#f3f2e9')=>{
   const c=document.createElement('canvas');c.width=768;c.height=Math.max(96,Math.round(768*h/w));const ctx=c.getContext('2d')!;ctx.fillStyle=bg;ctx.fillRect(0,0,c.width,c.height);ctx.fillStyle=fg;ctx.textAlign='center';ctx.textBaseline='middle';
@@ -69,6 +76,37 @@ export function buildWaterheadCorridor(chunk:WorldChunkData,ground:Ground,stone:
   if(plan.shelters.some(s=>s.side>0)){const z=-311.3;const [x,zz]=corridorPoint(z,6.55),y=yAt(x,zz);for(let i=0;i<5;i++){box(.43,.16+i*.13,1.55,x+i*.41,y+(.16+i*.13)/2,zz,coping[1]);}}
   // Clipped round shrubs reuse clearance-validated garden plant locations.
   for(const p of plan.plants.filter(p=>!p.tree&&p.z<-290&&p.z>-318)){leaf(p.x,yAt(p.x,p.z)+.58,p.z,.75,.75,.75,leaves[2]);}
+ }
+ // Parked vehicles sit outside the existing through lanes. Varied silhouettes,
+ // curved body edges, wheel hubs, windows and lights instead of rectangular cars.
+ const paint=[m(0x495965,.40),m(0xa5a9a8,.42),m(0x263c53,.38),m(0x33373b,.42),m(0xb8b9b5,.4),m(0x8e3234,.4)],tyre=m(0x212326),hub=m(0xa1a5a6,.42),carGlass=m(0x34454f,.24),tail=m(0x9f292b,.42),head=m(0xe2e6e1,.30),plate=m(0xd6bb57);
+ for(const [i,p] of plan.parked.entries()){
+  const x=p.x,z=p.z,y=yAt(x,z)+.12,yaw=p.yaw,cs=Math.cos(yaw),sn=Math.sin(yaw),body=paint[i%paint.length],suv=i%3===0;
+  const local=(u:number,h:number,w:number)=>v(x+u*cs+w*sn,y+h,z-u*sn+w*cs);
+  const part=(w:number,h:number,d:number,u:number,yy:number,zz:number,mat:THREE.Material)=>{const q=local(u,yy,zz);box(w,h,d,q.x,q.y,q.z,mat,yaw);};
+  const shell=(profile:number[][],width:number,mat:THREE.Material)=>{
+   const shape=new THREE.Shape();profile.forEach(([zz,yy],j)=>j?shape.lineTo(zz,yy):shape.moveTo(zz,yy));shape.closePath();
+   const g=new THREE.ExtrudeGeometry(shape,{depth:width-.12,bevelEnabled:true,bevelSize:.06,bevelThickness:.06,bevelSegments:2,steps:1});
+   g.translate(0,0,-(width-.12)/2);g.rotateY(-Math.PI/2);g.rotateY(yaw);g.translate(x,y,z);add(g,mat);
+  };
+  shell([[-2.16,.40],[-2.09,.74],[-1.78,.88],[1.75,.88],[2.10,.69],[2.16,.40],[1.73,.32],[-1.75,.32]],1.78,body);
+  shell([[-1.49,.86],[-.82,suv?1.57:1.43],[.86,suv?1.57:1.43],[1.48,.86]],1.56,carGlass);
+  part(1.51,.085,suv?1.81:1.61,0,suv?1.58:1.44,0,body);
+  for(const u of [-.80,.80]){part(.055,suv?.63:.49,.055,u,suv?1.22:1.14,0,body);part(.14,.12,.22,u*1.13,1.06,-.85,body);for(const zz of [-1.37,1.37]){
+   const q=local(u,.32,zz);const g=new THREE.CylinderGeometry(.325,.325,.22,16);g.rotateZ(Math.PI/2);g.rotateY(yaw);g.translate(q.x,q.y,q.z);add(g,tyre);
+   const q2=local(u*1.13,.32,zz);const h=new THREE.CylinderGeometry(.19,.19,.035,12);h.rotateZ(Math.PI/2);h.rotateY(yaw);h.translate(q2.x,q2.y,q2.z);add(h,hub);
+  }}
+  for(const u of [-.65,.65]){part(.40,.13,.065,u,.69,-2.105,head);part(.33,.14,.06,u,.69,2.105,tail);}
+  part(.43,.11,.035,0,.48,2.17,plate);part(.44,.11,.035,0,.48,-2.17,head);part(.66,.12,.06,0,.56,-2.12,black);
+  const a=local(0,0,-2.2),b=local(0,0,2.2);solid([a.x,a.z],[b.x,b.z],1.88,1.65);
+ }
+ if(chunk.key==='0_-2'){
+  // First Hayes approach signs only; the garden centre itself is outside this phase.
+  for(const z of [-715,-825]){const [x,zz]=corridorPoint(z,-7.2),y=yAt(x,zz);if(!plan.paving.some(p=>Math.min(...p.map(v=>Math.abs(v[1]-z)))<3))continue;
+   for(const u of [-.66,.66])rod(v(x+u,y,zz),v(x+u,y+2.55,zz),.045,green);
+   box(1.64,1.02,.095,x,y+1.98,zz,green);label(x,y+1.98,zz+.055,1.48,.86,0,['Hayes'],'#8ba468','#f0efce');
+   box(1.48,.48,.085,x,y+1.12,zz,green);label(x,y+1.12,zz+.05,1.33,.37,0,['GARDEN WORLD'],'#345e46','#eeeede');
+  }
  }
  for(const [mat,ls] of bins){const norm=ls.map(g=>g.index?g.toNonIndexed():g),g=mergeGeometries(norm);norm.forEach((v,i)=>{if(v!==ls[i])v.dispose()});ls.forEach(v=>v.dispose());if(g){geos.push(g);const mesh=new THREE.Mesh(g,mat);mesh.castShadow=!mat.transparent;mesh.receiveShadow=true;group.add(mesh);}}
  return {group,colliders,plan,dispose(){geos.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
