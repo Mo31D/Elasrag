@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
 import type {Ground} from '../geo/surfaceGround';
-import type {SolidCollider,Point} from '../game/buildingCollision';
+import {wallCollider,type SolidCollider,type Point} from '../game/buildingCollision';
 import {petGardenRuns,gardenWallX,GATE_Z,GATE_WIDTH,PET_SIGNAL_POINTS,PET_LAMP_POINTS,PET_TREE_POINTS} from '../geo/petJunction';
 export function buildPetJunction(ground:Ground,stone:THREE.MeshStandardMaterial){
  const group=new THREE.Group();group.name='Pet Shop A591 reference junction';
@@ -37,7 +37,7 @@ export function buildPetJunction(ground:Ground,stone:THREE.MeshStandardMaterial)
    box(.86,1.25,l/n+.04,hx,hy+1.44,z,foliage[1],yaw);
    for(let j=0;j<3;j++)ball(hx+(rand()-.5)*.42,hy+1.98+(rand()-.5)*.14,z+(rand()-.5)*l/n,.48,.25,.43,foliage[Math.floor(rand()*foliage.length)]);
   }
-  solid(a,b,.44,1.04);
+  for(let i=0;i<n;i++){const t=i/n,u=(i+1)/n,A:Point=[a[0]+dx*t,a[1]+dz*t],B:Point=[a[0]+dx*u,a[1]+dz*u];const y=base((A[0]+B[0])/2,(A[1]+B[1])/2)+1.03;colliders.push(wallCollider(A,B,.49,y,y));}
  }
  const gx=gardenWallX(GATE_Z),gy=base(gx,GATE_Z);
  for(const dz of [-GATE_WIDTH/2,GATE_WIDTH/2]){box(.48,1.47,.40,gx,gy+.735,GATE_Z+dz,stoneMat);box(.57,.13,.51,gx,gy+1.5,GATE_Z+dz,caps[1]);}
