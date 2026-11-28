@@ -25,7 +25,7 @@ import {buildPetShop} from './petShop';
 import {PET_SHOP_ID} from '../geo/petShopPlan';
 import {roofFromGeometry,roofFromModel} from './roofCollision';
 import type {SolidCollider} from '../game/buildingCollision';
-import {lakeRoadWallRuns,WALL_HEIGHT,WALL_WIDTH} from '../geo/lakeRoadWalls';
+import {lakeRoadWallRuns,WALL_HEIGHT,WALL_WIDTH,waterheadCarParkPavement,waterheadCarParkKerb} from '../geo/lakeRoadWalls';
 import { WATERHEAD_COFFEE_ID } from '../geo/coffeeShopPlan';
 import { buildSiteDetails } from './siteDetails';
 import amblesideSurfaces from '../data/ambleside-surfaces.json';
@@ -863,6 +863,12 @@ export function buildChunkGroup(
   addBatch(primaryGeos, materials.primaryRoad, false,true);
   addBatch(laneGeos, materials.countryLane, false,true);
   addBatch(pathGeos, materials.footpath, false,true);
+  if(chunk.key==='0_-1'){
+    const pavement=materials.footpath.clone();pavement.color.set(0xa29e94);streetMaterials.push(pavement);
+    const kerb=new THREE.MeshStandardMaterial({color:0xa9a79d,roughness:.95,side:THREE.DoubleSide});streetMaterials.push(kerb);
+    addBatch(waterheadCarParkPavement().map(p=>groundSurface(p,surfaceGround,.205,true)),pavement,false,true);
+    addBatch(waterheadCarParkKerb().map(p=>groundSurface(p,surfaceGround,.218,true)),kerb,false,true);
+  }
   if(chunk.key===BLACK_SHEEP_STREET_CHUNK){
     const pavement=materials.footpath.clone();pavement.color.set(0x99958e);streetMaterials.push(pavement);
     const yellow=new THREE.MeshStandardMaterial({color:0xd9b94c,roughness:.88,side:THREE.DoubleSide});streetMaterials.push(yellow);
