@@ -90,7 +90,7 @@ export function corridorPlan(chunk:WorldChunkData){
   if(side<0&&z>-481)continue;const p=corridorPoint(z,side*(side>0&&parkingBand(z)?11.5:10.0));
   if(clear(p,1.5)&&roadClear(p,1.5))empty.plants.push({x:p[0],z:p[1],size:1.8+Math.sin(z)*.35,tree:false});
  }
- empty.paving.push(...hayes.paving);empty.shoulders.push(...hayes.parking);empty.parked.push(...hayes.cars);
+ empty.paving.push(...hayes.paving);empty.kerbs.push(...hayes.kerbs);empty.edgePaint.push(...hayes.edgePaint);empty.shoulders.push(...hayes.parking);empty.parked.push(...hayes.cars);
  empty.walls.push(...hayes.walls.map(w=>({...w,side:1})));
  if(chunk.key==='0_-2')empty.plants=empty.plants.filter(p=>!hayesReserved(p.x,p.z)||!hayes.parking.some(r=>pointInRing(p.x,p.z,r))&&!hayes.cars.some(c=>Math.hypot(c.x-p.x,c.z-p.z)<4));
  return empty;
