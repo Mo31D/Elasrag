@@ -21,7 +21,8 @@ export function busStopPavements(key=KELSICK_CHUNK):P[][]{
  // Continuous forecourt, clipped at tile ownership; the car park lies behind.
  const start=key==='-1_-3'?-11.2:0,end=key==='-1_-3'?0:12.2;
  const front:P[]=[],back:P[]=[];
- for(let i=0;i<=Math.ceil(end-start);i++){const x=start+(end-start)*i/Math.ceil(end-start);front.push([x,kelsickZ(x)-4.35]);back.push([x,kelsickZ(x)-8.05]);}
+ const steps=Math.ceil(end-start);
+ for(let i=0;i<=steps;i++){const x=i===0?start:i===steps?end:start+(end-start)*i/steps;front.push([x,kelsickZ(x)-4.35]);back.push([x,kelsickZ(x)-8.05]);}
  out.push([...front,...back.reverse()]);
  if(key===KELSICK_CHUNK)for(const [a,b,az,bz] of [[3.6,11.75,-1377,-1379.13],[11.75,20.6,-1379.13,-1381.4]]){
  const za=kelsickZ(a)+4.4,zb=kelsickZ(b)+4.4;
