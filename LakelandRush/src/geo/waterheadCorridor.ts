@@ -2,6 +2,7 @@ import type {WorldChunkData} from '../types/game';
 import {displayHalfWidth} from './roadPresentation';
 import {pointInRing} from './projection';
 import {segmentDistance,type Point} from './parking';
+import {hayesPlan,hayesReserved} from './hayesApproach';
 export const CORRIDOR_CHUNKS=['0_-1','0_-2'];
 export const INN_ID=423874287,LAKEHOUSE_ID=423874291,APARTMENTS_ID=698103904;
 // Existing Lake Road centerline from the two streamed tiles, not photo intervals.
@@ -18,6 +19,7 @@ export function corridorDetailedWall(x:number,z:number){const dx=x-corridorPoint
 export function corridorPlan(chunk:WorldChunkData){
  const empty={walls:[] as {a:Point;b:Point;side:number;height?:number;fence?:boolean;retaining?:boolean}[],paving:[] as Point[][],kerbs:[] as Point[][],edgePaint:[] as Point[][],shoulders:[] as Point[][],parked:[] as {x:number;z:number;yaw:number}[],lamps:[] as Point[],plants:[] as {x:number;z:number;size:number;tree:boolean;hedge?:boolean}[],shelters:[] as {x:number;z:number;side:number;yaw:number}[]};
  if(!CORRIDOR_CHUNKS.includes(chunk.key))return empty;
+ const hayes=hayesPlan(chunk);
  const buildings=chunk.buildings.map(b=>b.pts.map(([x,z])=>[x+b.cx,z+b.cz] as Point));
  const segments=chunk.roads.filter(r=>r.kind!=='ferry'&&r.ref!=='A591').flatMap(r=>r.pts.slice(1).map((b,i)=>({a:r.pts[i],b,w:displayHalfWidth(r),path:r.kind==='footpath'})));
  const inTile=(x:number,z:number)=>Math.floor(x/500)===chunk.cx&&Math.floor(z/500)===chunk.cz;
@@ -88,5 +90,8 @@ export function corridorPlan(chunk:WorldChunkData){
   if(side<0&&z>-481)continue;const p=corridorPoint(z,side*(side>0&&parkingBand(z)?11.5:10.0));
   if(clear(p,1.5)&&roadClear(p,1.5))empty.plants.push({x:p[0],z:p[1],size:1.8+Math.sin(z)*.35,tree:false});
  }
+ empty.paving.push(...hayes.paving);empty.shoulders.push(...hayes.parking);empty.parked.push(...hayes.cars);
+ empty.walls.push(...hayes.walls.map(w=>({...w,side:1})));
+ if(chunk.key==='0_-2')empty.plants=empty.plants.filter(p=>!hayesReserved(p.x,p.z)||!hayes.parking.some(r=>pointInRing(p.x,p.z,r))&&!hayes.cars.some(c=>Math.hypot(c.x-p.x,c.z-p.z)<4));
  return empty;
 }
