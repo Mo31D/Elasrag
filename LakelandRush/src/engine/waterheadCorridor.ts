@@ -17,7 +17,7 @@ export function buildWaterheadCorridor(chunk:WorldChunkData,ground:Ground,stone:
  const stoneMat=stone.clone();stoneMat.color.set(0x92928a);materials.push(stoneMat);
  const coping=[m(0x62665e),m(0x80847a),m(0x96968a)],leaves=[m(0x324b2b),m(0x496335),m(0x5e783e),m(0x76954d),m(0x405831)],bark=m(0x64564a),green=m(0x295e4c,.65),metal=m(0x858b85,.6),black=m(0x242b2d),yellow=m(0xd2b557),white=m(0xe7e5d9);
  const glass=new THREE.MeshStandardMaterial({color:0xc2d3ca,transparent:true,opacity:.22,depthWrite:false,side:THREE.DoubleSide,roughness:.25});materials.push(glass);
- const roof=m(0x356c57,.65);
+ const roof=m(0x356c57,.65);roof.side=THREE.DoubleSide;
  let seed=227;const rnd=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
  const leaf=(x:number,y:number,z:number,a:number,b:number,c:number,mat:THREE.Material)=>{const g=new THREE.IcosahedronGeometry(1,1);g.scale(a,b,c);g.rotateY(rnd()*6.28);g.translate(x,y,z);add(g,mat);};
  const rod=(a:THREE.Vector3,b:THREE.Vector3,r:number,mat:THREE.Material,r2=r)=>{const d=b.clone().sub(a);if(d.length()<.001)return;const g=new THREE.CylinderGeometry(r2,r,d.length(),8);g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize()));g.translate((a.x+b.x)/2,(a.y+b.y)/2,(a.z+b.z)/2);add(g,mat);};
@@ -65,8 +65,10 @@ export function buildWaterheadCorridor(chunk:WorldChunkData,ground:Ground,stone:
    for(const u of [-.36,.36])rod(v(x+Math.cos(yaw)*w*u,y,zz-Math.sin(yaw)*w*u),v(x+Math.cos(yaw)*w*u,y+1.36,zz-Math.sin(yaw)*w*u),.045,metal);
    label(x,y+1.20,zz,w,.72,yaw,lines);
   }
-  // Round clipped shrubs by the apartment garden, on the far side of the pavement.
-  for(let z=-290;z>=-318;z-=3.2){const [x,zz]=corridorPoint(z,8.4);if(plan.plants.some(p=>Math.hypot(p.x-x,p.z-zz)<2.4))continue;leaf(x,yAt(x,zz)+.64,zz,.78,.77,.78,leaves[2]);}
+  // Stone garden steps directly behind the small east-side shelter.
+  if(plan.shelters.some(s=>s.side>0)){const z=-311.3;const [x,zz]=corridorPoint(z,6.55),y=yAt(x,zz);for(let i=0;i<5;i++){box(.43,.16+i*.13,1.55,x+i*.41,y+(.16+i*.13)/2,zz,coping[1]);}}
+  // Clipped round shrubs reuse clearance-validated garden plant locations.
+  for(const p of plan.plants.filter(p=>!p.tree&&p.z<-290&&p.z>-318)){leaf(p.x,yAt(p.x,p.z)+.58,p.z,.75,.75,.75,leaves[2]);}
  }
  for(const [mat,ls] of bins){const norm=ls.map(g=>g.index?g.toNonIndexed():g),g=mergeGeometries(norm);norm.forEach((v,i)=>{if(v!==ls[i])v.dispose()});ls.forEach(v=>v.dispose());if(g){geos.push(g);const mesh=new THREE.Mesh(g,mat);mesh.castShadow=!mat.transparent;mesh.receiveShadow=true;group.add(mesh);}}
  return {group,colliders,plan,dispose(){geos.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());textures.forEach(t=>t.dispose());}};
